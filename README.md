@@ -8,7 +8,7 @@ Repository mới có cấu trúc thư mục, kế hoạch và SQL thiết kế. 
 
 ## Công nghệ dự kiến
 
-- Backend: Java 21, Spring Boot, Maven, REST API.
+- Backend: Java 25, Spring Boot, Maven, REST API.
 - Frontend: Android Java, XML Views, kiến trúc MVVM.
 - Cơ sở dữ liệu: PostgreSQL.
 - Quản lý mã nguồn và phối hợp: Git, GitHub và Pull Request.
