@@ -1,0 +1,38 @@
+### Java / Maven ###
+target/
+!.mvn/wrapper/maven-wrapper.jar
+!**/src/main/**/target/
+!**/src/test/**/target/
+
+### IDE ###
+.idea/
+*.iml
+*.iws
+*.ipr
+.vscode/
+.settings/
+.project
+.classpath
+.factorypath
+*.launch
+nbproject/
+nb-configuration.xml
+nbactions*.xml
+
+### OS ###
+.DS_Store
+Thumbs.db
+desktop.ini
+
+### Environment ###
+.env
+*.env.local
+
+### Build ###
+*.class
+*.jar
+*.war
+*.ear
+*.log
+hs_err_pid*
+replay_pid*

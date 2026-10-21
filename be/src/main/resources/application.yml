@@ -1,0 +1,26 @@
+spring:
+  application:
+    name: petcare-backend
+
+  datasource:
+    url: ${DB_URL:jdbc:postgresql://localhost:5432/pet_care}
+    username: ${DB_USERNAME:postgres}
+    password: ${DB_PASSWORD:}
+    driver-class-name: org.postgresql.Driver
+
+  jpa:
+    hibernate:
+      ddl-auto: none
+    open-in-view: false
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+        format_sql: true
+
+server:
+  port: ${SERVER_PORT:8080}
+
+logging:
+  level:
+    com.petcare: DEBUG
+    org.springframework.security: INFO
