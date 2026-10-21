@@ -1,0 +1,87 @@
+# Java and JVM output
+*.class
+*.log
+hs_err_pid*
+replay_pid*
+
+# Maven build output and local metadata
+**/target/
+pom.xml.tag
+pom.xml.releaseBackup
+pom.xml.versionsBackup
+pom.xml.next
+release.properties
+.mvn/timing.properties
+.mvn/local-settings.xml
+
+# Gradle and Android build output
+**/.gradle/
+**/build/
+**/out/
+**/bin/
+**/.externalNativeBuild/
+**/.cxx/
+**/captures/
+local.properties
+*.apk
+*.aab
+*.ap_
+*.dex
+*.hprof
+
+# IntelliJ IDEA and Android Studio user state
+.idea/
+*.iml
+*.ipr
+*.iws
+
+# VS Code personal state; keep shared workspace configuration
+.vscode/*
+!.vscode/settings.json
+!.vscode/extensions.json
+!.vscode/tasks.json
+!.vscode/launch.json
+
+# Environment files and machine-local configuration
+.env
+.env.*
+!.env.example
+!.env.*.example
+**/application-local.properties
+**/application-local.yml
+**/application-local.yaml
+**/application-secret.properties
+**/application-secret.yml
+**/application-secret.yaml
+**/application-secrets.properties
+**/application-secrets.yml
+**/application-secrets.yaml
+gradle-local.properties
+
+# Signing credentials, secrets and private keys
+*.jks
+*.keystore
+*.p12
+*.pfx
+*.key
+*.pem
+key.properties
+keystore.properties
+secrets.properties
+secrets.yml
+secrets.yaml
+id_rsa
+id_ed25519
+
+# OS and editor temporary files
+.DS_Store
+Thumbs.db
+Desktop.ini
+*~
+*.swp
+*.swo
+*.tmp
+
+# Do not blanket-ignore application.properties/yml, pom.xml,
+# build.gradle, gradle.properties, .mvn/ or gradle/wrapper/.
+# Shared configuration and wrapper files must contain no secrets.
