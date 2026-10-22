@@ -2,4 +2,19 @@
 <resources>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
+    
+    <!-- PetCare Brand Colors -->
+    <color name="primary">#2A9D8F</color>
+    <color name="primary_dark">#1F7268</color>
+    <color name="primary_light">#E6F4F1</color>
+    <color name="secondary">#F4A261</color>
+    <color name="accent">#E76F51</color>
+    <color name="dark_teal">#264653</color>
+    
+    <!-- Neutral / Background Colors -->
+    <color name="bg_light">#F8F9FA</color>
+    <color name="text_primary">#212529</color>
+    <color name="text_secondary">#6C757D</color>
+    <color name="border_color">#DEE2E6</color>
+    <color name="error_red">#E63946</color>
 </resources>
