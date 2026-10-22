@@ -6,9 +6,11 @@ import com.petcare.dto.response.LoginResponse;
 import com.petcare.dto.response.UserProfileResponse;
 import com.petcare.entity.UserEntity;
 import com.petcare.entity.UserRole;
+import com.petcare.exception.DuplicateResourceException;
 import com.petcare.repository.UserRepository;
 import com.petcare.security.JwtService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -23,7 +25,7 @@ public class AuthService {
 
     private UserEntity findUserByEmail(String email) {
         return userRepository.findByEmailIgnoreCase(email.trim())
-                .orElseThrow(() -> new IllegalArgumentException("Email hoặc mật khẩu không chính xác"));
+                .orElseThrow(() -> new BadCredentialsException("Email hoặc mật khẩu không chính xác"));
     }
 
     private boolean isActive(UserEntity user) {
@@ -32,7 +34,7 @@ public class AuthService {
 
     private void verifyPassword(String rawPassword, String passwordHash) {
         if (!passwordEncoder.matches(rawPassword, passwordHash)) {
-            throw new IllegalArgumentException("Email hoặc mật khẩu không chính xác");
+            throw new BadCredentialsException("Email hoặc mật khẩu không chính xác");
         }
     }
 
@@ -68,10 +70,10 @@ public class AuthService {
         String phone = req.getPhone().trim();
 
         if (userRepository.existsByEmailIgnoreCase(email)) {
-            throw new IllegalArgumentException("Email đã được sử dụng");
+            throw new DuplicateResourceException("Email đã được sử dụng");
         }
         if (userRepository.existsByPhone(phone)) {
-            throw new IllegalArgumentException("Số điện thoại đã được sử dụng");
+            throw new DuplicateResourceException("Số điện thoại đã được sử dụng");
         }
 
         String encodedPassword = passwordEncoder.encode(req.getPassword());
