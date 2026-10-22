@@ -1,16 +1,17 @@
 package com.petcare.service;
 
+import com.petcare.dto.request.LoginRequest;
+import com.petcare.dto.request.RegisterRequest;
+import com.petcare.dto.response.LoginResponse;
+import com.petcare.dto.response.UserProfileResponse;
+import com.petcare.entity.UserEntity;
+import com.petcare.entity.UserRole;
+import com.petcare.repository.UserRepository;
+import com.petcare.security.JwtService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import com.petcare.dto.request.LoginRequest;
-import com.petcare.dto.response.LoginResponse;
-import com.petcare.entity.UserEntity;
-import com.petcare.repository.UserRepository;
-import com.petcare.security.JwtService;
-
-import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor
@@ -59,5 +60,47 @@ public class AuthService {
 
         String token = jwtService.generateToken(user);
         return buildLoginResponse(user, token);
+    }
+
+    @Transactional
+    public LoginResponse register(RegisterRequest req) {
+        String email = req.getEmail().trim().toLowerCase();
+        String phone = req.getPhone().trim();
+
+        if (userRepository.existsByEmailIgnoreCase(email)) {
+            throw new IllegalArgumentException("Email đã được sử dụng");
+        }
+        if (userRepository.existsByPhone(phone)) {
+            throw new IllegalArgumentException("Số điện thoại đã được sử dụng");
+        }
+
+        String encodedPassword = passwordEncoder.encode(req.getPassword());
+        UserEntity newUser = new UserEntity(
+                req.getFullName().trim(),
+                email,
+                phone,
+                encodedPassword,
+                UserRole.CUSTOMER
+        );
+
+        UserEntity savedUser = userRepository.save(newUser);
+        String token = jwtService.generateToken(savedUser);
+        return buildLoginResponse(savedUser, token);
+    }
+
+    @Transactional(readOnly = true)
+    public UserProfileResponse getProfile(String email) {
+        UserEntity user = findUserByEmail(email);
+        Long clinicId = user.getClinic() != null ? user.getClinic().getId() : null;
+
+        return UserProfileResponse.builder()
+                .id(user.getId())
+                .fullName(user.getFullName())
+                .email(user.getEmail())
+                .phone(user.getPhone())
+                .role(user.getRole().name())
+                .clinicId(clinicId)
+                .active(user.isActive())
+                .build();
     }
 }

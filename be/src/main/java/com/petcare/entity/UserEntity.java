@@ -47,8 +47,18 @@ public class UserEntity {
     @Column(name = "is_active", nullable = false)
     private boolean active = true;
 
-    protected UserEntity() {
+    public UserEntity() {
     }
+
+    public UserEntity(String fullName, String email, String phone, String passwordHash, UserRole role) {
+        this.fullName = fullName;
+        this.email = email;
+        this.phone = phone;
+        this.passwordHash = passwordHash;
+        this.role = role != null ? role : UserRole.CUSTOMER;
+        this.active = true;
+    }
+
 
     public Long getId() { return id; }
 
