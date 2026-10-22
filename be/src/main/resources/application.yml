@@ -24,3 +24,9 @@ logging:
   level:
     com.petcare: DEBUG
     org.springframework.security: INFO
+
+jwt:
+  secret-key: ${JWT_SECRET}
+  expiration-time: ${JWT_EXPIRATION:86400000}
+
+
