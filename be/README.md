@@ -87,6 +87,28 @@ java -jar target\petcare-backend-0.0.1-SNAPSHOT.jar
 
 Server mặc định khởi động tại `http://localhost:8080`.
 
+### Chạy bằng Docker
+
+Build Docker image:
+
+```sh
+# Từ thư mục be/
+docker build -t petcare-backend .
+```
+
+Chạy container (kết nối database local của máy host):
+
+```sh
+docker run -d -p 8080:8080 \
+  -e DB_URL="jdbc:postgresql://host.docker.internal:5432/pet_care" \
+  -e DB_USERNAME="postgres" \
+  -e DB_PASSWORD="your_password_here" \
+  -e JWT_SECRET="your_jwt_secret_here" \
+  --name petcare-backend \
+  petcare-backend
+```
+
+
 ## Build và kiểm tra biên dịch
 
 ```powershell
