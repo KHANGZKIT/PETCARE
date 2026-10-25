@@ -68,7 +68,7 @@ public class AppointmentEntity {
     @Column(name = "updated_at", nullable = false, insertable = false, updatable = false)
     private OffsetDateTime updatedAt;
 
-    protected AppointmentEntity() {
+    public AppointmentEntity() {
     }
 
     public Long getId() { return id; }
