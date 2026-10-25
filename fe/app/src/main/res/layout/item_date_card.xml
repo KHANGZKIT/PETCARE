@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/layoutDateCard"
+    android:layout_width="54dp"
+    android:layout_height="wrap_content"
+    android:layout_marginEnd="8dp"
+    android:background="@drawable/bg_date_card_default"
+    android:clickable="true"
+    android:focusable="true"
+    android:gravity="center"
+    android:orientation="vertical"
+    android:paddingTop="10dp"
+    android:paddingBottom="10dp">
+
+    <TextView
+        android:id="@+id/tvDateDay"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:letterSpacing="0.05"
+        android:textAllCaps="true"
+        android:textColor="@color/text_muted"
+        android:textSize="10.5sp"
+        android:textStyle="bold"
+        tools:text="T2" />
+
+    <TextView
+        android:id="@+id/tvDateNum"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="2dp"
+        android:includeFontPadding="false"
+        android:textColor="@color/text_foreground"
+        android:textSize="17sp"
+        android:textStyle="bold"
+        tools:text="27" />
+
+    <TextView
+        android:id="@+id/tvDateSlotCount"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="3dp"
+        android:textColor="@color/text_muted"
+        android:textSize="9.5sp"
+        android:textStyle="bold"
+        tools:text="6 chỗ" />
+</LinearLayout>

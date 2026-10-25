@@ -1,0 +1,20 @@
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="300dp"
+    android:height="132dp"
+    android:viewportWidth="300"
+    android:viewportHeight="132">
+    <!-- Base background -->
+    <path
+        android:fillColor="#F0F4F2"
+        android:pathData="M0,0h300v132h-300z" />
+    <!-- Grid horizontal lines -->
+    <path
+        android:strokeColor="#141B2226"
+        android:strokeWidth="1"
+        android:pathData="M0,22h300 M0,44h300 M0,66h300 M0,88h300 M0,110h300" />
+    <!-- Grid vertical lines -->
+    <path
+        android:strokeColor="#141B2226"
+        android:strokeWidth="1"
+        android:pathData="M30,0v132 M60,0v132 M90,0v132 M120,0v132 M150,0v132 M180,0v132 M210,0v132 M240,0v132 M270,0v132" />
+</vector>

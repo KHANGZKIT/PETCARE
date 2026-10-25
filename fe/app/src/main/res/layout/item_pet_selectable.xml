@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/layoutPetCard"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="12dp"
+    android:background="@drawable/bg_service_card_default"
+    android:clickable="true"
+    android:focusable="true"
+    android:gravity="center_vertical"
+    android:orientation="horizontal"
+    android:padding="14dp">
+
+    <!-- Avatar thú cưng bo tròn 16dp -->
+    <com.google.android.material.imageview.ShapeableImageView
+        android:id="@+id/ivPetAvatar"
+        android:layout_width="64dp"
+        android:layout_height="64dp"
+        android:contentDescription="@null"
+        android:scaleType="centerCrop"
+        android:src="@drawable/img_pet_mochi"
+        app:shapeAppearanceOverlay="@style/RoundedCorner16" />
+
+    <!-- Thông tin bé -->
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="14dp"
+        android:layout_marginEnd="12dp"
+        android:layout_weight="1"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/tvPetName"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:ellipsize="end"
+            android:maxLines="1"
+            android:textColor="@color/text_foreground"
+            android:textSize="15sp"
+            android:textStyle="bold"
+            tools:text="Mochi" />
+
+        <TextView
+            android:id="@+id/tvPetBreed"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="2dp"
+            android:ellipsize="end"
+            android:maxLines="1"
+            android:textColor="@color/text_muted"
+            android:textSize="12.5sp"
+            tools:text="Chó · Pomeranian" />
+
+        <!-- Hàng thẻ thông tin nhỏ: Tuổi, Giới tính, Cân nặng -->
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/tvPetAge"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/bg_pill_gray"
+                android:paddingStart="8dp"
+                android:paddingTop="2dp"
+                android:paddingEnd="8dp"
+                android:paddingBottom="2dp"
+                android:textColor="@color/text_muted"
+                android:textSize="11.5sp"
+                android:textStyle="bold"
+                tools:text="2 tuổi" />
+
+            <TextView
+                android:id="@+id/tvPetSex"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="6dp"
+                android:background="@drawable/bg_pill_gray"
+                android:paddingStart="8dp"
+                android:paddingTop="2dp"
+                android:paddingEnd="8dp"
+                android:paddingBottom="2dp"
+                android:textColor="@color/text_muted"
+                android:textSize="11.5sp"
+                android:textStyle="bold"
+                tools:text="Cái" />
+
+            <TextView
+                android:id="@+id/tvPetWeight"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="6dp"
+                android:background="@drawable/bg_pill_gray"
+                android:paddingStart="8dp"
+                android:paddingTop="2dp"
+                android:paddingEnd="8dp"
+                android:paddingBottom="2dp"
+                android:textColor="@color/text_muted"
+                android:textSize="11.5sp"
+                android:textStyle="bold"
+                tools:text="3,4 kg" />
+        </LinearLayout>
+    </LinearLayout>
+
+    <!-- Vòng tròn radio chọn -->
+    <ImageView
+        android:id="@+id/ivPetCheck"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:contentDescription="@null"
+        android:src="@drawable/bg_radio_unselected" />
+</LinearLayout>

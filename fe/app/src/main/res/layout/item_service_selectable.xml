@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/layoutServiceCard"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="10dp"
+    android:background="@drawable/bg_service_card_default"
+    android:clickable="true"
+    android:focusable="true"
+    android:gravity="center_vertical"
+    android:orientation="horizontal"
+    android:padding="14dp">
+
+    <!-- Icon dịch vụ trong rounded-2xl container -->
+    <FrameLayout
+        android:id="@+id/layoutServiceIconBox"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:background="@drawable/bg_service_icon">
+
+        <ImageView
+            android:id="@+id/ivServiceIcon"
+            android:layout_width="22dp"
+            android:layout_height="22dp"
+            android:layout_gravity="center"
+            android:contentDescription="@null"
+            android:src="@drawable/ic_stethoscope"
+            android:tint="@color/brand_ink" />
+    </FrameLayout>
+
+    <!-- Thông tin dịch vụ -->
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="14dp"
+        android:layout_marginEnd="12dp"
+        android:layout_weight="1"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/tvServiceName"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:ellipsize="end"
+            android:maxLines="1"
+            android:textColor="@color/text_foreground"
+            android:textSize="14sp"
+            android:textStyle="bold"
+            tools:text="Khám tổng quát" />
+
+        <TextView
+            android:id="@+id/tvServiceDesc"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="2dp"
+            android:ellipsize="end"
+            android:lineSpacingExtra="1dp"
+            android:maxLines="2"
+            android:textColor="@color/text_muted"
+            android:textSize="12sp"
+            tools:text="Khám lâm sàng, cân nặng, nhiệt độ và các chỉ số sinh tồn." />
+
+        <!-- Meta hàng ngang: Thời gian + Giá -->
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/bg_pill_gray"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:paddingStart="8dp"
+                android:paddingTop="3dp"
+                android:paddingEnd="8dp"
+                android:paddingBottom="3dp">
+
+                <ImageView
+                    android:layout_width="12dp"
+                    android:layout_height="12dp"
+                    android:contentDescription="@null"
+                    android:src="@drawable/ic_clock"
+                    android:tint="@color/text_muted" />
+
+                <TextView
+                    android:id="@+id/tvServiceDuration"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="4dp"
+                    android:textColor="@color/text_muted"
+                    android:textSize="11.5sp"
+                    android:textStyle="bold"
+                    tools:text="30 phút" />
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/tvServicePrice"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="10dp"
+                android:textColor="@color/brand_ink"
+                android:textSize="13sp"
+                android:textStyle="bold"
+                tools:text="180.000 ₫" />
+        </LinearLayout>
+    </LinearLayout>
+
+    <!-- Nút radio chọn hình tròn -->
+    <ImageView
+        android:id="@+id/ivServiceCheck"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:contentDescription="@null"
+        android:src="@drawable/bg_radio_unselected" />
+</LinearLayout>

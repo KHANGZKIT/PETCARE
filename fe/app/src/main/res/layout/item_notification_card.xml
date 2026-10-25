@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/layoutCardContainer"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="10dp"
+    android:background="@drawable/bg_card_clinic"
+    android:clickable="true"
+    android:focusable="true"
+    android:foreground="?attr/selectableItemBackground"
+    android:gravity="top"
+    android:orientation="horizontal"
+    android:padding="14dp">
+
+    <!-- Ô biểu tượng loại thông báo 40x40dp bo cong 16dp -->
+    <FrameLayout
+        android:id="@+id/layoutIconBox"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:background="@drawable/bg_notice_brand">
+
+        <ImageView
+            android:id="@+id/ivNotifIcon"
+            android:layout_width="18dp"
+            android:layout_height="18dp"
+            android:layout_gravity="center"
+            android:contentDescription="@null"
+            android:src="@drawable/ic_calendar_days"
+            app:tint="@color/brand_primary" />
+    </FrameLayout>
+
+    <!-- Nội dung thông báo -->
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="12dp"
+        android:layout_weight="1"
+        android:orientation="vertical">
+
+        <!-- Tiêu đề & Chấm chưa đọc -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/tvNotifTitle"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:letterSpacing="-0.01"
+                android:text="Lịch hẹn đã được xác nhận"
+                android:textColor="@color/text_foreground"
+                android:textSize="13.5sp"
+                android:textStyle="bold" />
+
+            <View
+                android:id="@+id/viewUnreadDot"
+                android:layout_width="8dp"
+                android:layout_height="8dp"
+                android:layout_marginStart="6dp"
+                android:background="@drawable/bg_pin_circle" />
+        </LinearLayout>
+
+        <!-- Thân nội dung -->
+        <TextView
+            android:id="@+id/tvNotifBody"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:lineSpacingExtra="2dp"
+            android:text="Bệnh viện Thú y Gia Định đã xác nhận lịch cạo vôi răng cho Bông vào Thứ 4, 29/10 lúc 14:00."
+            android:textColor="@color/text_muted"
+            android:textSize="12sp" />
+
+        <!-- Thời gian nhận -->
+        <TextView
+            android:id="@+id/tvNotifTime"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="6dp"
+            android:text="Hôm nay · 08:12"
+            android:textColor="@color/text_muted"
+            android:textSize="11sp"
+            android:textStyle="bold" />
+    </LinearLayout>
+
+</LinearLayout>

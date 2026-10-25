@@ -19,6 +19,76 @@
             android:name=".MainActivity"
             android:exported="false" />
 
+        <!-- Màn hình Danh sách phòng khám (C04) -->
+        <activity
+            android:name=".ui.clinic.ClinicListActivity"
+            android:exported="false" />
+
+        <!-- Màn hình Chi tiết phòng khám (C05) -->
+        <activity
+            android:name=".ui.clinic.ClinicDetailsActivity"
+            android:exported="false" />
+
+        <!-- Màn hình Chọn dịch vụ (C06 - Bước 1/4) -->
+        <activity
+            android:name=".ui.booking.SelectServiceActivity"
+            android:exported="false" />
+
+        <!-- Màn hình Chọn ngày & giờ khám (C07 - Bước 2/4) -->
+        <activity
+            android:name=".ui.booking.DateTimeActivity"
+            android:exported="false" />
+
+        <!-- Màn hình Thú cưng của tôi (C08 - Bước 3/4 & Tab Thú cưng) -->
+        <activity
+            android:name=".ui.pets.MyPetsActivity"
+            android:exported="false" />
+
+        <!-- Màn hình Xác nhận đặt lịch (C10 - Bước 4/4) -->
+        <activity
+            android:name=".ui.booking.BookingReviewActivity"
+            android:exported="false" />
+
+        <!-- Màn hình Đặt lịch thành công (C11) -->
+        <activity
+            android:name=".ui.booking.BookingSuccessActivity"
+            android:exported="false" />
+
+        <!-- Màn hình Lịch hẹn của tôi (C12) -->
+        <activity
+            android:name=".ui.appointments.MyAppointmentsActivity"
+            android:exported="false" />
+
+        <!-- Màn hình Chi tiết lịch hẹn (C13) -->
+        <activity
+            android:name=".ui.appointments.AppointmentDetailsActivity"
+            android:exported="false" />
+
+        <!-- Màn hình Thông báo (C14) -->
+        <activity
+            android:name=".ui.notifications.NotificationsActivity"
+            android:exported="false" />
+
+        <!-- Phân hệ Nhân viên: Bảng làm việc nhân viên (S01) -->
+        <activity
+            android:name=".ui.staff.StaffDashboardActivity"
+            android:exported="false" />
+
+        <!-- Phân hệ Nhân viên: Danh sách lịch hẹn phòng khám (S02) -->
+        <activity
+            android:name=".ui.staff.StaffAppointmentsActivity"
+            android:exported="false" />
+
+        <!-- Phân hệ Nhân viên: Chi tiết lịch hẹn (S03) -->
+        <activity
+            android:name=".ui.staff.StaffAppointmentDetailsActivity"
+            android:exported="false" />
+
+        <!-- Phân hệ Nhân viên: Quản lý khung giờ (S04) -->
+        <activity
+            android:name=".ui.staff.StaffSlotManagementActivity"
+            android:exported="false" />
+
         <!-- Màn hình Đăng ký -->
         <activity
             android:name=".ui.auth.RegisterActivity"

@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Corner Radii -->
+    <dimen name="radius_full">999dp</dimen>
+    <dimen name="radius_sm">8dp</dimen>
+    <dimen name="radius_md">12dp</dimen>
+    <dimen name="radius_lg">16dp</dimen>
+    <dimen name="radius_xl">24dp</dimen>
+    <dimen name="radius_2xl">28dp</dimen>
+
+    <!-- Spacing Scale -->
+    <dimen name="spacing_2xs">4dp</dimen>
+    <dimen name="spacing_xs">8dp</dimen>
+    <dimen name="spacing_sm">12dp</dimen>
+    <dimen name="spacing_md">16dp</dimen>
+    <dimen name="spacing_lg">20dp</dimen>
+    <dimen name="spacing_xl">24dp</dimen>
+    <dimen name="spacing_2xl">32dp</dimen>
+
+    <!-- Component Heights -->
+    <dimen name="button_height_lg">52dp</dimen>
+    <dimen name="button_height_md">44dp</dimen>
+    <dimen name="button_height_sm">36dp</dimen>
+    <dimen name="input_height">52dp</dimen>
+
+    <!-- Top & Bottom Bars -->
+    <dimen name="status_bar_height">44dp</dimen>
+    <dimen name="app_bar_height">56dp</dimen>
+    <dimen name="bottom_nav_height">64dp</dimen>
+</resources>

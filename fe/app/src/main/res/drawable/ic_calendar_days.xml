@@ -1,0 +1,24 @@
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="24dp"
+    android:height="24dp"
+    android:viewportWidth="24"
+    android:viewportHeight="24">
+    <!-- CalendarDays from Lucide -->
+    <path
+        android:fillColor="#00000000"
+        android:strokeColor="#68757B"
+        android:strokeWidth="2.2"
+        android:strokeLineCap="round"
+        android:strokeLineJoin="round"
+        android:pathData="M19,4H5a2,2 0 0,0 -2,2v14a2,2 0 0,0 2,2h14a2,2 0 0,0 2,-2V6a2,2 0 0,0 -2,-2z" />
+    <path
+        android:fillColor="#00000000"
+        android:strokeColor="#68757B"
+        android:strokeWidth="2.2"
+        android:strokeLineCap="round"
+        android:strokeLineJoin="round"
+        android:pathData="M16,2v4M8,2v4M3,10h18" />
+    <path
+        android:fillColor="#68757B"
+        android:pathData="M8,14h2v2H8zM14,14h2v2h-2zM8,18h2v2H8zM14,18h2v2h-2z" />
+</vector>

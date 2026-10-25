@@ -6,4 +6,12 @@
     </style>
 
     <style name="Theme.PetcareUI" parent="Base.Theme.PetcareUI" />
+
+    <style name="RoundedCorner12">
+        <item name="cornerSize">12dp</item>
+    </style>
+
+    <style name="RoundedCorner16">
+        <item name="cornerSize">16dp</item>
+    </style>
 </resources>

@@ -1,20 +1,67 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <!-- Base -->
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
-    
-    <!-- PetCare Brand Colors -->
-    <color name="primary">#2A9D8F</color>
-    <color name="primary_dark">#1F7268</color>
-    <color name="primary_light">#E6F4F1</color>
-    <color name="secondary">#F4A261</color>
-    <color name="accent">#E76F51</color>
-    <color name="dark_teal">#264653</color>
-    
-    <!-- Neutral / Background Colors -->
-    <color name="bg_light">#F8F9FA</color>
-    <color name="text_primary">#212529</color>
-    <color name="text_secondary">#6C757D</color>
-    <color name="border_color">#DEE2E6</color>
-    <color name="error_red">#E63946</color>
+    <color name="transparent">#00000000</color>
+
+    <!-- 1. Brand — PET CARE Teal (Đồng bộ với Design System & petcare-ui) -->
+    <color name="brand_primary">#238C82</color>
+    <color name="brand_deep">#14534E</color>
+    <color name="brand_soft">#EAF7F4</color>
+    <color name="brand_ink">#16544C</color>
+
+    <!-- 2. Surfaces & Neutral -->
+    <color name="surface_background">#FBFAF7</color>
+    <color name="surface_card">#FFFFFF</color>
+    <color name="surface_muted">#F2F1EE</color>
+    <color name="stroke_border">#E4E9E7</color>
+    <color name="stroke_input">#DDE5E2</color>
+    <color name="text_foreground">#1B2226</color>
+    <color name="text_muted">#68757B</color>
+
+    <!-- 3. Status (Main, Soft, Ink) -->
+    <!-- Pending / Warning -->
+    <color name="status_warning">#B57610</color>
+    <color name="status_warning_soft">#FDF3E2</color>
+    <color name="status_warning_ink">#7A4E06</color>
+
+    <!-- Confirmed / Success -->
+    <color name="status_success">#25885C</color>
+    <color name="status_success_soft">#E8F6EE</color>
+    <color name="status_success_ink">#1E6B49</color>
+
+    <!-- Rejected / Destructive / Danger -->
+    <color name="status_destructive">#C43B3B</color>
+    <color name="status_destructive_soft">#FDEDED</color>
+    <color name="status_destructive_ink">#9A2B2B</color>
+
+    <!-- Info / No Show -->
+    <color name="status_info">#2072B4</color>
+    <color name="status_info_soft">#EAF3FC</color>
+    <color name="status_info_ink">#1B5C92</color>
+
+    <!-- Cancelled / Neutral Status -->
+    <color name="status_neutral">#68757B</color>
+    <color name="status_neutral_soft">#F2F1EE</color>
+    <color name="status_neutral_ink">#4C5559</color>
+
+    <!-- Google Button Accent -->
+    <color name="google_blue">#4285F4</color>
+    <color name="google_red">#EA4335</color>
+    <color name="google_yellow">#FBBC05</color>
+    <color name="google_green">#34A853</color>
+
+    <!-- Backward compatibility aliases (đảm bảo không gãy code cũ) -->
+    <color name="primary">#238C82</color>
+    <color name="primary_dark">#14534E</color>
+    <color name="primary_light">#EAF7F4</color>
+    <color name="secondary">#EAF7F4</color>
+    <color name="accent">#238C82</color>
+    <color name="dark_teal">#14534E</color>
+    <color name="bg_light">#FBFAF7</color>
+    <color name="text_primary">#1B2226</color>
+    <color name="text_secondary">#68757B</color>
+    <color name="border_color">#E4E9E7</color>
+    <color name="error_red">#C43B3B</color>
 </resources>

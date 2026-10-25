@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="12dp"
+    android:background="@drawable/bg_card_clinic"
+    android:orientation="horizontal"
+    android:padding="14dp">
+
+    <!-- Khối ảnh placeholder -->
+    <View
+        android:layout_width="76dp"
+        android:layout_height="76dp"
+        android:background="@drawable/bg_skeleton_rect" />
+
+    <!-- Các thanh dòng chữ placeholder -->
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="14dp"
+        android:layout_weight="1"
+        android:orientation="vertical">
+
+        <View
+            android:layout_width="160dp"
+            android:layout_height="14dp"
+            android:background="@drawable/bg_pill_gray" />
+
+        <View
+            android:layout_width="210dp"
+            android:layout_height="12dp"
+            android:layout_marginTop="10dp"
+            android:background="@drawable/bg_pill_gray" />
+
+        <View
+            android:layout_width="110dp"
+            android:layout_height="12dp"
+            android:layout_marginTop="10dp"
+            android:background="@drawable/bg_pill_gray" />
+    </LinearLayout>
+</LinearLayout>

@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TextView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/btnSlotTime"
+    android:layout_width="match_parent"
+    android:layout_height="44dp"
+    android:background="@drawable/bg_slot_available"
+    android:clickable="true"
+    android:focusable="true"
+    android:gravity="center"
+    android:textColor="@color/text_foreground"
+    android:textSize="13.5sp"
+    android:textStyle="bold"
+    tools:text="10:00" />
