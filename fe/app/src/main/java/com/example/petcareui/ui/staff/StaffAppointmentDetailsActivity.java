@@ -233,14 +233,14 @@ public class StaffAppointmentDetailsActivity extends AppCompatActivity {
             binding.layoutConfirmDialogOverlay.setVisibility(View.VISIBLE);
             binding.layoutActionsPending.setVisibility(View.VISIBLE);
             binding.layoutActionsConfirmed.setVisibility(View.GONE);
-            binding.layoutClosedActions.setVisibility(View.GONE);
+            binding.btnBackToList.setVisibility(View.GONE);
             updateStatusBadge("PENDING");
             resetTimelineToPending();
         } else if ("reject-dialog".equals(state)) {
             binding.layoutRejectSheetOverlay.setVisibility(View.VISIBLE);
             binding.layoutActionsPending.setVisibility(View.VISIBLE);
             binding.layoutActionsConfirmed.setVisibility(View.GONE);
-            binding.layoutClosedActions.setVisibility(View.GONE);
+            binding.btnBackToList.setVisibility(View.GONE);
             updateStatusBadge("PENDING");
             resetTimelineToPending();
         } else if ("success".equals(state)) {
@@ -248,7 +248,7 @@ public class StaffAppointmentDetailsActivity extends AppCompatActivity {
             binding.layoutFloatingToast.setVisibility(View.VISIBLE);
             binding.layoutActionsPending.setVisibility(View.GONE);
             binding.layoutActionsConfirmed.setVisibility(View.VISIBLE);
-            binding.layoutClosedActions.setVisibility(View.GONE);
+            binding.btnBackToList.setVisibility(View.GONE);
             updateStatusBadge("CONFIRMED");
 
             // Cập nhật Timeline
@@ -262,7 +262,7 @@ public class StaffAppointmentDetailsActivity extends AppCompatActivity {
             binding.noticeRejected.setVisibility(View.VISIBLE);
             binding.layoutActionsPending.setVisibility(View.GONE);
             binding.layoutActionsConfirmed.setVisibility(View.GONE);
-            binding.layoutClosedActions.setVisibility(View.VISIBLE);
+            binding.btnBackToList.setVisibility(View.VISIBLE);
             updateStatusBadge("REJECTED");
 
             // Cập nhật Timeline
@@ -276,7 +276,7 @@ public class StaffAppointmentDetailsActivity extends AppCompatActivity {
             binding.noticeFailed.setVisibility(View.VISIBLE);
             binding.layoutActionsPending.setVisibility(View.VISIBLE);
             binding.layoutActionsConfirmed.setVisibility(View.GONE);
-            binding.layoutClosedActions.setVisibility(View.GONE);
+            binding.btnBackToList.setVisibility(View.GONE);
             updateStatusBadge("PENDING");
             resetTimelineToPending();
         } else {
@@ -284,7 +284,7 @@ public class StaffAppointmentDetailsActivity extends AppCompatActivity {
             binding.noticePending.setVisibility(View.VISIBLE);
             binding.layoutActionsPending.setVisibility(View.VISIBLE);
             binding.layoutActionsConfirmed.setVisibility(View.GONE);
-            binding.layoutClosedActions.setVisibility(View.GONE);
+            binding.btnBackToList.setVisibility(View.GONE);
             updateStatusBadge("PENDING");
             resetTimelineToPending();
         }

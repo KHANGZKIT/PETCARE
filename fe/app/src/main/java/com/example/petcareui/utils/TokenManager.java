@@ -37,8 +37,22 @@ public class TokenManager {
         return prefs.getString(Constants.KEY_USER_NAME, "");
     }
 
+    public String getUserEmail() {
+        return prefs.getString(Constants.KEY_USER_EMAIL, "");
+    }
+
     public String getUserRole() {
         return prefs.getString(Constants.KEY_USER_ROLE, "");
+    }
+
+    public Long getUserId() {
+        long id = prefs.getLong(Constants.KEY_USER_ID, -1);
+        return id != -1 ? id : null;
+    }
+
+    public Long getClinicId() {
+        long id = prefs.getLong(Constants.KEY_CLINIC_ID, -1);
+        return id != -1 ? id : null;
     }
 
     public boolean isLoggedIn() {
