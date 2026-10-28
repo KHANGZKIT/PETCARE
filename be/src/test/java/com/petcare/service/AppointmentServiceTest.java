@@ -12,6 +12,7 @@ import com.petcare.entity.SlotStatus;
 import com.petcare.entity.UserEntity;
 import com.petcare.entity.UserRole;
 import com.petcare.exception.DuplicateResourceException;
+import com.petcare.exception.ResourceNotFoundException;
 import com.petcare.repository.AppointmentRepository;
 import com.petcare.repository.ClinicRepository;
 import com.petcare.repository.ClinicSlotRepository;
@@ -311,5 +312,138 @@ class AppointmentServiceTest {
         assertThatThrownBy(() -> appointmentService.bookAppointment(request, EMAIL))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining("Không tìm thấy thú cưng");
+    }
+
+    @Test
+    void getMyAppointmentDetail_notFound_throwsResourceNotFoundException() {
+        when(userRepository.findByEmailIgnoreCase(EMAIL)).thenReturn(Optional.of(customer));
+        when(appointmentRepository.findByIdAndCustomerId(99L, 10L)).thenReturn(Optional.empty());
+
+        assertThatThrownBy(() -> appointmentService.getMyAppointmentDetail(99L, EMAIL))
+                .isInstanceOf(ResourceNotFoundException.class)
+                .hasMessageContaining("Không tìm thấy lịch hẹn hoặc bạn không có quyền xem");
+    }
+
+    @Test
+    void getMyAppointmentDetail_success_returnsAppointment() {
+        AppointmentEntity apt = newEntity(AppointmentEntity.class, 99L);
+        apt.setCustomer(customer);
+        apt.setPet(pet);
+        apt.setClinic(clinic);
+        apt.setService(service);
+        apt.setSlot(slot);
+        apt.setStatus(AppointmentStatus.PENDING);
+
+        when(userRepository.findByEmailIgnoreCase(EMAIL)).thenReturn(Optional.of(customer));
+        when(appointmentRepository.findByIdAndCustomerId(99L, 10L)).thenReturn(Optional.of(apt));
+
+        AppointmentResponse response = appointmentService.getMyAppointmentDetail(99L, EMAIL);
+        assertThat(response).isNotNull();
+        assertThat(response.getId()).isEqualTo(99L);
+        assertThat(response.getStatus()).isEqualTo(AppointmentStatus.PENDING);
+    }
+
+    @Test
+    void cancelAppointment_notFound_throwsResourceNotFoundException() {
+        when(userRepository.findByEmailIgnoreCase(EMAIL)).thenReturn(Optional.of(customer));
+        when(appointmentRepository.findByIdAndCustomerId(99L, 10L)).thenReturn(Optional.empty());
+
+        assertThatThrownBy(() -> appointmentService.cancelAppointment(99L, EMAIL))
+                .isInstanceOf(ResourceNotFoundException.class)
+                .hasMessageContaining("Không tìm thấy lịch hẹn hoặc bạn không có quyền hủy");
+    }
+
+    @Test
+    void cancelAppointment_invalidStatus_throwsIllegalArgumentException() {
+        AppointmentEntity apt = newEntity(AppointmentEntity.class, 1L);
+        apt.setCustomer(customer);
+        apt.setPet(pet);
+        apt.setClinic(clinic);
+        apt.setService(service);
+        apt.setSlot(slot);
+        apt.setStatus(AppointmentStatus.COMPLETED);
+
+        when(userRepository.findByEmailIgnoreCase(EMAIL)).thenReturn(Optional.of(customer));
+        when(appointmentRepository.findByIdAndCustomerId(1L, 10L)).thenReturn(Optional.of(apt));
+
+        assertThatThrownBy(() -> appointmentService.cancelAppointment(1L, EMAIL))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessageContaining("Không thể hủy lịch hẹn đang ở trạng thái: COMPLETED");
+    }
+
+    @Test
+    void confirmAppointment_notFound_throwsResourceNotFoundException() {
+        UserEntity staff = new UserEntity("Nhân Viên", "staff@petcare.com", "0900000002", "hash", UserRole.STAFF);
+        staff.setClinic(clinic);
+
+        when(userRepository.findByEmailIgnoreCase("staff@petcare.com")).thenReturn(Optional.of(staff));
+        when(appointmentRepository.findByIdAndClinicId(99L, 1L)).thenReturn(Optional.empty());
+
+        assertThatThrownBy(() -> appointmentService.confirmAppointment(99L, "staff@petcare.com"))
+                .isInstanceOf(ResourceNotFoundException.class)
+                .hasMessageContaining("Không tìm thấy lịch hẹn thuộc phòng khám của bạn");
+    }
+
+    @Test
+    void confirmAppointment_notPending_throwsIllegalArgumentException() {
+        UserEntity staff = new UserEntity("Nhân Viên", "staff@petcare.com", "0900000002", "hash", UserRole.STAFF);
+        staff.setClinic(clinic);
+        AppointmentEntity apt = newEntity(AppointmentEntity.class, 1L);
+        apt.setStatus(AppointmentStatus.CONFIRMED);
+
+        when(userRepository.findByEmailIgnoreCase("staff@petcare.com")).thenReturn(Optional.of(staff));
+        when(appointmentRepository.findByIdAndClinicId(1L, 1L)).thenReturn(Optional.of(apt));
+
+        assertThatThrownBy(() -> appointmentService.confirmAppointment(1L, "staff@petcare.com"))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessageContaining("Chỉ có thể xác nhận lịch hẹn đang ở trạng thái PENDING");
+    }
+
+    @Test
+    void rejectAppointment_notFound_throwsResourceNotFoundException() {
+        UserEntity staff = new UserEntity("Nhân Viên", "staff@petcare.com", "0900000002", "hash", UserRole.STAFF);
+        staff.setClinic(clinic);
+
+        when(userRepository.findByEmailIgnoreCase("staff@petcare.com")).thenReturn(Optional.of(staff));
+        when(appointmentRepository.findByIdAndClinicId(99L, 1L)).thenReturn(Optional.empty());
+
+        assertThatThrownBy(() -> appointmentService.rejectAppointment(99L, "staff@petcare.com"))
+                .isInstanceOf(ResourceNotFoundException.class);
+    }
+
+    @Test
+    void completeAppointment_notFound_throwsResourceNotFoundException() {
+        UserEntity staff = new UserEntity("Nhân Viên", "staff@petcare.com", "0900000002", "hash", UserRole.STAFF);
+        staff.setClinic(clinic);
+
+        when(userRepository.findByEmailIgnoreCase("staff@petcare.com")).thenReturn(Optional.of(staff));
+        when(appointmentRepository.findByIdAndClinicId(99L, 1L)).thenReturn(Optional.empty());
+
+        assertThatThrownBy(() -> appointmentService.completeAppointment(99L, "staff@petcare.com"))
+                .isInstanceOf(ResourceNotFoundException.class);
+    }
+
+    @Test
+    void noShowAppointment_notFound_throwsResourceNotFoundException() {
+        UserEntity staff = new UserEntity("Nhân Viên", "staff@petcare.com", "0900000002", "hash", UserRole.STAFF);
+        staff.setClinic(clinic);
+
+        when(userRepository.findByEmailIgnoreCase("staff@petcare.com")).thenReturn(Optional.of(staff));
+        when(appointmentRepository.findByIdAndClinicId(99L, 1L)).thenReturn(Optional.empty());
+
+        assertThatThrownBy(() -> appointmentService.noShowAppointment(99L, "staff@petcare.com"))
+                .isInstanceOf(ResourceNotFoundException.class);
+    }
+
+    @Test
+    void getClinicAppointmentDetail_notFound_throwsResourceNotFoundException() {
+        UserEntity staff = new UserEntity("Nhân Viên", "staff@petcare.com", "0900000002", "hash", UserRole.STAFF);
+        staff.setClinic(clinic);
+
+        when(userRepository.findByEmailIgnoreCase("staff@petcare.com")).thenReturn(Optional.of(staff));
+        when(appointmentRepository.findByIdAndClinicId(99L, 1L)).thenReturn(Optional.empty());
+
+        assertThatThrownBy(() -> appointmentService.getClinicAppointmentDetail(99L, "staff@petcare.com"))
+                .isInstanceOf(ResourceNotFoundException.class);
     }
 }

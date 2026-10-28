@@ -20,6 +20,7 @@ import com.petcare.entity.SlotStatus;
 import com.petcare.entity.UserEntity;
 import com.petcare.entity.UserRole;
 import com.petcare.exception.DuplicateResourceException;
+import com.petcare.exception.ResourceNotFoundException;
 import com.petcare.repository.AppointmentRepository;
 import com.petcare.repository.ClinicRepository;
 import com.petcare.repository.ClinicSlotRepository;
@@ -41,7 +42,7 @@ public class AppointmentService {
 
     private UserEntity getUserByEmail(String email) {
         return userRepository.findByEmailIgnoreCase(email.trim())
-                .orElseThrow(() -> new IllegalArgumentException("Không tìm thấy thông tin người dùng"));
+                .orElseThrow(() -> new ResourceNotFoundException("Không tìm thấy thông tin người dùng"));
     }
 
     /**
@@ -126,7 +127,7 @@ public class AppointmentService {
         UserEntity customer = getUserByEmail(cusEmail);
 
         AppointmentEntity appointment = appointmentRepository.findByIdAndCustomerId(appointmentId, customer.getId())
-                .orElseThrow(() -> new IllegalArgumentException("Không tìm thấy lịch hẹn hoặc bạn không có quyền xem"));
+                .orElseThrow(() -> new ResourceNotFoundException("Không tìm thấy lịch hẹn hoặc bạn không có quyền xem"));
 
         return AppointmentResponse.fromEntity(appointment);
     }
@@ -135,7 +136,7 @@ public class AppointmentService {
     public AppointmentResponse cancelAppointment(Long appointmentId, String cusEmail) {
         UserEntity customer = getUserByEmail(cusEmail);
         AppointmentEntity appointment = appointmentRepository.findByIdAndCustomerId(appointmentId, customer.getId())
-                .orElseThrow(() -> new IllegalArgumentException("Không tìm thấy lịch hẹn hoặc bạn không có quyền hủy"));
+                .orElseThrow(() -> new ResourceNotFoundException("Không tìm thấy lịch hẹn hoặc bạn không có quyền hủy"));
         if (appointment.getStatus() != AppointmentStatus.PENDING
                 && appointment.getStatus() != AppointmentStatus.CONFIRMED) {
             throw new IllegalArgumentException("Không thể hủy lịch hẹn đang ở trạng thái: " + appointment.getStatus());
@@ -174,7 +175,7 @@ public class AppointmentService {
     public AppointmentResponse confirmAppointment(Long appointmentId, String staffEmail) {
         Long clinicId = getStaffClinicId(staffEmail);
         AppointmentEntity appointment = appointmentRepository.findByIdAndClinicId(appointmentId, clinicId)
-                .orElseThrow(() -> new IllegalArgumentException("Không tìm thấy lịch hẹn thuộc phòng khám của bạn"));
+                .orElseThrow(() -> new ResourceNotFoundException("Không tìm thấy lịch hẹn thuộc phòng khám của bạn"));
 
         if (appointment.getStatus() != AppointmentStatus.PENDING) {
             throw new IllegalArgumentException("Chỉ có thể xác nhận lịch hẹn đang ở trạng thái PENDING");
@@ -188,7 +189,7 @@ public class AppointmentService {
     public AppointmentResponse rejectAppointment(Long appointmentId, String staffEmail) {
         Long clinicId = getStaffClinicId(staffEmail);
         AppointmentEntity appointment = appointmentRepository.findByIdAndClinicId(appointmentId, clinicId)
-                .orElseThrow(() -> new IllegalArgumentException("Không tìm thấy lịch hẹn thuộc phòng khám của bạn"));
+                .orElseThrow(() -> new ResourceNotFoundException("Không tìm thấy lịch hẹn thuộc phòng khám của bạn"));
 
         if (appointment.getStatus() != AppointmentStatus.PENDING) {
             throw new IllegalArgumentException("Chỉ có thể từ chối lịch hẹn đang ở trạng thái PENDING");
@@ -209,7 +210,7 @@ public class AppointmentService {
     public AppointmentResponse completeAppointment(Long appointmentId, String staffEmail) {
         Long clinicId = getStaffClinicId(staffEmail);
         AppointmentEntity appointment = appointmentRepository.findByIdAndClinicId(appointmentId, clinicId)
-                .orElseThrow(() -> new IllegalArgumentException("Không tìm thấy lịch hẹn thuộc phòng khám của bạn"));
+                .orElseThrow(() -> new ResourceNotFoundException("Không tìm thấy lịch hẹn thuộc phòng khám của bạn"));
 
         if (appointment.getStatus() != AppointmentStatus.CONFIRMED) {
             throw new IllegalArgumentException("Chỉ có thể hoàn thành lịch hẹn đã được xác nhận (CONFIRMED)");
@@ -223,7 +224,7 @@ public class AppointmentService {
     public AppointmentResponse noShowAppointment(Long appointmentId, String staffEmail) {
         Long clinicId = getStaffClinicId(staffEmail);
         AppointmentEntity appointment = appointmentRepository.findByIdAndClinicId(appointmentId, clinicId)
-                .orElseThrow(() -> new IllegalArgumentException("Không tìm thấy lịch hẹn thuộc phòng khám của bạn"));
+                .orElseThrow(() -> new ResourceNotFoundException("Không tìm thấy lịch hẹn thuộc phòng khám của bạn"));
 
         if (appointment.getStatus() != AppointmentStatus.CONFIRMED) {
             throw new IllegalArgumentException("Chỉ có thể đánh dấu vắng mặt đối với lịch hẹn đã xác nhận (CONFIRMED)");
@@ -237,7 +238,7 @@ public class AppointmentService {
     public AppointmentResponse getClinicAppointmentDetail(Long appointmentId, String staffEmail) {
         Long clinicId = getStaffClinicId(staffEmail);
         AppointmentEntity appointment = appointmentRepository.findByIdAndClinicId(appointmentId, clinicId)
-                .orElseThrow(() -> new IllegalArgumentException("Không tìm thấy lịch hẹn thuộc phòng khám của bạn"));
+                .orElseThrow(() -> new ResourceNotFoundException("Không tìm thấy lịch hẹn thuộc phòng khám của bạn"));
         return AppointmentResponse.fromEntity(appointment);
     }
 
