@@ -29,7 +29,13 @@ public class PetEntity {
     @Column(name = "species", nullable = false, length = 50)
     private String species;
 
-    protected PetEntity() {
+    public PetEntity() {
+    }
+
+    public PetEntity(UserEntity owner, String name, String species) {
+        this.owner = owner;
+        this.name = name;
+        this.species = species;
     }
 
     public Long getId() { return id; }
