@@ -48,7 +48,15 @@ public class ClinicSlotEntity {
     @Column(name = "status", nullable = false, length = 20)
     private SlotStatus status = SlotStatus.AVAILABLE;
 
-    protected ClinicSlotEntity() {
+    public ClinicSlotEntity() {
+    }
+
+    public ClinicSlotEntity(ClinicEntity clinic, LocalDate slotDate, LocalTime startTime, LocalTime endTime, SlotStatus status) {
+        this.clinic = clinic;
+        this.slotDate = slotDate;
+        this.startTime = startTime;
+        this.endTime = endTime;
+        this.status = status != null ? status : SlotStatus.AVAILABLE;
     }
 
     public Long getId() { return id; }
