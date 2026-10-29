@@ -1,7 +1,9 @@
 package com.petcare.controller;
 
+import java.time.LocalDate;
 import java.util.List;
 
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -10,8 +12,10 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.petcare.dto.response.ClinicResponse;
+import com.petcare.dto.response.ClinicSlotResponse;
 import com.petcare.dto.response.ServiceResponse;
 import com.petcare.service.ClinicService;
+import com.petcare.service.ClinicSlotService;
 import com.petcare.service.ServiceClinicService;
 
 import lombok.RequiredArgsConstructor;
@@ -22,6 +26,7 @@ import lombok.RequiredArgsConstructor;
 public class ClinicController {
     private final ClinicService clinicService;
     private final ServiceClinicService serviceClinicService;
+    private final ClinicSlotService clinicSlotService;
 
     @GetMapping
     public ResponseEntity<List<ClinicResponse>> getAllClinics(@RequestParam(required = false) String area) {
@@ -38,5 +43,13 @@ public class ClinicController {
     public ResponseEntity<List<ServiceResponse>> getServiceByClinicId(@PathVariable Long id) {
         List<ServiceResponse> res = serviceClinicService.getServicesByClinicId(id);
         return ResponseEntity.ok(res);
+    }
+
+    @GetMapping("/{clinicId}/slots")
+    public ResponseEntity<List<ClinicSlotResponse>> getSlotsByDate(
+            @PathVariable Long clinicId,
+            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date) {
+        List<ClinicSlotResponse> slots = clinicSlotService.getSlotsByClinicAndDate(clinicId, date);
+        return ResponseEntity.ok(slots);
     }
 }
