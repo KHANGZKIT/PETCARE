@@ -38,4 +38,8 @@ public class ApiClient {
     public static AuthApi getAuthApi() {
         return getClient().create(AuthApi.class);
     }
+
+    public static ClinicApi getClinicApi() {
+        return getClient().create(ClinicApi.class);
+    }
 }
