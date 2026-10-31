@@ -10,14 +10,20 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 
 import com.example.petcareui.R;
+import com.example.petcareui.data.api.ApiClient;
 import com.example.petcareui.data.model.ClinicItem;
 import com.example.petcareui.data.model.ServiceItem;
+import com.example.petcareui.data.model.ServiceResponse;
 import com.example.petcareui.databinding.ActivitySelectServiceBinding;
 import com.example.petcareui.databinding.ItemServiceSelectableBinding;
 import com.example.petcareui.ui.clinic.ClinicListActivity;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 /**
  * Màn hình C06: Chọn dịch vụ (Select Service) - Bước 1/4.
@@ -33,7 +39,16 @@ public class SelectServiceActivity extends AppCompatActivity {
 
     private final List<ServiceItem> services = new ArrayList<>();
     private final List<ItemServiceSelectableBinding> serviceBindings = new ArrayList<>();
-    private int selectedServiceIndex = 1; // Mặc định chọn dịch vụ thứ 2 (Tiêm phòng) theo prototype C06
+    private int selectedServiceIndex = -1;
+
+    private static final int[] SERVICE_ICONS = new int[]{
+            R.drawable.ic_stethoscope,
+            R.drawable.ic_syringe,
+            R.drawable.ic_sparkles,
+            R.drawable.ic_scissors,
+            R.drawable.ic_shield_check,
+            R.drawable.ic_heart_pulse
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,8 +58,8 @@ public class SelectServiceActivity extends AppCompatActivity {
 
         extractIntentData();
         setupClinicContextCard();
-        setupServicesList();
         setupStickyBottomBar();
+        loadServicesFromApi();
     }
 
     private void extractIntentData() {
@@ -58,7 +73,7 @@ public class SelectServiceActivity extends AppCompatActivity {
         // Mặc định phòng khám An Nhiên nếu chưa có
         if (clinicItem == null) {
             clinicItem = new ClinicItem(
-                    "cl-01",
+                    "1",
                     "Phòng khám Thú y An Nhiên",
                     "42 Nguyễn Huệ, Quận 1, TP.HCM",
                     4.8,
@@ -87,19 +102,63 @@ public class SelectServiceActivity extends AppCompatActivity {
         binding.cardSelectedClinic.setOnClickListener(changeListener);
     }
 
-    private void setupServicesList() {
-        services.clear();
+    private void loadServicesFromApi() {
+        Long clinicId = clinicItem != null ? clinicItem.getNumericId() : null;
+        if (clinicId == null) {
+            clinicId = 1L;
+        }
+
+        binding.tvServiceCount.setText("Đang tải danh sách dịch vụ...");
+
+        ApiClient.getClinicApi().getServicesByClinicId(clinicId).enqueue(new Callback<List<ServiceResponse>>() {
+            @Override
+            public void onResponse(Call<List<ServiceResponse>> call, Response<List<ServiceResponse>> response) {
+                if (response.isSuccessful() && response.body() != null && !response.body().isEmpty()) {
+                    services.clear();
+                    List<ServiceResponse> body = response.body();
+                    for (int i = 0; i < body.size(); i++) {
+                        ServiceResponse res = body.get(i);
+                        int icon = SERVICE_ICONS[i % SERVICE_ICONS.length];
+                        String durationText = res.getDuration() != null ? res.getDuration() + " phút" : "30 phút";
+                        services.add(new ServiceItem(
+                                String.valueOf(res.getId()),
+                                res.getName(),
+                                "Dịch vụ chăm sóc thú y chất lượng cao",
+                                durationText,
+                                "Liên hệ",
+                                icon
+                        ));
+                    }
+                    selectedServiceIndex = 0;
+                    renderServices();
+                } else {
+                    setupDefaultServices();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<List<ServiceResponse>> call, Throwable t) {
+                setupDefaultServices();
+            }
+        });
+    }
+
+    private void setupDefaultServices() {
+        if (services.isEmpty()) {
+            services.add(new ServiceItem("1", "Khám tổng quát", "Khám lâm sàng, cân nặng, nhiệt độ và các chỉ số sinh tồn.", "30 phút", "180.000 ₫", R.drawable.ic_stethoscope));
+            services.add(new ServiceItem("2", "Tiêm phòng", "Vaccine thiết yếu cho chó và mèo, khám sức khỏe trước khi tiêm.", "20 phút", "250.000 ₫", R.drawable.ic_syringe));
+            services.add(new ServiceItem("3", "Cạo vôi & chăm sóc răng", "Cạo vôi bằng siêu âm, đánh bóng và kiểm tra khoang miệng.", "45 phút", "600.000 ₫", R.drawable.ic_sparkles));
+            services.add(new ServiceItem("4", "Tắm & cắt tỉa", "Tắm, sấy khô, cắt móng và vệ sinh tai.", "60 phút", "320.000 ₫", R.drawable.ic_scissors));
+            services.add(new ServiceItem("5", "Tư vấn da & dị ứng", "Khám chuyên khoa da liễu kèm phác đồ điều trị.", "40 phút", "420.000 ₫", R.drawable.ic_shield_check));
+            services.add(new ServiceItem("6", "Khám định kỳ cho bé lớn tuổi", "Xét nghiệm máu, khám tim và đánh giá vận động.", "50 phút", "780.000 ₫", R.drawable.ic_heart_pulse));
+            selectedServiceIndex = 1;
+        }
+        renderServices();
+    }
+
+    private void renderServices() {
         serviceBindings.clear();
         binding.containerServicesList.removeAllViews();
-
-        // 6 dịch vụ chuẩn theo data.js của prototype PET CARE
-        services.add(new ServiceItem("sv-01", "Khám tổng quát", "Khám lâm sàng, cân nặng, nhiệt độ và các chỉ số sinh tồn.", "30 phút", "180.000 ₫", R.drawable.ic_stethoscope));
-        services.add(new ServiceItem("sv-02", "Tiêm phòng", "Vaccine thiết yếu cho chó và mèo, khám sức khỏe trước khi tiêm.", "20 phút", "250.000 ₫", R.drawable.ic_syringe));
-        services.add(new ServiceItem("sv-03", "Cạo vôi & chăm sóc răng", "Cạo vôi bằng siêu âm, đánh bóng và kiểm tra khoang miệng.", "45 phút", "600.000 ₫", R.drawable.ic_sparkles));
-        services.add(new ServiceItem("sv-04", "Tắm & cắt tỉa", "Tắm, sấy khô, cắt móng và vệ sinh tai.", "60 phút", "320.000 ₫", R.drawable.ic_scissors));
-        services.add(new ServiceItem("sv-05", "Tư vấn da & dị ứng", "Khám chuyên khoa da liễu kèm phác đồ điều trị.", "40 phút", "420.000 ₫", R.drawable.ic_shield_check));
-        services.add(new ServiceItem("sv-06", "Khám định kỳ cho bé lớn tuổi", "Xét nghiệm máu, khám tim và đánh giá vận động.", "50 phút", "780.000 ₫", R.drawable.ic_heart_pulse));
-
         binding.tvServiceCount.setText(services.size() + " dịch vụ đang nhận đặt lịch");
 
         LayoutInflater inflater = LayoutInflater.from(this);

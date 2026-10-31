@@ -1,6 +1,7 @@
 package com.example.petcareui.data.api;
 
 import com.example.petcareui.data.model.ClinicResponse;
+import com.example.petcareui.data.model.ClinicSlotResponse;
 import com.example.petcareui.data.model.ServiceResponse;
 
 import java.util.List;
@@ -23,4 +24,10 @@ public interface ClinicApi {
 
     @GET("services/{id}")
     Call<ServiceResponse> getServiceById(@Path("id") Long id);
+
+    @GET("clinics/{clinicId}/slots")
+    Call<List<ClinicSlotResponse>> getSlotsByClinicAndDate(
+            @Path("clinicId") Long clinicId,
+            @Query("date") String date
+    );
 }

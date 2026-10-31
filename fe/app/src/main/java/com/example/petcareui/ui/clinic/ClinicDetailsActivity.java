@@ -11,13 +11,19 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 
 import com.example.petcareui.R;
+import com.example.petcareui.data.api.ApiClient;
 import com.example.petcareui.data.model.ClinicItem;
 import com.example.petcareui.data.model.ServiceItem;
+import com.example.petcareui.data.model.ServiceResponse;
 import com.example.petcareui.databinding.ActivityClinicDetailsBinding;
 import com.example.petcareui.databinding.ItemServiceSelectableBinding;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 /**
  * Màn hình C05: Chi tiết phòng khám (Clinic Details).
@@ -35,6 +41,15 @@ public class ClinicDetailsActivity extends AppCompatActivity {
     private final List<ItemServiceSelectableBinding> serviceBindings = new ArrayList<>();
     private int selectedServiceIndex = -1;
 
+    private static final int[] SERVICE_ICONS = new int[]{
+            R.drawable.ic_stethoscope,
+            R.drawable.ic_syringe,
+            R.drawable.ic_sparkles,
+            R.drawable.ic_scissors,
+            R.drawable.ic_shield_check,
+            R.drawable.ic_heart_pulse
+    };
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -45,8 +60,8 @@ public class ClinicDetailsActivity extends AppCompatActivity {
         setupClinicInfo();
         setupTopBarActions();
         setupQuickContactActions();
-        setupServicesList();
         setupBookingCTA();
+        loadServicesFromApi();
     }
 
     private void extractIntentData() {
@@ -60,7 +75,7 @@ public class ClinicDetailsActivity extends AppCompatActivity {
         // Dữ liệu mẫu mặc định (An Nhiên - chuẩn theo prototype CLINICS[0])
         if (clinicItem == null) {
             clinicItem = new ClinicItem(
-                    "cl-01",
+                    "1",
                     "Phòng khám Thú y An Nhiên",
                     "42 Nguyễn Huệ, Quận 1, TP.HCM",
                     4.8,
@@ -163,15 +178,57 @@ public class ClinicDetailsActivity extends AppCompatActivity {
         });
     }
 
-    private void setupServicesList() {
-        services.clear();
+    private void loadServicesFromApi() {
+        Long clinicId = clinicItem != null ? clinicItem.getNumericId() : null;
+        if (clinicId == null) {
+            clinicId = 1L;
+        }
+
+        ApiClient.getClinicApi().getServicesByClinicId(clinicId).enqueue(new Callback<List<ServiceResponse>>() {
+            @Override
+            public void onResponse(Call<List<ServiceResponse>> call, Response<List<ServiceResponse>> response) {
+                if (response.isSuccessful() && response.body() != null && !response.body().isEmpty()) {
+                    services.clear();
+                    List<ServiceResponse> body = response.body();
+                    for (int i = 0; i < body.size(); i++) {
+                        ServiceResponse res = body.get(i);
+                        int icon = SERVICE_ICONS[i % SERVICE_ICONS.length];
+                        String durationText = res.getDuration() != null ? res.getDuration() + " phút" : "30 phút";
+                        services.add(new ServiceItem(
+                                String.valueOf(res.getId()),
+                                res.getName(),
+                                "Dịch vụ thú y chuyên nghiệp",
+                                durationText,
+                                "Liên hệ",
+                                icon
+                        ));
+                    }
+                    renderServicesList();
+                } else {
+                    setupDefaultServices();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<List<ServiceResponse>> call, Throwable t) {
+                setupDefaultServices();
+            }
+        });
+    }
+
+    private void setupDefaultServices() {
+        if (services.isEmpty()) {
+            services.add(new ServiceItem("1", "Khám tổng quát", "Khám lâm sàng, cân nặng, nhiệt độ và các chỉ số sinh tồn.", "30 phút", "180.000 ₫", R.drawable.ic_stethoscope));
+            services.add(new ServiceItem("2", "Tiêm phòng", "Vaccine thiết yếu cho chó và mèo, khám sức khỏe trước khi tiêm.", "20 phút", "250.000 ₫", R.drawable.ic_syringe));
+            services.add(new ServiceItem("3", "Cạo vôi & chăm sóc răng", "Cạo vôi bằng siêu âm, đánh bóng và kiểm tra khoang miệng.", "45 phút", "600.000 ₫", R.drawable.ic_sparkles));
+            services.add(new ServiceItem("4", "Tắm & cắt tỉa", "Tắm, sấy khô, cắt móng và vệ sinh tai.", "60 phút", "320.000 ₫", R.drawable.ic_scissors));
+        }
+        renderServicesList();
+    }
+
+    private void renderServicesList() {
         serviceBindings.clear();
         binding.containerServicesList.removeAllViews();
-
-        services.add(new ServiceItem("sv-01", "Khám tổng quát", "Khám lâm sàng, cân nặng, nhiệt độ và các chỉ số sinh tồn.", "30 phút", "180.000 ₫", R.drawable.ic_stethoscope));
-        services.add(new ServiceItem("sv-02", "Tiêm phòng", "Vaccine thiết yếu cho chó và mèo, khám sức khỏe trước khi tiêm.", "20 phút", "250.000 ₫", R.drawable.ic_syringe));
-        services.add(new ServiceItem("sv-03", "Cạo vôi & chăm sóc răng", "Cạo vôi bằng siêu âm, đánh bóng và kiểm tra khoang miệng.", "45 phút", "600.000 ₫", R.drawable.ic_sparkles));
-        services.add(new ServiceItem("sv-04", "Tắm & cắt tỉa", "Tắm, sấy khô, cắt móng và vệ sinh tai.", "60 phút", "320.000 ₫", R.drawable.ic_scissors));
 
         LayoutInflater inflater = LayoutInflater.from(this);
 

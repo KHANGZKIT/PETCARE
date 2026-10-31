@@ -2,8 +2,6 @@ package com.example.petcareui.ui.clinic;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Looper;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.TextView;
@@ -13,12 +11,18 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 
 import com.example.petcareui.R;
+import com.example.petcareui.data.api.ApiClient;
 import com.example.petcareui.data.model.ClinicItem;
+import com.example.petcareui.data.model.ClinicResponse;
 import com.example.petcareui.databinding.ActivityClinicListBinding;
 import com.example.petcareui.databinding.ItemClinicRowBinding;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class ClinicListActivity extends AppCompatActivity {
 
@@ -31,53 +35,35 @@ public class ClinicListActivity extends AppCompatActivity {
         binding = ActivityClinicListBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
-        initData();
         setupListeners();
-        showResults(allClinics);
+        loadClinicsFromApi();
     }
 
-    private void initData() {
-        allClinics.clear();
-        allClinics.add(new ClinicItem(
-                "cl-01",
-                "Phòng khám Thú y An Nhiên",
-                "42 Nguyễn Huệ, Quận 1, TP.HCM",
-                4.8,
-                214,
-                "1,2 km",
-                true,
-                "08:00 – 20:00"
-        ));
-        allClinics.add(new ClinicItem(
-                "cl-02",
-                "Bệnh viện Thú y Gia Định",
-                "128 Trần Não, Quận 2",
-                4.6,
-                158,
-                "3,4 km",
-                true,
-                "07:30 – 21:00"
-        ));
-        allClinics.add(new ClinicItem(
-                "cl-03",
-                "Spa & Phòng khám Thú cưng Mimi",
-                "9 Nguyễn Thị Thập, Quận 7",
-                4.9,
-                96,
-                "5,1 km",
-                false,
-                "09:00 – 18:00"
-        ));
-        allClinics.add(new ClinicItem(
-                "cl-04",
-                "Phòng khám Thú cưng Bình Thạnh",
-                "77 Điện Biên Phủ, Bình Thạnh",
-                4.4,
-                132,
-                "6,8 km",
-                true,
-                "08:00 – 19:00"
-        ));
+    private void loadClinicsFromApi() {
+        showLoading();
+        ApiClient.getClinicApi().getAllClinics(null).enqueue(new Callback<List<ClinicResponse>>() {
+            @Override
+            public void onResponse(Call<List<ClinicResponse>> call, Response<List<ClinicResponse>> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    allClinics.clear();
+                    for (ClinicResponse res : response.body()) {
+                        allClinics.add(res.toClinicItem());
+                    }
+                    if (allClinics.isEmpty()) {
+                        showEmpty();
+                    } else {
+                        showResults(allClinics);
+                    }
+                } else {
+                    showError();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<List<ClinicResponse>> call, Throwable t) {
+                showError();
+            }
+        });
     }
 
     private void setupListeners() {
@@ -101,8 +87,7 @@ public class ClinicListActivity extends AppCompatActivity {
 
         // Thử lại trong Error State
         binding.btnRetry.setOnClickListener(v -> {
-            showLoading();
-            new Handler(Looper.getMainLooper()).postDelayed(() -> showResults(allClinics), 800);
+            loadClinicsFromApi();
         });
 
         // Bỏ bộ lọc trong Empty State
@@ -120,13 +105,6 @@ public class ClinicListActivity extends AppCompatActivity {
     }
 
     private void setupFilterChips() {
-        TextView[] chips = new TextView[]{
-                binding.chipAll,
-                binding.chipOpen,
-                binding.tvChipNearby,
-                binding.chipEmergency
-        };
-
         binding.chipAll.setOnClickListener(v -> {
             setActiveChip(binding.chipAll);
             showResults(allClinics);

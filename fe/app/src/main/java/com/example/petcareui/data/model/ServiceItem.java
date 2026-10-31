@@ -35,6 +35,14 @@ public class ServiceItem implements Serializable {
         return id;
     }
 
+    public Long getNumericId() {
+        try {
+            return id != null ? Long.parseLong(id) : null;
+        } catch (NumberFormatException e) {
+            return null;
+        }
+    }
+
     public String getName() {
         return name;
     }
