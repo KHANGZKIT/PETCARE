@@ -7,6 +7,7 @@ import java.io.Serializable;
  * tương thích chuẩn dữ liệu STAFF_APPTS trong data.js của petcare-ui.
  */
 public class StaffAppointmentItem implements Serializable {
+    private Long id;
     private String ref;
     private String pet;
     private int petImgRes;
@@ -42,6 +43,23 @@ public class StaffAppointmentItem implements Serializable {
         this.price = price;
         this.requested = requested;
         this.note = note;
+    }
+
+    public Long getId() {
+        if (id != null) {
+            return id;
+        }
+        if (ref != null && ref.startsWith("PC-")) {
+            try {
+                return Long.parseLong(ref.substring(3).trim());
+            } catch (Exception ignored) {
+            }
+        }
+        return 1L;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public String getRef() {

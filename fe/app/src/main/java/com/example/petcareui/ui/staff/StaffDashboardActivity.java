@@ -12,6 +12,8 @@ import androidx.core.content.ContextCompat;
 
 import com.example.petcareui.MainActivity;
 import com.example.petcareui.R;
+import com.example.petcareui.data.api.ApiClient;
+import com.example.petcareui.data.model.AppointmentResponse;
 import com.example.petcareui.data.model.StaffAppointmentItem;
 import com.example.petcareui.databinding.ActivityStaffDashboardBinding;
 import com.example.petcareui.databinding.ItemStaffPendingCardBinding;
@@ -21,10 +23,14 @@ import com.example.petcareui.ui.notifications.NotificationsActivity;
 import java.util.ArrayList;
 import java.util.List;
 
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+
 /**
  * Màn hình S01: Bảng làm việc nhân viên (Staff Dashboard).
  * Thuộc phân hệ riêng biệt com.example.petcareui.ui.staff,
- * bám sát nguyên mẫu React S01Dashboard và Design System Spec.
+ * bám sát nguyên mẫu React S01Dashboard và kết nối API thật /api/v1/staff/appointments.
  * Hỗ trợ 3 trạng thái: Mặc định, Đang tải (Loading), Không có lịch hẹn (Empty).
  */
 public class StaffDashboardActivity extends AppCompatActivity {
@@ -43,18 +49,60 @@ public class StaffDashboardActivity extends AppCompatActivity {
         setContentView(binding.getRoot());
 
         extractIntentData();
-        initMockData();
         setupTopBar();
         setupStateToggles();
         setupShortcuts();
         setupBottomNav();
-        applyState(currentState);
+
+        loadDashboardData();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        loadDashboardData();
     }
 
     private void extractIntentData() {
         if (getIntent().hasExtra(EXTRA_STATE)) {
             currentState = getIntent().getStringExtra(EXTRA_STATE);
         }
+    }
+
+    private void loadDashboardData() {
+        ApiClient.getAppointmentApi().getClinicAppointments(null).enqueue(new Callback<List<AppointmentResponse>>() {
+            @Override
+            public void onResponse(Call<List<AppointmentResponse>> call, Response<List<AppointmentResponse>> response) {
+                if (response.isSuccessful() && response.body() != null && !response.body().isEmpty()) {
+                    pendingList.clear();
+                    todayScheduleList.clear();
+                    for (AppointmentResponse res : response.body()) {
+                        StaffAppointmentItem item = res.toStaffAppointmentItem();
+                        if ("PENDING".equalsIgnoreCase(item.getStatus())) {
+                            pendingList.add(item);
+                        } else if ("CONFIRMED".equalsIgnoreCase(item.getStatus())) {
+                            todayScheduleList.add(item);
+                        }
+                    }
+                    if (pendingList.isEmpty() && todayScheduleList.isEmpty()) {
+                        applyState("empty");
+                    } else {
+                        applyState("default");
+                    }
+                } else if (pendingList.isEmpty() && todayScheduleList.isEmpty()) {
+                    initMockData();
+                    applyState(currentState);
+                }
+            }
+
+            @Override
+            public void onFailure(Call<List<AppointmentResponse>> call, Throwable t) {
+                if (pendingList.isEmpty() && todayScheduleList.isEmpty()) {
+                    initMockData();
+                    applyState(currentState);
+                }
+            }
+        });
     }
 
     private void initMockData() {
@@ -164,6 +212,7 @@ public class StaffDashboardActivity extends AppCompatActivity {
             cardBinding.getRoot().setOnClickListener(v -> {
                 Intent intent = new Intent(this, StaffAppointmentDetailsActivity.class);
                 intent.putExtra(StaffAppointmentDetailsActivity.EXTRA_REF, item.getRef());
+                intent.putExtra(StaffAppointmentDetailsActivity.EXTRA_APPT, item);
                 startActivity(intent);
             });
 
@@ -181,6 +230,7 @@ public class StaffDashboardActivity extends AppCompatActivity {
             rowBinding.getRoot().setOnClickListener(v -> {
                 Intent intent = new Intent(this, StaffAppointmentDetailsActivity.class);
                 intent.putExtra(StaffAppointmentDetailsActivity.EXTRA_REF, item.getRef());
+                intent.putExtra(StaffAppointmentDetailsActivity.EXTRA_APPT, item);
                 startActivity(intent);
             });
 

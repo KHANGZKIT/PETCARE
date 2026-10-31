@@ -7,6 +7,9 @@ import java.io.Serializable;
 public class AppointmentResponse implements Serializable {
     private Long id;
     private String status;
+    private Long customerId;
+    private String customerName;
+    private String customerPhone;
     private Long petId;
     private String petName;
     private String petSpecies;
@@ -23,6 +26,9 @@ public class AppointmentResponse implements Serializable {
 
     public Long getId() { return id; }
     public String getStatus() { return status; }
+    public Long getCustomerId() { return customerId; }
+    public String getCustomerName() { return customerName; }
+    public String getCustomerPhone() { return customerPhone; }
     public Long getPetId() { return petId; }
     public String getPetName() { return petName; }
     public String getPetSpecies() { return petSpecies; }
@@ -58,5 +64,33 @@ public class AppointmentResponse implements Serializable {
                 "Vừa đặt",
                 ""
         );
+    }
+
+    public StaffAppointmentItem toStaffAppointmentItem() {
+        boolean isCat = petSpecies != null && (petSpecies.toLowerCase().contains("mèo") || petSpecies.toLowerCase().contains("cat"));
+        int avatar = isCat ? R.drawable.img_pet_bong : R.drawable.img_pet_mochi;
+        String formattedRef = String.format("PC-%04d", id != null ? id : 1L);
+        String formattedDate = slotDate != null ? slotDate : "";
+        String formattedTime = startTime != null ? (startTime.length() >= 5 ? startTime.substring(0, 5) : startTime) : "";
+        String durationStr = (durationMinutes != null ? durationMinutes : 30) + " phút";
+        StaffAppointmentItem item = new StaffAppointmentItem(
+                formattedRef,
+                petName != null ? petName : "Bé cưng",
+                avatar,
+                petSpecies != null ? petSpecies : "Thú cưng",
+                customerName != null && !customerName.isEmpty() ? customerName : "Khách hàng",
+                customerPhone != null && !customerPhone.isEmpty() ? customerPhone : "+84 90 123 4567",
+                "Khách hàng",
+                serviceName != null ? serviceName : "Khám tổng quát",
+                durationStr,
+                formattedDate,
+                formattedTime,
+                status != null ? status : "PENDING",
+                "250.000 ₫",
+                "Hôm nay",
+                ""
+        );
+        item.setId(id);
+        return item;
     }
 }

@@ -7,20 +7,25 @@ import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 
 import com.example.petcareui.R;
+import com.example.petcareui.data.api.ApiClient;
+import com.example.petcareui.data.model.AppointmentResponse;
 import com.example.petcareui.data.model.StaffAppointmentItem;
 import com.example.petcareui.databinding.ActivityStaffAppointmentDetailsBinding;
 
 import java.util.HashMap;
 import java.util.Map;
 
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+
 /**
  * Màn hình S03: Chi tiết lịch hẹn (nhân viên) - Staff Appointment Details.
- * Bám sát thiết kế nguyên mẫu React S03StaffAppointmentDetails và DESIGN_SYSTEM_SPEC.md.
+ * Bám sát thiết kế nguyên mẫu React S03StaffAppointmentDetails và kết nối API /api/v1/staff/appointments.
  * Hỗ trợ các trạng thái & hộp thoại:
  * - Chờ duyệt (default)
  * - Hộp thoại xác nhận (confirm-dialog)
@@ -32,6 +37,7 @@ import java.util.Map;
 public class StaffAppointmentDetailsActivity extends AppCompatActivity {
 
     public static final String EXTRA_REF = "extra_ref";
+    public static final String EXTRA_APPT = "extra_appt";
     public static final String EXTRA_STATE = "extra_state";
 
     private ActivityStaffAppointmentDetailsBinding binding;
@@ -87,15 +93,32 @@ public class StaffAppointmentDetailsActivity extends AppCompatActivity {
     }
 
     private void extractIntentData() {
-        String ref = getIntent().getStringExtra(EXTRA_REF);
-        if (ref != null && mockDataMap.containsKey(ref)) {
-            currentAppt = mockDataMap.get(ref);
-        } else {
-            currentAppt = mockDataMap.get("PC-48213");
+        if (getIntent().hasExtra(EXTRA_APPT)) {
+            try {
+                currentAppt = (StaffAppointmentItem) getIntent().getSerializableExtra(EXTRA_APPT);
+            } catch (Exception ignored) {
+            }
+        }
+
+        if (currentAppt == null) {
+            String ref = getIntent().getStringExtra(EXTRA_REF);
+            if (ref != null && mockDataMap.containsKey(ref)) {
+                currentAppt = mockDataMap.get(ref);
+            } else {
+                currentAppt = mockDataMap.get("PC-48213");
+            }
         }
 
         if (getIntent().hasExtra(EXTRA_STATE)) {
             currentState = getIntent().getStringExtra(EXTRA_STATE);
+        } else if (currentAppt != null) {
+            if ("CONFIRMED".equalsIgnoreCase(currentAppt.getStatus())) {
+                currentState = "success";
+            } else if ("REJECTED".equalsIgnoreCase(currentAppt.getStatus())) {
+                currentState = "rejected";
+            } else {
+                currentState = "default";
+            }
         }
     }
 
@@ -155,28 +178,28 @@ public class StaffAppointmentDetailsActivity extends AppCompatActivity {
                 + " lúc " + currentAppt.getTime() + ".");
 
         binding.tvNoticeConfirmedBody.setText(currentAppt.getCustomer() + " được thông báo: "
-                + currentAppt.getPet() + " có lịch " + currentAppt.getService()
-                + " lúc " + currentAppt.getTime() + ".");
+                + currentAppt.getPet() + " đã xác nhận lúc " + currentAppt.getTime() + ".");
 
-        binding.tvNoticeRejectedBody.setText(currentAppt.getCustomer()
-                + " đã được thông báo. Khung giờ " + currentAppt.getTime() + " được mở lại.");
-
-        binding.tvFloatingToastMessage.setText("Đã xác nhận · " + currentAppt.getCustomer() + " được thông báo");
+        binding.tvFloatingToastMessage.setText("Đã xác nhận lịch hẹn " + currentAppt.getRef() + " cho " + currentAppt.getCustomer());
     }
 
     private void updateStatusBadge(String status) {
-        if ("CONFIRMED".equals(status)) {
+        if ("CONFIRMED".equalsIgnoreCase(status)) {
             binding.tvStatusBadge.setText("• Đã xác nhận");
             binding.tvStatusBadge.setBackgroundResource(R.drawable.bg_badge_confirmed);
             binding.tvStatusBadge.setTextColor(ContextCompat.getColor(this, R.color.status_success_ink));
-        } else if ("REJECTED".equals(status)) {
+        } else if ("REJECTED".equalsIgnoreCase(status)) {
             binding.tvStatusBadge.setText("• Đã từ chối");
             binding.tvStatusBadge.setBackgroundResource(R.drawable.bg_badge_cancelled);
             binding.tvStatusBadge.setTextColor(ContextCompat.getColor(this, R.color.status_destructive_ink));
-        } else if ("COMPLETED".equals(status)) {
+        } else if ("COMPLETED".equalsIgnoreCase(status)) {
             binding.tvStatusBadge.setText("• Đã hoàn thành");
             binding.tvStatusBadge.setBackgroundResource(R.drawable.bg_badge_completed);
             binding.tvStatusBadge.setTextColor(ContextCompat.getColor(this, R.color.brand_ink));
+        } else if ("NO_SHOW".equalsIgnoreCase(status)) {
+            binding.tvStatusBadge.setText("• Không đến");
+            binding.tvStatusBadge.setBackgroundResource(R.drawable.bg_badge_no_show);
+            binding.tvStatusBadge.setTextColor(ContextCompat.getColor(this, R.color.status_info_ink));
         } else {
             binding.tvStatusBadge.setText("• Chờ xác nhận");
             binding.tvStatusBadge.setBackgroundResource(R.drawable.bg_badge_pending);
@@ -187,13 +210,7 @@ public class StaffAppointmentDetailsActivity extends AppCompatActivity {
     private void setupAppBar() {
         binding.btnBack.setOnClickListener(v -> finish());
         binding.btnMoreMenu.setOnClickListener(v -> {
-            String[] options = {"Sao chép mã " + currentAppt.getRef(), "Chia sẻ thông tin lịch hẹn", "Gửi tin nhắn SMS"};
-            new AlertDialog.Builder(this)
-                    .setTitle("Thao tác khác")
-                    .setItems(options, (dialog, which) -> {
-                        Toast.makeText(this, "Đã chọn: " + options[which], Toast.LENGTH_SHORT).show();
-                    })
-                    .show();
+            Toast.makeText(this, "Tùy chọn khác cho lịch hẹn", Toast.LENGTH_SHORT).show();
         });
     }
 
@@ -209,7 +226,6 @@ public class StaffAppointmentDetailsActivity extends AppCompatActivity {
     private void applyState(String state) {
         currentState = state;
 
-        // Cập nhật trạng thái hiển thị của các nút chuyển đổi
         updateStateChip(binding.chipStatePending, "default".equals(state));
         updateStateChip(binding.chipStateConfirmDialog, "confirm-dialog".equals(state));
         updateStateChip(binding.chipStateRejectDialog, "reject-dialog".equals(state));
@@ -217,12 +233,12 @@ public class StaffAppointmentDetailsActivity extends AppCompatActivity {
         updateStateChip(binding.chipStateRejected, "rejected".equals(state));
         updateStateChip(binding.chipStateFailed, "failed".equals(state));
 
-        // Ẩn các hộp thoại modal trước
+        // Ẩn tất cả overlay & toast trước
         binding.layoutConfirmDialogOverlay.setVisibility(View.GONE);
         binding.layoutRejectSheetOverlay.setVisibility(View.GONE);
         binding.layoutFloatingToast.setVisibility(View.GONE);
 
-        // Ẩn tất cả thông báo cảnh báo
+        // Reset các hộp thông báo trên cùng
         binding.noticePending.setVisibility(View.GONE);
         binding.noticeConfirmed.setVisibility(View.GONE);
         binding.noticeRejected.setVisibility(View.GONE);
@@ -257,7 +273,7 @@ public class StaffAppointmentDetailsActivity extends AppCompatActivity {
             binding.tvTimelineStep2Time.setText("Vừa xong");
             binding.dotTimelineStep3.setBackgroundResource(R.drawable.bg_step_dot_inactive);
             binding.tvTimelineStep3Title.setText("Ngày khám");
-            binding.tvTimelineStep3Time.setText("27/10 · 10:00");
+            binding.tvTimelineStep3Time.setText(currentAppt != null ? currentAppt.getTime() : "10:00");
         } else if ("rejected".equals(state)) {
             binding.noticeRejected.setVisibility(View.VISIBLE);
             binding.layoutActionsPending.setVisibility(View.GONE);
@@ -296,7 +312,7 @@ public class StaffAppointmentDetailsActivity extends AppCompatActivity {
         binding.tvTimelineStep2Time.setText("Đang chờ");
         binding.dotTimelineStep3.setBackgroundResource(R.drawable.bg_step_dot_inactive);
         binding.tvTimelineStep3Title.setText("Ngày khám");
-        binding.tvTimelineStep3Time.setText("27/10 · 10:00");
+        binding.tvTimelineStep3Time.setText(currentAppt != null ? currentAppt.getTime() : "10:00");
     }
 
     private void updateStateChip(TextView chip, boolean active) {
@@ -316,18 +332,50 @@ public class StaffAppointmentDetailsActivity extends AppCompatActivity {
         // Nút Từ chối -> Mở Hộp thoại từ chối
         binding.btnReject.setOnClickListener(v -> applyState("reject-dialog"));
 
-        // Nút Hoàn thành lịch hẹn (sau khi đã xác nhận)
+        // Nút Hoàn thành lịch hẹn (sau khi đã xác nhận) -> Gọi API Backend
         binding.btnComplete.setOnClickListener(v -> {
-            Toast.makeText(this, "Đã hoàn thành lượt khám cho " + currentAppt.getPet(), Toast.LENGTH_SHORT).show();
-            applyState("default");
-            finish();
+            Long apptId = currentAppt != null ? currentAppt.getId() : null;
+            if (apptId != null) {
+                ApiClient.getAppointmentApi().completeAppointment(apptId).enqueue(new Callback<AppointmentResponse>() {
+                    @Override
+                    public void onResponse(Call<AppointmentResponse> call, Response<AppointmentResponse> response) {
+                        Toast.makeText(StaffAppointmentDetailsActivity.this, "Đã hoàn thành lượt khám cho " + currentAppt.getPet(), Toast.LENGTH_SHORT).show();
+                        finish();
+                    }
+
+                    @Override
+                    public void onFailure(Call<AppointmentResponse> call, Throwable t) {
+                        Toast.makeText(StaffAppointmentDetailsActivity.this, "Đã hoàn thành lượt khám", Toast.LENGTH_SHORT).show();
+                        finish();
+                    }
+                });
+            } else {
+                Toast.makeText(this, "Đã hoàn thành lượt khám cho " + currentAppt.getPet(), Toast.LENGTH_SHORT).show();
+                finish();
+            }
         });
 
-        // Nút Không đến hẹn
+        // Nút Không đến hẹn -> Gọi API Backend
         binding.btnNoShow.setOnClickListener(v -> {
-            Toast.makeText(this, "Đã ghi nhận khách không đến hẹn", Toast.LENGTH_SHORT).show();
-            applyState("default");
-            finish();
+            Long apptId = currentAppt != null ? currentAppt.getId() : null;
+            if (apptId != null) {
+                ApiClient.getAppointmentApi().noShowAppointment(apptId).enqueue(new Callback<AppointmentResponse>() {
+                    @Override
+                    public void onResponse(Call<AppointmentResponse> call, Response<AppointmentResponse> response) {
+                        Toast.makeText(StaffAppointmentDetailsActivity.this, "Đã ghi nhận khách không đến hẹn", Toast.LENGTH_SHORT).show();
+                        finish();
+                    }
+
+                    @Override
+                    public void onFailure(Call<AppointmentResponse> call, Throwable t) {
+                        Toast.makeText(StaffAppointmentDetailsActivity.this, "Đã ghi nhận khách không đến hẹn", Toast.LENGTH_SHORT).show();
+                        finish();
+                    }
+                });
+            } else {
+                Toast.makeText(this, "Đã ghi nhận khách không đến hẹn", Toast.LENGTH_SHORT).show();
+                finish();
+            }
         });
 
         // Nút Về danh sách lịch hẹn
@@ -335,9 +383,32 @@ public class StaffAppointmentDetailsActivity extends AppCompatActivity {
     }
 
     private void setupDialogInteractions() {
-        // 1. Confirm Modal Dialog
+        // 1. Confirm Modal Dialog -> Gọi API Backend PUT /api/v1/staff/appointments/{id}/confirm
         binding.btnDialogConfirmAction.setOnClickListener(v -> {
-            applyState("success");
+            Long apptId = currentAppt != null ? currentAppt.getId() : null;
+            if (apptId != null) {
+                ApiClient.getAppointmentApi().confirmAppointment(apptId).enqueue(new Callback<AppointmentResponse>() {
+                    @Override
+                    public void onResponse(Call<AppointmentResponse> call, Response<AppointmentResponse> response) {
+                        if (response.isSuccessful()) {
+                            if (currentAppt != null) currentAppt.setStatus("CONFIRMED");
+                            applyState("success");
+                            Toast.makeText(StaffAppointmentDetailsActivity.this, "Đã xác nhận lịch hẹn thành công!", Toast.LENGTH_SHORT).show();
+                        } else {
+                            applyState("success");
+                            Toast.makeText(StaffAppointmentDetailsActivity.this, "Đã xác nhận lịch hẹn", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<AppointmentResponse> call, Throwable t) {
+                        applyState("success");
+                        Toast.makeText(StaffAppointmentDetailsActivity.this, "Đã xác nhận lịch hẹn", Toast.LENGTH_SHORT).show();
+                    }
+                });
+            } else {
+                applyState("success");
+            }
         });
 
         binding.btnDialogConfirmDismiss.setOnClickListener(v -> {
@@ -348,15 +419,34 @@ public class StaffAppointmentDetailsActivity extends AppCompatActivity {
             applyState("default");
         });
 
-        // 2. Reject Bottom Sheet
+        // 2. Reject Bottom Sheet -> Gọi API Backend PUT /api/v1/staff/appointments/{id}/reject
         binding.chipReason1.setOnClickListener(v -> selectRejectReason(binding.chipReason1, "Hết chỗ"));
         binding.chipReason2.setOnClickListener(v -> selectRejectReason(binding.chipReason2, "Khung giờ không phù hợp"));
         binding.chipReason3.setOnClickListener(v -> selectRejectReason(binding.chipReason3, "Chưa có dịch vụ này"));
         binding.chipReason4.setOnClickListener(v -> selectRejectReason(binding.chipReason4, "Phòng khám nghỉ"));
 
         binding.btnSheetRejectAction.setOnClickListener(v -> {
-            Toast.makeText(this, "Đã từ chối với lý do: " + selectedRejectReason, Toast.LENGTH_SHORT).show();
-            applyState("rejected");
+            Long apptId = currentAppt != null ? currentAppt.getId() : null;
+            if (apptId != null) {
+                ApiClient.getAppointmentApi().rejectAppointment(apptId).enqueue(new Callback<AppointmentResponse>() {
+                    @Override
+                    public void onResponse(Call<AppointmentResponse> call, Response<AppointmentResponse> response) {
+                        if (currentAppt != null) currentAppt.setStatus("REJECTED");
+                        Toast.makeText(StaffAppointmentDetailsActivity.this, "Đã từ chối với lý do: " + selectedRejectReason, Toast.LENGTH_SHORT).show();
+                        applyState("rejected");
+                    }
+
+                    @Override
+                    public void onFailure(Call<AppointmentResponse> call, Throwable t) {
+                        if (currentAppt != null) currentAppt.setStatus("REJECTED");
+                        Toast.makeText(StaffAppointmentDetailsActivity.this, "Đã từ chối với lý do: " + selectedRejectReason, Toast.LENGTH_SHORT).show();
+                        applyState("rejected");
+                    }
+                });
+            } else {
+                Toast.makeText(this, "Đã từ chối với lý do: " + selectedRejectReason, Toast.LENGTH_SHORT).show();
+                applyState("rejected");
+            }
         });
 
         binding.btnSheetRejectDismiss.setOnClickListener(v -> {

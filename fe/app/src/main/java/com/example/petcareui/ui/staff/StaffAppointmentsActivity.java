@@ -12,6 +12,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 
 import com.example.petcareui.R;
+import com.example.petcareui.data.api.ApiClient;
+import com.example.petcareui.data.model.AppointmentResponse;
 import com.example.petcareui.data.model.StaffAppointmentItem;
 import com.example.petcareui.databinding.ActivityStaffAppointmentsBinding;
 import com.example.petcareui.databinding.ItemStaffApptCardBinding;
@@ -19,10 +21,14 @@ import com.example.petcareui.databinding.ItemStaffApptCardBinding;
 import java.util.ArrayList;
 import java.util.List;
 
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+
 /**
  * Màn hình S02: Danh sách lịch hẹn cho nhân viên (Staff Appointments List).
  * Thuộc phân hệ com.example.petcareui.ui.staff,
- * bám sát thiết kế nguyên mẫu React S02AppointmentList và DESIGN_SYSTEM_SPEC.md.
+ * bám sát thiết kế nguyên mẫu React S02AppointmentList và kết nối API /api/v1/staff/appointments.
  * Hỗ trợ 4 trạng thái: Mặc định, Đang tải (Loading), Không khớp (Empty), Lỗi (Error).
  */
 public class StaffAppointmentsActivity extends AppCompatActivity {
@@ -45,14 +51,18 @@ public class StaffAppointmentsActivity extends AppCompatActivity {
         setContentView(binding.getRoot());
 
         extractIntentData();
-        initMockData();
         setupAppBar();
         setupStateToggles();
-        setupSearchAndFilterChips();
         setupBottomNav();
         setupEmptyAndErrorActions();
 
-        applyState(currentState);
+        loadAppointmentsFromApi();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        loadAppointmentsFromApi();
     }
 
     private void extractIntentData() {
@@ -62,6 +72,35 @@ public class StaffAppointmentsActivity extends AppCompatActivity {
         if (getIntent().hasExtra(EXTRA_INITIAL_FILTER)) {
             currentFilter = getIntent().getStringExtra(EXTRA_INITIAL_FILTER);
         }
+    }
+
+    private void loadAppointmentsFromApi() {
+        ApiClient.getAppointmentApi().getClinicAppointments(null).enqueue(new Callback<List<AppointmentResponse>>() {
+            @Override
+            public void onResponse(Call<List<AppointmentResponse>> call, Response<List<AppointmentResponse>> response) {
+                if (response.isSuccessful() && response.body() != null && !response.body().isEmpty()) {
+                    allStaffAppts.clear();
+                    for (AppointmentResponse res : response.body()) {
+                        allStaffAppts.add(res.toStaffAppointmentItem());
+                    }
+                    setupSearchAndFilterChips();
+                    applyState("default");
+                } else if (allStaffAppts.isEmpty()) {
+                    initMockData();
+                    setupSearchAndFilterChips();
+                    applyState(currentState);
+                }
+            }
+
+            @Override
+            public void onFailure(Call<List<AppointmentResponse>> call, Throwable t) {
+                if (allStaffAppts.isEmpty()) {
+                    initMockData();
+                    setupSearchAndFilterChips();
+                    applyState(currentState);
+                }
+            }
+        });
     }
 
     private void initMockData() {
@@ -186,10 +225,10 @@ public class StaffAppointmentsActivity extends AppCompatActivity {
         int noShowCount = 0;
 
         for (StaffAppointmentItem item : allStaffAppts) {
-            if ("PENDING".equals(item.getStatus())) pendingCount++;
-            else if ("CONFIRMED".equals(item.getStatus())) confirmedCount++;
-            else if ("COMPLETED".equals(item.getStatus())) completedCount++;
-            else if ("NO_SHOW".equals(item.getStatus())) noShowCount++;
+            if ("PENDING".equalsIgnoreCase(item.getStatus())) pendingCount++;
+            else if ("CONFIRMED".equalsIgnoreCase(item.getStatus())) confirmedCount++;
+            else if ("COMPLETED".equalsIgnoreCase(item.getStatus())) completedCount++;
+            else if ("NO_SHOW".equalsIgnoreCase(item.getStatus())) noShowCount++;
         }
 
         binding.chipFilterAll.setText("Tất cả · " + allStaffAppts.size());
@@ -238,11 +277,11 @@ public class StaffAppointmentsActivity extends AppCompatActivity {
     }
 
     private void updateFilterChipStyles() {
-        updateFilterChip(binding.chipFilterAll, "ALL".equals(currentFilter));
-        updateFilterChip(binding.chipFilterPending, "PENDING".equals(currentFilter));
-        updateFilterChip(binding.chipFilterConfirmed, "CONFIRMED".equals(currentFilter));
-        updateFilterChip(binding.chipFilterCompleted, "COMPLETED".equals(currentFilter));
-        updateFilterChip(binding.chipFilterNoShow, "NO_SHOW".equals(currentFilter));
+        updateFilterChip(binding.chipFilterAll, "ALL".equalsIgnoreCase(currentFilter));
+        updateFilterChip(binding.chipFilterPending, "PENDING".equalsIgnoreCase(currentFilter));
+        updateFilterChip(binding.chipFilterConfirmed, "CONFIRMED".equalsIgnoreCase(currentFilter));
+        updateFilterChip(binding.chipFilterCompleted, "COMPLETED".equalsIgnoreCase(currentFilter));
+        updateFilterChip(binding.chipFilterNoShow, "NO_SHOW".equalsIgnoreCase(currentFilter));
     }
 
     private void updateFilterChip(TextView chip, boolean active) {
@@ -259,7 +298,7 @@ public class StaffAppointmentsActivity extends AppCompatActivity {
         displayedList.clear();
 
         for (StaffAppointmentItem item : allStaffAppts) {
-            boolean matchesFilter = "ALL".equals(currentFilter) || currentFilter.equals(item.getStatus());
+            boolean matchesFilter = "ALL".equalsIgnoreCase(currentFilter) || currentFilter.equalsIgnoreCase(item.getStatus());
             boolean matchesSearch = searchQuery.isEmpty()
                     || item.getPet().toLowerCase().contains(searchQuery)
                     || item.getCustomer().toLowerCase().contains(searchQuery)
@@ -274,7 +313,7 @@ public class StaffAppointmentsActivity extends AppCompatActivity {
         // Đếm số lượng chờ duyệt hiện tại
         int pendingInList = 0;
         for (StaffAppointmentItem item : displayedList) {
-            if ("PENDING".equals(item.getStatus())) pendingInList++;
+            if ("PENDING".equalsIgnoreCase(item.getStatus())) pendingInList++;
         }
 
         if (displayedList.isEmpty()) {
@@ -285,9 +324,9 @@ public class StaffAppointmentsActivity extends AppCompatActivity {
             binding.layoutDefaultContent.setVisibility(View.VISIBLE);
 
             if (pendingInList > 0) {
-                binding.tvSectionHeader.setText("Thứ 2, 27/10/2026 · " + pendingInList + " yêu cầu chờ duyệt");
+                binding.tvSectionHeader.setText("Hôm nay · " + pendingInList + " yêu cầu chờ duyệt");
             } else {
-                binding.tvSectionHeader.setText("Thứ 2, 27/10/2026 · " + displayedList.size() + " lượt khám");
+                binding.tvSectionHeader.setText("Hôm nay · " + displayedList.size() + " lượt khám");
             }
 
             renderAppointmentCards();
@@ -310,26 +349,26 @@ public class StaffAppointmentsActivity extends AppCompatActivity {
             cardBinding.tvStaffDuration.setText(item.getDuration());
 
             // 2. Định dạng theo trạng thái & thanh ưu tiên cam
-            boolean isPending = "PENDING".equals(item.getStatus());
+            boolean isPending = "PENDING".equalsIgnoreCase(item.getStatus());
             if (isPending) {
                 cardBinding.viewPriorityBar.setVisibility(View.VISIBLE);
                 cardBinding.cardContainer.setBackgroundResource(R.drawable.bg_card_priority);
                 cardBinding.tvStaffApptStatus.setText("• Chờ xác nhận");
                 cardBinding.tvStaffApptStatus.setBackgroundResource(R.drawable.bg_badge_pending);
                 cardBinding.tvStaffApptStatus.setTextColor(ContextCompat.getColor(this, R.color.status_warning_ink));
-            } else if ("CONFIRMED".equals(item.getStatus())) {
+            } else if ("CONFIRMED".equalsIgnoreCase(item.getStatus())) {
                 cardBinding.viewPriorityBar.setVisibility(View.GONE);
                 cardBinding.cardContainer.setBackgroundResource(R.drawable.bg_card_clinic);
                 cardBinding.tvStaffApptStatus.setText("• Đã xác nhận");
                 cardBinding.tvStaffApptStatus.setBackgroundResource(R.drawable.bg_badge_confirmed);
                 cardBinding.tvStaffApptStatus.setTextColor(ContextCompat.getColor(this, R.color.status_success_ink));
-            } else if ("COMPLETED".equals(item.getStatus())) {
+            } else if ("COMPLETED".equalsIgnoreCase(item.getStatus())) {
                 cardBinding.viewPriorityBar.setVisibility(View.GONE);
                 cardBinding.cardContainer.setBackgroundResource(R.drawable.bg_card_clinic);
                 cardBinding.tvStaffApptStatus.setText("• Đã hoàn thành");
                 cardBinding.tvStaffApptStatus.setBackgroundResource(R.drawable.bg_badge_completed);
                 cardBinding.tvStaffApptStatus.setTextColor(ContextCompat.getColor(this, R.color.brand_ink));
-            } else if ("NO_SHOW".equals(item.getStatus())) {
+            } else if ("NO_SHOW".equalsIgnoreCase(item.getStatus())) {
                 cardBinding.viewPriorityBar.setVisibility(View.GONE);
                 cardBinding.cardContainer.setBackgroundResource(R.drawable.bg_card_clinic);
                 cardBinding.tvStaffApptStatus.setText("• Không đến");
@@ -338,7 +377,7 @@ public class StaffAppointmentsActivity extends AppCompatActivity {
             } else {
                 cardBinding.viewPriorityBar.setVisibility(View.GONE);
                 cardBinding.cardContainer.setBackgroundResource(R.drawable.bg_card_clinic);
-                cardBinding.tvStaffApptStatus.setText("• Đã hủy");
+                cardBinding.tvStaffApptStatus.setText("• Đã hủy / Từ chối");
                 cardBinding.tvStaffApptStatus.setBackgroundResource(R.drawable.bg_badge_cancelled);
                 cardBinding.tvStaffApptStatus.setTextColor(ContextCompat.getColor(this, R.color.status_destructive_ink));
             }
@@ -347,6 +386,7 @@ public class StaffAppointmentsActivity extends AppCompatActivity {
             cardBinding.getRoot().setOnClickListener(v -> {
                 Intent intent = new Intent(this, StaffAppointmentDetailsActivity.class);
                 intent.putExtra(StaffAppointmentDetailsActivity.EXTRA_REF, item.getRef());
+                intent.putExtra(StaffAppointmentDetailsActivity.EXTRA_APPT, item);
                 startActivity(intent);
             });
 
@@ -369,7 +409,7 @@ public class StaffAppointmentsActivity extends AppCompatActivity {
         // Nút "Thử lại" khi gặp lỗi kết nối
         binding.btnRetry.setOnClickListener(v -> {
             Toast.makeText(this, "Đang kết nối lại...", Toast.LENGTH_SHORT).show();
-            applyState("default");
+            loadAppointmentsFromApi();
         });
     }
 

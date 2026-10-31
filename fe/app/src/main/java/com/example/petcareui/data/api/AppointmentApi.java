@@ -33,4 +33,19 @@ public interface AppointmentApi {
 
     @GET("appointments/clinic")
     Call<List<AppointmentResponse>> getClinicAppointments(@Query("status") String status);
+
+    @GET("staff/appointments/{id}")
+    Call<AppointmentResponse> getStaffAppointmentDetail(@Path("id") Long id);
+
+    @PUT("staff/appointments/{id}/confirm")
+    Call<AppointmentResponse> confirmAppointment(@Path("id") Long id);
+
+    @PUT("staff/appointments/{id}/reject")
+    Call<AppointmentResponse> rejectAppointment(@Path("id") Long id);
+
+    @PUT("staff/appointments/{id}/complete")
+    Call<AppointmentResponse> completeAppointment(@Path("id") Long id);
+
+    @PUT("staff/appointments/{id}/no-show")
+    Call<AppointmentResponse> noShowAppointment(@Path("id") Long id);
 }
