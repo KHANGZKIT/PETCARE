@@ -40,4 +40,17 @@ public class ClinicSlotResponse implements Serializable {
         }
         return startTime != null ? startTime : "";
     }
+
+    public StaffSlotItem toStaffSlotItem() {
+        String timeStr = getFormattedStartTime();
+        String stateStr;
+        if ("BOOKED".equalsIgnoreCase(status)) {
+            stateStr = "booked";
+        } else if ("LOCKED".equalsIgnoreCase(status) || "CLOSED".equalsIgnoreCase(status)) {
+            stateStr = "closed";
+        } else {
+            stateStr = "open";
+        }
+        return new StaffSlotItem(timeStr, stateStr);
+    }
 }

@@ -63,4 +63,8 @@ public class ApiClient {
     public static AppointmentApi getAppointmentApi() {
         return getClient().create(AppointmentApi.class);
     }
+
+    public static StaffSlotApi getStaffSlotApi() {
+        return getClient().create(StaffSlotApi.class);
+    }
 }
