@@ -2,14 +2,15 @@ package com.example.petcareui.ui.booking;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Looper;
 import android.view.View;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.petcareui.R;
+import com.example.petcareui.data.api.ApiClient;
+import com.example.petcareui.data.model.AppointmentRequest;
+import com.example.petcareui.data.model.AppointmentResponse;
 import com.example.petcareui.data.model.ClinicItem;
 import com.example.petcareui.data.model.DateItem;
 import com.example.petcareui.data.model.PetItem;
@@ -18,6 +19,10 @@ import com.example.petcareui.data.model.TimeSlotItem;
 import com.example.petcareui.databinding.ActivityBookingReviewBinding;
 import com.example.petcareui.ui.clinic.ClinicDetailsActivity;
 import com.example.petcareui.ui.pets.MyPetsActivity;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 /**
  * Màn hình C10: Xác nhận thông tin (Booking Review) - Bước 4/4 của luồng đặt lịch.
@@ -93,20 +98,20 @@ public class BookingReviewActivity extends AppCompatActivity {
         // Dữ liệu mẫu chuẩn theo data.js (STAFF_CLINIC, SERVICES[1], PETS[0], SELECTED) nếu mở độc lập
         if (clinicItem == null) {
             clinicItem = new ClinicItem(
-                    "cl-01", "Phòng khám Thú y An Nhiên", "42 Nguyễn Huệ, Quận 1, TP.HCM", 4.8, 214, "1,2 km", true, "Thứ 2 – CN · 08:00 – 20:00"
+                    "1", "Phòng khám Thú y An Nhiên", "42 Nguyễn Huệ, Quận 1, TP.HCM", 4.8, 214, "1,2 km", true, "Thứ 2 – CN · 08:00 – 20:00"
             );
         }
         if (serviceItem == null) {
-            serviceItem = new ServiceItem("sv-02", "Tiêm phòng", "Vaccine thiết yếu cho chó và mèo, khám sức khỏe trước khi tiêm.", "20 phút", "250.000 ₫", R.drawable.ic_syringe);
+            serviceItem = new ServiceItem("2", "Tiêm phòng", "Vaccine thiết yếu cho chó và mèo, khám sức khỏe trước khi tiêm.", "20 phút", "250.000 ₫", R.drawable.ic_syringe);
         }
         if (dateItem == null) {
             dateItem = new DateItem("T2", "27", "Thứ 2, 27/10/2026", "Thứ 2 · 27/10", 6, "selected");
         }
         if (timeSlotItem == null) {
-            timeSlotItem = new TimeSlotItem("10:00", "selected");
+            timeSlotItem = new TimeSlotItem(1L, "10:00", "selected");
         }
         if (petItem == null) {
-            petItem = new PetItem("pet-01", "Mochi", "Chó", "Pomeranian", "2 tuổi", "12/03/2024", "Cái", "3,4 kg", R.drawable.img_pet_mochi);
+            petItem = new PetItem("1", "Mochi", "Chó", "Pomeranian", "2 tuổi", "12/03/2024", "Cái", "3,4 kg", R.drawable.img_pet_mochi);
         }
     }
 
@@ -179,18 +184,48 @@ public class BookingReviewActivity extends AppCompatActivity {
         binding.btnConfirmBooking.setOnClickListener(v -> {
             applyState("loading");
 
-            // Mô phỏng gửi yêu cầu mạng 1.2s rồi chuyển sang màn C11 Đặt lịch thành công
-            new Handler(Looper.getMainLooper()).postDelayed(() -> {
-                Intent intent = new Intent(this, BookingSuccessActivity.class);
-                intent.putExtra(BookingSuccessActivity.EXTRA_CLINIC, clinicItem);
-                intent.putExtra(BookingSuccessActivity.EXTRA_SELECTED_SERVICE, serviceItem);
-                intent.putExtra(BookingSuccessActivity.EXTRA_SELECTED_DATE, dateItem);
-                intent.putExtra(BookingSuccessActivity.EXTRA_SELECTED_TIME, timeSlotItem);
-                intent.putExtra(BookingSuccessActivity.EXTRA_SELECTED_PET, petItem);
-                intent.putExtra(BookingSuccessActivity.EXTRA_BOOKING_REF, "PC-48213");
-                startActivity(intent);
-                finish();
-            }, 1200);
+            Long clinicId = clinicItem != null ? clinicItem.getNumericId() : null;
+            if (clinicId == null) clinicId = 1L;
+
+            Long serviceId = serviceItem != null ? serviceItem.getNumericId() : null;
+            if (serviceId == null) serviceId = 1L;
+
+            Long slotId = timeSlotItem != null ? timeSlotItem.getId() : null;
+            if (slotId == null) slotId = 1L;
+
+            Long petId = petItem != null ? petItem.getNumericId() : null;
+            if (petId == null) petId = 1L;
+
+            AppointmentRequest request = new AppointmentRequest(petId, clinicId, serviceId, slotId);
+            ApiClient.getAppointmentApi().createAppointment(request).enqueue(new Callback<AppointmentResponse>() {
+                @Override
+                public void onResponse(Call<AppointmentResponse> call, Response<AppointmentResponse> response) {
+                    if (response.isSuccessful() && response.body() != null) {
+                        AppointmentResponse created = response.body();
+                        String ref = String.format("PC-%04d", created.getId() != null ? created.getId() : 1L);
+                        Intent intent = new Intent(BookingReviewActivity.this, BookingSuccessActivity.class);
+                        intent.putExtra(BookingSuccessActivity.EXTRA_CLINIC, clinicItem);
+                        intent.putExtra(BookingSuccessActivity.EXTRA_SELECTED_SERVICE, serviceItem);
+                        intent.putExtra(BookingSuccessActivity.EXTRA_SELECTED_DATE, dateItem);
+                        intent.putExtra(BookingSuccessActivity.EXTRA_SELECTED_TIME, timeSlotItem);
+                        intent.putExtra(BookingSuccessActivity.EXTRA_SELECTED_PET, petItem);
+                        intent.putExtra(BookingSuccessActivity.EXTRA_BOOKING_REF, ref);
+                        startActivity(intent);
+                        finish();
+                    } else if (response.code() == 409 || response.code() == 400) {
+                        applyState("conflict");
+                    } else {
+                        applyState("default");
+                        Toast.makeText(BookingReviewActivity.this, "Không thể đặt lịch. Vui lòng thử lại sau.", Toast.LENGTH_SHORT).show();
+                    }
+                }
+
+                @Override
+                public void onFailure(Call<AppointmentResponse> call, Throwable t) {
+                    applyState("default");
+                    Toast.makeText(BookingReviewActivity.this, "Lỗi kết nối máy chủ khi đặt lịch.", Toast.LENGTH_SHORT).show();
+                }
+            });
         });
 
         // Nút "Chọn giờ khác" khi bị xung đột (Conflict State)

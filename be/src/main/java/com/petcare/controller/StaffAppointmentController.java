@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/v1/staff/appointments")
+@RequestMapping({"/api/v1/staff/appointments", "/api/v1/appointments/clinic"})
 @RequiredArgsConstructor
 @PreAuthorize("hasRole('STAFF')")
 public class StaffAppointmentController {

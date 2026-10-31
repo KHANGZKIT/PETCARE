@@ -7,6 +7,7 @@ import java.io.Serializable;
  * tương thích chuẩn dữ liệu APPTS trong data.js của petcare-ui.
  */
 public class AppointmentItem implements Serializable {
+    private Long id;
     private String ref;
     private String clinic;
     private String clinicArea;
@@ -23,6 +24,13 @@ public class AppointmentItem implements Serializable {
     public AppointmentItem(String ref, String clinic, String clinicArea, String pet, int petImgRes,
                            String service, String date, String time, String status,
                            String price, String requested, String note) {
+        this(null, ref, clinic, clinicArea, pet, petImgRes, service, date, time, status, price, requested, note);
+    }
+
+    public AppointmentItem(Long id, String ref, String clinic, String clinicArea, String pet, int petImgRes,
+                           String service, String date, String time, String status,
+                           String price, String requested, String note) {
+        this.id = id;
         this.ref = ref;
         this.clinic = clinic;
         this.clinicArea = clinicArea;
@@ -35,6 +43,18 @@ public class AppointmentItem implements Serializable {
         this.price = price;
         this.requested = requested;
         this.note = note;
+    }
+
+    public Long getId() {
+        if (id != null) return id;
+        try {
+            if (ref != null && ref.startsWith("PC-")) {
+                return Long.parseLong(ref.substring(3));
+            }
+            return ref != null ? Long.parseLong(ref) : null;
+        } catch (Exception e) {
+            return null;
+        }
     }
 
     public String getRef() {
@@ -71,6 +91,10 @@ public class AppointmentItem implements Serializable {
 
     public String getStatus() {
         return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
     }
 
     public String getPrice() {

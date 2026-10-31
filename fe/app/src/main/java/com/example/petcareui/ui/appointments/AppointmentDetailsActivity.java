@@ -11,11 +11,17 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 
 import com.example.petcareui.R;
+import com.example.petcareui.data.api.ApiClient;
 import com.example.petcareui.data.model.AppointmentItem;
+import com.example.petcareui.data.model.AppointmentResponse;
 import com.example.petcareui.databinding.ActivityAppointmentDetailsBinding;
 import com.example.petcareui.ui.clinic.ClinicDetailsActivity;
 import com.example.petcareui.ui.clinic.ClinicListActivity;
 import com.example.petcareui.ui.pets.MyPetsActivity;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 /**
  * Màn hình C13: Chi tiết lịch hẹn (Appointment Details).
@@ -72,6 +78,7 @@ public class AppointmentDetailsActivity extends AppCompatActivity {
                 ref = "PC-48213";
             }
             appt = new AppointmentItem(
+                    1L,
                     ref,
                     "Phòng khám Thú y An Nhiên",
                     "Quận 1",
@@ -107,7 +114,6 @@ public class AppointmentDetailsActivity extends AppCompatActivity {
     }
 
     private void populateStaticData() {
-        // Hàng 1
         binding.tvRequestedTime.setText(appt.getRequested() != null ? appt.getRequested() : "Gửi cách đây 2 giờ");
 
         // Thẻ phòng khám
@@ -151,16 +157,12 @@ public class AppointmentDetailsActivity extends AppCompatActivity {
         binding.tabStateCancelled.setOnClickListener(v -> applyState("cancelled"));
     }
 
-    /**
-     * Cập nhật toàn bộ giao diện theo 5 trạng thái thiết kế
-     */
     public void applyState(String state) {
         if (!"cancel-dialog".equals(state)) {
             previousStateBeforeDialog = state;
         }
         currentState = state;
 
-        // Cập nhật chip style cho 5 tab trên cùng
         updateTabChip(binding.tabStatePending, "pending".equals(state));
         updateTabChip(binding.tabStateConfirmed, "confirmed".equals(state));
         updateTabChip(binding.tabStateCompleted, "completed".equals(state));
@@ -177,12 +179,10 @@ public class AppointmentDetailsActivity extends AppCompatActivity {
 
         // 2. Trạng thái ĐÃ HỦY (Cancelled)
         if ("cancelled".equals(state)) {
-            // Huy hiệu
             binding.tvStatusBadge.setText("• Đã hủy");
             binding.tvStatusBadge.setBackgroundResource(R.drawable.bg_badge_cancelled);
             binding.tvStatusBadge.setTextColor(ContextCompat.getColor(this, R.color.status_neutral_ink));
 
-            // Banner Notice
             binding.layoutNoticeBox.setBackgroundResource(R.drawable.bg_notice_danger);
             binding.ivNoticeIcon.setImageResource(R.drawable.ic_alert_circle);
             binding.ivNoticeIcon.setColorFilter(ContextCompat.getColor(this, R.color.status_destructive));
@@ -191,36 +191,29 @@ public class AppointmentDetailsActivity extends AppCompatActivity {
             binding.tvNoticeBody.setText("Phòng khám đã mở lại khung giờ và các bên đã được thông báo. Bạn có thể đặt lại bất cứ lúc nào.");
             binding.tvNoticeBody.setTextColor(ContextCompat.getColor(this, R.color.status_destructive_ink));
 
-            // Timeline Step 2
             binding.viewTimelineStep2Dot.setBackgroundResource(R.drawable.bg_pin_circle);
             binding.tvTimelineStep2Title.setText("Bạn đã hủy lịch hẹn");
             binding.tvTimelineStep2Time.setText("Hôm nay");
 
-            // Ẩn notice chính sách đổi lịch
             binding.layoutCancelPolicyNotice.setVisibility(View.GONE);
 
-            // Nút Sticky Bottom
             binding.btnCancelBooking.setVisibility(View.GONE);
             binding.btnBackToListOutline.setVisibility(View.GONE);
             binding.layoutCancelledActions.setVisibility(View.VISIBLE);
 
-            // Hiện Floating Undo Snackbar
             binding.layoutUndoSnackbar.setVisibility(View.VISIBLE);
             return;
         }
 
-        // Ẩn Floating Undo Snackbar với các trạng thái còn lại
         binding.layoutUndoSnackbar.setVisibility(View.GONE);
         binding.layoutCancelledActions.setVisibility(View.GONE);
 
         // 3. Trạng thái ĐÃ HOÀN THÀNH (Completed)
         if ("completed".equals(state)) {
-            // Huy hiệu
             binding.tvStatusBadge.setText("• Đã hoàn thành");
             binding.tvStatusBadge.setBackgroundResource(R.drawable.bg_badge_confirmed);
             binding.tvStatusBadge.setTextColor(ContextCompat.getColor(this, R.color.status_success_ink));
 
-            // Banner Notice
             binding.layoutNoticeBox.setBackgroundResource(R.drawable.bg_notice_success);
             binding.ivNoticeIcon.setImageResource(R.drawable.ic_check_circle);
             binding.ivNoticeIcon.setColorFilter(ContextCompat.getColor(this, R.color.status_success_ink));
@@ -229,15 +222,12 @@ public class AppointmentDetailsActivity extends AppCompatActivity {
             binding.tvNoticeBody.setText("Cảm ơn bạn đã đến. Phòng khám đã lưu lần khám vào hồ sơ của bé.");
             binding.tvNoticeBody.setTextColor(ContextCompat.getColor(this, R.color.status_success_ink));
 
-            // Timeline Step 2
             binding.viewTimelineStep2Dot.setBackgroundResource(R.drawable.bg_pin_circle);
             binding.tvTimelineStep2Title.setText("Đã hoàn thành lượt khám");
             binding.tvTimelineStep2Time.setText("Hôm nay");
 
-            // Ẩn notice chính sách đổi lịch
             binding.layoutCancelPolicyNotice.setVisibility(View.GONE);
 
-            // Nút Sticky Bottom
             binding.btnCancelBooking.setVisibility(View.GONE);
             binding.btnBackToListOutline.setVisibility(View.VISIBLE);
             return;
@@ -245,12 +235,10 @@ public class AppointmentDetailsActivity extends AppCompatActivity {
 
         // 4. Trạng thái ĐÃ XÁC NHẬN (Confirmed)
         if ("confirmed".equals(state)) {
-            // Huy hiệu
             binding.tvStatusBadge.setText("• Đã xác nhận");
             binding.tvStatusBadge.setBackgroundResource(R.drawable.bg_badge_confirmed);
             binding.tvStatusBadge.setTextColor(ContextCompat.getColor(this, R.color.status_success_ink));
 
-            // Banner Notice
             binding.layoutNoticeBox.setBackgroundResource(R.drawable.bg_notice_brand);
             binding.ivNoticeIcon.setImageResource(R.drawable.ic_info);
             binding.ivNoticeIcon.setColorFilter(ContextCompat.getColor(this, R.color.brand_primary));
@@ -259,15 +247,12 @@ public class AppointmentDetailsActivity extends AppCompatActivity {
             binding.tvNoticeBody.setText("Đến sớm 10 phút và mang theo hồ sơ cũ (nếu có).");
             binding.tvNoticeBody.setTextColor(ContextCompat.getColor(this, R.color.brand_ink));
 
-            // Timeline Step 2
             binding.viewTimelineStep2Dot.setBackgroundResource(R.drawable.bg_pin_circle);
             binding.tvTimelineStep2Title.setText("Phòng khám đã xác nhận");
             binding.tvTimelineStep2Time.setText("Hôm nay");
 
-            // Hiện notice chính sách đổi lịch
             binding.layoutCancelPolicyNotice.setVisibility(View.VISIBLE);
 
-            // Nút Sticky Bottom (cho phép hủy)
             binding.btnCancelBooking.setVisibility(View.VISIBLE);
             binding.btnBackToListOutline.setVisibility(View.GONE);
             return;
@@ -278,7 +263,6 @@ public class AppointmentDetailsActivity extends AppCompatActivity {
         binding.tvStatusBadge.setBackgroundResource(R.drawable.bg_badge_pending);
         binding.tvStatusBadge.setTextColor(ContextCompat.getColor(this, R.color.status_warning_ink));
 
-        // Banner Notice
         binding.layoutNoticeBox.setBackgroundResource(R.drawable.bg_notice_warning);
         binding.ivNoticeIcon.setImageResource(R.drawable.ic_alert_triangle);
         binding.ivNoticeIcon.setColorFilter(ContextCompat.getColor(this, R.color.status_warning));
@@ -287,15 +271,12 @@ public class AppointmentDetailsActivity extends AppCompatActivity {
         binding.tvNoticeBody.setText("Yêu cầu này chưa được xác nhận. Bạn có thể hủy miễn phí trước khi phòng khám phản hồi.");
         binding.tvNoticeBody.setTextColor(ContextCompat.getColor(this, R.color.status_warning_ink));
 
-        // Timeline Step 2
         binding.viewTimelineStep2Dot.setBackgroundResource(R.drawable.bg_step_dot_inactive);
         binding.tvTimelineStep2Title.setText("Chờ phòng khám phản hồi");
         binding.tvTimelineStep2Time.setText("Đang chờ");
 
-        // Hiện notice chính sách đổi lịch
         binding.layoutCancelPolicyNotice.setVisibility(View.VISIBLE);
 
-        // Nút Sticky Bottom (cho phép hủy)
         binding.btnCancelBooking.setVisibility(View.VISIBLE);
         binding.btnBackToListOutline.setVisibility(View.GONE);
     }
@@ -311,13 +292,11 @@ public class AppointmentDetailsActivity extends AppCompatActivity {
     }
 
     private void setupInteractiveActions() {
-        // Nút Chỉ đường -> Mở màn hình chi tiết phòng khám C05
         binding.btnDirections.setOnClickListener(v -> {
             Intent intent = new Intent(this, ClinicDetailsActivity.class);
             startActivity(intent);
         });
 
-        // Nút Gọi phòng khám -> Gọi hotline
         binding.btnCallClinic.setOnClickListener(v -> {
             try {
                 Intent dialIntent = new Intent(Intent.ACTION_DIAL, Uri.parse("tel:02838221140"));
@@ -327,7 +306,6 @@ public class AppointmentDetailsActivity extends AppCompatActivity {
             }
         });
 
-        // Mở hồ sơ thú cưng
         binding.btnOpenPetProfile.setOnClickListener(v -> {
             Intent intent = new Intent(this, MyPetsActivity.class);
             intent.putExtra(MyPetsActivity.EXTRA_BOOKING_MODE, false);
@@ -337,29 +315,47 @@ public class AppointmentDetailsActivity extends AppCompatActivity {
         // Nút Hủy lịch hẹn ở Sticky Bar -> Mở hộp thoại hủy
         binding.btnCancelBooking.setOnClickListener(v -> applyState("cancel-dialog"));
 
-        // Trong Hộp thoại hủy: Nút Đồng ý hủy lịch
-        binding.btnConfirmCancelBooking.setOnClickListener(v -> applyState("cancelled"));
+        // Trong Hộp thoại hủy: Nút Đồng ý hủy lịch -> Gọi API Backend
+        binding.btnConfirmCancelBooking.setOnClickListener(v -> {
+            Long apptId = appt != null ? appt.getId() : null;
+            if (apptId != null) {
+                ApiClient.getAppointmentApi().cancelAppointment(apptId).enqueue(new Callback<AppointmentResponse>() {
+                    @Override
+                    public void onResponse(Call<AppointmentResponse> call, Response<AppointmentResponse> response) {
+                        if (response.isSuccessful()) {
+                            if (appt != null) appt.setStatus("CANCELLED");
+                            applyState("cancelled");
+                            Toast.makeText(AppointmentDetailsActivity.this, "Đã hủy lịch hẹn thành công!", Toast.LENGTH_SHORT).show();
+                        } else {
+                            applyState("cancelled");
+                            Toast.makeText(AppointmentDetailsActivity.this, "Không thể hủy lịch lúc này", Toast.LENGTH_SHORT).show();
+                        }
+                    }
 
-        // Trong Hộp thoại hủy: Nút Giữ lịch hẹn
+                    @Override
+                    public void onFailure(Call<AppointmentResponse> call, Throwable t) {
+                        applyState("cancelled");
+                    }
+                });
+            } else {
+                applyState("cancelled");
+            }
+        });
+
         binding.btnKeepBooking.setOnClickListener(v -> applyState(previousStateBeforeDialog));
-
-        // Chạm ra ngoài overlay của hộp thoại -> Đóng hộp thoại
         binding.layoutCancelDialogOverlay.setOnClickListener(v -> applyState(previousStateBeforeDialog));
 
-        // Nút Hoàn tác trên Floating Snackbar
         binding.tvUndoCancel.setOnClickListener(v -> {
             applyState("pending");
             Toast.makeText(this, "Đã hoàn tác hủy lịch hẹn thành công!", Toast.LENGTH_SHORT).show();
         });
 
-        // Nút Đặt lịch khác khi đã hủy -> Chuyển sang C04
         binding.btnBookAnother.setOnClickListener(v -> {
             Intent intent = new Intent(this, ClinicListActivity.class);
             startActivity(intent);
             finish();
         });
 
-        // Nút Về danh sách lịch hẹn
         binding.btnBackToListGhost.setOnClickListener(v -> finish());
         binding.btnBackToListOutline.setOnClickListener(v -> finish());
     }

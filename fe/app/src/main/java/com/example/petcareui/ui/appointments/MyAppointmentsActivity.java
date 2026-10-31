@@ -12,7 +12,9 @@ import androidx.core.content.ContextCompat;
 
 import com.example.petcareui.MainActivity;
 import com.example.petcareui.R;
+import com.example.petcareui.data.api.ApiClient;
 import com.example.petcareui.data.model.AppointmentItem;
+import com.example.petcareui.data.model.AppointmentResponse;
 import com.example.petcareui.databinding.ActivityMyAppointmentsBinding;
 import com.example.petcareui.databinding.ItemAppointmentCardBinding;
 import com.example.petcareui.ui.clinic.ClinicListActivity;
@@ -21,9 +23,13 @@ import com.example.petcareui.ui.pets.MyPetsActivity;
 import java.util.ArrayList;
 import java.util.List;
 
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+
 /**
  * Màn hình C12: Lịch hẹn của tôi (My Appointments).
- * Bám sát nguyên mẫu React C12MyAppointments và Design System Spec.
+ * Bám sát nguyên mẫu React C12MyAppointments và kết nối REST API /api/v1/appointments/my.
  * Hỗ trợ chuyển đổi tab Sắp tới, Đã qua, Tất cả và Trạng thái rỗng (Empty State).
  */
 public class MyAppointmentsActivity extends AppCompatActivity {
@@ -42,12 +48,17 @@ public class MyAppointmentsActivity extends AppCompatActivity {
         binding = ActivityMyAppointmentsBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
-        initMockData();
         extractIntentData();
         setupTopBar();
         setupFilterChips();
         setupBottomNav();
-        renderTab(currentTab);
+        loadAppointmentsFromApi();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        loadAppointmentsFromApi();
     }
 
     private void extractIntentData() {
@@ -56,61 +67,92 @@ public class MyAppointmentsActivity extends AppCompatActivity {
         }
     }
 
+    private void loadAppointmentsFromApi() {
+        ApiClient.getAppointmentApi().getMyAppointments().enqueue(new Callback<List<AppointmentResponse>>() {
+            @Override
+            public void onResponse(Call<List<AppointmentResponse>> call, Response<List<AppointmentResponse>> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    List<AppointmentResponse> body = response.body();
+                    upcomingList.clear();
+                    pastList.clear();
+                    allList.clear();
+
+                    for (AppointmentResponse res : body) {
+                        AppointmentItem item = res.toAppointmentItem();
+                        allList.add(item);
+                        if (item.isUpcoming()) {
+                            upcomingList.add(item);
+                        } else {
+                            pastList.add(item);
+                        }
+                    }
+
+                    binding.tvHeaderSubtitle.setText(upcomingList.size() + " sắp tới · " + pastList.size() + " đã qua");
+                    binding.chipUpcoming.setText("Sắp tới · " + upcomingList.size());
+                    binding.chipPast.setText("Đã qua · " + pastList.size());
+
+                    if (allList.isEmpty()) {
+                        renderTab("empty");
+                    } else {
+                        renderTab(currentTab);
+                    }
+                } else {
+                    if (allList.isEmpty()) {
+                        initMockData();
+                        renderTab(currentTab);
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(Call<List<AppointmentResponse>> call, Throwable t) {
+                if (allList.isEmpty()) {
+                    initMockData();
+                    renderTab(currentTab);
+                }
+            }
+        });
+    }
+
     private void initMockData() {
-        // Dữ liệu chuẩn theo data.js (APPTS)
-        // 1. Sắp tới (Upcoming)
+        upcomingList.clear();
+        pastList.clear();
+        allList.clear();
+
         upcomingList.add(new AppointmentItem(
-                "PC-48213", "Phòng khám Thú y An Nhiên", "Quận 1",
+                1L, "PC-48213", "Phòng khám Thú y An Nhiên", "Quận 1",
                 "Mochi", R.drawable.img_pet_mochi, "Tiêm phòng",
                 "Thứ 2, 27/10/2026", "10:00", "PENDING",
                 "250.000 ₫", "Gửi cách đây 2 giờ", "Mochi hơi mẩn nhẹ sau mũi tiêm lần trước."
         ));
 
         upcomingList.add(new AppointmentItem(
-                "PC-47980", "Bệnh viện Thú y Gia Định", "Quận 2",
+                2L, "PC-47980", "Bệnh viện Thú y Gia Định", "Quận 2",
                 "Bông", R.drawable.img_pet_bong, "Cạo vôi & chăm sóc răng",
                 "Thứ 4, 29/10/2026", "14:00", "CONFIRMED",
                 "600.000 ₫", "Phòng khám đã xác nhận", null
         ));
 
-        upcomingList.add(new AppointmentItem(
-                "PC-47155", "Phòng khám Thú y An Nhiên", "Quận 1",
-                "Lựu", R.drawable.img_pet_luu, "Khám tổng quát",
-                "Thứ 6, 31/10/2026", "16:30", "PENDING",
-                "180.000 ₫", "Gửi hôm qua", null
-        ));
-
-        // 2. Đã qua (Past)
         pastList.add(new AppointmentItem(
-                "PC-46902", "Spa & Phòng khám Thú cưng Mimi", "Quận 7",
+                3L, "PC-46902", "Spa & Phòng khám Thú cưng Mimi", "Quận 7",
                 "Mochi", R.drawable.img_pet_mochi, "Tắm & cắt tỉa",
                 "Thứ 7, 11/10/2026", "11:00", "COMPLETED",
                 "320.000 ₫", "Đã hoàn thành lượt khám", null
         ));
 
         pastList.add(new AppointmentItem(
-                "PC-46410", "Phòng khám Thú cưng Bình Thạnh", "Bình Thạnh",
-                "Bông", R.drawable.img_pet_bong, "Khám định kỳ cho bé lớn tuổi",
-                "Thứ 5, 25/09/2026", "09:30", "NO_SHOW",
-                "780.000 ₫", "Bé không đến hẹn", null
-        ));
-
-        pastList.add(new AppointmentItem(
-                "PC-45877", "Bệnh viện Thú y Gia Định", "Quận 2",
+                4L, "PC-45877", "Bệnh viện Thú y Gia Định", "Quận 2",
                 "Lựu", R.drawable.img_pet_luu, "Tư vấn da & dị ứng",
                 "Thứ 3, 09/09/2026", "15:00", "CANCELLED",
                 "420.000 ₫", "Bạn đã hủy lịch hẹn", null
         ));
 
-        pastList.add(new AppointmentItem(
-                "PC-45220", "Spa & Phòng khám Thú cưng Mimi", "Quận 7",
-                "Mochi", R.drawable.img_pet_mochi, "Tiêm phòng",
-                "Thứ 2, 18/08/2026", "10:30", "REJECTED",
-                "250.000 ₫", "Hết chỗ vào khung giờ này", null
-        ));
-
         allList.addAll(upcomingList);
         allList.addAll(pastList);
+
+        binding.tvHeaderSubtitle.setText(upcomingList.size() + " sắp tới · " + pastList.size() + " đã qua");
+        binding.chipUpcoming.setText("Sắp tới · " + upcomingList.size());
+        binding.chipPast.setText("Đã qua · " + pastList.size());
     }
 
     private void setupTopBar() {
@@ -141,7 +183,6 @@ public class MyAppointmentsActivity extends AppCompatActivity {
         binding.chipPast.setOnClickListener(v -> renderTab("past"));
         binding.chipAll.setOnClickListener(v -> renderTab("all"));
 
-        // Nhấn giữ nút Tất cả để thử nghiệm trạng thái rỗng (Empty State) theo thiết kế
         binding.chipAll.setOnLongClickListener(v -> {
             renderTab("empty");
             Toast.makeText(this, "Xem trước Trạng thái rỗng (Empty State)", Toast.LENGTH_SHORT).show();
@@ -152,7 +193,6 @@ public class MyAppointmentsActivity extends AppCompatActivity {
     private void renderTab(String tab) {
         currentTab = tab;
 
-        // Cập nhật trạng thái hiển thị của các Chip
         updateChipStyle(binding.chipUpcoming, "upcoming".equals(tab));
         updateChipStyle(binding.chipPast, "past".equals(tab));
         updateChipStyle(binding.chipAll, "all".equals(tab));
@@ -160,7 +200,7 @@ public class MyAppointmentsActivity extends AppCompatActivity {
         binding.layoutApptList.removeAllViews();
         binding.layoutPastPreviewList.removeAllViews();
 
-        if ("empty".equals(tab)) {
+        if ("empty".equals(tab) || allList.isEmpty()) {
             binding.tvHeaderSubtitle.setVisibility(View.GONE);
             binding.layoutApptList.setVisibility(View.GONE);
             binding.layoutPastSectionInUpcoming.setVisibility(View.GONE);
@@ -173,28 +213,28 @@ public class MyAppointmentsActivity extends AppCompatActivity {
         binding.layoutApptList.setVisibility(View.VISIBLE);
 
         if ("upcoming".equals(tab)) {
-            // Danh sách lịch hẹn sắp tới
             for (AppointmentItem appt : upcomingList) {
                 View cardView = createAppointmentCardView(appt);
                 binding.layoutApptList.addView(cardView);
             }
 
-            // Hiển thị phần "Lịch khám đã qua" (tối đa 2 thẻ thu gọn)
-            binding.layoutPastSectionInUpcoming.setVisibility(View.VISIBLE);
-            int previewCount = Math.min(2, pastList.size());
-            for (int i = 0; i < previewCount; i++) {
-                View cardView = createAppointmentCardView(pastList.get(i));
-                binding.layoutPastPreviewList.addView(cardView);
+            if (!pastList.isEmpty()) {
+                binding.layoutPastSectionInUpcoming.setVisibility(View.VISIBLE);
+                int previewCount = Math.min(2, pastList.size());
+                for (int i = 0; i < previewCount; i++) {
+                    View cardView = createAppointmentCardView(pastList.get(i));
+                    binding.layoutPastPreviewList.addView(cardView);
+                }
+            } else {
+                binding.layoutPastSectionInUpcoming.setVisibility(View.GONE);
             }
         } else if ("past".equals(tab)) {
-            // Toàn bộ danh sách lịch khám đã qua
             binding.layoutPastSectionInUpcoming.setVisibility(View.GONE);
             for (AppointmentItem appt : pastList) {
                 View cardView = createAppointmentCardView(appt);
                 binding.layoutApptList.addView(cardView);
             }
         } else {
-            // Tất cả lịch hẹn
             binding.layoutPastSectionInUpcoming.setVisibility(View.GONE);
             for (AppointmentItem appt : allList) {
                 View cardView = createAppointmentCardView(appt);
@@ -216,24 +256,14 @@ public class MyAppointmentsActivity extends AppCompatActivity {
     private View createAppointmentCardView(AppointmentItem item) {
         ItemAppointmentCardBinding cardBinding = ItemAppointmentCardBinding.inflate(getLayoutInflater());
 
-        // Mã lịch hẹn
         cardBinding.tvApptRef.setText(item.getRef());
-
-        // Huy hiệu trạng thái
         applyBadgeStatus(cardBinding.tvApptStatus, item.getStatus());
-
-        // Ảnh thú cưng
         cardBinding.ivPetImage.setImageResource(item.getPetImgRes());
-
-        // Dịch vụ & Phòng khám
         cardBinding.tvServiceTitle.setText(item.getService());
         cardBinding.tvPetAndClinic.setText(item.getPet() + " · " + item.getClinic());
-
-        // Thời gian hẹn
         cardBinding.tvApptDate.setText(item.getDate());
         cardBinding.tvApptTime.setText(item.getTime());
 
-        // Click thẻ -> Mở Chi tiết lịch hẹn (C13)
         cardBinding.getRoot().setOnClickListener(v -> {
             Intent intent = new Intent(this, AppointmentDetailsActivity.class);
             intent.putExtra(AppointmentDetailsActivity.EXTRA_APPT, item);
@@ -266,7 +296,6 @@ public class MyAppointmentsActivity extends AppCompatActivity {
             tvBadge.setBackgroundResource(R.drawable.bg_badge_rejected);
             tvBadge.setTextColor(ContextCompat.getColor(this, R.color.status_destructive_ink));
         } else {
-            // Mặc định PENDING
             tvBadge.setText("• Chờ xác nhận");
             tvBadge.setBackgroundResource(R.drawable.bg_badge_pending);
             tvBadge.setTextColor(ContextCompat.getColor(this, R.color.status_warning_ink));
@@ -274,7 +303,6 @@ public class MyAppointmentsActivity extends AppCompatActivity {
     }
 
     private void setupBottomNav() {
-        // Tab 1: Trang chủ
         binding.navHome.setOnClickListener(v -> {
             Intent intent = new Intent(this, MainActivity.class);
             intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
@@ -282,19 +310,16 @@ public class MyAppointmentsActivity extends AppCompatActivity {
             finish();
         });
 
-        // Tab 2: Lịch hẹn (đang ở màn này)
         binding.navAppointments.setOnClickListener(v -> {
             binding.scrollViewContent.smoothScrollTo(0, 0);
         });
 
-        // Tab 3: Thú cưng
         binding.navPets.setOnClickListener(v -> {
             Intent intent = new Intent(this, MyPetsActivity.class);
             intent.putExtra(MyPetsActivity.EXTRA_BOOKING_MODE, false);
             startActivity(intent);
         });
 
-        // Tab 4: Tài khoản
         binding.navProfile.setOnClickListener(v -> showAccountDialog());
     }
 

@@ -1,6 +1,10 @@
 package com.example.petcareui.data.model;
 
-public class AppointmentResponse {
+import com.example.petcareui.R;
+
+import java.io.Serializable;
+
+public class AppointmentResponse implements Serializable {
     private Long id;
     private String status;
     private Long petId;
@@ -32,4 +36,27 @@ public class AppointmentResponse {
     public String getSlotDate() { return slotDate; }
     public String getStartTime() { return startTime; }
     public String getEndTime() { return endTime; }
+
+    public AppointmentItem toAppointmentItem() {
+        boolean isCat = petSpecies != null && (petSpecies.toLowerCase().contains("mèo") || petSpecies.toLowerCase().contains("cat"));
+        int avatar = isCat ? R.drawable.img_pet_bong : R.drawable.img_pet_mochi;
+        String formattedRef = String.format("PC-%04d", id != null ? id : 1L);
+        String formattedDate = slotDate != null ? slotDate : "";
+        String formattedTime = startTime != null ? (startTime.length() >= 5 ? startTime.substring(0, 5) : startTime) : "";
+        return new AppointmentItem(
+                id,
+                formattedRef,
+                clinicName != null ? clinicName : "Phòng khám thú y",
+                clinicAddress != null ? clinicAddress : "TP.HCM",
+                petName != null ? petName : "Bé cưng",
+                avatar,
+                serviceName != null ? serviceName : "Dịch vụ khám",
+                formattedDate,
+                formattedTime,
+                status != null ? status : "PENDING",
+                "Liên hệ",
+                "Vừa đặt",
+                ""
+        );
+    }
 }
