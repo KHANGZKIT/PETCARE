@@ -7,13 +7,23 @@ import java.util.List;
 
 import retrofit2.Call;
 import retrofit2.http.Body;
+import retrofit2.http.DELETE;
 import retrofit2.http.GET;
 import retrofit2.http.POST;
+import retrofit2.http.PUT;
+import retrofit2.http.Path;
 
 public interface PetApi {
+
     @GET("pets")
     Call<List<PetResponse>> getMyPets();
 
     @POST("pets")
     Call<PetResponse> addPet(@Body PetRequest request);
+
+    @PUT("pets/{id}")
+    Call<PetResponse> updatePet(@Path("id") Long id, @Body PetRequest request);
+
+    @DELETE("pets/{id}")
+    Call<Void> deletePet(@Path("id") Long id);
 }

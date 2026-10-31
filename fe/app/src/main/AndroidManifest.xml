@@ -45,6 +45,11 @@
             android:name=".ui.pets.MyPetsActivity"
             android:exported="false" />
 
+        <!-- Màn hình Thêm thú cưng (C09) -->
+        <activity
+            android:name=".ui.pets.AddPetActivity"
+            android:exported="false" />
+
         <!-- Màn hình Xác nhận đặt lịch (C10 - Bước 4/4) -->
         <activity
             android:name=".ui.booking.BookingReviewActivity"

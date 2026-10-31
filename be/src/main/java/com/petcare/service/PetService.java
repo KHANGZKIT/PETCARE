@@ -50,4 +50,23 @@ public class PetService {
         PetEntity savedPet = petRepository.save(pet);
         return PetResponse.fromEntity(savedPet);
     }
+
+    @Transactional
+    public PetResponse updatePet(Long id, PetRequest request, String customerEmail) {
+        UserEntity customer = getCustomerByEmail(customerEmail);
+        PetEntity pet = petRepository.findByIdAndOwnerId(id, customer.getId())
+                .orElseThrow(() -> new ResourceNotFoundException("Không tìm thấy thú cưng hoặc bạn không có quyền"));
+        pet.setName(request.getName().trim());
+        pet.setSpecies(request.getSpecies().trim());
+        PetEntity updated = petRepository.save(pet);
+        return PetResponse.fromEntity(updated);
+    }
+
+    @Transactional
+    public void deletePet(Long id, String customerEmail) {
+        UserEntity customer = getCustomerByEmail(customerEmail);
+        PetEntity pet = petRepository.findByIdAndOwnerId(id, customer.getId())
+                .orElseThrow(() -> new ResourceNotFoundException("Không tìm thấy thú cưng hoặc bạn không có quyền"));
+        petRepository.delete(pet);
+    }
 }

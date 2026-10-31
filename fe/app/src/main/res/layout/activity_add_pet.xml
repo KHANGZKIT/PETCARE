@@ -1,0 +1,310 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/surface_background"
+    android:fillViewport="true">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:paddingBottom="40dp">
+
+        <!-- 1. Thanh tiêu đề (App Bar) -->
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingStart="16dp"
+            android:paddingTop="36dp"
+            android:paddingEnd="16dp"
+            android:paddingBottom="12dp">
+
+            <ImageButton
+                android:id="@+id/btnBack"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_alignParentStart="true"
+                android:layout_centerVertical="true"
+                android:background="@drawable/bg_floating_glass_btn_light"
+                android:contentDescription="Quay lại"
+                android:padding="10dp"
+                android:scaleType="fitCenter"
+                android:src="@drawable/ic_chevron_left"
+                app:tint="@color/text_foreground" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:text="Thêm thú cưng mới"
+                android:textColor="@color/text_foreground"
+                android:textSize="17sp"
+                android:textStyle="bold" />
+        </RelativeLayout>
+
+        <!-- 2. Thẻ giới thiệu -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="12dp"
+            android:layout_marginEnd="16dp"
+            android:background="@drawable/bg_service_card_default"
+            android:orientation="vertical"
+            android:padding="18dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Hồ sơ thú cưng"
+                android:textColor="@color/brand_primary"
+                android:textSize="18sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="6dp"
+                android:lineSpacingExtra="3dp"
+                android:text="Nhập thông tin bé cưng của bạn để quản lý hồ sơ và đặt lịch khám dễ dàng tại các phòng khám thú y."
+                android:textColor="@color/text_muted"
+                android:textSize="13sp" />
+        </LinearLayout>
+
+        <!-- Banner thông báo lỗi nếu có -->
+        <LinearLayout
+            android:id="@+id/layoutErrorBanner"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginEnd="16dp"
+            android:background="@drawable/bg_slot_unavailable"
+            android:orientation="horizontal"
+            android:padding="12dp"
+            android:visibility="gone">
+
+            <TextView
+                android:id="@+id/tvErrorMessage"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColor="@color/status_destructive"
+                android:textSize="13sp"
+                tools:text="Vui lòng nhập đầy đủ thông tin bắt buộc" />
+        </LinearLayout>
+
+        <!-- 3. Form nhập liệu -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="20dp"
+            android:layout_marginEnd="16dp"
+            android:orientation="vertical">
+
+            <!-- Tên thú cưng -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Tên thú cưng *"
+                android:textColor="@color/text_foreground"
+                android:textSize="13.5sp"
+                android:textStyle="bold" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/input_height"
+                android:layout_marginTop="8dp"
+                android:background="@drawable/bg_input_field"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:paddingStart="16dp"
+                android:paddingEnd="16dp">
+
+                <EditText
+                    android:id="@+id/etPetName"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="@android:color/transparent"
+                    android:hint="Ví dụ: Mochi, Bông, Lu..."
+                    android:inputType="textPersonName|textCapWords"
+                    android:textColor="@color/text_foreground"
+                    android:textColorHint="@color/text_muted"
+                    android:textSize="15sp" />
+            </LinearLayout>
+
+            <!-- Chọn nhanh Loài thú cưng -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="18dp"
+                android:text="Loài thú cưng *"
+                android:textColor="@color/text_foreground"
+                android:textSize="13.5sp"
+                android:textStyle="bold" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/chipDog"
+                    android:layout_width="0dp"
+                    android:layout_height="40dp"
+                    android:layout_marginEnd="8dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/bg_chip_active"
+                    android:gravity="center"
+                    android:text="🐶 Chó"
+                    android:textColor="@color/white"
+                    android:textSize="13.5sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/chipCat"
+                    android:layout_width="0dp"
+                    android:layout_height="40dp"
+                    android:layout_marginEnd="8dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/bg_chip_inactive"
+                    android:gravity="center"
+                    android:text="🐱 Mèo"
+                    android:textColor="@color/text_muted"
+                    android:textSize="13.5sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/chipOther"
+                    android:layout_width="0dp"
+                    android:layout_height="40dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/bg_chip_inactive"
+                    android:gravity="center"
+                    android:text="🐾 Khác"
+                    android:textColor="@color/text_muted"
+                    android:textSize="13.5sp"
+                    android:textStyle="bold" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/layoutOtherSpecies"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/input_height"
+                android:layout_marginTop="8dp"
+                android:background="@drawable/bg_input_field"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:paddingStart="16dp"
+                android:paddingEnd="16dp"
+                android:visibility="gone">
+
+                <EditText
+                    android:id="@+id/etOtherSpecies"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="@android:color/transparent"
+                    android:hint="Nhập loài khác (Thỏ, Chuột Hamster...)"
+                    android:inputType="textCapWords"
+                    android:textColor="@color/text_foreground"
+                    android:textColorHint="@color/text_muted"
+                    android:textSize="14.5sp" />
+            </LinearLayout>
+
+            <!-- Giống loài -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="18dp"
+                android:text="Giống loài"
+                android:textColor="@color/text_foreground"
+                android:textSize="13.5sp"
+                android:textStyle="bold" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/input_height"
+                android:layout_marginTop="8dp"
+                android:background="@drawable/bg_input_field"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:paddingStart="16dp"
+                android:paddingEnd="16dp">
+
+                <EditText
+                    android:id="@+id/etPetBreed"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="@android:color/transparent"
+                    android:hint="Ví dụ: Corgi, Poodle, Anh lông ngắn..."
+                    android:inputType="textCapWords"
+                    android:textColor="@color/text_foreground"
+                    android:textColorHint="@color/text_muted"
+                    android:textSize="14.5sp" />
+            </LinearLayout>
+
+            <!-- Cân nặng -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="18dp"
+                android:text="Cân nặng ước tính"
+                android:textColor="@color/text_foreground"
+                android:textSize="13.5sp"
+                android:textStyle="bold" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/input_height"
+                android:layout_marginTop="8dp"
+                android:background="@drawable/bg_input_field"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:paddingStart="16dp"
+                android:paddingEnd="16dp">
+
+                <EditText
+                    android:id="@+id/etPetWeight"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="@android:color/transparent"
+                    android:hint="Ví dụ: 3.5 kg"
+                    android:inputType="text"
+                    android:textColor="@color/text_foreground"
+                    android:textColorHint="@color/text_muted"
+                    android:textSize="14.5sp" />
+            </LinearLayout>
+
+            <!-- Nút Lưu Thú Cưng -->
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/button_height_lg"
+                android:layout_marginTop="32dp">
+
+                <Button
+                    android:id="@+id/btnSavePet"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="@drawable/bg_btn_primary"
+                    android:stateListAnimator="@null"
+                    android:text="Thêm thú cưng"
+                    android:textColor="@color/white"
+                    android:textSize="15.5sp"
+                    android:textStyle="bold" />
+
+                <ProgressBar
+                    android:id="@+id/pbLoading"
+                    android:layout_width="28dp"
+                    android:layout_height="28dp"
+                    android:layout_gravity="center"
+                    android:indeterminateTint="@color/white"
+                    android:visibility="gone" />
+            </FrameLayout>
+
+        </LinearLayout>
+    </LinearLayout>
+</ScrollView>

@@ -6,13 +6,16 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Toast;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.petcareui.MainActivity;
 import com.example.petcareui.R;
+import com.example.petcareui.data.api.ApiClient;
 import com.example.petcareui.data.model.ClinicItem;
 import com.example.petcareui.data.model.DateItem;
 import com.example.petcareui.data.model.PetItem;
+import com.example.petcareui.data.model.PetResponse;
 import com.example.petcareui.data.model.ServiceItem;
 import com.example.petcareui.data.model.TimeSlotItem;
 import com.example.petcareui.databinding.ActivityMyPetsBinding;
@@ -21,9 +24,13 @@ import com.example.petcareui.databinding.ItemPetSelectableBinding;
 import java.util.ArrayList;
 import java.util.List;
 
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+
 /**
  * Màn hình C08: Thú cưng của tôi (My Pets) - Bước 3/4 của luồng đặt lịch & Tab chính "Thú cưng".
- * Bám sát nguyên mẫu React C08MyPets và Design System Spec (hỗ trợ cả trạng thái Có thú cưng & Rỗng).
+ * Bám sát nguyên mẫu React C08MyPets và kết nối Backend REST API /api/v1/pets.
  */
 public class MyPetsActivity extends AppCompatActivity {
 
@@ -43,7 +50,7 @@ public class MyPetsActivity extends AppCompatActivity {
 
     private final List<PetItem> pets = new ArrayList<>();
     private final List<ItemPetSelectableBinding> petBindings = new ArrayList<>();
-    private int selectedPetIndex = 0; // Mặc định chọn bé Mochi theo prototype C08
+    private int selectedPetIndex = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,10 +60,16 @@ public class MyPetsActivity extends AppCompatActivity {
 
         extractIntentData();
         setupTopBar();
-        setupPetList();
         setupEmptyStateActions();
         setupStickyBottomBar();
         setupBottomNav();
+        loadPetsFromApi();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        loadPetsFromApi();
     }
 
     private void extractIntentData() {
@@ -90,9 +103,9 @@ public class MyPetsActivity extends AppCompatActivity {
     private void setupTopBar() {
         binding.btnBack.setOnClickListener(v -> finish());
 
-        // Nút Thêm thú cưng trên góc phải
         View.OnClickListener addPetListener = v -> {
-            Toast.makeText(this, "Mở màn hình Thêm thú cưng (C09)", Toast.LENGTH_SHORT).show();
+            Intent intent = new Intent(this, AddPetActivity.class);
+            startActivity(intent);
         };
         binding.btnAddPetTop.setOnClickListener(addPetListener);
         binding.cardAddOtherPet.setOnClickListener(addPetListener);
@@ -103,22 +116,55 @@ public class MyPetsActivity extends AppCompatActivity {
         }
     }
 
-    private void setupPetList() {
+    private void loadPetsFromApi() {
+        ApiClient.getPetApi().getMyPets().enqueue(new Callback<List<PetResponse>>() {
+            @Override
+            public void onResponse(Call<List<PetResponse>> call, Response<List<PetResponse>> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    List<PetResponse> body = response.body();
+                    pets.clear();
+                    for (PetResponse res : body) {
+                        pets.add(res.toPetItem());
+                    }
+
+                    if (pets.isEmpty()) {
+                        showEmptyState();
+                    } else {
+                        showPetsList();
+                        if (selectedPetIndex >= pets.size()) {
+                            selectedPetIndex = 0;
+                        }
+                        renderPets();
+                    }
+                } else {
+                    if (pets.isEmpty()) {
+                        setupFallbackPets();
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(Call<List<PetResponse>> call, Throwable t) {
+                if (pets.isEmpty()) {
+                    setupFallbackPets();
+                }
+            }
+        });
+    }
+
+    private void setupFallbackPets() {
         pets.clear();
+        pets.add(new PetItem("1", "Mochi", "Chó", "Pomeranian", "2 tuổi", "12/03/2024", "Cái", "3,4 kg", R.drawable.img_pet_mochi));
+        pets.add(new PetItem("2", "Bông", "Mèo", "Anh lông ngắn", "4 tuổi", "02/07/2022", "Đực", "5,1 kg", R.drawable.img_pet_bong));
+        pets.add(new PetItem("3", "Lựu", "Chó", "Corgi", "6 tháng", "18/04/2026", "Đực", "7,2 kg", R.drawable.img_pet_luu));
+        selectedPetIndex = 0;
+        showPetsList();
+        renderPets();
+    }
+
+    private void renderPets() {
         petBindings.clear();
         binding.containerPetsList.removeAllViews();
-
-        // 3 thú cưng theo data.js (Mochi, Bông, Lựu)
-        pets.add(new PetItem("pet-01", "Mochi", "Chó", "Pomeranian", "2 tuổi", "12/03/2024", "Cái", "3,4 kg", R.drawable.img_pet_mochi));
-        pets.add(new PetItem("pet-02", "Bông", "Mèo", "Anh lông ngắn", "4 tuổi", "02/07/2022", "Đực", "5,1 kg", R.drawable.img_pet_bong));
-        pets.add(new PetItem("pet-03", "Lựu", "Chó", "Corgi", "6 tháng", "18/04/2026", "Đực", "7,2 kg", R.drawable.img_pet_luu));
-
-        if (pets.isEmpty()) {
-            showEmptyState();
-            return;
-        }
-
-        showPetsList();
 
         LayoutInflater inflater = LayoutInflater.from(this);
 
@@ -136,6 +182,12 @@ public class MyPetsActivity extends AppCompatActivity {
 
             itemBinding.getRoot().setOnClickListener(v -> selectPet(index));
 
+            // Nhấn giữ để xóa thú cưng
+            itemBinding.getRoot().setOnLongClickListener(v -> {
+                showDeletePetDialog(pet);
+                return true;
+            });
+
             petBindings.add(itemBinding);
             binding.containerPetsList.addView(itemBinding.getRoot());
         }
@@ -146,6 +198,35 @@ public class MyPetsActivity extends AppCompatActivity {
     private void selectPet(int index) {
         selectedPetIndex = index;
         updatePetSelectionUI();
+    }
+
+    private void showDeletePetDialog(PetItem pet) {
+        new AlertDialog.Builder(this)
+                .setTitle("Xóa thú cưng")
+                .setMessage("Bạn có chắc chắn muốn xóa bé " + pet.getName() + " khỏi danh sách?")
+                .setPositiveButton("Xóa", (dialog, which) -> {
+                    Long numericId = pet.getNumericId();
+                    if (numericId != null) {
+                        ApiClient.getPetApi().deletePet(numericId).enqueue(new Callback<Void>() {
+                            @Override
+                            public void onResponse(Call<Void> call, Response<Void> response) {
+                                if (response.isSuccessful()) {
+                                    Toast.makeText(MyPetsActivity.this, "Đã xóa bé " + pet.getName(), Toast.LENGTH_SHORT).show();
+                                    loadPetsFromApi();
+                                } else {
+                                    Toast.makeText(MyPetsActivity.this, "Không thể xóa bé lúc này", Toast.LENGTH_SHORT).show();
+                                }
+                            }
+
+                            @Override
+                            public void onFailure(Call<Void> call, Throwable t) {
+                                Toast.makeText(MyPetsActivity.this, "Lỗi kết nối khi xóa thú cưng", Toast.LENGTH_SHORT).show();
+                            }
+                        });
+                    }
+                })
+                .setNegativeButton("Hủy", null)
+                .show();
     }
 
     private void updatePetSelectionUI() {
