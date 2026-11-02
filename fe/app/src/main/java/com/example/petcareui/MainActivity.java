@@ -34,7 +34,39 @@ public class MainActivity extends AppCompatActivity {
         }
 
         displayUserInfo();
+        refreshUserProfile();
         setupListeners();
+    }
+
+    private void refreshUserProfile() {
+        String token = tokenManager.getToken();
+        if (token == null || token.isEmpty()) return;
+
+        com.example.petcareui.data.api.ApiClient.getAuthApi().getCurrentUser("Bearer " + token)
+                .enqueue(new retrofit2.Callback<com.example.petcareui.data.model.UserProfileResponse>() {
+                    @Override
+                    public void onResponse(retrofit2.Call<com.example.petcareui.data.model.UserProfileResponse> call,
+                                           retrofit2.Response<com.example.petcareui.data.model.UserProfileResponse> response) {
+                        if (response.isSuccessful() && response.body() != null) {
+                            com.example.petcareui.data.model.UserProfileResponse profile = response.body();
+                            if (profile.getFullName() != null && !profile.getFullName().isEmpty()) {
+                                tokenManager.saveAuthData(
+                                        token,
+                                        profile.getId(),
+                                        profile.getFullName(),
+                                        profile.getEmail(),
+                                        profile.getRole(),
+                                        tokenManager.getClinicId()
+                                );
+                                displayUserInfo();
+                            }
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(retrofit2.Call<com.example.petcareui.data.model.UserProfileResponse> call, Throwable t) {
+                    }
+                });
     }
 
     private void displayUserInfo() {

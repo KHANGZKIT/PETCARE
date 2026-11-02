@@ -50,6 +50,7 @@ local.properties
 !.env.example
 !.env.*.example
 !**/.env.example
+*.ps1
 docker-compose.override.yml
 **/application-local.properties
 **/application-local.yml

@@ -1,8 +1,8 @@
 package com.example.petcareui.utils;
 
 public class Constants {
-    // 10.0.2.2 là địa chỉ IP của máy tính host khi truy cập từ Android Emulator
-    public static final String BASE_URL = "http://10.0.2.2:8080/api/v1/";
+    // Sử dụng localhost kết hợp adb reverse để không lộ IP
+    public static final String BASE_URL = "http://localhost:8080/api/v1/";
 
     // Tên file SharedPreferences và các key lưu trạng thái đăng nhập
     public static final String PREF_NAME = "petcare_preferences";
