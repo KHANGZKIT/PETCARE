@@ -169,7 +169,7 @@ public class GlobalExceptionHandler {
                 .timestamp(LocalDateTime.now())
                 .status(HttpStatus.INTERNAL_SERVER_ERROR.value())
                 .error(HttpStatus.INTERNAL_SERVER_ERROR.getReasonPhrase())
-                .message(ex.getMessage() != null ? ex.getMessage() : "Đã xảy ra lỗi hệ thống")
+                .message("Đã xảy ra lỗi hệ thống, vui lòng thử lại sau")
                 .path(request.getRequestURI())
                 .build();
 

@@ -10,9 +10,15 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 
+import com.example.petcareui.data.api.ApiClient;
+import com.example.petcareui.data.model.UserProfileResponse;
 import com.example.petcareui.databinding.ActivityMainBinding;
 import com.example.petcareui.ui.auth.LoginActivity;
 import com.example.petcareui.utils.TokenManager;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -34,39 +40,76 @@ public class MainActivity extends AppCompatActivity {
         }
 
         displayUserInfo();
-        refreshUserProfile();
+        refreshUserProfile(false);
         setupListeners();
     }
 
-    private void refreshUserProfile() {
+    private void refreshUserProfile(boolean showDialogAfterLoad) {
         String token = tokenManager.getToken();
-        if (token == null || token.isEmpty()) return;
+        if (token == null || token.isEmpty()) {
+            goToLogin();
+            return;
+        }
 
-        com.example.petcareui.data.api.ApiClient.getAuthApi().getCurrentUser("Bearer " + token)
-                .enqueue(new retrofit2.Callback<com.example.petcareui.data.model.UserProfileResponse>() {
+        ApiClient.getAuthApi().getCurrentUser("Bearer " + token)
+                .enqueue(new Callback<UserProfileResponse>() {
                     @Override
-                    public void onResponse(retrofit2.Call<com.example.petcareui.data.model.UserProfileResponse> call,
-                                           retrofit2.Response<com.example.petcareui.data.model.UserProfileResponse> response) {
+                    public void onResponse(Call<UserProfileResponse> call,
+                                           Response<UserProfileResponse> response) {
                         if (response.isSuccessful() && response.body() != null) {
-                            com.example.petcareui.data.model.UserProfileResponse profile = response.body();
-                            if (profile.getFullName() != null && !profile.getFullName().isEmpty()) {
-                                tokenManager.saveAuthData(
-                                        token,
-                                        profile.getId(),
-                                        profile.getFullName(),
-                                        profile.getEmail(),
-                                        profile.getRole(),
-                                        tokenManager.getClinicId()
-                                );
-                                displayUserInfo();
+                            UserProfileResponse profile = response.body();
+                            tokenManager.saveAuthData(
+                                    token,
+                                    profile.getId(),
+                                    profile.getFullName(),
+                                    profile.getEmail(),
+                                    profile.getRole(),
+                                    tokenManager.getClinicId()
+                            );
+                            tokenManager.saveUserPhone(profile.getPhone());
+                            displayUserInfo();
+                            if (showDialogAfterLoad) {
+                                showAccountDialog();
+                            }
+                        } else if (response.code() == 401 || response.code() == 403) {
+                            // Luồng rẽ nhánh 1: Token không hợp lệ hoặc đã hết hạn
+                            Toast.makeText(MainActivity.this,
+                                    "Phiên đăng nhập không hợp lệ hoặc đã hết hạn, vui lòng đăng nhập lại",
+                                    Toast.LENGTH_LONG).show();
+                            tokenManager.clear();
+                            goToLogin();
+                        } else if (response.code() == 404) {
+                            // Luồng rẽ nhánh 2: Không tìm thấy tài khoản trong CSDL
+                            if (showDialogAfterLoad) {
+                                showProfileErrorDialog("Không thể tìm thấy thông tin tài khoản", false);
+                            }
+                        } else {
+                            // Luồng rẽ nhánh 3: Lỗi trong quá trình truy xuất dữ liệu
+                            if (showDialogAfterLoad) {
+                                showProfileErrorDialog("Không thể tải thông tin tài khoản. Vui lòng thực hiện lại thao tác.", true);
                             }
                         }
                     }
 
                     @Override
-                    public void onFailure(retrofit2.Call<com.example.petcareui.data.model.UserProfileResponse> call, Throwable t) {
+                    public void onFailure(Call<UserProfileResponse> call, Throwable t) {
+                        // Luồng rẽ nhánh 4: Mất kết nối mạng hoặc không nhận được phản hồi
+                        if (showDialogAfterLoad) {
+                            showProfileErrorDialog("Lỗi kết nối mạng. Vui lòng khôi phục kết nối và tải lại thông tin tài khoản.", true);
+                        }
                     }
                 });
+    }
+
+    private void showProfileErrorDialog(String message, boolean allowRetry) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this)
+                .setTitle("Thông báo")
+                .setMessage(message)
+                .setNegativeButton("Đóng", null);
+        if (allowRetry) {
+            builder.setPositiveButton("Tải lại", (dialog, which) -> refreshUserProfile(true));
+        }
+        builder.show();
     }
 
     private void displayUserInfo() {
@@ -86,8 +129,8 @@ public class MainActivity extends AppCompatActivity {
             }
             binding.tvAvatarInitials.setText(initials.toString().toUpperCase());
         } else {
-            binding.tvWelcomeName.setText("Nguyễn Lan");
-            binding.tvAvatarInitials.setText("NL");
+            binding.tvWelcomeName.setText("Khách hàng");
+            binding.tvAvatarInitials.setText("KH");
         }
     }
 
@@ -98,7 +141,7 @@ public class MainActivity extends AppCompatActivity {
             startActivity(intent);
         });
 
-        binding.btnAvatar.setOnClickListener(v -> showAccountDialog());
+        binding.btnAvatar.setOnClickListener(v -> refreshUserProfile(true));
 
         // 2. Tìm kiếm & Lọc -> Mở C04 Danh sách phòng khám
         binding.btnSearchBar.setOnClickListener(v -> {
@@ -168,7 +211,7 @@ public class MainActivity extends AppCompatActivity {
             startActivity(intent);
         });
 
-        binding.navProfile.setOnClickListener(v -> showAccountDialog());
+        binding.navProfile.setOnClickListener(v -> refreshUserProfile(true));
     }
 
     private void setupFilterChips() {
@@ -196,19 +239,31 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void showAccountDialog() {
-        new AlertDialog.Builder(this)
-                .setTitle("Tài khoản của bạn")
-                .setMessage("Tên: " + tokenManager.getUserName() + "\nEmail: " + tokenManager.getUserEmail() + "\nVai trò: " + tokenManager.getUserRole())
-                .setNeutralButton("Bảng nhân viên (S01)", (dialog, which) -> {
-                    Intent intent = new Intent(this, com.example.petcareui.ui.staff.StaffDashboardActivity.class);
-                    startActivity(intent);
-                })
+        String phone = tokenManager.getUserPhone();
+        String phoneDisplay = (phone != null && !phone.isEmpty()) ? phone : "Chưa cập nhật";
+        String role = tokenManager.getUserRole();
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(this)
+                .setTitle("Thông tin tài khoản")
+                .setMessage("Họ và tên: " + tokenManager.getUserName()
+                        + "\nEmail: " + tokenManager.getUserEmail()
+                        + "\nSố điện thoại: " + phoneDisplay
+                        + "\nVai trò: " + role)
                 .setPositiveButton("Đóng", null)
                 .setNegativeButton("Đăng xuất", (dialog, which) -> {
                     tokenManager.clear();
                     goToLogin();
-                })
-                .show();
+                });
+
+        // Chỉ hiển thị lối tắt Bảng nhân viên nếu tài khoản có vai trò STAFF
+        if ("STAFF".equalsIgnoreCase(role)) {
+            builder.setNeutralButton("Bảng nhân viên (S01)", (dialog, which) -> {
+                Intent intent = new Intent(this, com.example.petcareui.ui.staff.StaffDashboardActivity.class);
+                startActivity(intent);
+            });
+        }
+
+        builder.show();
     }
 
     private void goToLogin() {

@@ -29,6 +29,10 @@ public class TokenManager {
         editor.apply();
     }
 
+    public void saveUserPhone(String phone) {
+        prefs.edit().putString(Constants.KEY_USER_PHONE, phone != null ? phone : "").apply();
+    }
+
     public String getToken() {
         return prefs.getString(Constants.KEY_TOKEN, null);
     }
@@ -39,6 +43,10 @@ public class TokenManager {
 
     public String getUserEmail() {
         return prefs.getString(Constants.KEY_USER_EMAIL, "");
+    }
+
+    public String getUserPhone() {
+        return prefs.getString(Constants.KEY_USER_PHONE, "");
     }
 
     public String getUserRole() {

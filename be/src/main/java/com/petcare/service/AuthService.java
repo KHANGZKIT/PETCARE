@@ -7,6 +7,7 @@ import com.petcare.dto.response.UserProfileResponse;
 import com.petcare.entity.UserEntity;
 import com.petcare.entity.UserRole;
 import com.petcare.exception.DuplicateResourceException;
+import com.petcare.exception.ResourceNotFoundException;
 import com.petcare.repository.UserRepository;
 import com.petcare.security.JwtService;
 import lombok.RequiredArgsConstructor;
@@ -92,7 +93,16 @@ public class AuthService {
 
     @Transactional(readOnly = true)
     public UserProfileResponse getProfile(String email) {
-        UserEntity user = findUserByEmail(email);
+        if (email == null || email.isBlank()) {
+            throw new BadCredentialsException("Chưa đăng nhập");
+        }
+        UserEntity user = userRepository.findByEmailIgnoreCase(email.trim())
+                .orElseThrow(() -> new ResourceNotFoundException("Không thể tìm thấy thông tin tài khoản"));
+
+        if (!isActive(user)) {
+            throw new IllegalStateException("Tài khoản đã bị tạm khóa, vui lòng liên hệ quản trị viên");
+        }
+
         Long clinicId = user.getClinic() != null ? user.getClinic().getId() : null;
 
         return UserProfileResponse.builder()
