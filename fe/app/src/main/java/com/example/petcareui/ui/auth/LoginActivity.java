@@ -28,9 +28,9 @@ public class LoginActivity extends AppCompatActivity {
 
         tokenManager = TokenManager.getInstance(this);
 
-        // Nếu đã đăng nhập trước đó thì chuyển thẳng vào màn hình chính
+        // Nếu đã đăng nhập trước đó thì chuyển thẳng vào màn hình theo vai trò
         if (tokenManager.isLoggedIn()) {
-            goToMainActivity();
+            routeUserByRole(tokenManager.getUserRole());
             return;
         }
 
@@ -128,9 +128,20 @@ public class LoginActivity extends AppCompatActivity {
                 );
 
                 Toast.makeText(LoginActivity.this, "Chào mừng " + response.getFullName() + "!", Toast.LENGTH_SHORT).show();
-                goToMainActivity();
+                routeUserByRole(response.getRole());
             }
         });
+    }
+
+    private void routeUserByRole(String role) {
+        if ("STAFF".equalsIgnoreCase(role)) {
+            Intent intent = new Intent(LoginActivity.this, com.example.petcareui.ui.staff.StaffDashboardActivity.class);
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+            startActivity(intent);
+            finish();
+        } else {
+            goToMainActivity();
+        }
     }
 
     private void goToMainActivity() {

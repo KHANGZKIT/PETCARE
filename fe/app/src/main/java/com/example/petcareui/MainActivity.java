@@ -64,7 +64,7 @@ public class MainActivity extends AppCompatActivity {
                                     profile.getFullName(),
                                     profile.getEmail(),
                                     profile.getRole(),
-                                    tokenManager.getClinicId()
+                                    profile.getClinicId()
                             );
                             tokenManager.saveUserPhone(profile.getPhone());
                             displayUserInfo();

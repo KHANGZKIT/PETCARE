@@ -16,9 +16,6 @@ import com.example.petcareui.data.model.AppointmentResponse;
 import com.example.petcareui.data.model.StaffAppointmentItem;
 import com.example.petcareui.databinding.ActivityStaffAppointmentDetailsBinding;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -41,7 +38,6 @@ public class StaffAppointmentDetailsActivity extends AppCompatActivity {
     public static final String EXTRA_STATE = "extra_state";
 
     private ActivityStaffAppointmentDetailsBinding binding;
-    private final Map<String, StaffAppointmentItem> mockDataMap = new HashMap<>();
     private StaffAppointmentItem currentAppt;
 
     private String currentState = "default";
@@ -53,8 +49,12 @@ public class StaffAppointmentDetailsActivity extends AppCompatActivity {
         binding = ActivityStaffAppointmentDetailsBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
-        initMockData();
         extractIntentData();
+        if (currentAppt == null) {
+            Toast.makeText(this, "Không tìm thấy thông tin lịch hẹn", Toast.LENGTH_SHORT).show();
+            finish();
+            return;
+        }
         bindAppointmentData();
         setupAppBar();
         setupStateToggles();
@@ -64,48 +64,11 @@ public class StaffAppointmentDetailsActivity extends AppCompatActivity {
         applyState(currentState);
     }
 
-    private void initMockData() {
-        mockDataMap.put("PC-48213", new StaffAppointmentItem(
-                "PC-48213", "Mochi", R.drawable.img_pet_mochi,
-                "Pomeranian · 2 tuổi · Cái · 3,4 kg",
-                "Nguyễn Lan", "+84 90 123 4567", "Khách hàng từ tháng 3/2026",
-                "Tiêm phòng", "20 phút", "Thứ 2, 27/10/2026", "10:00",
-                "PENDING", "250.000 ₫", "Gửi cách đây 2 giờ",
-                "Mochi hơi mẩn nhẹ sau mũi tiêm lần trước."
-        ));
-
-        mockDataMap.put("PC-48230", new StaffAppointmentItem(
-                "PC-48230", "Lựu", R.drawable.img_pet_luu,
-                "Corgi · 6 tháng · Đực · 7,2 kg",
-                "Phạm Hà", "+84 91 884 2310", "Khách hàng từ tháng 6/2026",
-                "Khám tổng quát", "30 phút", "Thứ 2, 27/10/2026", "11:30",
-                "PENDING", "180.000 ₫", "Gửi cách đây 5 giờ", null
-        ));
-
-        mockDataMap.put("PC-47980", new StaffAppointmentItem(
-                "PC-47980", "Bông", R.drawable.img_pet_bong,
-                "Anh lông ngắn · 4 tuổi · Đực · 5,1 kg",
-                "Trần Minh", "+84 93 220 7781", "Khách hàng từ tháng 1/2025",
-                "Cạo vôi & chăm sóc răng", "45 phút", "Thứ 2, 27/10/2026", "14:00",
-                "CONFIRMED", "600.000 ₫", "Phòng khám đã xác nhận",
-                "Nhờ bác sĩ xem lại răng hàm dưới bên trái."
-        ));
-    }
-
     private void extractIntentData() {
         if (getIntent().hasExtra(EXTRA_APPT)) {
             try {
                 currentAppt = (StaffAppointmentItem) getIntent().getSerializableExtra(EXTRA_APPT);
             } catch (Exception ignored) {
-            }
-        }
-
-        if (currentAppt == null) {
-            String ref = getIntent().getStringExtra(EXTRA_REF);
-            if (ref != null && mockDataMap.containsKey(ref)) {
-                currentAppt = mockDataMap.get(ref);
-            } else {
-                currentAppt = mockDataMap.get("PC-48213");
             }
         }
 
@@ -339,19 +302,22 @@ public class StaffAppointmentDetailsActivity extends AppCompatActivity {
                 ApiClient.getAppointmentApi().completeAppointment(apptId).enqueue(new Callback<AppointmentResponse>() {
                     @Override
                     public void onResponse(Call<AppointmentResponse> call, Response<AppointmentResponse> response) {
-                        Toast.makeText(StaffAppointmentDetailsActivity.this, "Đã hoàn thành lượt khám cho " + currentAppt.getPet(), Toast.LENGTH_SHORT).show();
-                        finish();
+                        if (response.isSuccessful()) {
+                            if (currentAppt != null) currentAppt.setStatus("COMPLETED");
+                            Toast.makeText(StaffAppointmentDetailsActivity.this, "Đã hoàn thành lượt khám cho " + currentAppt.getPet(), Toast.LENGTH_SHORT).show();
+                            finish();
+                        } else {
+                            Toast.makeText(StaffAppointmentDetailsActivity.this, "Không thể hoàn thành lịch hẹn (Mã " + response.code() + ")", Toast.LENGTH_SHORT).show();
+                        }
                     }
 
                     @Override
                     public void onFailure(Call<AppointmentResponse> call, Throwable t) {
-                        Toast.makeText(StaffAppointmentDetailsActivity.this, "Đã hoàn thành lượt khám", Toast.LENGTH_SHORT).show();
-                        finish();
+                        Toast.makeText(StaffAppointmentDetailsActivity.this, "Lỗi kết nối máy chủ khi hoàn thành lịch hẹn", Toast.LENGTH_SHORT).show();
                     }
                 });
             } else {
-                Toast.makeText(this, "Đã hoàn thành lượt khám cho " + currentAppt.getPet(), Toast.LENGTH_SHORT).show();
-                finish();
+                Toast.makeText(this, "Thiếu mã lịch hẹn hợp lệ", Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -362,19 +328,22 @@ public class StaffAppointmentDetailsActivity extends AppCompatActivity {
                 ApiClient.getAppointmentApi().noShowAppointment(apptId).enqueue(new Callback<AppointmentResponse>() {
                     @Override
                     public void onResponse(Call<AppointmentResponse> call, Response<AppointmentResponse> response) {
-                        Toast.makeText(StaffAppointmentDetailsActivity.this, "Đã ghi nhận khách không đến hẹn", Toast.LENGTH_SHORT).show();
-                        finish();
+                        if (response.isSuccessful()) {
+                            if (currentAppt != null) currentAppt.setStatus("NO_SHOW");
+                            Toast.makeText(StaffAppointmentDetailsActivity.this, "Đã ghi nhận khách không đến hẹn", Toast.LENGTH_SHORT).show();
+                            finish();
+                        } else {
+                            Toast.makeText(StaffAppointmentDetailsActivity.this, "Không thể cập nhật trạng thái (Mã " + response.code() + ")", Toast.LENGTH_SHORT).show();
+                        }
                     }
 
                     @Override
                     public void onFailure(Call<AppointmentResponse> call, Throwable t) {
-                        Toast.makeText(StaffAppointmentDetailsActivity.this, "Đã ghi nhận khách không đến hẹn", Toast.LENGTH_SHORT).show();
-                        finish();
+                        Toast.makeText(StaffAppointmentDetailsActivity.this, "Lỗi kết nối máy chủ khi cập nhật lịch hẹn", Toast.LENGTH_SHORT).show();
                     }
                 });
             } else {
-                Toast.makeText(this, "Đã ghi nhận khách không đến hẹn", Toast.LENGTH_SHORT).show();
-                finish();
+                Toast.makeText(this, "Thiếu mã lịch hẹn hợp lệ", Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -395,19 +364,20 @@ public class StaffAppointmentDetailsActivity extends AppCompatActivity {
                             applyState("success");
                             Toast.makeText(StaffAppointmentDetailsActivity.this, "Đã xác nhận lịch hẹn thành công!", Toast.LENGTH_SHORT).show();
                         } else {
-                            applyState("success");
-                            Toast.makeText(StaffAppointmentDetailsActivity.this, "Đã xác nhận lịch hẹn", Toast.LENGTH_SHORT).show();
+                            applyState("failed");
+                            Toast.makeText(StaffAppointmentDetailsActivity.this, "Không thể xác nhận lịch hẹn (Mã " + response.code() + ")", Toast.LENGTH_SHORT).show();
                         }
                     }
 
                     @Override
                     public void onFailure(Call<AppointmentResponse> call, Throwable t) {
-                        applyState("success");
-                        Toast.makeText(StaffAppointmentDetailsActivity.this, "Đã xác nhận lịch hẹn", Toast.LENGTH_SHORT).show();
+                        applyState("failed");
+                        Toast.makeText(StaffAppointmentDetailsActivity.this, "Lỗi kết nối máy chủ khi xác nhận lịch hẹn", Toast.LENGTH_SHORT).show();
                     }
                 });
             } else {
-                applyState("success");
+                applyState("failed");
+                Toast.makeText(this, "Thiếu mã lịch hẹn hợp lệ", Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -431,21 +401,25 @@ public class StaffAppointmentDetailsActivity extends AppCompatActivity {
                 ApiClient.getAppointmentApi().rejectAppointment(apptId).enqueue(new Callback<AppointmentResponse>() {
                     @Override
                     public void onResponse(Call<AppointmentResponse> call, Response<AppointmentResponse> response) {
-                        if (currentAppt != null) currentAppt.setStatus("REJECTED");
-                        Toast.makeText(StaffAppointmentDetailsActivity.this, "Đã từ chối với lý do: " + selectedRejectReason, Toast.LENGTH_SHORT).show();
-                        applyState("rejected");
+                        if (response.isSuccessful()) {
+                            if (currentAppt != null) currentAppt.setStatus("REJECTED");
+                            Toast.makeText(StaffAppointmentDetailsActivity.this, "Đã từ chối với lý do: " + selectedRejectReason, Toast.LENGTH_SHORT).show();
+                            applyState("rejected");
+                        } else {
+                            applyState("failed");
+                            Toast.makeText(StaffAppointmentDetailsActivity.this, "Không thể từ chối lịch hẹn (Mã " + response.code() + ")", Toast.LENGTH_SHORT).show();
+                        }
                     }
 
                     @Override
                     public void onFailure(Call<AppointmentResponse> call, Throwable t) {
-                        if (currentAppt != null) currentAppt.setStatus("REJECTED");
-                        Toast.makeText(StaffAppointmentDetailsActivity.this, "Đã từ chối với lý do: " + selectedRejectReason, Toast.LENGTH_SHORT).show();
-                        applyState("rejected");
+                        applyState("failed");
+                        Toast.makeText(StaffAppointmentDetailsActivity.this, "Lỗi kết nối máy chủ khi từ chối lịch hẹn", Toast.LENGTH_SHORT).show();
                     }
                 });
             } else {
-                Toast.makeText(this, "Đã từ chối với lý do: " + selectedRejectReason, Toast.LENGTH_SHORT).show();
-                applyState("rejected");
+                applyState("failed");
+                Toast.makeText(this, "Thiếu mã lịch hẹn hợp lệ", Toast.LENGTH_SHORT).show();
             }
         });
 
