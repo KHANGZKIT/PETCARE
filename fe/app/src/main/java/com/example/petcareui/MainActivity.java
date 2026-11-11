@@ -44,6 +44,14 @@ public class MainActivity extends AppCompatActivity {
         setupListeners();
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (tokenManager != null && tokenManager.isLoggedIn()) {
+            displayUserInfo();
+        }
+    }
+
     private void refreshUserProfile(boolean showDialogAfterLoad) {
         String token = tokenManager.getToken();
         if (token == null || token.isEmpty()) {
@@ -141,7 +149,7 @@ public class MainActivity extends AppCompatActivity {
             startActivity(intent);
         });
 
-        binding.btnAvatar.setOnClickListener(v -> refreshUserProfile(true));
+        binding.btnAvatar.setOnClickListener(v -> openProfileScreen());
 
         // 2. Tìm kiếm & Lọc -> Mở C04 Danh sách phòng khám
         binding.btnSearchBar.setOnClickListener(v -> {
@@ -173,15 +181,17 @@ public class MainActivity extends AppCompatActivity {
         });
 
         binding.cardClinicGiaDinh.setOnClickListener(v -> {
-            com.example.petcareui.data.model.ClinicItem giaDinh = new com.example.petcareui.data.model.ClinicItem(
-                    "cl-02", "Bệnh viện Thú y Gia Định", "128 Trần Não, Quận 2", 4.6, 158, "3,4 km", true, "Thứ 2 – CN · 07:30 – 21:00",
-                    "+84 28 3744 2210",
-                    "Bệnh viện mở giờ kéo dài, có tiếp nhận cấp cứu, chẩn đoán hình ảnh và phòng xét nghiệm tại chỗ.",
+            com.example.petcareui.data.model.ClinicItem haUiClinic = new com.example.petcareui.data.model.ClinicItem(
+                    "2", "Bệnh viện Thú y HaUI", "Số 298 Cầu Diễn, Bắc Từ Liêm, Hà Nội", 4.9, 158, "0,1 km", true, "24/7 Cấp cứu & Khám chữa",
+                    "024 3765 5121",
+                    "Bệnh viện thú y trực thuộc gần trường ĐH Công nghiệp Hà Nội, có tiếp nhận cấp cứu 24/7, phòng phẫu thuật và xét nghiệm.",
                     "24/7",
                     "Tiếng Việt, tiếng Anh"
             );
+            haUiClinic.setLatitude(21.0537);
+            haUiClinic.setLongitude(105.7351);
             Intent intent = new Intent(MainActivity.this, com.example.petcareui.ui.clinic.ClinicDetailsActivity.class);
-            intent.putExtra(com.example.petcareui.ui.clinic.ClinicDetailsActivity.EXTRA_CLINIC, giaDinh);
+            intent.putExtra(com.example.petcareui.ui.clinic.ClinicDetailsActivity.EXTRA_CLINIC, haUiClinic);
             startActivity(intent);
         });
 
@@ -211,7 +221,12 @@ public class MainActivity extends AppCompatActivity {
             startActivity(intent);
         });
 
-        binding.navProfile.setOnClickListener(v -> refreshUserProfile(true));
+        binding.navProfile.setOnClickListener(v -> openProfileScreen());
+    }
+
+    private void openProfileScreen() {
+        Intent intent = new Intent(MainActivity.this, com.example.petcareui.ui.profile.ProfileActivity.class);
+        startActivity(intent);
     }
 
     private void setupFilterChips() {

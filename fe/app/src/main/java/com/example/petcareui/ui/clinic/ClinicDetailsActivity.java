@@ -72,19 +72,19 @@ public class ClinicDetailsActivity extends AppCompatActivity {
             }
         }
 
-        // Dữ liệu mẫu mặc định (An Nhiên - chuẩn theo prototype CLINICS[0])
+        // Dữ liệu mẫu mặc định (An Nhiên - Hà Nội)
         if (clinicItem == null) {
             clinicItem = new ClinicItem(
                     "1",
                     "Phòng khám Thú y An Nhiên",
-                    "42 Nguyễn Huệ, Quận 1, TP.HCM",
+                    "Số 12 Chùa Hà, Phường Quan Hoa, Cầu Giấy, Hà Nội",
                     4.8,
                     214,
                     "1,2 km",
                     true,
                     "Thứ 2 – CN · 08:00 – 20:00",
-                    "+84 28 3822 1140",
-                    "Phòng khám nhỏ cho chó và mèo. Khám tổng quát, tiêm phòng, nha khoa và tiểu phẫu, có phòng xét nghiệm tại chỗ và khu thăm khám yên tĩnh, ít gây căng thẳng cho thú cưng.",
+                    "024 3833 5566",
+                    "Phòng khám chăm sóc thú cưng uy tín tại Hà Nội. Khám tổng quát, tiêm phòng, nha khoa và tiểu phẫu, có phòng xét nghiệm tại chỗ và khu thăm khám yên tĩnh.",
                     "Đến 22:00",
                     "Tiếng Việt, tiếng Anh"
             );

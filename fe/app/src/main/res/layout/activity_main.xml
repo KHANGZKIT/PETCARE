@@ -449,7 +449,7 @@
                                         android:layout_width="wrap_content"
                                         android:layout_height="wrap_content"
                                         android:layout_marginStart="4dp"
-                                        android:text="Quận 1 · TP.HCM"
+                                        android:text="Cầu Giấy · Hà Nội"
                                         android:textSize="11.5sp"
                                         android:textColor="@color/text_muted" />
                                 </LinearLayout>
@@ -537,7 +537,7 @@
                                 <TextView
                                     android:layout_width="match_parent"
                                     android:layout_height="wrap_content"
-                                    android:text="Bệnh viện Thú y Gia Định"
+                                    android:text="Bệnh viện Thú y HaUI"
                                     android:textSize="14.5sp"
                                     android:textStyle="bold"
                                     android:textColor="@color/text_foreground"
@@ -561,7 +561,7 @@
                                         android:layout_width="wrap_content"
                                         android:layout_height="wrap_content"
                                         android:layout_marginStart="4dp"
-                                        android:text="Quận 2 · TP.HCM"
+                                        android:text="Bắc Từ Liêm · Hà Nội"
                                         android:textSize="11.5sp"
                                         android:textColor="@color/text_muted" />
                                 </LinearLayout>

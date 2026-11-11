@@ -15,7 +15,9 @@ CREATE TABLE public.clinics (
     area                VARCHAR(100) NOT NULL,
     phone               VARCHAR(20) NOT NULL UNIQUE,
     working_hours_note  VARCHAR(150),
-    is_active           BOOLEAN NOT NULL DEFAULT TRUE
+    is_active           BOOLEAN NOT NULL DEFAULT TRUE,
+    latitude            DOUBLE PRECISION,
+    longitude           DOUBLE PRECISION
 );
 
 -- 2. Customers and clinic staff share one table

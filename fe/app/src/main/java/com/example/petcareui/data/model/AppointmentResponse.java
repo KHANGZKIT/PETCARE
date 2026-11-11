@@ -53,7 +53,7 @@ public class AppointmentResponse implements Serializable {
                 id,
                 formattedRef,
                 clinicName != null ? clinicName : "Phòng khám thú y",
-                clinicAddress != null ? clinicAddress : "TP.HCM",
+                clinicAddress != null ? clinicAddress : "Hà Nội",
                 petName != null ? petName : "Bé cưng",
                 avatar,
                 serviceName != null ? serviceName : "Dịch vụ khám",

@@ -89,7 +89,7 @@ public class BookingSuccessActivity extends AppCompatActivity {
         // Dữ liệu fallback chuẩn theo data.js (STAFF_CLINIC, SERVICES[1], PETS[0], SELECTED) nếu mở độc lập
         if (clinicItem == null) {
             clinicItem = new ClinicItem(
-                    "cl-01", "Phòng khám Thú y An Nhiên", "42 Nguyễn Huệ, Quận 1, TP.HCM", 4.8, 214, "1,2 km", true, "Thứ 2 – CN · 08:00 – 20:00"
+                    "1", "Phòng khám Thú y An Nhiên", "Số 12 Chùa Hà, Cầu Giấy, Hà Nội", 4.8, 214, "1,2 km", true, "Thứ 2 – CN · 08:00 – 20:00"
             );
         }
         if (serviceItem == null) {

@@ -5,7 +5,7 @@ spring:
   datasource:
     url: ${DB_URL:jdbc:postgresql://localhost:5432/pet_care}
     username: ${DB_USERNAME:postgres}
-    password: ${DB_PASSWORD:}
+    password: ${DB_PASSWORD:postgres}
     driver-class-name: org.postgresql.Driver
 
   jpa:
@@ -26,7 +26,7 @@ logging:
     org.springframework.security: INFO
 
 jwt:
-  secret-key: ${JWT_SECRET}
+  secret-key: ${JWT_SECRET:PetCareSecretKeyForJwtAuthenticationSecurity2026}
   expiration-time: ${JWT_EXPIRATION:86400000}
 
 

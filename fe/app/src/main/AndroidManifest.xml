@@ -3,6 +3,8 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
 
     <application
         android:name=".PetCareApplication"
@@ -73,6 +75,11 @@
         <!-- Màn hình Thông báo (C14) -->
         <activity
             android:name=".ui.notifications.NotificationsActivity"
+            android:exported="false" />
+
+        <!-- Màn hình Thông tin tài khoản & Cài đặt (C15) -->
+        <activity
+            android:name=".ui.profile.ProfileActivity"
             android:exported="false" />
 
         <!-- Phân hệ Nhân viên: Bảng làm việc nhân viên (S01) -->

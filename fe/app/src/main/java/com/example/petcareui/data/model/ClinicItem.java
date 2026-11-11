@@ -16,11 +16,14 @@ public class ClinicItem implements Serializable {
     private String emergencyHours;
     private String languages;
     private String area;
+    private Double latitude;
+    private Double longitude;
+    private Float distanceKm;
 
     public ClinicItem(String id, String name, String address, double rating, int reviews, String distance, boolean open, String hours) {
         this(id, name, address, rating, reviews, distance, open, hours,
-                "+84 28 3822 1140",
-                "Phòng khám nhỏ cho chó và mèo. Khám tổng quát, tiêm phòng, nha khoa và tiểu phẫu, có phòng xét nghiệm tại chỗ và khu thăm khám yên tĩnh, ít gây căng thẳng cho thú cưng.",
+                "024 3833 5566",
+                "Phòng khám thú y tiêu chuẩn cao cho chó và mèo. Khám tổng quát, tiêm phòng, nha khoa và tiểu phẫu, có phòng xét nghiệm tại chỗ và khu thăm khám yên tĩnh.",
                 "Đến 22:00",
                 "Tiếng Việt, tiếng Anh");
     }
@@ -70,7 +73,11 @@ public class ClinicItem implements Serializable {
     }
 
     public String getDistance() {
-        return distance;
+        return distance != null ? distance : "1,2 km";
+    }
+
+    public void setDistance(String distance) {
+        this.distance = distance;
     }
 
     public boolean isOpen() {
@@ -82,7 +89,7 @@ public class ClinicItem implements Serializable {
     }
 
     public String getPhone() {
-        return phone != null ? phone : "+84 28 3822 1140";
+        return phone != null ? phone : "024 3833 5566";
     }
 
     public String getAbout() {
@@ -97,15 +104,44 @@ public class ClinicItem implements Serializable {
         return languages != null ? languages : "Tiếng Việt, tiếng Anh";
     }
 
+    public Double getLatitude() {
+        return latitude;
+    }
+
+    public void setLatitude(Double latitude) {
+        this.latitude = latitude;
+    }
+
+    public Double getLongitude() {
+        return longitude;
+    }
+
+    public void setLongitude(Double longitude) {
+        this.longitude = longitude;
+    }
+
+    public Float getDistanceKm() {
+        return distanceKm;
+    }
+
+    public void setDistanceKm(Float distanceKm) {
+        this.distanceKm = distanceKm;
+    }
+
     public String getArea() {
-        if (area != null) return area;
+        if (area != null && !area.isEmpty()) {
+            if (area.toLowerCase().contains("hà nội") || area.toLowerCase().contains("ha noi")) {
+                return area;
+            }
+            return area + " · Hà Nội";
+        }
         if (address != null && address.contains(",")) {
             String[] parts = address.split(",");
             if (parts.length >= 2) {
-                return parts[parts.length - 2].trim() + " · TP.HCM";
+                return parts[parts.length - 2].trim() + " · Hà Nội";
             }
         }
-        return "Quận 1 · TP.HCM";
+        return "Cầu Giấy · Hà Nội";
     }
 
     public void setArea(String area) {

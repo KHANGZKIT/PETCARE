@@ -129,7 +129,7 @@
                             android:layout_marginStart="4dp"
                             android:ellipsize="end"
                             android:maxLines="1"
-                            android:text="Quận 1 · TP.HCM"
+                            android:text="Cầu Giấy · Hà Nội"
                             android:textColor="@color/text_muted"
                             android:textSize="11.5sp" />
                     </LinearLayout>

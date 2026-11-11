@@ -224,7 +224,14 @@ public class DateTimeActivity extends AppCompatActivity {
 
             @Override
             public void onFailure(Call<List<ClinicSlotResponse>> call, Throwable t) {
-                setupFallbackTimeSlots(date);
+                timeSlots.clear();
+                date.setAvailable(0);
+                date.setState("full");
+                selectedSlotIndex = -1;
+                showNoSlotsState(date);
+                binding.tvNoSlotsTitle.setText("Không thể kết nối máy chủ");
+                binding.tvSelectedDateTimeSummary.setText("Lỗi mạng khi tải khung giờ");
+                Toast.makeText(DateTimeActivity.this, "Lỗi kết nối máy chủ khi tải khung giờ khám.", Toast.LENGTH_SHORT).show();
                 updateDateSelectionUI();
             }
         });
@@ -252,27 +259,7 @@ public class DateTimeActivity extends AppCompatActivity {
         binding.btnContinue.setAlpha(0.45f);
     }
 
-    private void setupFallbackTimeSlots(DateItem date) {
-        timeSlots.clear();
-        timeSlots.add(new TimeSlotItem(1L, "08:30", "available"));
-        timeSlots.add(new TimeSlotItem(2L, "09:00", "unavailable"));
-        timeSlots.add(new TimeSlotItem(3L, "09:30", "available"));
-        timeSlots.add(new TimeSlotItem(4L, "10:00", "available"));
-        timeSlots.add(new TimeSlotItem(5L, "10:30", "available"));
-        timeSlots.add(new TimeSlotItem(6L, "11:00", "unavailable"));
-        timeSlots.add(new TimeSlotItem(7L, "14:00", "available"));
-        timeSlots.add(new TimeSlotItem(8L, "14:30", "available"));
-        timeSlots.add(new TimeSlotItem(9L, "15:00", "available"));
 
-        int count = 0;
-        for (TimeSlotItem s : timeSlots) {
-            if (s.isAvailable()) count++;
-        }
-        date.setAvailable(count);
-        date.setState("open");
-        selectedSlotIndex = 0;
-        showSlotsAvailableState(date, count);
-    }
 
     private int dpToPx(int dp) {
         return (int) (dp * getResources().getDisplayMetrics().density + 0.5f);

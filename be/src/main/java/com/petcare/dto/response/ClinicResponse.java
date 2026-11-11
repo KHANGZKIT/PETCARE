@@ -21,6 +21,8 @@ public class ClinicResponse {
     private String phone;
     private String workingHourNote;
     private boolean active;
+    private Double latitude;
+    private Double longitude;
 
     public static ClinicResponse fromEntity(ClinicEntity entity) {
         return ClinicResponse.builder()
@@ -31,6 +33,8 @@ public class ClinicResponse {
                 .phone(entity.getPhone())
                 .workingHourNote(entity.getWorkingHoursNote())
                 .active(entity.isActive())
+                .latitude(entity.getLatitude())
+                .longitude(entity.getLongitude())
                 .build();
     }
 }

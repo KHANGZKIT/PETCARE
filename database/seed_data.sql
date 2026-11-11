@@ -8,12 +8,19 @@
 BEGIN;
 
 -- 1. Phòng khám (Clinics)
-INSERT INTO public.clinics (id, name, address, area, phone, working_hours_note, is_active)
+INSERT INTO public.clinics (id, name, address, area, phone, working_hours_note, is_active, latitude, longitude)
 VALUES
-    (1, 'Phòng khám Thú y An Nhiên', '123 Nguyễn Thị Minh Khai, Phường Bến Thành', 'Quận 1', '02839123456', '08:00 - 20:00 (Thứ 2 - Chủ Nhật)', true),
-    (2, 'Phòng khám Thú y Gia Định', '45 Lê Quang Định, Phường 14', 'Bình Thạnh', '02838456789', '08:00 - 18:00 (Thứ 2 - Thứ 7)', true),
-    (3, 'Bệnh viện Thú y PetCare Tân Bình', '78 Cộng Hòa, Phường 4', 'Tân Bình', '02838112233', '24/7 Cấp cứu & Khám chữa', true)
-ON CONFLICT (id) DO NOTHING;
+    (1, 'Phòng khám Thú y An Nhiên', 'Số 12 Chùa Hà, Phường Quan Hoa', 'Cầu Giấy', '02438335566', '08:00 - 20:00 (Thứ 2 - Chủ Nhật)', true, 21.0360, 105.7950),
+    (2, 'Bệnh viện Thú y PetCare HaUI', 'Số 298 Đường Cầu Diễn, Phường Minh Khai', 'Bắc Từ Liêm', '02437655121', '24/7 Cấp cứu & Khám chữa', true, 21.0537, 105.7351),
+    (3, 'Bệnh viện Thú y PetCare Đống Đa', 'Số 88 Thái Hà, Phường Trung Liệt', 'Đống Đa', '02438561122', '08:00 - 18:00 (Thứ 2 - Thứ 7)', true, 21.0125, 105.8190)
+ON CONFLICT (id) DO UPDATE SET
+    name = EXCLUDED.name,
+    address = EXCLUDED.address,
+    area = EXCLUDED.area,
+    phone = EXCLUDED.phone,
+    working_hours_note = EXCLUDED.working_hours_note,
+    latitude = EXCLUDED.latitude,
+    longitude = EXCLUDED.longitude;
 
 -- 2. Người dùng (Users: Customers và Clinic Staff)
 -- Mật khẩu đăng nhập: 123456

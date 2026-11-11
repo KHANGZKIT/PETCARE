@@ -83,7 +83,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="4dp"
-                android:text="42 Nguyễn Huệ, Quận 1, TP.HCM"
+                android:text="Số 12 Chùa Hà, Cầu Giấy, Hà Nội"
                 android:textSize="11.5sp"
                 android:textColor="@color/text_muted"
                 android:singleLine="true"

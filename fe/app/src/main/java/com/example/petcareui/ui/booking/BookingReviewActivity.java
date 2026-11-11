@@ -95,10 +95,10 @@ public class BookingReviewActivity extends AppCompatActivity {
             currentState = getIntent().getStringExtra(EXTRA_STATE);
         }
 
-        // Dữ liệu mẫu chuẩn theo data.js (STAFF_CLINIC, SERVICES[1], PETS[0], SELECTED) nếu mở độc lập
+        // Dữ liệu mẫu chuẩn nếu mở độc lập
         if (clinicItem == null) {
             clinicItem = new ClinicItem(
-                    "1", "Phòng khám Thú y An Nhiên", "42 Nguyễn Huệ, Quận 1, TP.HCM", 4.8, 214, "1,2 km", true, "Thứ 2 – CN · 08:00 – 20:00"
+                    "1", "Phòng khám Thú y An Nhiên", "Số 12 Chùa Hà, Cầu Giấy, Hà Nội", 4.8, 214, "1,2 km", true, "Thứ 2 – CN · 08:00 – 20:00"
             );
         }
         if (serviceItem == null) {
@@ -185,16 +185,15 @@ public class BookingReviewActivity extends AppCompatActivity {
             applyState("loading");
 
             Long clinicId = clinicItem != null ? clinicItem.getNumericId() : null;
-            if (clinicId == null) clinicId = 1L;
-
             Long serviceId = serviceItem != null ? serviceItem.getNumericId() : null;
-            if (serviceId == null) serviceId = 1L;
-
             Long slotId = timeSlotItem != null ? timeSlotItem.getId() : null;
-            if (slotId == null) slotId = 1L;
-
             Long petId = petItem != null ? petItem.getNumericId() : null;
-            if (petId == null) petId = 1L;
+
+            if (clinicId == null || serviceId == null || slotId == null || petId == null) {
+                applyState("default");
+                Toast.makeText(this, "Thông tin đặt lịch chưa đầy đủ. Vui lòng kiểm tra lại dịch vụ, khung giờ và thú cưng.", Toast.LENGTH_LONG).show();
+                return;
+            }
 
             AppointmentRequest request = new AppointmentRequest(petId, clinicId, serviceId, slotId);
             ApiClient.getAppointmentApi().createAppointment(request).enqueue(new Callback<AppointmentResponse>() {

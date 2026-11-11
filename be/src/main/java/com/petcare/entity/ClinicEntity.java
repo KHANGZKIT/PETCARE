@@ -34,6 +34,12 @@ public class ClinicEntity {
     @Column(name = "is_active", nullable = false)
     private boolean active = true;
 
+    @Column(name = "latitude")
+    private Double latitude;
+
+    @Column(name = "longitude")
+    private Double longitude;
+
     protected ClinicEntity() {
     }
 
@@ -56,6 +62,12 @@ public class ClinicEntity {
 
     public boolean isActive() { return active; }
     public void setActive(boolean active) { this.active = active; }
+
+    public Double getLatitude() { return latitude; }
+    public void setLatitude(Double latitude) { this.latitude = latitude; }
+
+    public Double getLongitude() { return longitude; }
+    public void setLongitude(Double longitude) { this.longitude = longitude; }
 
     @Override
     public boolean equals(Object o) {

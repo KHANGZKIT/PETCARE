@@ -53,7 +53,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="1dp"
-                android:text="Quận 1 · TP.HCM"
+                android:text="Hệ thống cơ sở thú y"
                 android:textSize="12.5sp"
                 android:textColor="@color/text_muted" />
         </LinearLayout>
@@ -95,8 +95,7 @@
                     android:layout_height="match_parent"
                     android:layout_marginStart="10dp"
                     android:background="@android:color/transparent"
-                    android:text="Quận 1"
-                    android:hint="Tìm phòng khám"
+                    android:hint="Tìm theo tên, khu vực..."
                     android:textSize="14sp"
                     android:textColor="@color/text_foreground"
                     android:textColorHint="@color/text_muted"
@@ -369,15 +368,15 @@
                 android:textColor="@color/text_foreground"
                 android:gravity="center" />
 
-            <TextView
-                android:layout_width="260dp"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:text="Không có phòng khám đang mở ở Quận 1 với bộ lọc này. Thử mở rộng khu vực hoặc bỏ bộ lọc."
-                android:textSize="13sp"
-                android:textColor="@color/text_muted"
-                android:gravity="center"
-                android:lineSpacingExtra="3dp" />
+                <TextView
+                    android:layout_width="260dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:text="Không tìm thấy phòng khám phù hợp với từ khóa hoặc bộ lọc này. Thử mở rộng khu vực hoặc xóa bộ lọc."
+                    android:textSize="13sp"
+                    android:textColor="@color/text_muted"
+                    android:gravity="center"
+                    android:lineSpacingExtra="3dp" />
 
             <FrameLayout
                 android:id="@+id/btnClearFilter"

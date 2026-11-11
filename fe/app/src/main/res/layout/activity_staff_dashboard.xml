@@ -41,7 +41,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="1dp"
-                android:text="Khu vực nhân viên · Quận 1"
+                android:text="Khu vực nhân viên · Cầu Giấy · Hà Nội"
                 android:textColor="@color/text_muted"
                 android:textSize="12.5sp" />
         </LinearLayout>

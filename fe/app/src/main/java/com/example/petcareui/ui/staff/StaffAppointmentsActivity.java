@@ -75,104 +75,49 @@ public class StaffAppointmentsActivity extends AppCompatActivity {
     }
 
     private void loadAppointmentsFromApi() {
+        applyState("loading");
         ApiClient.getAppointmentApi().getClinicAppointments(null).enqueue(new Callback<List<AppointmentResponse>>() {
             @Override
             public void onResponse(Call<List<AppointmentResponse>> call, Response<List<AppointmentResponse>> response) {
-                if (response.isSuccessful() && response.body() != null && !response.body().isEmpty()) {
+                if (response.isSuccessful() && response.body() != null) {
                     allStaffAppts.clear();
                     for (AppointmentResponse res : response.body()) {
                         allStaffAppts.add(res.toStaffAppointmentItem());
                     }
                     setupSearchAndFilterChips();
-                    applyState("default");
-                } else if (allStaffAppts.isEmpty()) {
-                    initMockData();
-                    setupSearchAndFilterChips();
-                    applyState(currentState);
+                    if (allStaffAppts.isEmpty()) {
+                        applyState("empty");
+                    } else {
+                        applyState("default");
+                    }
+                } else {
+                    applyState("error");
                 }
             }
 
             @Override
             public void onFailure(Call<List<AppointmentResponse>> call, Throwable t) {
-                if (allStaffAppts.isEmpty()) {
-                    initMockData();
-                    setupSearchAndFilterChips();
-                    applyState(currentState);
-                }
+                allStaffAppts.clear();
+                applyState("error");
             }
         });
     }
 
-    private void initMockData() {
-        // Dữ liệu chuẩn STAFF_APPTS từ data.js
-        allStaffAppts.clear();
-
-        // 1. Mochi - Tiêm phòng (PENDING - Ưu tiên cam)
-        allStaffAppts.add(new StaffAppointmentItem(
-                "PC-48213", "Mochi", R.drawable.img_pet_mochi,
-                "Pomeranian · 2 tuổi · Cái · 3,4 kg",
-                "Nguyễn Lan", "+84 90 123 4567", "Khách hàng từ tháng 3/2026",
-                "Tiêm phòng", "20 phút", "Thứ 2, 27/10/2026", "10:00",
-                "PENDING", "250.000 ₫", "Gửi cách đây 2 giờ",
-                "Mochi hơi mẩn nhẹ sau mũi tiêm lần trước."
-        ));
-
-        // 2. Lựu - Khám tổng quát (PENDING - Ưu tiên cam)
-        allStaffAppts.add(new StaffAppointmentItem(
-                "PC-48230", "Lựu", R.drawable.img_pet_luu,
-                "Corgi · 6 tháng · Đực · 7,2 kg",
-                "Phạm Hà", "+84 91 884 2310", "Khách hàng từ tháng 6/2026",
-                "Khám tổng quát", "30 phút", "Thứ 2, 27/10/2026", "11:30",
-                "PENDING", "180.000 ₫", "Gửi cách đây 5 giờ", null
-        ));
-
-        // 3. Bông - Cạo vôi & chăm sóc răng (CONFIRMED)
-        allStaffAppts.add(new StaffAppointmentItem(
-                "PC-47980", "Bông", R.drawable.img_pet_bong,
-                "Anh lông ngắn · 4 tuổi · Đực · 5,1 kg",
-                "Trần Minh", "+84 93 220 7781", "Khách hàng từ tháng 1/2025",
-                "Cạo vôi & chăm sóc răng", "45 phút", "Thứ 2, 27/10/2026", "14:00",
-                "CONFIRMED", "600.000 ₫", "Phòng khám đã xác nhận",
-                "Nhờ bác sĩ xem lại răng hàm dưới bên trái."
-        ));
-
-        // 4. Miu - Tắm & cắt tỉa (CONFIRMED)
-        allStaffAppts.add(new StaffAppointmentItem(
-                "PC-48112", "Miu", R.drawable.img_pet_bong,
-                "Mèo ta · 3 tuổi · Cái · 4,2 kg",
-                "Đỗ Quỳnh", "+84 96 771 5522", "Khách hàng từ tháng 4/2026",
-                "Tắm & cắt tỉa", "60 phút", "Thứ 2, 27/10/2026", "15:30",
-                "CONFIRMED", "320.000 ₫", "Phòng khám đã xác nhận", null
-        ));
-
-        // 5. Mochi - Tiêm phòng (COMPLETED)
-        allStaffAppts.add(new StaffAppointmentItem(
-                "PC-46902", "Mochi", R.drawable.img_pet_mochi,
-                "Pomeranian · 2 tuổi · Cái · 3,4 kg",
-                "Nguyễn Lan", "+84 90 123 4567", "Khách hàng từ tháng 3/2026",
-                "Tiêm phòng", "20 phút", "Thứ 2, 27/10/2026", "09:00",
-                "COMPLETED", "250.000 ₫", "Đã hoàn thành lượt khám", null
-        ));
-
-        // 6. Lựu - Tư vấn da & dị ứng (NO_SHOW)
-        allStaffAppts.add(new StaffAppointmentItem(
-                "PC-46801", "Lựu", R.drawable.img_pet_luu,
-                "Corgi · 6 tháng · Đực · 7,2 kg",
-                "Phạm Hà", "+84 91 884 2310", "Khách hàng từ tháng 6/2026",
-                "Tư vấn da & dị ứng", "40 phút", "Thứ 2, 27/10/2026", "16:45",
-                "NO_SHOW", "420.000 ₫", "Khách không đến hẹn", null
-        ));
-    }
-
     private void setupAppBar() {
         binding.btnBack.setOnClickListener(v -> finish());
+        binding.btnRetry.setOnClickListener(v -> loadAppointmentsFromApi());
+        binding.btnEmptyShowAll.setOnClickListener(v -> {
+            binding.etStaffSearch.setText("");
+            setFilter("ALL");
+            applyState("default");
+        });
     }
 
     private void setupStateToggles() {
-        binding.chipStateDefault.setOnClickListener(v -> applyState("default"));
-        binding.chipStateLoading.setOnClickListener(v -> applyState("loading"));
-        binding.chipStateEmpty.setOnClickListener(v -> applyState("empty"));
-        binding.chipStateError.setOnClickListener(v -> applyState("error"));
+        // Ẩn thanh toggle trạng thái giả lập khi dùng ứng dụng thật
+        if (binding.chipStateDefault.getParent() instanceof View) {
+            ((View) binding.chipStateDefault.getParent()).setVisibility(View.GONE);
+        }
     }
 
     private void applyState(String state) {

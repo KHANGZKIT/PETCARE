@@ -75,7 +75,7 @@ public class SelectServiceActivity extends AppCompatActivity {
             clinicItem = new ClinicItem(
                     "1",
                     "Phòng khám Thú y An Nhiên",
-                    "42 Nguyễn Huệ, Quận 1, TP.HCM",
+                    "Số 12 Chùa Hà, Cầu Giấy, Hà Nội",
                     4.8,
                     214,
                     "1,2 km",

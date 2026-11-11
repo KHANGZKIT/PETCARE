@@ -138,28 +138,20 @@ public class MyPetsActivity extends AppCompatActivity {
                     }
                 } else {
                     if (pets.isEmpty()) {
-                        setupFallbackPets();
+                        showEmptyState();
                     }
+                    Toast.makeText(MyPetsActivity.this, "Không thể tải danh sách thú cưng (Mã: " + response.code() + ")", Toast.LENGTH_SHORT).show();
                 }
             }
 
             @Override
             public void onFailure(Call<List<PetResponse>> call, Throwable t) {
                 if (pets.isEmpty()) {
-                    setupFallbackPets();
+                    showEmptyState();
                 }
+                Toast.makeText(MyPetsActivity.this, "Lỗi kết nối máy chủ khi tải thú cưng.", Toast.LENGTH_SHORT).show();
             }
         });
-    }
-
-    private void setupFallbackPets() {
-        pets.clear();
-        pets.add(new PetItem("1", "Mochi", "Chó", "Pomeranian", "2 tuổi", "12/03/2024", "Cái", "3,4 kg", R.drawable.img_pet_mochi));
-        pets.add(new PetItem("2", "Bông", "Mèo", "Anh lông ngắn", "4 tuổi", "02/07/2022", "Đực", "5,1 kg", R.drawable.img_pet_bong));
-        pets.add(new PetItem("3", "Lựu", "Chó", "Corgi", "6 tháng", "18/04/2026", "Đực", "7,2 kg", R.drawable.img_pet_luu));
-        selectedPetIndex = 0;
-        showPetsList();
-        renderPets();
     }
 
     private void renderPets() {
@@ -315,7 +307,8 @@ public class MyPetsActivity extends AppCompatActivity {
         });
 
         binding.navProfile.setOnClickListener(v -> {
-            Toast.makeText(this, "Chuyển sang Tài khoản (C15)", Toast.LENGTH_SHORT).show();
+            Intent intent = new Intent(this, com.example.petcareui.ui.profile.ProfileActivity.class);
+            startActivity(intent);
         });
     }
 }

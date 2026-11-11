@@ -19,6 +19,7 @@ import com.example.petcareui.databinding.ActivityStaffDashboardBinding;
 import com.example.petcareui.databinding.ItemStaffPendingCardBinding;
 import com.example.petcareui.databinding.ItemStaffScheduleRowBinding;
 import com.example.petcareui.ui.notifications.NotificationsActivity;
+import com.example.petcareui.utils.TokenManager;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -73,9 +74,10 @@ public class StaffDashboardActivity extends AppCompatActivity {
         ApiClient.getAppointmentApi().getClinicAppointments(null).enqueue(new Callback<List<AppointmentResponse>>() {
             @Override
             public void onResponse(Call<List<AppointmentResponse>> call, Response<List<AppointmentResponse>> response) {
-                if (response.isSuccessful() && response.body() != null && !response.body().isEmpty()) {
-                    pendingList.clear();
-                    todayScheduleList.clear();
+                pendingList.clear();
+                todayScheduleList.clear();
+
+                if (response.isSuccessful() && response.body() != null) {
                     for (AppointmentResponse res : response.body()) {
                         StaffAppointmentItem item = res.toStaffAppointmentItem();
                         if ("PENDING".equalsIgnoreCase(item.getStatus())) {
@@ -89,62 +91,36 @@ public class StaffDashboardActivity extends AppCompatActivity {
                     } else {
                         applyState("default");
                     }
-                } else if (pendingList.isEmpty() && todayScheduleList.isEmpty()) {
-                    initMockData();
-                    applyState(currentState);
+                } else {
+                    applyState("empty");
                 }
             }
 
             @Override
             public void onFailure(Call<List<AppointmentResponse>> call, Throwable t) {
-                if (pendingList.isEmpty() && todayScheduleList.isEmpty()) {
-                    initMockData();
-                    applyState(currentState);
-                }
+                pendingList.clear();
+                todayScheduleList.clear();
+                applyState("empty");
+                Toast.makeText(StaffDashboardActivity.this, "Lỗi kết nối máy chủ", Toast.LENGTH_SHORT).show();
             }
         });
     }
 
-    private void initMockData() {
-        // Dữ liệu chuẩn theo data.js (STAFF_APPTS)
-        pendingList.clear();
-        pendingList.add(new StaffAppointmentItem(
-                "PC-48213", "Mochi", R.drawable.img_pet_mochi,
-                "Pomeranian · 2 tuổi · Cái · 3,4 kg",
-                "Nguyễn Lan", "+84 90 123 4567", "Khách hàng từ tháng 3/2026",
-                "Tiêm phòng", "20 phút", "Thứ 2, 27/10/2026", "10:00",
-                "PENDING", "250.000 ₫", "Gửi cách đây 2 giờ",
-                "Mochi hơi mẩn nhẹ sau mũi tiêm lần trước."
-        ));
-
-        pendingList.add(new StaffAppointmentItem(
-                "PC-48230", "Lựu", R.drawable.img_pet_luu,
-                "Corgi · 6 tháng · Đực · 7,2 kg",
-                "Phạm Hà", "+84 91 884 2310", "Khách hàng từ tháng 6/2026",
-                "Khám tổng quát", "30 phút", "Thứ 2, 27/10/2026", "11:30",
-                "PENDING", "180.000 ₫", "Gửi cách đây 5 giờ", null
-        ));
-
-        todayScheduleList.clear();
-        todayScheduleList.add(new StaffAppointmentItem(
-                "PC-47980", "Bông", R.drawable.img_pet_bong,
-                "Anh lông ngắn · 4 tuổi · Đực · 5,1 kg",
-                "Trần Minh", "+84 93 220 7781", "Khách hàng từ tháng 1/2025",
-                "Cạo vôi & chăm sóc răng", "45 phút", "Thứ 2, 27/10/2026", "14:00",
-                "CONFIRMED", "600.000 ₫", "Phòng khám đã xác nhận",
-                "Nhờ bác sĩ xem lại răng hàm dưới bên trái."
-        ));
-
-        todayScheduleList.add(new StaffAppointmentItem(
-                "PC-48112", "Miu", R.drawable.img_pet_bong,
-                "Mèo ta · 3 tuổi · Cái · 4,2 kg",
-                "Đỗ Quỳnh", "+84 96 771 5522", "Khách hàng từ tháng 4/2026",
-                "Tắm & cắt tỉa", "60 phút", "Thứ 2, 27/10/2026", "15:30",
-                "CONFIRMED", "320.000 ₫", "Phòng khám đã xác nhận", null
-        ));
-    }
-
     private void setupTopBar() {
+        TokenManager tokenManager = TokenManager.getInstance(this);
+        Long clinicId = tokenManager.getClinicId();
+        String clinicName = (clinicId != null && clinicId == 1) ? "Phòng khám An Nhiên"
+                : (clinicId != null && clinicId == 2) ? "Bệnh viện Thú y HaUI"
+                : (clinicId != null && clinicId == 3) ? "Bệnh viện PetCare Đống Đa"
+                : "Phòng khám #" + (clinicId != null ? clinicId : "");
+        String clinicArea = (clinicId != null && clinicId == 1) ? "Cầu Giấy · Hà Nội"
+                : (clinicId != null && clinicId == 2) ? "Bắc Từ Liêm · Hà Nội"
+                : (clinicId != null && clinicId == 3) ? "Đống Đa · Hà Nội"
+                : "Hà Nội";
+
+        binding.tvStaffClinicName.setText(clinicName);
+        binding.tvStaffSubtitle.setText("Khu vực nhân viên · " + clinicArea);
+
         // Mở Thông báo nhân viên
         binding.btnStaffNotifications.setOnClickListener(v -> {
             Intent intent = new Intent(this, NotificationsActivity.class);
@@ -156,9 +132,10 @@ public class StaffDashboardActivity extends AppCompatActivity {
     }
 
     private void setupStateToggles() {
-        binding.chipStateDefault.setOnClickListener(v -> applyState("default"));
-        binding.chipStateLoading.setOnClickListener(v -> applyState("loading"));
-        binding.chipStateEmpty.setOnClickListener(v -> applyState("empty"));
+        // Ẩn thanh toggle trạng thái giả lập khi dùng ứng dụng thật
+        if (binding.chipStateDefault.getParent() instanceof View) {
+            ((View) binding.chipStateDefault.getParent()).setVisibility(View.GONE);
+        }
     }
 
     private void applyState(String state) {
@@ -292,9 +269,21 @@ public class StaffDashboardActivity extends AppCompatActivity {
     }
 
     private void showStaffAccountDialog() {
+        TokenManager tokenManager = TokenManager.getInstance(this);
+        String name = tokenManager.getUserName();
+        String email = tokenManager.getUserEmail();
+        Long clinicId = tokenManager.getClinicId();
+        String clinicName = (clinicId != null && clinicId == 1) ? "Phòng khám Thú y An Nhiên (Cầu Giấy, Hà Nội)"
+                : (clinicId != null && clinicId == 2) ? "Bệnh viện Thú y HaUI (Bắc Từ Liêm, Hà Nội)"
+                : (clinicId != null && clinicId == 3) ? "Bệnh viện Thú y PetCare (Đống Đa, Hà Nội)"
+                : "Phòng khám cơ sở #" + (clinicId != null ? clinicId : "--");
+
         new AlertDialog.Builder(this)
                 .setTitle("Tài khoản Nhân viên")
-                .setMessage("Nhân viên: Trần Minh\nPhòng khám: Thú y An Nhiên (Quận 1)\nVai trò: Quản trị viên phòng khám")
+                .setMessage("Nhân viên: " + (name != null && !name.isEmpty() ? name : "Bác sĩ phụ trách")
+                        + "\nEmail: " + (email != null && !email.isEmpty() ? email : "Chưa cập nhật")
+                        + "\nCơ sở: " + clinicName
+                        + "\nVai trò: Quản trị viên phòng khám")
                 .setPositiveButton("Chuyển sang Khách hàng", (dialog, which) -> {
                     Intent intent = new Intent(this, MainActivity.class);
                     intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);

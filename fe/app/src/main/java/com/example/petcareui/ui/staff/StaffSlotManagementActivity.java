@@ -162,31 +162,16 @@ public class StaffSlotManagementActivity extends AppCompatActivity {
                         }
                     }
                 } else {
-                    if (slotList.isEmpty()) {
-                        initMockData();
-                        applyState("default");
-                    }
+                    applyState("empty");
                 }
             }
 
             @Override
             public void onFailure(Call<List<ClinicSlotResponse>> call, Throwable t) {
-                if (slotList.isEmpty()) {
-                    initMockData();
-                    applyState("default");
-                }
+                applyState("empty");
+                Toast.makeText(StaffSlotManagementActivity.this, "Lỗi kết nối máy chủ", Toast.LENGTH_SHORT).show();
             }
         });
-    }
-
-    private void initMockData() {
-        slotList.clear();
-        slotList.add(new StaffSlotItem("10:00", "closed"));
-        slotList.add(new StaffSlotItem("10:30", "open"));
-        slotList.add(new StaffSlotItem("11:00", "booked", "Lựu", "Phạm Hà", "Khám tổng quát"));
-        slotList.add(new StaffSlotItem("11:30", "open"));
-        slotList.add(new StaffSlotItem("13:00", "closed"));
-        slotList.add(new StaffSlotItem("13:30", "open"));
     }
 
     private void setupAppBar() {
@@ -197,10 +182,10 @@ public class StaffSlotManagementActivity extends AppCompatActivity {
     }
 
     private void setupStateToggles() {
-        binding.chipStateDefault.setOnClickListener(v -> applyState("default"));
-        binding.chipStateNewSlot.setOnClickListener(v -> applyState("new-slot"));
-        binding.chipStateCreated.setOnClickListener(v -> applyState("created"));
-        binding.chipStateEmpty.setOnClickListener(v -> applyState("empty"));
+        // Ẩn thanh toggle trạng thái giả lập khi dùng ứng dụng thật
+        if (binding.chipStateDefault.getParent() instanceof View) {
+            ((View) binding.chipStateDefault.getParent()).setVisibility(View.GONE);
+        }
     }
 
     private void applyState(String state) {

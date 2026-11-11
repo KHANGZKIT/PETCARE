@@ -81,7 +81,7 @@ public class AppointmentDetailsActivity extends AppCompatActivity {
                     1L,
                     ref,
                     "Phòng khám Thú y An Nhiên",
-                    "Quận 1",
+                    "Cầu Giấy",
                     "Mochi",
                     R.drawable.img_pet_mochi,
                     "Tiêm phòng",
@@ -118,7 +118,11 @@ public class AppointmentDetailsActivity extends AppCompatActivity {
 
         // Thẻ phòng khám
         binding.tvClinicName.setText(appt.getClinic());
-        binding.tvClinicArea.setText(appt.getClinicArea() + " · TP.HCM");
+        String clinicAreaStr = appt.getClinicArea() != null ? appt.getClinicArea() : "Hà Nội";
+        if (!clinicAreaStr.contains("Hà Nội")) {
+            clinicAreaStr = clinicAreaStr + " · Hà Nội";
+        }
+        binding.tvClinicArea.setText(clinicAreaStr);
 
         // Thẻ Dịch vụ & Chi phí
         binding.tvServiceName.setText(appt.getService());
@@ -150,11 +154,9 @@ public class AppointmentDetailsActivity extends AppCompatActivity {
     }
 
     private void setupStateTabs() {
-        binding.tabStatePending.setOnClickListener(v -> applyState("pending"));
-        binding.tabStateConfirmed.setOnClickListener(v -> applyState("confirmed"));
-        binding.tabStateCompleted.setOnClickListener(v -> applyState("completed"));
-        binding.tabStateDialog.setOnClickListener(v -> applyState("cancel-dialog"));
-        binding.tabStateCancelled.setOnClickListener(v -> applyState("cancelled"));
+        if (binding.scrollStateTabs != null) {
+            binding.scrollStateTabs.setVisibility(View.GONE);
+        }
     }
 
     public void applyState(String state) {
@@ -299,10 +301,10 @@ public class AppointmentDetailsActivity extends AppCompatActivity {
 
         binding.btnCallClinic.setOnClickListener(v -> {
             try {
-                Intent dialIntent = new Intent(Intent.ACTION_DIAL, Uri.parse("tel:02838221140"));
+                Intent dialIntent = new Intent(Intent.ACTION_DIAL, Uri.parse("tel:02438335566"));
                 startActivity(dialIntent);
             } catch (Exception e) {
-                Toast.makeText(this, "Hotline phòng khám: 028 3822 1140", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "Hotline phòng khám: 024 3833 5566", Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -318,27 +320,32 @@ public class AppointmentDetailsActivity extends AppCompatActivity {
         // Trong Hộp thoại hủy: Nút Đồng ý hủy lịch -> Gọi API Backend
         binding.btnConfirmCancelBooking.setOnClickListener(v -> {
             Long apptId = appt != null ? appt.getId() : null;
-            if (apptId != null) {
+            if (apptId != null && apptId > 0) {
+                binding.btnConfirmCancelBooking.setEnabled(false);
                 ApiClient.getAppointmentApi().cancelAppointment(apptId).enqueue(new Callback<AppointmentResponse>() {
                     @Override
                     public void onResponse(Call<AppointmentResponse> call, Response<AppointmentResponse> response) {
+                        binding.btnConfirmCancelBooking.setEnabled(true);
                         if (response.isSuccessful()) {
                             if (appt != null) appt.setStatus("CANCELLED");
                             applyState("cancelled");
                             Toast.makeText(AppointmentDetailsActivity.this, "Đã hủy lịch hẹn thành công!", Toast.LENGTH_SHORT).show();
                         } else {
-                            applyState("cancelled");
-                            Toast.makeText(AppointmentDetailsActivity.this, "Không thể hủy lịch lúc này", Toast.LENGTH_SHORT).show();
+                            applyState(previousStateBeforeDialog);
+                            Toast.makeText(AppointmentDetailsActivity.this, "Không thể hủy lịch lúc này (Mã lỗi: " + response.code() + ")", Toast.LENGTH_SHORT).show();
                         }
                     }
 
                     @Override
                     public void onFailure(Call<AppointmentResponse> call, Throwable t) {
-                        applyState("cancelled");
+                        binding.btnConfirmCancelBooking.setEnabled(true);
+                        applyState(previousStateBeforeDialog);
+                        Toast.makeText(AppointmentDetailsActivity.this, "Lỗi kết nối máy chủ khi hủy lịch hẹn.", Toast.LENGTH_SHORT).show();
                     }
                 });
             } else {
-                applyState("cancelled");
+                Toast.makeText(AppointmentDetailsActivity.this, "Không tìm thấy mã lịch hẹn hợp lệ để hủy.", Toast.LENGTH_SHORT).show();
+                applyState(previousStateBeforeDialog);
             }
         });
 
