@@ -5,9 +5,9 @@ import androidx.lifecycle.MutableLiveData;
 
 import com.example.petcareui.data.api.ApiClient;
 import com.example.petcareui.data.api.AuthApi;
-import com.example.petcareui.data.model.LoginRequest;
-import com.example.petcareui.data.model.LoginResponse;
-import com.example.petcareui.data.model.RegisterRequest;
+import com.example.petcareui.data.dto.request.LoginRequest;
+import com.example.petcareui.data.dto.request.RegisterRequest;
+import com.example.petcareui.data.dto.response.LoginResponse;
 
 import retrofit2.Call;
 import retrofit2.Callback;

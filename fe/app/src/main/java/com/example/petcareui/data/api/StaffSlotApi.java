@@ -1,7 +1,7 @@
 package com.example.petcareui.data.api;
 
-import com.example.petcareui.data.model.ClinicSlotResponse;
-import com.example.petcareui.data.model.CreateSlotRequest;
+import com.example.petcareui.data.dto.request.CreateSlotRequest;
+import com.example.petcareui.data.dto.response.ClinicSlotResponse;
 
 import java.util.List;
 

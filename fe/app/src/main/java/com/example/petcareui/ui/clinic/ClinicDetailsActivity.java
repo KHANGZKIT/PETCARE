@@ -14,7 +14,7 @@ import com.example.petcareui.R;
 import com.example.petcareui.data.api.ApiClient;
 import com.example.petcareui.data.model.ClinicItem;
 import com.example.petcareui.data.model.ServiceItem;
-import com.example.petcareui.data.model.ServiceResponse;
+import com.example.petcareui.data.dto.response.ServiceResponse;
 import com.example.petcareui.databinding.ActivityClinicDetailsBinding;
 import com.example.petcareui.databinding.ItemServiceSelectableBinding;
 

@@ -1,4 +1,4 @@
-package com.example.petcareui.data.model;
+package com.example.petcareui.data.dto.response;
 
 public class LoginResponse {
     private String token;
@@ -56,3 +56,4 @@ public class LoginResponse {
         this.clinicId = clinicId;
     }
 }
+

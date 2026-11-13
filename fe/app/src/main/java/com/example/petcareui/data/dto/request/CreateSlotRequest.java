@@ -1,4 +1,4 @@
-package com.example.petcareui.data.model;
+package com.example.petcareui.data.dto.request;
 
 import java.io.Serializable;
 
@@ -25,3 +25,4 @@ public class CreateSlotRequest implements Serializable {
         return endTime;
     }
 }
+

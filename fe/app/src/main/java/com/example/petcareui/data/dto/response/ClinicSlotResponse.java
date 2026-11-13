@@ -1,4 +1,6 @@
-package com.example.petcareui.data.model;
+package com.example.petcareui.data.dto.response;
+
+import com.example.petcareui.data.model.StaffSlotItem;
 
 import java.io.Serializable;
 
@@ -54,3 +56,4 @@ public class ClinicSlotResponse implements Serializable {
         return new StaffSlotItem(timeStr, stateStr);
     }
 }
+

@@ -1,4 +1,6 @@
-package com.example.petcareui.data.model;
+package com.example.petcareui.data.dto.response;
+
+import com.example.petcareui.data.model.ClinicItem;
 
 import java.io.Serializable;
 

@@ -13,8 +13,8 @@ import androidx.core.content.ContextCompat;
 
 import com.example.petcareui.R;
 import com.example.petcareui.data.api.ApiClient;
-import com.example.petcareui.data.model.ClinicSlotResponse;
-import com.example.petcareui.data.model.CreateSlotRequest;
+import com.example.petcareui.data.dto.request.CreateSlotRequest;
+import com.example.petcareui.data.dto.response.ClinicSlotResponse;
 import com.example.petcareui.data.model.StaffSlotItem;
 import com.example.petcareui.databinding.ActivityStaffSlotManagementBinding;
 import com.example.petcareui.databinding.ItemStaffSlotRowBinding;

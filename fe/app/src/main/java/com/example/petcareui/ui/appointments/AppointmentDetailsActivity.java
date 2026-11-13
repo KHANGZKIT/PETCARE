@@ -13,7 +13,7 @@ import androidx.core.content.ContextCompat;
 import com.example.petcareui.R;
 import com.example.petcareui.data.api.ApiClient;
 import com.example.petcareui.data.model.AppointmentItem;
-import com.example.petcareui.data.model.AppointmentResponse;
+import com.example.petcareui.data.dto.response.AppointmentResponse;
 import com.example.petcareui.databinding.ActivityAppointmentDetailsBinding;
 import com.example.petcareui.ui.clinic.ClinicDetailsActivity;
 import com.example.petcareui.ui.clinic.ClinicListActivity;
@@ -202,12 +202,9 @@ public class AppointmentDetailsActivity extends AppCompatActivity {
             binding.btnCancelBooking.setVisibility(View.GONE);
             binding.btnBackToListOutline.setVisibility(View.GONE);
             binding.layoutCancelledActions.setVisibility(View.VISIBLE);
-
-            binding.layoutUndoSnackbar.setVisibility(View.VISIBLE);
             return;
         }
 
-        binding.layoutUndoSnackbar.setVisibility(View.GONE);
         binding.layoutCancelledActions.setVisibility(View.GONE);
 
         // 3. Trạng thái ĐÃ HOÀN THÀNH (Completed)
@@ -351,11 +348,6 @@ public class AppointmentDetailsActivity extends AppCompatActivity {
 
         binding.btnKeepBooking.setOnClickListener(v -> applyState(previousStateBeforeDialog));
         binding.layoutCancelDialogOverlay.setOnClickListener(v -> applyState(previousStateBeforeDialog));
-
-        binding.tvUndoCancel.setOnClickListener(v -> {
-            applyState("pending");
-            Toast.makeText(this, "Đã hoàn tác hủy lịch hẹn thành công!", Toast.LENGTH_SHORT).show();
-        });
 
         binding.btnBookAnother.setOnClickListener(v -> {
             Intent intent = new Intent(this, ClinicListActivity.class);

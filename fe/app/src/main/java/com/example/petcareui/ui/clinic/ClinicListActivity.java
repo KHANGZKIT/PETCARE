@@ -23,7 +23,7 @@ import androidx.core.content.ContextCompat;
 import com.example.petcareui.R;
 import com.example.petcareui.data.api.ApiClient;
 import com.example.petcareui.data.model.ClinicItem;
-import com.example.petcareui.data.model.ClinicResponse;
+import com.example.petcareui.data.dto.response.ClinicResponse;
 import com.example.petcareui.databinding.ActivityClinicListBinding;
 import com.example.petcareui.databinding.ItemClinicRowBinding;
 
@@ -89,25 +89,56 @@ public class ClinicListActivity extends AppCompatActivity {
                     || ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
                 LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
                 if (locationManager != null) {
+                    // 1. Thử lấy vị trí cache gần nhất để hiển thị tức thì
                     Location loc = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
                     if (loc == null) {
                         loc = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
                     }
                     if (loc != null) {
-                        double lat = loc.getLatitude();
-                        double lng = loc.getLongitude();
-                        // Kiểm tra nếu vị trí hợp lệ trong lãnh thổ Việt Nam
-                        if (lat >= 8.0 && lat <= 24.0 && lng >= 102.0 && lng <= 110.0) {
-                            userLatitude = lat;
-                            userLongitude = lng;
-                            locationLabel = "Vị trí GPS hiện tại";
+                        applyValidLocation(loc);
+                    }
+
+                    // 2. Đồng thời đăng ký nhận GPS thực tế mới nhất (rất quan trọng khi cắm máy thật)
+                    android.location.LocationListener singleUpdateListener = new android.location.LocationListener() {
+                        @Override
+                        public void onLocationChanged(@NonNull Location newLoc) {
+                            applyValidLocation(newLoc);
+                            try {
+                                locationManager.removeUpdates(this);
+                            } catch (Exception ignored) {}
                         }
+                        @Override public void onStatusChanged(String provider, int status, Bundle extras) {}
+                        @Override public void onProviderEnabled(@NonNull String provider) {}
+                        @Override public void onProviderDisabled(@NonNull String provider) {}
+                    };
+
+                    if (locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
+                        locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 1000L, 5f, singleUpdateListener, android.os.Looper.getMainLooper());
+                    } else if (locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER)) {
+                        locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 1000L, 5f, singleUpdateListener, android.os.Looper.getMainLooper());
                     }
                 }
             }
         } catch (Exception ignored) {
         }
         binding.tvLocationSubtitle.setText("Vị trí: " + locationLabel);
+    }
+
+    private void applyValidLocation(Location loc) {
+        if (loc == null) return;
+        double lat = loc.getLatitude();
+        double lng = loc.getLongitude();
+        // Kiểm tra nếu vị trí hợp lệ trong lãnh thổ Việt Nam (tránh vị trí mặc định ở Mỹ của máy ảo)
+        if (lat >= 8.0 && lat <= 24.0 && lng >= 102.0 && lng <= 110.0) {
+            userLatitude = lat;
+            userLongitude = lng;
+            locationLabel = "Vị trí GPS thực tế";
+            binding.tvLocationSubtitle.setText("Vị trí: " + locationLabel);
+            if (!allClinics.isEmpty()) {
+                calculateDistances(allClinics);
+                filterClinics();
+            }
+        }
     }
 
     private void calculateDistances(List<ClinicItem> clinics) {
@@ -379,6 +410,8 @@ public class ClinicListActivity extends AppCompatActivity {
             rowBinding.tvClinicAddress.setText(clinic.getAddress());
             rowBinding.tvClinicRating.setText(String.valueOf(clinic.getRating()));
             rowBinding.tvClinicMeta.setText(" · " + clinic.getReviews() + " đánh giá · " + clinic.getDistance());
+            rowBinding.ivClinicImage.setImageResource(clinic.getImageResId());
+            rowBinding.ivClinicImage.setColorFilter(null);
 
             // Badge Trạng thái mở cửa
             if (clinic.isOpen()) {

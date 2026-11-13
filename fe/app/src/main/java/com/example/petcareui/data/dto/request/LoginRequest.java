@@ -1,4 +1,4 @@
-package com.example.petcareui.data.model;
+package com.example.petcareui.data.dto.request;
 
 public class LoginRequest {
     private String email;
@@ -25,3 +25,4 @@ public class LoginRequest {
         this.password = password;
     }
 }
+

@@ -17,7 +17,7 @@ import androidx.core.content.ContextCompat;
 import com.example.petcareui.R;
 import com.example.petcareui.data.api.ApiClient;
 import com.example.petcareui.data.model.ClinicItem;
-import com.example.petcareui.data.model.ClinicSlotResponse;
+import com.example.petcareui.data.dto.response.ClinicSlotResponse;
 import com.example.petcareui.data.model.DateItem;
 import com.example.petcareui.data.model.ServiceItem;
 import com.example.petcareui.data.model.TimeSlotItem;

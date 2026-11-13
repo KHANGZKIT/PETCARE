@@ -54,8 +54,9 @@
             android:textSize="12.5sp"
             tools:text="Chó · Pomeranian" />
 
-        <!-- Hàng thẻ thông tin nhỏ: Tuổi, Giới tính, Cân nặng -->
+        <!-- Hàng thẻ thông tin nhỏ / Badges -->
         <LinearLayout
+            android:id="@+id/layoutBadges"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
@@ -63,7 +64,7 @@
             android:orientation="horizontal">
 
             <TextView
-                android:id="@+id/tvPetAge"
+                android:id="@+id/tvPetSpeciesBadge"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:background="@drawable/bg_pill_gray"
@@ -74,6 +75,37 @@
                 android:textColor="@color/text_muted"
                 android:textSize="11.5sp"
                 android:textStyle="bold"
+                tools:text="🐾 Mèo" />
+
+            <TextView
+                android:id="@+id/tvPetStatusBadge"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="6dp"
+                android:background="@drawable/bg_pill_gray"
+                android:paddingStart="8dp"
+                android:paddingTop="2dp"
+                android:paddingEnd="8dp"
+                android:paddingBottom="2dp"
+                android:textColor="@color/brand_primary"
+                android:textSize="11.5sp"
+                android:textStyle="bold"
+                android:text="🟢 Sẵn sàng khám" />
+
+            <TextView
+                android:id="@+id/tvPetAge"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="6dp"
+                android:background="@drawable/bg_pill_gray"
+                android:paddingStart="8dp"
+                android:paddingTop="2dp"
+                android:paddingEnd="8dp"
+                android:paddingBottom="2dp"
+                android:textColor="@color/text_muted"
+                android:textSize="11.5sp"
+                android:textStyle="bold"
+                android:visibility="gone"
                 tools:text="2 tuổi" />
 
             <TextView
@@ -89,6 +121,7 @@
                 android:textColor="@color/text_muted"
                 android:textSize="11.5sp"
                 android:textStyle="bold"
+                android:visibility="gone"
                 tools:text="Cái" />
 
             <TextView
@@ -104,15 +137,37 @@
                 android:textColor="@color/text_muted"
                 android:textSize="11.5sp"
                 android:textStyle="bold"
+                android:visibility="gone"
                 tools:text="3,4 kg" />
         </LinearLayout>
     </LinearLayout>
 
-    <!-- Vòng tròn radio chọn -->
+    <!-- Nút Xóa thú cưng trực tiếp (khi ở chế độ quản lý tab Thú cưng) -->
+    <FrameLayout
+        android:id="@+id/btnDeletePetDirect"
+        android:layout_width="38dp"
+        android:layout_height="38dp"
+        android:layout_marginStart="8dp"
+        android:background="@drawable/bg_floating_glass_btn_light"
+        android:clickable="true"
+        android:focusable="true"
+        android:visibility="gone">
+
+        <ImageView
+            android:layout_width="18dp"
+            android:layout_height="18dp"
+            android:layout_gravity="center"
+            android:contentDescription="Xóa thú cưng"
+            android:src="@drawable/ic_trash"
+            app:tint="@color/status_destructive" />
+    </FrameLayout>
+
+    <!-- Vòng tròn radio chọn (khi ở trong luồng đặt lịch khám) -->
     <ImageView
         android:id="@+id/ivPetCheck"
         android:layout_width="24dp"
         android:layout_height="24dp"
+        android:layout_marginStart="8dp"
         android:contentDescription="@null"
         android:src="@drawable/bg_radio_unselected" />
 </LinearLayout>

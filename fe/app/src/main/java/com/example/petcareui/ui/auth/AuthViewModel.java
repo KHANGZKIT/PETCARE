@@ -4,7 +4,7 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
-import com.example.petcareui.data.model.LoginResponse;
+import com.example.petcareui.data.dto.response.LoginResponse;
 import com.example.petcareui.data.repository.AuthRepository;
 
 public class AuthViewModel extends ViewModel {

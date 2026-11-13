@@ -20,7 +20,8 @@ public class ClinicItem implements Serializable {
     private Double longitude;
     private Float distanceKm;
 
-    public ClinicItem(String id, String name, String address, double rating, int reviews, String distance, boolean open, String hours) {
+    public ClinicItem(String id, String name, String address, double rating, int reviews, String distance, boolean open,
+            String hours) {
         this(id, name, address, rating, reviews, distance, open, hours,
                 "024 3833 5566",
                 "Phòng khám thú y tiêu chuẩn cao cho chó và mèo. Khám tổng quát, tiêm phòng, nha khoa và tiểu phẫu, có phòng xét nghiệm tại chỗ và khu thăm khám yên tĩnh.",
@@ -28,8 +29,9 @@ public class ClinicItem implements Serializable {
                 "Tiếng Việt, tiếng Anh");
     }
 
-    public ClinicItem(String id, String name, String address, double rating, int reviews, String distance, boolean open, String hours,
-                      String phone, String about, String emergencyHours, String languages) {
+    public ClinicItem(String id, String name, String address, double rating, int reviews, String distance, boolean open,
+            String hours,
+            String phone, String about, String emergencyHours, String languages) {
         this.id = id;
         this.name = name;
         this.address = address;
@@ -146,5 +148,18 @@ public class ClinicItem implements Serializable {
 
     public void setArea(String area) {
         this.area = area;
+    }
+
+    public int getImageResId() {
+        if (name == null) return com.example.petcareui.R.drawable.img_clinic_annhien;
+        String lower = name.toLowerCase();
+        if (lower.contains("an nhiên") || lower.contains("cầu giấy")) {
+            return com.example.petcareui.R.drawable.img_clinic_annhien;
+        } else if (lower.contains("haui") || lower.contains("cầu diễn") || lower.contains("bắc từ liêm")) {
+            return com.example.petcareui.R.drawable.img_clinic_haui;
+        } else if (lower.contains("đống đa") || lower.contains("thái hà")) {
+            return com.example.petcareui.R.drawable.img_clinic_dongda;
+        }
+        return com.example.petcareui.R.drawable.img_clinic_annhien;
     }
 }

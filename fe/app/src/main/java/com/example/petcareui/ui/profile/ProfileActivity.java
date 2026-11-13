@@ -13,7 +13,7 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.petcareui.data.api.ApiClient;
-import com.example.petcareui.data.model.UserProfileResponse;
+import com.example.petcareui.data.dto.response.UserProfileResponse;
 import com.example.petcareui.databinding.ActivityProfileBinding;
 import com.example.petcareui.databinding.DialogLogoutConfirmationBinding;
 import com.example.petcareui.ui.appointments.MyAppointmentsActivity;

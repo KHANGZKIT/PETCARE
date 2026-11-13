@@ -13,7 +13,7 @@ import androidx.core.content.ContextCompat;
 
 import com.example.petcareui.R;
 import com.example.petcareui.data.api.ApiClient;
-import com.example.petcareui.data.model.AppointmentResponse;
+import com.example.petcareui.data.dto.response.AppointmentResponse;
 import com.example.petcareui.data.model.StaffAppointmentItem;
 import com.example.petcareui.databinding.ActivityStaffAppointmentsBinding;
 import com.example.petcareui.databinding.ItemStaffApptCardBinding;

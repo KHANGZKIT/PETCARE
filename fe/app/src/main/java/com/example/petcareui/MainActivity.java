@@ -11,7 +11,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 
 import com.example.petcareui.data.api.ApiClient;
-import com.example.petcareui.data.model.UserProfileResponse;
+import com.example.petcareui.data.dto.response.UserProfileResponse;
 import com.example.petcareui.databinding.ActivityMainBinding;
 import com.example.petcareui.ui.auth.LoginActivity;
 import com.example.petcareui.utils.TokenManager;

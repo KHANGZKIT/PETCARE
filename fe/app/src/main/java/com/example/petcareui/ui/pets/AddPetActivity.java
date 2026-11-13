@@ -10,8 +10,8 @@ import androidx.core.content.ContextCompat;
 
 import com.example.petcareui.R;
 import com.example.petcareui.data.api.ApiClient;
-import com.example.petcareui.data.model.PetRequest;
-import com.example.petcareui.data.model.PetResponse;
+import com.example.petcareui.data.dto.request.PetRequest;
+import com.example.petcareui.data.dto.response.PetResponse;
 import com.example.petcareui.databinding.ActivityAddPetBinding;
 
 import retrofit2.Call;

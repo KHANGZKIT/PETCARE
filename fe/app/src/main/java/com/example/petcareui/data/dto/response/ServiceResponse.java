@@ -1,6 +1,7 @@
-package com.example.petcareui.data.model;
+package com.example.petcareui.data.dto.response;
 
 import com.example.petcareui.R;
+import com.example.petcareui.data.model.ServiceItem;
 
 import java.io.Serializable;
 

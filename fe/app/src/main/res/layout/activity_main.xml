@@ -395,8 +395,7 @@
                                     android:layout_width="match_parent"
                                     android:layout_height="match_parent"
                                     android:scaleType="centerCrop"
-                                    android:src="@drawable/ic_paw"
-                                    app:tint="@color/brand_primary"
+                                    android:src="@drawable/img_clinic_annhien"
                                     tools:ignore="ContentDescription" />
 
                                 <TextView
@@ -508,8 +507,7 @@
                                     android:layout_width="match_parent"
                                     android:layout_height="match_parent"
                                     android:scaleType="centerCrop"
-                                    android:src="@drawable/ic_paw"
-                                    app:tint="@color/text_muted"
+                                    android:src="@drawable/img_clinic_haui"
                                     tools:ignore="ContentDescription" />
 
                                 <TextView

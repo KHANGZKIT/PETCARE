@@ -1,4 +1,4 @@
-package com.example.petcareui.data.model;
+package com.example.petcareui.data.dto.request;
 
 public class AppointmentRequest {
     private final Long petId;
@@ -18,3 +18,4 @@ public class AppointmentRequest {
     public Long getServiceId() { return serviceId; }
     public Long getSlotId() { return slotId; }
 }
+

@@ -9,8 +9,8 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.petcareui.R;
 import com.example.petcareui.data.api.ApiClient;
-import com.example.petcareui.data.model.AppointmentRequest;
-import com.example.petcareui.data.model.AppointmentResponse;
+import com.example.petcareui.data.dto.request.AppointmentRequest;
+import com.example.petcareui.data.dto.response.AppointmentResponse;
 import com.example.petcareui.data.model.ClinicItem;
 import com.example.petcareui.data.model.DateItem;
 import com.example.petcareui.data.model.PetItem;

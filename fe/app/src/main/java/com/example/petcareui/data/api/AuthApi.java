@@ -1,9 +1,9 @@
 package com.example.petcareui.data.api;
 
-import com.example.petcareui.data.model.LoginRequest;
-import com.example.petcareui.data.model.LoginResponse;
-import com.example.petcareui.data.model.RegisterRequest;
-import com.example.petcareui.data.model.UserProfileResponse;
+import com.example.petcareui.data.dto.request.LoginRequest;
+import com.example.petcareui.data.dto.request.RegisterRequest;
+import com.example.petcareui.data.dto.response.LoginResponse;
+import com.example.petcareui.data.dto.response.UserProfileResponse;
 
 import retrofit2.Call;
 import retrofit2.http.Body;

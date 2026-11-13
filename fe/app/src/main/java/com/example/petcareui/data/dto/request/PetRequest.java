@@ -1,4 +1,4 @@
-package com.example.petcareui.data.model;
+package com.example.petcareui.data.dto.request;
 
 public class PetRequest {
     private final String name;
@@ -12,3 +12,4 @@ public class PetRequest {
     public String getName() { return name; }
     public String getSpecies() { return species; }
 }
+

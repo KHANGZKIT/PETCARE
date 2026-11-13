@@ -42,7 +42,6 @@ public class NotificationsActivity extends AppCompatActivity {
         extractIntentData();
         initMockData();
         setupTopBar();
-        setupStateToggles();
         applyState(currentState);
     }
 
@@ -58,7 +57,7 @@ public class NotificationsActivity extends AppCompatActivity {
         notifications.add(new NotificationItem(
                 "n1", "confirmed", "success",
                 "Lịch hẹn đã được xác nhận",
-                "Bệnh viện Thú y Gia Định đã xác nhận lịch cạo vôi răng cho Bông vào Thứ 4, 29/10 lúc 14:00.",
+                "Bệnh viện Thú y HaUI đã xác nhận lịch cạo vôi răng cho Bông vào Thứ 4, 29/10 lúc 14:00.",
                 "Hôm nay · 08:12",
                 true
         ));
@@ -82,7 +81,7 @@ public class NotificationsActivity extends AppCompatActivity {
         notifications.add(new NotificationItem(
                 "n4", "cancelled", "neutral",
                 "Lịch hẹn đã bị hủy",
-                "Buổi tư vấn da & dị ứng tại Bệnh viện Thú y Gia Định đã được hủy.",
+                "Buổi tư vấn da & dị ứng tại Bệnh viện Thú y HaUI đã được hủy.",
                 "Thứ 3, 09/09 · 09:20",
                 false
         ));
@@ -125,19 +124,11 @@ public class NotificationsActivity extends AppCompatActivity {
         });
     }
 
-    private void setupStateToggles() {
-        binding.chipStateDefault.setOnClickListener(v -> applyState("default"));
-        binding.chipStateEmpty.setOnClickListener(v -> applyState("empty"));
-    }
-
     private void applyState(String state) {
         currentState = state;
+        boolean isEmpty = "empty".equals(state) || notifications.isEmpty();
 
-        boolean isDefault = "default".equals(state);
-        updateToggleChip(binding.chipStateDefault, isDefault);
-        updateToggleChip(binding.chipStateEmpty, !isDefault);
-
-        if (!isDefault) {
+        if (isEmpty) {
             // Trạng thái Rỗng
             binding.tvSubtitle.setVisibility(View.GONE);
             binding.layoutNotificationsContent.setVisibility(View.GONE);
@@ -146,17 +137,8 @@ public class NotificationsActivity extends AppCompatActivity {
             // Trạng thái Mặc định
             binding.layoutEmptyState.setVisibility(View.GONE);
             binding.layoutNotificationsContent.setVisibility(View.VISIBLE);
+            binding.tvSubtitle.setVisibility(View.VISIBLE);
             renderNotificationList();
-        }
-    }
-
-    private void updateToggleChip(TextView chip, boolean active) {
-        if (active) {
-            chip.setBackgroundResource(R.drawable.bg_chip_active);
-            chip.setTextColor(ContextCompat.getColor(this, R.color.white));
-        } else {
-            chip.setBackgroundResource(R.drawable.bg_chip_inactive);
-            chip.setTextColor(ContextCompat.getColor(this, R.color.text_muted));
         }
     }
 

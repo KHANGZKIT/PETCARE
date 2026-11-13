@@ -78,57 +78,12 @@
             android:textStyle="bold" />
     </LinearLayout>
 
-    <!-- 2. Bộ chuyển đổi trạng thái Mặc định / Rỗng theo mẫu thiết kế -->
-    <LinearLayout
-        android:id="@+id/layoutStateToggle"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/layoutAppBar"
-        android:background="@color/surface_background"
-        android:orientation="horizontal"
-        android:paddingStart="16dp"
-        android:paddingTop="2dp"
-        android:paddingEnd="16dp"
-        android:paddingBottom="10dp">
-
-        <TextView
-            android:id="@+id/chipStateDefault"
-            android:layout_width="wrap_content"
-            android:layout_height="32dp"
-            android:background="@drawable/bg_chip_active"
-            android:clickable="true"
-            android:focusable="true"
-            android:gravity="center"
-            android:paddingStart="14dp"
-            android:paddingEnd="14dp"
-            android:text="Mặc định"
-            android:textColor="@color/white"
-            android:textSize="12sp"
-            android:textStyle="bold" />
-
-        <TextView
-            android:id="@+id/chipStateEmpty"
-            android:layout_width="wrap_content"
-            android:layout_height="32dp"
-            android:layout_marginStart="8dp"
-            android:background="@drawable/bg_chip_inactive"
-            android:clickable="true"
-            android:focusable="true"
-            android:gravity="center"
-            android:paddingStart="14dp"
-            android:paddingEnd="14dp"
-            android:text="Rỗng"
-            android:textColor="@color/text_muted"
-            android:textSize="12sp"
-            android:textStyle="bold" />
-    </LinearLayout>
-
-    <!-- 3. Vùng nội dung chính cuộn dọc -->
+    <!-- 2. Vùng nội dung chính cuộn dọc -->
     <androidx.core.widget.NestedScrollView
         android:id="@+id/scrollViewBody"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@id/layoutStateToggle"
+        android:layout_below="@id/layoutAppBar"
         android:fillViewport="true"
         android:scrollbars="none">
 

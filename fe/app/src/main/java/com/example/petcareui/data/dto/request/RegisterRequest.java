@@ -1,18 +1,16 @@
-package com.example.petcareui.data.model;
+package com.example.petcareui.data.dto.request;
 
-public class UserProfileResponse {
-    private Long id;
+public class RegisterRequest {
     private String fullName;
     private String email;
     private String phone;
-    private String role;
+    private String password;
 
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
+    public RegisterRequest(String fullName, String email, String phone, String password) {
+        this.fullName = fullName;
+        this.email = email;
+        this.phone = phone;
+        this.password = password;
     }
 
     public String getFullName() {
@@ -39,11 +37,12 @@ public class UserProfileResponse {
         this.phone = phone;
     }
 
-    public String getRole() {
-        return role;
+    public String getPassword() {
+        return password;
     }
 
-    public void setRole(String role) {
-        this.role = role;
+    public void setPassword(String password) {
+        this.password = password;
     }
 }
+

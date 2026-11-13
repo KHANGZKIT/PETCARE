@@ -1,3 +1,28 @@
 <resources>
-    <string name="app_name">PetcareUI</string>
+    <string name="app_name">Petcare</string>
+
+    <!-- Bottom Navigation Tabs -->
+    <string name="nav_tab_home">Trang chủ</string>
+    <string name="nav_tab_appointments">Lịch hẹn</string>
+    <string name="nav_tab_pets">Thú cưng</string>
+    <string name="nav_tab_profile">Tài khoản</string>
+
+    <!-- Appointment & Clinic Statuses -->
+    <string name="status_clinic_open">ĐANG MỞ CỬA</string>
+    <string name="status_clinic_closed">ĐÓNG CỬA</string>
+    <string name="status_clinic_emergency">CẤP CỨU 24/7</string>
+    <string name="status_pending">Chờ xác nhận</string>
+    <string name="status_confirmed">Đã xác nhận</string>
+    <string name="status_completed">Đã hoàn thành</string>
+    <string name="status_cancelled">Đã hủy</string>
+
+    <!-- Common Actions -->
+    <string name="action_confirm">Xác nhận</string>
+    <string name="action_cancel">Hủy</string>
+    <string name="action_close">Đóng</string>
+    <string name="action_delete">Xóa</string>
+    <string name="action_book_now">Đặt lịch khám</string>
+    <string name="action_retry">Thử lại</string>
+    <string name="action_save">Lưu thay đổi</string>
+    <string name="action_search_hint">Tìm kiếm phòng khám, dịch vụ...</string>
 </resources>

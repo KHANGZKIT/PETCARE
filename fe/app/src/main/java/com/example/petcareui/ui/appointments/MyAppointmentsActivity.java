@@ -14,7 +14,7 @@ import com.example.petcareui.MainActivity;
 import com.example.petcareui.R;
 import com.example.petcareui.data.api.ApiClient;
 import com.example.petcareui.data.model.AppointmentItem;
-import com.example.petcareui.data.model.AppointmentResponse;
+import com.example.petcareui.data.dto.response.AppointmentResponse;
 import com.example.petcareui.databinding.ActivityMyAppointmentsBinding;
 import com.example.petcareui.databinding.ItemAppointmentCardBinding;
 import com.example.petcareui.ui.clinic.ClinicListActivity;

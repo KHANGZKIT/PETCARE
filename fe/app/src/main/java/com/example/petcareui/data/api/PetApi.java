@@ -1,7 +1,7 @@
 package com.example.petcareui.data.api;
 
-import com.example.petcareui.data.model.PetRequest;
-import com.example.petcareui.data.model.PetResponse;
+import com.example.petcareui.data.dto.request.PetRequest;
+import com.example.petcareui.data.dto.response.PetResponse;
 
 import java.util.List;
 

@@ -872,52 +872,6 @@
         </LinearLayout>
     </androidx.core.widget.NestedScrollView>
 
-    <!-- 4. Floating Undo Snackbar (Hiển thị khi ở trạng thái Đã hủy) -->
-    <LinearLayout
-        android:id="@+id/layoutUndoSnackbar"
-        android:layout_width="match_parent"
-        android:layout_height="48dp"
-        android:layout_above="@id/layoutStickyBar"
-        android:layout_marginStart="16dp"
-        android:layout_marginEnd="16dp"
-        android:layout_marginBottom="12dp"
-        android:background="@drawable/bg_snackbar_pill"
-        android:elevation="6dp"
-        android:gravity="center_vertical"
-        android:orientation="horizontal"
-        android:paddingStart="16dp"
-        android:paddingEnd="16dp"
-        android:visibility="gone">
-
-        <ImageView
-            android:layout_width="16dp"
-            android:layout_height="16dp"
-            android:contentDescription="@null"
-            android:src="@drawable/ic_check_circle"
-            app:tint="@color/white" />
-
-        <TextView
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            android:layout_weight="1"
-            android:text="Đã hủy lịch hẹn"
-            android:textColor="@color/white"
-            android:textSize="13sp" />
-
-        <TextView
-            android:id="@+id/tvUndoCancel"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:clickable="true"
-            android:focusable="true"
-            android:letterSpacing="0.06"
-            android:text="HOÀN TÁC"
-            android:textColor="@color/brand_primary"
-            android:textSize="12.5sp"
-            android:textStyle="bold" />
-    </LinearLayout>
-
     <!-- 5. Thanh hành động dính dưới đáy (StickyBar) -->
     <LinearLayout
         android:id="@+id/layoutStickyBar"
