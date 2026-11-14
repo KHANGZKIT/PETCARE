@@ -3,8 +3,8 @@ package com.example.petcareui.ui.staff;
 import android.content.Context;
 
 import com.example.petcareui.data.api.ApiClient;
-import com.example.petcareui.data.model.ClinicResponse;
-import com.example.petcareui.data.model.UserProfileResponse;
+import com.example.petcareui.data.dto.response.ClinicResponse;
+import com.example.petcareui.data.dto.response.UserProfileResponse;
 import com.example.petcareui.utils.TokenManager;
 
 import java.time.DayOfWeek;

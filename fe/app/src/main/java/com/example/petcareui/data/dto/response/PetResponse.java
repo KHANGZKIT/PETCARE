@@ -82,8 +82,5 @@ public class PetResponse implements Serializable {
                 avatar
         );
     }
-                avatar
-        );
-    }
 }
 
