@@ -1,0 +1,117 @@
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="260dp"
+    android:height="240dp"
+    android:viewportWidth="260"
+    android:viewportHeight="240">
+
+    <!-- Soft glowing background halo circle -->
+    <path
+        android:fillColor="#15D97B60"
+        android:pathData="M130,120m-100,0a100,100 0 1,0 200,0a100,100 0 1,0 -200,0" />
+
+    <!-- Left Ear (outer warm golden fur) -->
+    <path
+        android:fillColor="#E89858"
+        android:pathData="M65,70 C40,40 30,100 45,130 C55,150 75,130 80,100 Z" />
+
+    <!-- Left Ear inner peach shadow -->
+    <path
+        android:fillColor="#FCE9E2"
+        android:pathData="M58,75 C45,55 40,95 50,115 C55,125 65,115 68,95 Z" />
+
+    <!-- Right Ear (outer warm golden fur) -->
+    <path
+        android:fillColor="#E89858"
+        android:pathData="M195,70 C220,40 230,100 215,130 C205,150 185,130 180,100 Z" />
+
+    <!-- Right Ear inner peach shadow -->
+    <path
+        android:fillColor="#FCE9E2"
+        android:pathData="M202,75 C215,55 220,95 210,115 C205,125 195,115 192,95 Z" />
+
+    <!-- Head Base (chubby, cute rounded puppy face) -->
+    <path
+        android:fillColor="#F7B272"
+        android:pathData="M130,55 C80,55 60,95 60,145 C60,195 90,215 130,215 C170,215 200,195 200,145 C200,95 180,55 130,55 Z" />
+
+    <!-- Forehead Star / White blaze stripe down muzzle -->
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M130,95 C122,95 118,125 110,145 C105,158 108,185 130,185 C152,185 155,158 150,145 C142,125 138,95 130,95 Z" />
+
+    <!-- Soft Rosy Cheeks -->
+    <path
+        android:fillColor="#40FF6B4A"
+        android:pathData="M82,152m-12,0a12,12 0 1,0 24,0a12,12 0 1,0 -24,0" />
+    <path
+        android:fillColor="#40FF6B4A"
+        android:pathData="M178,152m-12,0a12,12 0 1,0 24,0a12,12 0 1,0 -24,0" />
+
+    <!-- Left Eye (Big expressive anime-style eye) -->
+    <path
+        android:fillColor="#2D2422"
+        android:pathData="M98,126m-9,0a9,9 0 1,0 18,0a9,9 0 1,0 -18,0" />
+    <!-- Left Eye Highlights -->
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M95,123m-3.5,0a3.5,3.5 0 1,0 7,0a3.5,3.5 0 1,0 -7,0" />
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M102,129m-1.5,0a1.5,1.5 0 1,0 3,0a1.5,1.5 0 1,0 -3,0" />
+
+    <!-- Right Eye (Big expressive anime-style eye) -->
+    <path
+        android:fillColor="#2D2422"
+        android:pathData="M162,126m-9,0a9,9 0 1,0 18,0a9,9 0 1,0 -18,0" />
+    <!-- Right Eye Highlights -->
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M159,123m-3.5,0a3.5,3.5 0 1,0 7,0a3.5,3.5 0 1,0 -7,0" />
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M166,129m-1.5,0a1.5,1.5 0 1,0 3,0a1.5,1.5 0 1,0 -3,0" />
+
+    <!-- Cute Nose (Rounded triangle in dark terracotta) -->
+    <path
+        android:fillColor="#3D2923"
+        android:pathData="M130,146 C124,146 122,152 126,156 C128,158 132,158 134,156 C138,152 136,146 130,146 Z" />
+    <!-- Nose Highlight -->
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M129,148m-1.2,0a1.2,1.2 0 1,0 2.4,0a1.2,1.2 0 1,0 -2.4,0" />
+
+    <!-- W-Shaped Smiling Mouth -->
+    <path
+        android:strokeColor="#3D2923"
+        android:strokeWidth="2.5"
+        android:strokeLineCap="round"
+        android:fillColor="#00000000"
+        android:pathData="M123,164 Q127,169 130,165 Q133,169 137,164" />
+
+    <!-- Little Pink Tongue -->
+    <path
+        android:fillColor="#FF7C70"
+        android:pathData="M127,166 Q130,175 133,166 Z" />
+
+    <!-- Left Little Paw peeking over card edge -->
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M78,198 C68,198 62,208 62,218 C62,228 72,234 82,234 C92,234 98,228 98,218 C98,208 88,198 78,198 Z" />
+    <path
+        android:strokeColor="#EAE0D8"
+        android:strokeWidth="1.5"
+        android:fillColor="#00000000"
+        android:strokeLineCap="round"
+        android:pathData="M72,218 L72,228 M80,217 L80,230 M88,218 L88,228" />
+
+    <!-- Right Little Paw peeking over card edge -->
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M182,198 C172,198 162,208 162,218 C162,228 172,234 182,234 C192,234 202,228 202,218 C202,208 192,198 182,198 Z" />
+    <path
+        android:strokeColor="#EAE0D8"
+        android:strokeWidth="1.5"
+        android:fillColor="#00000000"
+        android:strokeLineCap="round"
+        android:pathData="M172,218 L172,228 M180,217 L180,230 M188,218 L188,228" />
+</vector>

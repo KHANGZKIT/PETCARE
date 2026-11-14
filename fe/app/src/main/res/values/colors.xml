@@ -66,6 +66,16 @@
     <color name="google_yellow">#FBBC05</color>
     <color name="google_green">#34A853</color>
 
+    <!-- Onboarding Palette -->
+    <color name="coral_terracotta">#D97B60</color>
+    <color name="coral_terracotta_dark">#BF6349</color>
+    <color name="cream_soft_bg">#FFF9F5</color>
+    <color name="peach_accent">#FCE9E2</color>
+    <color name="butter_yellow">#F6E6A9</color>
+    <color name="soft_mint">#DCEDE4</color>
+    <color name="text_onboarding_title">#2D2422</color>
+    <color name="text_onboarding_desc">#7A6F6B</color>
+
     <!-- Backward compatibility aliases (đảm bảo không gãy code cũ) -->
     <color name="primary">#1E8278</color>
     <color name="primary_dark">#114C46</color>

@@ -107,9 +107,14 @@
             android:name=".ui.auth.RegisterActivity"
             android:exported="false" />
 
-        <!-- Màn hình Đăng nhập (Khởi động đầu tiên) -->
+        <!-- Màn hình Đăng nhập -->
         <activity
             android:name=".ui.auth.LoginActivity"
+            android:exported="true" />
+
+        <!-- Màn hình Giới thiệu / Onboarding (Khởi động đầu tiên) -->
+        <activity
+            android:name=".ui.onboarding.OnboardingActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
