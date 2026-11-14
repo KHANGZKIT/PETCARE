@@ -10,7 +10,6 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 
-import com.example.petcareui.MainActivity;
 import com.example.petcareui.R;
 import com.example.petcareui.data.api.ApiClient;
 import com.example.petcareui.data.dto.response.AppointmentResponse;
@@ -22,6 +21,7 @@ import com.example.petcareui.ui.auth.LoginActivity;
 import com.example.petcareui.ui.notifications.NotificationsActivity;
 import com.example.petcareui.utils.TokenManager;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -40,6 +40,7 @@ public class StaffDashboardActivity extends AppCompatActivity {
     public static final String EXTRA_STATE = "extra_state"; // "default", "loading", "empty"
 
     private ActivityStaffDashboardBinding binding;
+    private TokenManager tokenManager;
     private final List<StaffAppointmentItem> pendingList = new ArrayList<>();
     private final List<StaffAppointmentItem> todayScheduleList = new ArrayList<>();
     private String currentState = "default";
@@ -50,18 +51,32 @@ public class StaffDashboardActivity extends AppCompatActivity {
         binding = ActivityStaffDashboardBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
+        tokenManager = TokenManager.getInstance(this);
+        if (!tokenManager.isLoggedIn()) {
+            goToLogin();
+            return;
+        }
+
         extractIntentData();
+        bindStaffHeader();
         setupTopBar();
         setupStateToggles();
         setupShortcuts();
         setupBottomNav();
 
+        StaffClinicHelper.syncStaffAndClinicInfo(this, this::bindStaffHeader, this::handleUnauthorized);
         loadDashboardData();
     }
 
     @Override
     protected void onResume() {
         super.onResume();
+        if (!tokenManager.isLoggedIn()) {
+            goToLogin();
+            return;
+        }
+        bindStaffHeader();
+        StaffClinicHelper.syncStaffAndClinicInfo(this, this::bindStaffHeader, this::handleUnauthorized);
         loadDashboardData();
     }
 
@@ -71,14 +86,37 @@ public class StaffDashboardActivity extends AppCompatActivity {
         }
     }
 
+    private void bindStaffHeader() {
+        binding.tvStaffClinicName.setText(StaffClinicHelper.buildClinicDisplayTitle(tokenManager));
+        String area = tokenManager.getClinicArea();
+        binding.tvStaffSubtitle.setText(!area.isEmpty() ? "Khu vực nhân viên · " + area : "Khu vực nhân viên");
+        binding.tvStaffAvatarInitials.setText(StaffClinicHelper.formatInitials(tokenManager.getUserName()));
+        binding.tvTodayScheduleTitle.setText(StaffClinicHelper.formatTodayShortLabel(LocalDate.now()));
+    }
+
+    private void handleUnauthorized() {
+        if (isFinishing() || isDestroyed()) {
+            return;
+        }
+        Toast.makeText(this, "Phiên đăng nhập không hợp lệ hoặc đã hết hạn, vui lòng đăng nhập lại", Toast.LENGTH_LONG).show();
+        tokenManager.clear();
+        goToLogin();
+    }
+
+    private void goToLogin() {
+        Intent intent = new Intent(this, LoginActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        startActivity(intent);
+        finish();
+    }
+
     private void loadDashboardData() {
         ApiClient.getAppointmentApi().getClinicAppointments(null).enqueue(new Callback<List<AppointmentResponse>>() {
             @Override
             public void onResponse(Call<List<AppointmentResponse>> call, Response<List<AppointmentResponse>> response) {
-                pendingList.clear();
-                todayScheduleList.clear();
-
                 if (response.isSuccessful() && response.body() != null) {
+                    pendingList.clear();
+                    todayScheduleList.clear();
                     for (AppointmentResponse res : response.body()) {
                         StaffAppointmentItem item = res.toStaffAppointmentItem();
                         if ("PENDING".equalsIgnoreCase(item.getStatus())) {
@@ -89,11 +127,20 @@ public class StaffDashboardActivity extends AppCompatActivity {
                     }
                     if (pendingList.isEmpty() && todayScheduleList.isEmpty()) {
                         applyState("empty");
-                    } else {
+                    } else if ("loading".equals(currentState) || "empty".equals(currentState)) {
                         applyState("default");
+                    } else {
+                        applyState(currentState);
                     }
+                } else if (response.code() == 401 || response.code() == 403) {
+                    handleUnauthorized();
                 } else {
+                    pendingList.clear();
+                    todayScheduleList.clear();
                     applyState("empty");
+                    Toast.makeText(StaffDashboardActivity.this,
+                            "Không tải được dữ liệu lịch hẹn (Mã " + response.code() + ")",
+                            Toast.LENGTH_SHORT).show();
                 }
             }
 
@@ -102,7 +149,9 @@ public class StaffDashboardActivity extends AppCompatActivity {
                 pendingList.clear();
                 todayScheduleList.clear();
                 applyState("empty");
-                Toast.makeText(StaffDashboardActivity.this, "Lỗi kết nối máy chủ", Toast.LENGTH_SHORT).show();
+                Toast.makeText(StaffDashboardActivity.this,
+                        "Lỗi kết nối máy chủ khi tải lịch hẹn",
+                        Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -185,7 +234,7 @@ public class StaffDashboardActivity extends AppCompatActivity {
             case SATURDAY: dayOfWeekStr = "Thứ 7"; break;
             case SUNDAY: dayOfWeekStr = "Chủ nhật"; break;
         }
-        binding.tvTodayHeader.setText("Hôm nay · " + dayOfWeekStr + " " + today.getDayOfMonth() + "/" + today.getMonthValue());
+        binding.tvTodayScheduleTitle.setText("Hôm nay · " + dayOfWeekStr + " " + today.getDayOfMonth() + "/" + today.getMonthValue());
 
         // 1. Render danh sách chờ duyệt (Pending cards)
         binding.layoutPendingList.removeAllViews();
@@ -242,9 +291,7 @@ public class StaffDashboardActivity extends AppCompatActivity {
             startActivity(intent);
         });
 
-        binding.shortcutClinicProfile.setOnClickListener(v -> {
-            Toast.makeText(this, "Mở hồ sơ phòng khám & nhân viên", Toast.LENGTH_SHORT).show();
-        });
+        binding.shortcutClinicProfile.setOnClickListener(v -> showStaffAccountDialog());
 
         binding.tvSeeAllPending.setOnClickListener(v -> {
             Intent intent = new Intent(this, StaffAppointmentsActivity.class);
@@ -284,34 +331,38 @@ public class StaffDashboardActivity extends AppCompatActivity {
     }
 
     private void showStaffAccountDialog() {
-        TokenManager tokenManager = TokenManager.getInstance(this);
-        String name = tokenManager.getUserName();
-        String email = tokenManager.getUserEmail();
-        Long clinicId = tokenManager.getClinicId();
-        String clinicName = (clinicId != null && clinicId == 1) ? "Phòng khám Thú y An Nhiên (Cầu Giấy, Hà Nội)"
-                : (clinicId != null && clinicId == 2) ? "Bệnh viện Thú y HaUI (Bắc Từ Liêm, Hà Nội)"
-                : (clinicId != null && clinicId == 3) ? "Bệnh viện Thú y PetCare (Đống Đa, Hà Nội)"
-                : "Phòng khám cơ sở #" + (clinicId != null ? clinicId : "--");
+        String staffName = !tokenManager.getUserName().isEmpty() ? tokenManager.getUserName() : "Nhân viên phòng khám";
+        String email = !tokenManager.getUserEmail().isEmpty() ? tokenManager.getUserEmail() : "Chưa cập nhật";
+        String phone = !tokenManager.getUserPhone().isEmpty() ? tokenManager.getUserPhone() : "Chưa cập nhật";
+
+        String clinicName = tokenManager.getClinicName();
+        String clinicArea = tokenManager.getClinicArea();
+        String clinicDisplay;
+        if (!clinicName.isEmpty()) {
+            clinicDisplay = !clinicArea.isEmpty() ? clinicName + " (" + clinicArea + ")" : clinicName;
+        } else if (tokenManager.getClinicId() != null) {
+            clinicDisplay = "Phòng khám #" + tokenManager.getClinicId();
+        } else {
+            clinicDisplay = "Chưa gắn phòng khám";
+        }
 
         new AlertDialog.Builder(this)
                 .setTitle("Tài khoản Nhân viên")
-                .setMessage("Nhân viên: " + (name != null && !name.isEmpty() ? name : "Bác sĩ phụ trách")
-                        + "\nEmail: " + (email != null && !email.isEmpty() ? email : "Chưa cập nhật")
-                        + "\nCơ sở: " + clinicName
-                        + "\nVai trò: Quản trị viên phòng khám")
-                .setPositiveButton("Chuyển sang Khách hàng", (dialog, which) -> {
-                    Intent intent = new Intent(this, MainActivity.class);
+                .setMessage("Nhân viên: " + staffName
+                        + "\nEmail: " + email
+                        + "\nSố điện thoại: " + phone
+                        + "\nPhòng khám: " + clinicDisplay
+                        + "\nVai trò: Nhân viên phòng khám (STAFF)")
+                .setPositiveButton("Đóng", (dialog, which) -> dialog.dismiss())
+                .setNeutralButton("Chuyển sang Khách hàng", (dialog, which) -> {
+                    Intent intent = new Intent(this, com.example.petcareui.MainActivity.class);
                     intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
                     startActivity(intent);
                     finish();
                 })
-                .setNegativeButton("Đóng", (dialog, which) -> dialog.dismiss())
-                .setNeutralButton("Đăng xuất", (dialog, which) -> {
+                .setNegativeButton("Đăng xuất", (dialog, which) -> {
                     tokenManager.clear();
-                    Intent intent = new Intent(this, LoginActivity.class);
-                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                    startActivity(intent);
-                    finish();
+                    goToLogin();
                 })
                 .show();
     }

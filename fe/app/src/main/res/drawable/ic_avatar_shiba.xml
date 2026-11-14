@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="120dp"
+    android:height="120dp"
+    android:viewportWidth="120"
+    android:viewportHeight="120">
+    <!-- Warm Amber Pastel Background -->
+    <path
+        android:fillColor="#FEF3DC"
+        android:pathData="M0,0h120v120h-120z" />
+    <path
+        android:fillColor="#FDE4B4"
+        android:pathData="M60,64m-44,0a44,44 0,1 1,88 0a44,44 0,1 1,-88 0" />
+    <!-- Shiba Ears -->
+    <path
+        android:fillColor="#E08A3C"
+        android:pathData="M28,24 L48,40 L30,54 Z" />
+    <path
+        android:fillColor="#FFF8EE"
+        android:pathData="M32,30 L44,40 L33,49 Z" />
+    <path
+        android:fillColor="#E08A3C"
+        android:pathData="M92,24 L72,40 L90,54 Z" />
+    <path
+        android:fillColor="#FFF8EE"
+        android:pathData="M88,30 L76,40 L87,49 Z" />
+    <!-- Shiba Head -->
+    <path
+        android:fillColor="#E89548"
+        android:pathData="M60,64m-32,0a32,30 0,1 1,64 0a32,30 0,1 1,-64 0" />
+    <!-- White Cheeks & Muzzle -->
+    <path
+        android:fillColor="#FFFBF5"
+        android:pathData="M32,68 Q45,56 60,66 Q75,56 88,68 Q84,92 60,94 Q36,92 32,68 Z" />
+    <!-- Shiba Eyebrow Dots -->
+    <path
+        android:fillColor="#FFFBF5"
+        android:pathData="M47,48m-4,0a4,2.5 0,1 1,8 0a4,2.5 0,1 1,-8 0" />
+    <path
+        android:fillColor="#FFFBF5"
+        android:pathData="M73,48m-4,0a4,2.5 0,1 1,8 0a4,2.5 0,1 1,-8 0" />
+    <!-- Eyes -->
+    <path
+        android:fillColor="#1E242B"
+        android:pathData="M46,56m-4.5,0a4.5,4.5 0,1 1,9 0a4.5,4.5 0,1 1,-9 0" />
+    <path
+        android:fillColor="#1E242B"
+        android:pathData="M74,56m-4.5,0a4.5,4.5 0,1 1,9 0a4.5,4.5 0,1 1,-9 0" />
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M44.5,54.5m-1.5,0a1.5,1.5 0,1 1,3 0a1.5,1.5 0,1 1,-3 0" />
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M72.5,54.5m-1.5,0a1.5,1.5 0,1 1,3 0a1.5,1.5 0,1 1,-3 0" />
+    <!-- Nose & Happy Mouth -->
+    <path
+        android:fillColor="#1E242B"
+        android:pathData="M55,66 Q60,64 65,66 Q63,72 60,72 Q57,72 55,66 Z" />
+    <path
+        android:fillColor="#FF7A7A"
+        android:pathData="M55,75 Q60,84 65,75 Z" />
+    <!-- Teal Collar -->
+    <path
+        android:fillColor="#1E8278"
+        android:pathData="M38,93h44v8h-44z" />
+    <path
+        android:fillColor="#FFB800"
+        android:pathData="M60,99m-5,0a5,5 0,1 1,10 0a5,5 0,1 1,-10 0" />
+</vector>

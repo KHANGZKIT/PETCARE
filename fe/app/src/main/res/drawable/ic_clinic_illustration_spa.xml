@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="120dp"
+    android:height="120dp"
+    android:viewportWidth="120"
+    android:viewportHeight="120">
+    <!-- Warm Peach/Cream Background -->
+    <path
+        android:fillColor="#FFF3EB"
+        android:pathData="M0,0h120v120h-120z" />
+    <!-- Decorative Soft Circle -->
+    <path
+        android:fillColor="#FFE2D1"
+        android:pathData="M60,56m-42,0a42,42 0,1 1,84 0a42,42 0,1 1,-84 0" />
+    <!-- Storefront Body -->
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M24,44h72v58h-72z" />
+    <!-- Awning Stripes -->
+    <path
+        android:fillColor="#FF6B4A"
+        android:pathData="M20,34h80l4,14h-88z" />
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M34,34h12l1,14h-14zM58,34h12l1,14h-14zM82,34h12l2,14h-14z" />
+    <!-- Shop Window & Door -->
+    <path
+        android:fillColor="#D9F2EE"
+        android:pathData="M32,58h30v26h-30z" />
+    <path
+        android:fillColor="#1E8278"
+        android:pathData="M68,58h20v44h-20z" />
+    <path
+        android:fillColor="#B8E8E1"
+        android:pathData="M71,62h14v22h-14z" />
+    <!-- Heart / Paw Sign on Roof -->
+    <path
+        android:fillColor="#1E8278"
+        android:pathData="M60,22m-11,0a11,11 0,1 1,22 0a11,11 0,1 1,-22 0" />
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M60,20m-4,0a4,4 0,1 1,8 0a4,4 0,1 1,-8 0" />
+    <!-- Ground -->
+    <path
+        android:fillColor="#E8D5C8"
+        android:pathData="M0,102h120v18h-120z" />
+</vector>

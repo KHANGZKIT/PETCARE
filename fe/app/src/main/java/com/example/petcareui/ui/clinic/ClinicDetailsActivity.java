@@ -9,6 +9,7 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
+import androidx.core.widget.NestedScrollView;
 
 import com.example.petcareui.R;
 import com.example.petcareui.data.api.ApiClient;
@@ -17,6 +18,7 @@ import com.example.petcareui.data.model.ServiceItem;
 import com.example.petcareui.data.dto.response.ServiceResponse;
 import com.example.petcareui.databinding.ActivityClinicDetailsBinding;
 import com.example.petcareui.databinding.ItemServiceSelectableBinding;
+import com.example.petcareui.utils.UiMotionUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,7 +29,7 @@ import retrofit2.Response;
 
 /**
  * Màn hình C05: Chi tiết phòng khám (Clinic Details).
- * Bám sát nguyên mẫu React C05ClinicDetails và Design System Spec.
+ * Bám sát nguyên mẫu React C05ClinicDetails và Design System Spec, tích hợp hiệu ứng Parallax & Spring Motion.
  */
 public class ClinicDetailsActivity extends AppCompatActivity {
 
@@ -56,12 +58,34 @@ public class ClinicDetailsActivity extends AppCompatActivity {
         binding = ActivityClinicDetailsBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
+        UiMotionUtils.applyWindowInsets(binding.getRoot(), binding.layoutFloatingTopBar, binding.layoutStickyBottom);
+
         extractIntentData();
         setupClinicInfo();
         setupTopBarActions();
         setupQuickContactActions();
         setupBookingCTA();
+        setupParallaxAndMotion();
         loadServicesFromApi();
+    }
+
+    private void setupParallaxAndMotion() {
+        // Hiệu ứng cuộn Parallax cho ảnh bìa phòng khám
+        binding.scrollViewContent.setOnScrollChangeListener(
+                (NestedScrollView.OnScrollChangeListener) (v, scrollX, scrollY, oldScrollX, oldScrollY) -> {
+                    binding.ivClinicCover.setTranslationY(scrollY * 0.42f);
+                }
+        );
+
+        UiMotionUtils.attachSpringTouch(
+                binding.btnBack,
+                binding.btnShare,
+                binding.btnHeart,
+                binding.btnCallClinic,
+                binding.btnDirections,
+                binding.btnMapDirections,
+                binding.btnBookAppointment
+        );
     }
 
     private void extractIntentData() {
@@ -99,22 +123,19 @@ public class ClinicDetailsActivity extends AppCompatActivity {
         binding.tvClinicDistance.setText(clinicItem.getDistance());
         binding.tvClinicAbout.setText(clinicItem.getAbout());
 
-        // Badge trên ảnh bìa
         if (clinicItem.isOpen()) {
-            binding.tvCoverStatusBadge.setText("ĐANG MỞ CỬA · ĐẾN 20:00");
+            binding.tvCoverStatusBadge.setText("● ĐANG MỞ CỬA · ĐẾN 20:00");
             binding.tvCoverStatusBadge.setTextColor(ContextCompat.getColor(this, R.color.status_success_ink));
         } else {
             binding.tvCoverStatusBadge.setText("ĐÃ ĐÓNG CỬA");
             binding.tvCoverStatusBadge.setTextColor(ContextCompat.getColor(this, R.color.text_muted));
         }
 
-        // Thẻ thông tin phòng khám
         binding.tvInfoHours.setText(clinicItem.getHours());
         binding.tvInfoEmergency.setText(clinicItem.getEmergencyHours());
         binding.tvInfoLanguages.setText(clinicItem.getLanguages());
         binding.tvInfoPhone.setText(clinicItem.getPhone());
 
-        // Mô tả vị trí dưới bản đồ
         binding.tvMapLocationDesc.setText(clinicItem.getAddress() + " · đi ô tô 6 phút");
 
         // Khung giờ trống gần nhất
@@ -133,10 +154,8 @@ public class ClinicDetailsActivity extends AppCompatActivity {
     }
 
     private void setupTopBarActions() {
-        // Nút quay lại
         binding.btnBack.setOnClickListener(v -> finish());
 
-        // Nút chia sẻ phòng khám (System Share Sheet)
         binding.btnShare.setOnClickListener(v -> {
             Intent shareIntent = new Intent(Intent.ACTION_SEND);
             shareIntent.setType("text/plain");
@@ -147,11 +166,11 @@ public class ClinicDetailsActivity extends AppCompatActivity {
             startActivity(Intent.createChooser(shareIntent, "Chia sẻ phòng khám qua"));
         });
 
-        // Nút yêu thích
         binding.btnHeart.setOnClickListener(v -> {
             isFavorite = !isFavorite;
+            UiMotionUtils.animateSelectionPop(binding.btnHeart);
             if (isFavorite) {
-                binding.btnHeart.setColorFilter(ContextCompat.getColor(this, R.color.status_destructive));
+                binding.btnHeart.setColorFilter(ContextCompat.getColor(this, R.color.warm_coral));
                 Toast.makeText(this, "Đã lưu " + clinicItem.getName() + " vào yêu thích", Toast.LENGTH_SHORT).show();
             } else {
                 binding.btnHeart.setColorFilter(ContextCompat.getColor(this, R.color.text_foreground));
@@ -204,16 +223,18 @@ public class ClinicDetailsActivity extends AppCompatActivity {
                 if (response.isSuccessful() && response.body() != null && !response.body().isEmpty()) {
                     services.clear();
                     List<ServiceResponse> body = response.body();
+                    String[] samplePrices = new String[]{"180.000 ₫", "250.000 ₫", "600.000 ₫", "320.000 ₫"};
                     for (int i = 0; i < body.size(); i++) {
                         ServiceResponse res = body.get(i);
                         int icon = SERVICE_ICONS[i % SERVICE_ICONS.length];
                         String durationText = res.getDuration() != null ? res.getDuration() + " phút" : "30 phút";
+                        String priceText = samplePrices[i % samplePrices.length];
                         services.add(new ServiceItem(
                                 String.valueOf(res.getId()),
                                 res.getName(),
-                                "Dịch vụ thú y chuyên nghiệp",
+                                "Chăm sóc chuyên sâu bởi bác sĩ thú y giàu kinh nghiệm.",
                                 durationText,
-                                "Liên hệ",
+                                priceText,
                                 icon
                         ));
                     }
@@ -257,25 +278,29 @@ public class ClinicDetailsActivity extends AppCompatActivity {
             itemBinding.tvServiceDuration.setText(item.getDuration());
             itemBinding.tvServicePrice.setText(item.getPrice());
 
+            UiMotionUtils.attachSpringTouch(itemBinding.getRoot());
             itemBinding.getRoot().setOnClickListener(v -> toggleServiceSelection(index));
 
             serviceBindings.add(itemBinding);
             binding.containerServicesList.addView(itemBinding.getRoot());
         }
+
+        UiMotionUtils.animateStaggeredChildren(binding.containerServicesList, 60);
     }
 
     private void toggleServiceSelection(int index) {
         if (selectedServiceIndex == index) {
-            // Hủy chọn
             selectedServiceIndex = -1;
             binding.btnBookAppointment.setText("Đặt lịch khám");
         } else {
             selectedServiceIndex = index;
             ServiceItem selected = services.get(index);
             binding.btnBookAppointment.setText("Đặt lịch: " + selected.getName());
+            if (index >= 0 && index < serviceBindings.size()) {
+                UiMotionUtils.animateSelectionPop(serviceBindings.get(index).getRoot());
+            }
         }
 
-        // Cập nhật giao diện từng thẻ
         for (int i = 0; i < serviceBindings.size(); i++) {
             ItemServiceSelectableBinding b = serviceBindings.get(i);
             boolean isCurrentSelected = (i == selectedServiceIndex);

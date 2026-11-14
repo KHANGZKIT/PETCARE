@@ -30,20 +30,24 @@
                 android:id="@+id/tvStaffClinicName"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:ellipsize="end"
                 android:letterSpacing="-0.02"
-                android:text="An Nhiên"
+                android:maxLines="2"
+                android:text="Phòng khám"
                 android:textColor="@color/text_foreground"
-                android:textSize="20sp"
-                android:textStyle="bold" />
+                android:textSize="19sp"
+                android:textStyle="bold"
+                tools:text="Phòng khám Thú y An Nhiên" />
 
             <TextView
                 android:id="@+id/tvStaffSubtitle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="1dp"
-                android:text="Khu vực nhân viên · Cầu Giấy · Hà Nội"
+                android:text="Khu vực nhân viên"
                 android:textColor="@color/text_muted"
-                android:textSize="12.5sp" />
+                android:textSize="12.5sp"
+                tools:text="Khu vực nhân viên · Cầu Giấy · Hà Nội" />
         </LinearLayout>
 
         <!-- Nút Chuông thông báo có chấm cam -->
@@ -72,7 +76,7 @@
                 android:background="@drawable/bg_badge_pending" />
         </FrameLayout>
 
-        <!-- Avatar nhân viên chữ TM -->
+        <!-- Avatar nhân viên -->
         <FrameLayout
             android:id="@+id/btnStaffAvatar"
             android:layout_width="40dp"
@@ -83,14 +87,16 @@
             android:focusable="true">
 
             <TextView
+                android:id="@+id/tvStaffAvatarInitials"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:letterSpacing="0.04"
-                android:text="TM"
+                android:text="NV"
                 android:textColor="@color/brand_ink"
                 android:textSize="13sp"
-                android:textStyle="bold" />
+                android:textStyle="bold"
+                tools:text="TT" />
         </FrameLayout>
     </LinearLayout>
 
@@ -238,7 +244,7 @@
                             android:id="@+id/tvPendingNoticeTitle"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:text="2 yêu cầu đang chờ duyệt"
+                            android:text="0 yêu cầu đang chờ duyệt"
                             android:textColor="@color/status_warning_ink"
                             android:textSize="13sp"
                             android:textStyle="bold" />
@@ -270,14 +276,15 @@
                     android:layout_marginBottom="12dp">
 
                     <TextView
-                        android:id="@+id/tvTodayHeader"
+                        android:id="@+id/tvTodayScheduleTitle"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_alignParentStart="true"
-                        tools:text="Hôm nay · Thứ 2 27/10"
+                        android:text="Hôm nay"
                         android:textColor="@color/text_foreground"
                         android:textSize="16sp"
-                        android:textStyle="bold" />
+                        android:textStyle="bold"
+                        tools:text="Hôm nay · Thứ 2 27/10" />
 
                     <TextView
                         android:id="@+id/tvSeeAllToday"

@@ -23,6 +23,7 @@ import com.example.petcareui.data.model.ServiceItem;
 import com.example.petcareui.data.model.TimeSlotItem;
 import com.example.petcareui.databinding.ActivityDateTimeBinding;
 import com.example.petcareui.databinding.ItemDateCardBinding;
+import com.example.petcareui.utils.UiMotionUtils;
 
 import java.time.DayOfWeek;
 import java.time.LocalDate;
@@ -60,6 +61,9 @@ public class DateTimeActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         binding = ActivityDateTimeBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
+
+        UiMotionUtils.applyWindowInsets(binding.getRoot(), null, binding.layoutStickyBottom);
+        UiMotionUtils.attachSpringTouch(binding.btnBack, binding.btnPrevMonth, binding.btnNextMonth, binding.btnContinue);
 
         extractIntentData();
         setupTopBar();

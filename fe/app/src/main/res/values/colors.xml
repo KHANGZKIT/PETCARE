@@ -5,46 +5,60 @@
     <color name="white">#FFFFFFFF</color>
     <color name="transparent">#00000000</color>
 
-    <!-- 1. Brand — PET CARE Teal (Đồng bộ với Design System & petcare-ui) -->
-    <color name="brand_primary">#238C82</color>
-    <color name="brand_deep">#14534E</color>
-    <color name="brand_soft">#EAF7F4</color>
-    <color name="brand_ink">#16544C</color>
+    <!-- 1. Brand — PET CARE Warm Teal & Companion Palette -->
+    <color name="brand_primary">#1E8278</color>
+    <color name="brand_deep">#114C46</color>
+    <color name="brand_soft">#E6F6F3</color>
+    <color name="brand_ink">#124E47</color>
+    <color name="brand_mint_glow">#C7EFE9</color>
 
-    <!-- 2. Surfaces & Neutral -->
-    <color name="surface_background">#FBFAF7</color>
+    <!-- Warm Companion Accents (Coral, Peach, Amber) -->
+    <color name="warm_coral">#FF6B4A</color>
+    <color name="warm_coral_deep">#E05030</color>
+    <color name="warm_coral_soft">#FFF0EC</color>
+    <color name="warm_coral_ink">#B5381A</color>
+
+    <color name="warm_amber">#F59E0B</color>
+    <color name="warm_amber_soft">#FEF4E2</color>
+    <color name="warm_amber_ink">#925604</color>
+
+    <color name="warm_purple_soft">#F3EEFF</color>
+    <color name="warm_purple_ink">#5B37B7</color>
+
+    <!-- 2. Surfaces & Neutral (Warm Organic Cream & Crisp White) -->
+    <color name="surface_background">#FAF8F4</color>
     <color name="surface_card">#FFFFFF</color>
-    <color name="surface_muted">#F2F1EE</color>
-    <color name="stroke_border">#E4E9E7</color>
-    <color name="stroke_input">#DDE5E2</color>
-    <color name="text_foreground">#1B2226</color>
-    <color name="text_muted">#68757B</color>
+    <color name="surface_muted">#F2EFE9</color>
+    <color name="stroke_border">#E6EAE8</color>
+    <color name="stroke_input">#D8E2DF</color>
+    <color name="text_foreground">#162024</color>
+    <color name="text_muted">#637278</color>
 
     <!-- 3. Status (Main, Soft, Ink) -->
     <!-- Pending / Warning -->
-    <color name="status_warning">#B57610</color>
-    <color name="status_warning_soft">#FDF3E2</color>
-    <color name="status_warning_ink">#7A4E06</color>
+    <color name="status_warning">#D9820F</color>
+    <color name="status_warning_soft">#FEF3E0</color>
+    <color name="status_warning_ink">#854D06</color>
 
     <!-- Confirmed / Success -->
-    <color name="status_success">#25885C</color>
-    <color name="status_success_soft">#E8F6EE</color>
-    <color name="status_success_ink">#1E6B49</color>
+    <color name="status_success">#1F8A5B</color>
+    <color name="status_success_soft">#E6F7EE</color>
+    <color name="status_success_ink">#156340</color>
 
     <!-- Rejected / Destructive / Danger -->
-    <color name="status_destructive">#C43B3B</color>
-    <color name="status_destructive_soft">#FDEDED</color>
-    <color name="status_destructive_ink">#9A2B2B</color>
+    <color name="status_destructive">#CC3939</color>
+    <color name="status_destructive_soft">#FDECEC</color>
+    <color name="status_destructive_ink">#992424</color>
 
     <!-- Info / No Show -->
-    <color name="status_info">#2072B4</color>
-    <color name="status_info_soft">#EAF3FC</color>
-    <color name="status_info_ink">#1B5C92</color>
+    <color name="status_info">#1E70B8</color>
+    <color name="status_info_soft">#E8F3FC</color>
+    <color name="status_info_ink">#17568F</color>
 
     <!-- Cancelled / Neutral Status -->
-    <color name="status_neutral">#68757B</color>
-    <color name="status_neutral_soft">#F2F1EE</color>
-    <color name="status_neutral_ink">#4C5559</color>
+    <color name="status_neutral">#637278</color>
+    <color name="status_neutral_soft">#F1EFEA</color>
+    <color name="status_neutral_ink">#475257</color>
 
     <!-- Google Button Accent -->
     <color name="google_blue">#4285F4</color>
@@ -53,15 +67,15 @@
     <color name="google_green">#34A853</color>
 
     <!-- Backward compatibility aliases (đảm bảo không gãy code cũ) -->
-    <color name="primary">#238C82</color>
-    <color name="primary_dark">#14534E</color>
-    <color name="primary_light">#EAF7F4</color>
-    <color name="secondary">#EAF7F4</color>
-    <color name="accent">#238C82</color>
-    <color name="dark_teal">#14534E</color>
-    <color name="bg_light">#FBFAF7</color>
-    <color name="text_primary">#1B2226</color>
-    <color name="text_secondary">#68757B</color>
-    <color name="border_color">#E4E9E7</color>
-    <color name="error_red">#C43B3B</color>
+    <color name="primary">#1E8278</color>
+    <color name="primary_dark">#114C46</color>
+    <color name="primary_light">#E6F6F3</color>
+    <color name="secondary">#E6F6F3</color>
+    <color name="accent">#FF6B4A</color>
+    <color name="dark_teal">#114C46</color>
+    <color name="bg_light">#FAF8F4</color>
+    <color name="text_primary">#162024</color>
+    <color name="text_secondary">#637278</color>
+    <color name="border_color">#E6EAE8</color>
+    <color name="error_red">#CC3939</color>
 </resources>

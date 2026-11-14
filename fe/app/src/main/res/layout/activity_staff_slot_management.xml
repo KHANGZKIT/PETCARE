@@ -59,9 +59,12 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="1dp"
-                android:text="An Nhiên"
+                android:ellipsize="end"
+                android:maxLines="1"
+                android:text="Phòng khám"
                 android:textColor="@color/text_muted"
-                android:textSize="12.5sp" />
+                android:textSize="12.5sp"
+                tools:text="Phòng khám Thú y An Nhiên · Quận 1" />
         </LinearLayout>
 
         <FrameLayout
@@ -262,6 +265,7 @@
                         android:textStyle="bold" />
 
                     <TextView
+                        android:id="@+id/tvNoticeCreatedBody"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="2dp"
@@ -298,10 +302,11 @@
                         android:id="@+id/tvNoticeDateTitle"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        tools:text="Thứ 2, 27/10/2026"
+                        android:text="Ngày hôm nay"
                         android:textColor="@color/brand_ink"
                         android:textSize="13sp"
-                        android:textStyle="bold" />
+                        android:textStyle="bold"
+                        tools:text="Thứ 2, 27/10/2026" />
 
                     <TextView
                         android:layout_width="match_parent"
@@ -336,7 +341,7 @@
                     android:id="@+id/tvSlotCountHeader"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="6 khung"
+                    android:text="0 khung"
                     android:textColor="@color/text_muted"
                     android:textSize="12sp"
                     android:textStyle="bold" />
@@ -624,13 +629,14 @@
                 android:textStyle="bold" />
 
             <TextView
-                android:id="@+id/tvSheetDesc"
+                android:id="@+id/tvSheetCreateSlotSubtitle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="4dp"
-                tools:text="Thêm khung giờ trống cho Thứ 2, 27/10/2026. Khách có thể đặt ngay khi bạn lưu."
+                android:text="Thêm khung giờ trống. Khách có thể đặt ngay khi bạn lưu."
                 android:textColor="@color/text_muted"
-                android:textSize="12.5sp" />
+                android:textSize="12.5sp"
+                tools:text="Thêm khung giờ trống cho Thứ 2, 27/10/2026. Khách có thể đặt ngay khi bạn lưu." />
 
             <!-- Hai ô chọn giờ bắt đầu & kết thúc -->
             <LinearLayout

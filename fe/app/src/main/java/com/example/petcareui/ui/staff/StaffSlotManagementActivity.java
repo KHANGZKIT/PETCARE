@@ -18,6 +18,8 @@ import com.example.petcareui.data.dto.response.ClinicSlotResponse;
 import com.example.petcareui.data.model.StaffSlotItem;
 import com.example.petcareui.databinding.ActivityStaffSlotManagementBinding;
 import com.example.petcareui.databinding.ItemStaffSlotRowBinding;
+import com.example.petcareui.ui.auth.LoginActivity;
+import com.example.petcareui.utils.TokenManager;
 
 import java.time.DayOfWeek;
 import java.time.LocalDate;
@@ -44,6 +46,7 @@ public class StaffSlotManagementActivity extends AppCompatActivity {
     public static final String EXTRA_STATE = "extra_state";
 
     private ActivityStaffSlotManagementBinding binding;
+    private TokenManager tokenManager;
 
     private static class StaffDateItem {
         String day;
@@ -73,13 +76,21 @@ public class StaffSlotManagementActivity extends AppCompatActivity {
         binding = ActivityStaffSlotManagementBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
+        tokenManager = TokenManager.getInstance(this);
+        if (!tokenManager.isLoggedIn()) {
+            goToLogin();
+            return;
+        }
+
         extractIntentData();
+        bindClinicHeader();
         setupDates();
         setupAppBar();
         setupStateToggles();
         setupSheetInteractions();
         setupBottomNav();
 
+        StaffClinicHelper.syncStaffAndClinicInfo(this, this::bindClinicHeader, this::handleUnauthorized);
         loadSlotsForSelectedDate();
         applyState(currentState);
     }
@@ -87,7 +98,33 @@ public class StaffSlotManagementActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
+        if (!tokenManager.isLoggedIn()) {
+            goToLogin();
+            return;
+        }
+        bindClinicHeader();
+        StaffClinicHelper.syncStaffAndClinicInfo(this, this::bindClinicHeader, this::handleUnauthorized);
         loadSlotsForSelectedDate();
+    }
+
+    private void bindClinicHeader() {
+        binding.tvStaffClinicSubtitle.setText(StaffClinicHelper.buildClinicSubtitleWithArea(tokenManager));
+    }
+
+    private void handleUnauthorized() {
+        if (isFinishing() || isDestroyed()) {
+            return;
+        }
+        Toast.makeText(this, "Phiên đăng nhập không hợp lệ hoặc đã hết hạn, vui lòng đăng nhập lại", Toast.LENGTH_LONG).show();
+        tokenManager.clear();
+        goToLogin();
+    }
+
+    private void goToLogin() {
+        Intent intent = new Intent(this, LoginActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        startActivity(intent);
+        finish();
     }
 
     private void extractIntentData() {
@@ -107,6 +144,15 @@ public class StaffSlotManagementActivity extends AppCompatActivity {
             dateList.add(new StaffDateItem(dayLabel, num, 0, i == 0, isoDate));
         }
         renderDateStrip();
+        updateSelectedDateNotices();
+    }
+
+    private void updateSelectedDateNotices() {
+        StaffDateItem selectedDate = getSelectedDateItem();
+        LocalDate parsedDate = selectedDate != null ? LocalDate.parse(selectedDate.isoDate) : LocalDate.now();
+        String formattedDate = StaffClinicHelper.formatVietnameseFullDate(parsedDate);
+        binding.tvNoticeDateTitle.setText(formattedDate);
+        binding.tvSheetCreateSlotSubtitle.setText("Thêm khung giờ trống cho " + formattedDate + ". Khách có thể đặt ngay khi bạn lưu.");
     }
 
     private String getDayOfWeekLabel(DayOfWeek dow) {
@@ -132,17 +178,7 @@ public class StaffSlotManagementActivity extends AppCompatActivity {
     private void loadSlotsForSelectedDate() {
         StaffDateItem selectedDate = getSelectedDateItem();
         String isoDate = selectedDate != null ? selectedDate.isoDate : LocalDate.now().toString();
-
-        if (selectedDate != null) {
-            try {
-                LocalDate parsed = LocalDate.parse(isoDate);
-                String fullDate = selectedDate.day + ", " + String.format(Locale.US, "%02d/%02d/%d", parsed.getDayOfMonth(), parsed.getMonthValue(), parsed.getYear());
-                binding.tvNoticeDateTitle.setText(fullDate);
-                binding.tvSheetDesc.setText("Thêm khung giờ trống cho " + fullDate + ". Khách có thể đặt ngay khi bạn lưu.");
-            } catch (Exception ignored) {
-                binding.tvNoticeDateTitle.setText(selectedDate.day + ", " + selectedDate.isoDate);
-            }
-        }
+        updateSelectedDateNotices();
 
         ApiClient.getStaffSlotApi().getStaffSlots(isoDate).enqueue(new Callback<List<ClinicSlotResponse>>() {
             @Override
@@ -165,7 +201,16 @@ public class StaffSlotManagementActivity extends AppCompatActivity {
                     renderDateStrip();
 
                     if (slotList.isEmpty()) {
-                        applyState("empty");
+                        if ("new-slot".equals(currentState)) {
+                            binding.noticeCreated.setVisibility(View.GONE);
+                            binding.noticeInfo.setVisibility(View.VISIBLE);
+                            binding.layoutFloatingToast.setVisibility(View.GONE);
+                            binding.layoutSlotsList.setVisibility(View.GONE);
+                            binding.layoutEmptySlots.setVisibility(View.VISIBLE);
+                            binding.tvSlotCountHeader.setText("0 khung");
+                        } else {
+                            applyState("empty");
+                        }
                     } else {
                         if (!"new-slot".equals(currentState) && !"created".equals(currentState)) {
                             applyState("default");
@@ -173,15 +218,36 @@ public class StaffSlotManagementActivity extends AppCompatActivity {
                             renderSlotsList("created".equals(currentState));
                         }
                     }
+                } else if (response.code() == 401 || response.code() == 403) {
+                    handleUnauthorized();
                 } else {
-                    applyState("empty");
+                    slotList.clear();
+                    if (selectedDate != null) {
+                        selectedDate.openCount = 0;
+                    }
+                    renderDateStrip();
+                    if (!"new-slot".equals(currentState)) {
+                        applyState("empty");
+                    }
+                    Toast.makeText(StaffSlotManagementActivity.this,
+                            "Không tải được khung giờ (Mã " + response.code() + ")",
+                            Toast.LENGTH_SHORT).show();
                 }
             }
 
             @Override
             public void onFailure(Call<List<ClinicSlotResponse>> call, Throwable t) {
-                applyState("empty");
-                Toast.makeText(StaffSlotManagementActivity.this, "Lỗi kết nối máy chủ", Toast.LENGTH_SHORT).show();
+                slotList.clear();
+                if (selectedDate != null) {
+                    selectedDate.openCount = 0;
+                }
+                renderDateStrip();
+                if (!"new-slot".equals(currentState)) {
+                    applyState("empty");
+                }
+                Toast.makeText(StaffSlotManagementActivity.this,
+                        "Lỗi kết nối máy chủ khi tải khung giờ",
+                        Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -397,7 +463,11 @@ public class StaffSlotManagementActivity extends AppCompatActivity {
                 public void onResponse(Call<ClinicSlotResponse> call, Response<ClinicSlotResponse> response) {
                     if (response.isSuccessful() && response.body() != null) {
                         ClinicSlotResponse created = response.body();
-                        binding.tvFloatingToastText.setText("Đã tạo khung giờ · " + created.getFormattedStartTime() + " – " + created.getEndTime());
+                        String formattedStart = created.getFormattedStartTime();
+                        String rawEnd = created.getEndTime();
+                        String formattedEnd = (rawEnd != null && rawEnd.length() >= 5) ? rawEnd.substring(0, 5) : (rawEnd != null ? rawEnd : end);
+                        binding.tvFloatingToastText.setText("Đã tạo khung giờ · " + formattedStart + " – " + formattedEnd);
+                        binding.tvNoticeCreatedBody.setText(formattedStart + " – " + formattedEnd + " đã mở để nhận đặt lịch.");
                         loadSlotsForSelectedDate();
                         applyState("created");
                         Toast.makeText(StaffSlotManagementActivity.this, "Đã tạo khung giờ thành công!", Toast.LENGTH_SHORT).show();

@@ -16,9 +16,6 @@ import com.example.petcareui.data.dto.response.AppointmentResponse;
 import com.example.petcareui.data.model.StaffAppointmentItem;
 import com.example.petcareui.databinding.ActivityStaffAppointmentDetailsBinding;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -41,7 +38,6 @@ public class StaffAppointmentDetailsActivity extends AppCompatActivity {
     public static final String EXTRA_STATE = "extra_state";
 
     private ActivityStaffAppointmentDetailsBinding binding;
-
     private StaffAppointmentItem currentAppt;
 
     private String currentState = "default";
@@ -75,7 +71,7 @@ public class StaffAppointmentDetailsActivity extends AppCompatActivity {
         }
 
         if (currentAppt == null) {
-            Toast.makeText(this, "Không tìm thấy thông tin ca khám", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Không tìm thấy thông tin lịch hẹn", Toast.LENGTH_SHORT).show();
             finish();
             return;
         }
@@ -308,20 +304,21 @@ public class StaffAppointmentDetailsActivity extends AppCompatActivity {
                     @Override
                     public void onResponse(Call<AppointmentResponse> call, Response<AppointmentResponse> response) {
                         if (response.isSuccessful()) {
+                            if (currentAppt != null) currentAppt.setStatus("COMPLETED");
                             Toast.makeText(StaffAppointmentDetailsActivity.this, "Đã hoàn thành lượt khám cho " + currentAppt.getPet(), Toast.LENGTH_SHORT).show();
                             finish();
                         } else {
-                            Toast.makeText(StaffAppointmentDetailsActivity.this, "Không thể cập nhật hoàn thành ca khám", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(StaffAppointmentDetailsActivity.this, "Không thể hoàn thành lịch hẹn (Mã " + response.code() + ")", Toast.LENGTH_SHORT).show();
                         }
                     }
 
                     @Override
                     public void onFailure(Call<AppointmentResponse> call, Throwable t) {
-                        Toast.makeText(StaffAppointmentDetailsActivity.this, "Lỗi kết nối mạng, vui lòng thử lại!", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(StaffAppointmentDetailsActivity.this, "Lỗi kết nối máy chủ khi hoàn thành lịch hẹn", Toast.LENGTH_SHORT).show();
                     }
                 });
             } else {
-                Toast.makeText(this, "Không tìm thấy mã lịch hẹn hợp lệ", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "Thiếu mã lịch hẹn hợp lệ", Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -333,20 +330,21 @@ public class StaffAppointmentDetailsActivity extends AppCompatActivity {
                     @Override
                     public void onResponse(Call<AppointmentResponse> call, Response<AppointmentResponse> response) {
                         if (response.isSuccessful()) {
+                            if (currentAppt != null) currentAppt.setStatus("NO_SHOW");
                             Toast.makeText(StaffAppointmentDetailsActivity.this, "Đã ghi nhận khách không đến hẹn", Toast.LENGTH_SHORT).show();
                             finish();
                         } else {
-                            Toast.makeText(StaffAppointmentDetailsActivity.this, "Không thể cập nhật trạng thái vắng mặt", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(StaffAppointmentDetailsActivity.this, "Không thể cập nhật trạng thái (Mã " + response.code() + ")", Toast.LENGTH_SHORT).show();
                         }
                     }
 
                     @Override
                     public void onFailure(Call<AppointmentResponse> call, Throwable t) {
-                        Toast.makeText(StaffAppointmentDetailsActivity.this, "Lỗi kết nối mạng, vui lòng thử lại!", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(StaffAppointmentDetailsActivity.this, "Lỗi kết nối máy chủ khi cập nhật lịch hẹn", Toast.LENGTH_SHORT).show();
                     }
                 });
             } else {
-                Toast.makeText(this, "Không tìm thấy mã lịch hẹn hợp lệ", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "Thiếu mã lịch hẹn hợp lệ", Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -367,20 +365,20 @@ public class StaffAppointmentDetailsActivity extends AppCompatActivity {
                             applyState("success");
                             Toast.makeText(StaffAppointmentDetailsActivity.this, "Đã xác nhận lịch hẹn thành công!", Toast.LENGTH_SHORT).show();
                         } else {
-                            applyState("default");
-                            Toast.makeText(StaffAppointmentDetailsActivity.this, "Xác nhận thất bại, vui lòng thử lại!", Toast.LENGTH_SHORT).show();
+                            applyState("failed");
+                            Toast.makeText(StaffAppointmentDetailsActivity.this, "Không thể xác nhận lịch hẹn (Mã " + response.code() + ")", Toast.LENGTH_SHORT).show();
                         }
                     }
 
                     @Override
                     public void onFailure(Call<AppointmentResponse> call, Throwable t) {
-                        applyState("default");
-                        Toast.makeText(StaffAppointmentDetailsActivity.this, "Lỗi kết nối mạng: Không thể xác nhận lịch!", Toast.LENGTH_SHORT).show();
+                        applyState("failed");
+                        Toast.makeText(StaffAppointmentDetailsActivity.this, "Lỗi kết nối máy chủ khi xác nhận lịch hẹn", Toast.LENGTH_SHORT).show();
                     }
                 });
             } else {
-                Toast.makeText(this, "Không tìm thấy mã lịch hẹn hợp lệ", Toast.LENGTH_SHORT).show();
-                applyState("default");
+                applyState("failed");
+                Toast.makeText(this, "Thiếu mã lịch hẹn hợp lệ", Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -409,20 +407,20 @@ public class StaffAppointmentDetailsActivity extends AppCompatActivity {
                             Toast.makeText(StaffAppointmentDetailsActivity.this, "Đã từ chối với lý do: " + selectedRejectReason, Toast.LENGTH_SHORT).show();
                             applyState("rejected");
                         } else {
-                            Toast.makeText(StaffAppointmentDetailsActivity.this, "Từ chối thất bại, vui lòng thử lại!", Toast.LENGTH_SHORT).show();
-                            applyState("default");
+                            applyState("failed");
+                            Toast.makeText(StaffAppointmentDetailsActivity.this, "Không thể từ chối lịch hẹn (Mã " + response.code() + ")", Toast.LENGTH_SHORT).show();
                         }
                     }
 
                     @Override
                     public void onFailure(Call<AppointmentResponse> call, Throwable t) {
-                        Toast.makeText(StaffAppointmentDetailsActivity.this, "Lỗi kết nối mạng: Không thể từ chối lịch!", Toast.LENGTH_SHORT).show();
-                        applyState("default");
+                        applyState("failed");
+                        Toast.makeText(StaffAppointmentDetailsActivity.this, "Lỗi kết nối máy chủ khi từ chối lịch hẹn", Toast.LENGTH_SHORT).show();
                     }
                 });
             } else {
-                Toast.makeText(this, "Không tìm thấy mã lịch hẹn hợp lệ", Toast.LENGTH_SHORT).show();
-                applyState("default");
+                applyState("failed");
+                Toast.makeText(this, "Thiếu mã lịch hẹn hợp lệ", Toast.LENGTH_SHORT).show();
             }
         });
 

@@ -26,6 +26,7 @@ import com.example.petcareui.data.model.ClinicItem;
 import com.example.petcareui.data.dto.response.ClinicResponse;
 import com.example.petcareui.databinding.ActivityClinicListBinding;
 import com.example.petcareui.databinding.ItemClinicRowBinding;
+import com.example.petcareui.utils.UiMotionUtils;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -53,12 +54,19 @@ public class ClinicListActivity extends AppCompatActivity {
     private double userLongitude = DEFAULT_LNG;
     private String locationLabel = "ĐH Công nghiệp Hà Nội (HaUI)";
 
+    private static final int[] CLINIC_THUMBNAILS = new int[]{
+            R.drawable.img_clinic_cover,
+            R.drawable.ic_clinic_illustration_hospital,
+            R.drawable.ic_clinic_illustration_spa
+    };
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         binding = ActivityClinicListBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
+        UiMotionUtils.applyWindowInsets(binding.getRoot(), binding.layoutTopBar, binding.layoutResultsBody);
         requestLocationPermission();
         updateUserLocation();
         setupListeners();
@@ -187,7 +195,6 @@ public class ClinicListActivity extends AppCompatActivity {
     }
 
     private void setupListeners() {
-        // Nút quay lại trên App Bar
         binding.btnBack.setOnClickListener(v -> finish());
 
         // Lắng nghe nhập tìm kiếm phòng khám / khu vực
@@ -210,7 +217,6 @@ public class ClinicListActivity extends AppCompatActivity {
             Toast.makeText(this, "Bộ lọc: Đang hiển thị các cơ sở tại Hà Nội", Toast.LENGTH_SHORT).show();
         });
 
-        // Sắp xếp
         binding.tvSortOption.setOnClickListener(v -> {
             if ("NEAREST".equals(currentSortMode)) {
                 currentSortMode = "RATING";
@@ -224,7 +230,6 @@ public class ClinicListActivity extends AppCompatActivity {
             filterClinics();
         });
 
-        // Nút Xem thêm
         binding.btnLoadMore.setOnClickListener(v -> {
             Toast.makeText(this, "Đã hiển thị toàn bộ hệ thống cơ sở", Toast.LENGTH_SHORT).show();
         });
@@ -232,7 +237,6 @@ public class ClinicListActivity extends AppCompatActivity {
         // Thử lại trong Error State
         binding.btnRetry.setOnClickListener(v -> loadClinicsFromApi());
 
-        // Bỏ bộ lọc trong Empty State
         binding.btnClearFilter.setOnClickListener(v -> {
             binding.etSearchLocation.setText("");
             currentSearchQuery = "";
@@ -244,7 +248,18 @@ public class ClinicListActivity extends AppCompatActivity {
         // Đổi vị trí tham chiếu
         binding.tvChangeLocation.setOnClickListener(v -> showChangeLocationDialog());
 
-        // Xử lý các Chip bộ lọc
+        UiMotionUtils.attachSpringTouch(
+                binding.btnBack,
+                binding.btnFilter,
+                binding.btnLoadMore,
+                binding.btnClearFilter,
+                binding.btnRetry,
+                binding.chipAll,
+                binding.chipOpen,
+                binding.chipNearby,
+                binding.chipEmergency
+        );
+
         setupFilterChips();
     }
 
@@ -366,6 +381,7 @@ public class ClinicListActivity extends AppCompatActivity {
     }
 
     private void setActiveChip(View activeView) {
+        UiMotionUtils.animateSelectionPop(activeView);
         View[] chipContainers = new View[]{
                 binding.chipAll,
                 binding.chipOpen,
@@ -389,9 +405,6 @@ public class ClinicListActivity extends AppCompatActivity {
         setActiveChip(binding.chipAll);
     }
 
-    /**
-     * Trạng thái 1: Có kết quả danh sách phòng khám (Results)
-     */
     private void showResults(List<ClinicItem> list) {
         binding.layoutResultsState.setVisibility(View.VISIBLE);
         binding.layoutLoadingState.setVisibility(View.GONE);
@@ -403,8 +416,13 @@ public class ClinicListActivity extends AppCompatActivity {
         binding.containerClinicsList.removeAllViews();
         LayoutInflater inflater = LayoutInflater.from(this);
 
-        for (ClinicItem clinic : list) {
+        for (int i = 0; i < list.size(); i++) {
+            ClinicItem clinic = list.get(i);
             ItemClinicRowBinding rowBinding = ItemClinicRowBinding.inflate(inflater, binding.containerClinicsList, false);
+
+            // Gán ảnh đại diện phòng khám đa dạng (Ảnh thật + Minh họa bệnh viện/spa)
+            int thumbRes = CLINIC_THUMBNAILS[i % CLINIC_THUMBNAILS.length];
+            rowBinding.ivClinicImage.setImageResource(thumbRes);
 
             rowBinding.tvClinicName.setText(clinic.getName());
             rowBinding.tvClinicAddress.setText(clinic.getAddress());
@@ -413,9 +431,8 @@ public class ClinicListActivity extends AppCompatActivity {
             rowBinding.ivClinicImage.setImageResource(clinic.getImageResId());
             rowBinding.ivClinicImage.setColorFilter(null);
 
-            // Badge Trạng thái mở cửa
             if (clinic.isOpen()) {
-                rowBinding.tvClinicStatusBadge.setText("ĐANG MỞ CỬA");
+                rowBinding.tvClinicStatusBadge.setText("● ĐANG MỞ CỬA");
                 rowBinding.tvClinicStatusBadge.setBackgroundResource(R.drawable.bg_badge_open);
                 rowBinding.tvClinicStatusBadge.setTextColor(ContextCompat.getColor(this, R.color.status_success_ink));
             } else {
@@ -426,7 +443,8 @@ public class ClinicListActivity extends AppCompatActivity {
 
             rowBinding.tvClinicHours.setText(clinic.getHours());
 
-            // Click vào phòng khám -> Chuyển sang C05 Chi tiết phòng khám
+            UiMotionUtils.attachSpringTouch(rowBinding.getRoot());
+
             rowBinding.getRoot().setOnClickListener(v -> {
                 Intent intent = new Intent(this, ClinicDetailsActivity.class);
                 intent.putExtra(ClinicDetailsActivity.EXTRA_CLINIC, clinic);
@@ -435,11 +453,11 @@ public class ClinicListActivity extends AppCompatActivity {
 
             binding.containerClinicsList.addView(rowBinding.getRoot());
         }
+
+        // Hiệu ứng đổ danh sách tuần tự (Staggered Animation)
+        UiMotionUtils.animateStaggeredChildren(binding.containerClinicsList, 30);
     }
 
-    /**
-     * Trạng thái 2: Đang tải dữ liệu (Loading Skeleton)
-     */
     public void showLoading() {
         binding.layoutResultsState.setVisibility(View.GONE);
         binding.layoutLoadingState.setVisibility(View.VISIBLE);
@@ -447,9 +465,6 @@ public class ClinicListActivity extends AppCompatActivity {
         binding.layoutErrorState.setVisibility(View.GONE);
     }
 
-    /**
-     * Trạng thái 3: Không tìm thấy kết quả (Empty State)
-     */
     public void showEmpty() {
         binding.layoutResultsState.setVisibility(View.GONE);
         binding.layoutLoadingState.setVisibility(View.GONE);
@@ -457,9 +472,6 @@ public class ClinicListActivity extends AppCompatActivity {
         binding.layoutErrorState.setVisibility(View.GONE);
     }
 
-    /**
-     * Trạng thái 4: Lỗi kết nối / Lỗi tải danh sách (Error State)
-     */
     public void showError() {
         binding.layoutResultsState.setVisibility(View.GONE);
         binding.layoutLoadingState.setVisibility(View.GONE);

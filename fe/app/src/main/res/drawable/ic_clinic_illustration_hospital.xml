@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="244dp"
+    android:height="120dp"
+    android:viewportWidth="244"
+    android:viewportHeight="120">
+    <!-- Warm Teal Sky Background -->
+    <path
+        android:fillColor="#D9F2EE"
+        android:pathData="M0,0h244v120h-244z" />
+    <!-- Soft Sun / Glow -->
+    <path
+        android:fillColor="#FFF4DC"
+        android:pathData="M196,28m-24,0a24,24 0,1 1,48 0a24,24 0,1 1,-48 0" />
+    <path
+        android:fillColor="#FFE0A3"
+        android:pathData="M196,28m-14,0a14,14 0,1 1,28 0a14,14 0,1 1,-28 0" />
+    <!-- Distant Hills -->
+    <path
+        android:fillColor="#BCE6DF"
+        android:pathData="M0,92 Q60,68 130,86 T244,78 L244,120 L0,120 Z" />
+    <!-- Hospital Side Wing Left -->
+    <path
+        android:fillColor="#F0F7F6"
+        android:pathData="M34,54h44v54h-44z" />
+    <!-- Hospital Side Wing Right -->
+    <path
+        android:fillColor="#F0F7F6"
+        android:pathData="M166,54h44v54h-44z" />
+    <!-- Main Hospital Building Center -->
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M72,30h100v78h-100z" />
+    <!-- Roof Trim -->
+    <path
+        android:fillColor="#1E8278"
+        android:pathData="M68,26h108v6h-108z" />
+    <path
+        android:fillColor="#28A295"
+        android:pathData="M30,50h46v5h-46z" />
+    <path
+        android:fillColor="#28A295"
+        android:pathData="M168,50h46v5h-46z" />
+    <!-- Medical Cross Badge Circle -->
+    <path
+        android:fillColor="#FFF0EC"
+        android:pathData="M122,48m-13,0a13,13 0,1 1,26 0a13,13 0,1 1,-26 0" />
+    <!-- Coral Cross -->
+    <path
+        android:fillColor="#FF6B4A"
+        android:pathData="M119,40h6v16h-6z" />
+    <path
+        android:fillColor="#FF6B4A"
+        android:pathData="M114,45h16v6h-16z" />
+    <!-- Windows Grid -->
+    <path
+        android:fillColor="#B8E6DF"
+        android:pathData="M84,66h18v12h-18zM142,66h18v12h-18zM44,64h20v12h-20zM44,82h20v12h-20zM180,64h20v12h-20zM180,82h20v12h-20z" />
+    <!-- Entrance Canopy & Glass Doors -->
+    <path
+        android:fillColor="#FF6B4A"
+        android:pathData="M104,80h36v5h-36z" />
+    <path
+        android:fillColor="#1E8278"
+        android:pathData="M108,85h28v23h-28z" />
+    <path
+        android:fillColor="#A7E3DC"
+        android:pathData="M111,88h10v20h-10zM123,88h10v20h-10z" />
+    <!-- Trees & Ground -->
+    <path
+        android:fillColor="#259675"
+        android:pathData="M24,88m-14,0a14,14 0,1 1,28 0a14,14 0,1 1,-28 0" />
+    <path
+        android:fillColor="#1E8278"
+        android:pathData="M220,88m-14,0a14,14 0,1 1,28 0a14,14 0,1 1,-28 0" />
+    <path
+        android:fillColor="#17665E"
+        android:pathData="M0,106h244v14h-244z" />
+</vector>

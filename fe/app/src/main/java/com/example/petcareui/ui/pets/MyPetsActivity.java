@@ -26,6 +26,7 @@ import com.example.petcareui.databinding.ActivityMyPetsBinding;
 import com.example.petcareui.databinding.DialogPetDeleteConfirmBinding;
 import com.example.petcareui.databinding.DialogPetOptionsBinding;
 import com.example.petcareui.databinding.ItemPetSelectableBinding;
+import com.example.petcareui.utils.UiMotionUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -36,7 +37,6 @@ import retrofit2.Response;
 
 /**
  * Màn hình C08: Thú cưng của tôi (My Pets) - Bước 3/4 của luồng đặt lịch & Tab chính "Thú cưng".
- * Bám sát nguyên mẫu React C08MyPets và kết nối Backend REST API /api/v1/pets.
  */
 public class MyPetsActivity extends AppCompatActivity {
 
@@ -63,6 +63,8 @@ public class MyPetsActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         binding = ActivityMyPetsBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
+
+        UiMotionUtils.applyWindowInsets(binding.getRoot(), binding.layoutTopBar, binding.bottomNavigation);
 
         extractIntentData();
         setupTopBar();
@@ -129,8 +131,16 @@ public class MyPetsActivity extends AppCompatActivity {
         binding.cardAddOtherPet.setOnClickListener(addPetListener);
         binding.btnAddFirstPet.setOnClickListener(addPetListener);
 
+        UiMotionUtils.attachSpringTouch(
+                binding.btnBack,
+                binding.btnAddPetTop,
+                binding.cardAddOtherPet,
+                binding.btnAddFirstPet,
+                binding.btnContinue
+        );
+
         if (!isBookingMode) {
-            binding.tvSubtitleBooking.setVisibility(View.GONE);
+            binding.tvSubtitleBooking.setText("Sổ sức khỏe & hồ sơ thú cưng của bạn");
         }
     }
 
@@ -200,30 +210,11 @@ public class MyPetsActivity extends AppCompatActivity {
             String sp = pet.getSpecies() != null ? pet.getSpecies() : "Thú cưng";
             itemBinding.tvPetSpeciesBadge.setText("🐾 " + sp);
 
-            // Các trường tuổi, giới tính, cân nặng: chỉ hiện nếu có dữ liệu thực tế
-            boolean hasAge = pet.getAge() != null && !pet.getAge().equals("—") && !pet.getAge().trim().isEmpty();
-            if (hasAge) {
-                itemBinding.tvPetAge.setVisibility(View.VISIBLE);
-                itemBinding.tvPetAge.setText(pet.getAge());
-            } else {
-                itemBinding.tvPetAge.setVisibility(View.GONE);
-            }
+            bindBadgeOrHide(itemBinding.tvPetAge, pet.getAge());
+            bindBadgeOrHide(itemBinding.tvPetSex, pet.getSex());
+            bindBadgeOrHide(itemBinding.tvPetWeight, pet.getWeight());
 
-            boolean hasSex = pet.getSex() != null && !pet.getSex().equals("—") && !pet.getSex().trim().isEmpty();
-            if (hasSex) {
-                itemBinding.tvPetSex.setVisibility(View.VISIBLE);
-                itemBinding.tvPetSex.setText(pet.getSex());
-            } else {
-                itemBinding.tvPetSex.setVisibility(View.GONE);
-            }
-
-            boolean hasWeight = pet.getWeight() != null && !pet.getWeight().equals("—") && !pet.getWeight().trim().isEmpty();
-            if (hasWeight) {
-                itemBinding.tvPetWeight.setVisibility(View.VISIBLE);
-                itemBinding.tvPetWeight.setText(pet.getWeight());
-            } else {
-                itemBinding.tvPetWeight.setVisibility(View.GONE);
-            }
+            UiMotionUtils.attachSpringTouch(itemBinding.getRoot());
 
             if (isBookingMode) {
                 itemBinding.btnDeletePetDirect.setVisibility(View.GONE);
@@ -238,8 +229,6 @@ public class MyPetsActivity extends AppCompatActivity {
                     startActivity(intent);
                 });
             }
-
-            // Nhấn giữ cũng có thể mở xác nhận xóa bé
             itemBinding.getRoot().setOnLongClickListener(v -> {
                 showDeletePetDialog(pet);
                 return true;
@@ -250,10 +239,23 @@ public class MyPetsActivity extends AppCompatActivity {
         }
 
         updatePetSelectionUI();
+        UiMotionUtils.animateStaggeredChildren(binding.containerPetsList, 25);
+    }
+
+    private void bindBadgeOrHide(android.widget.TextView badge, String value) {
+        if (value == null || value.trim().isEmpty() || "—".equals(value.trim()) || "-".equals(value.trim())) {
+            badge.setVisibility(View.GONE);
+        } else {
+            badge.setVisibility(View.VISIBLE);
+            badge.setText(value);
+        }
     }
 
     private void selectPet(int index) {
         selectedPetIndex = index;
+        if (index >= 0 && index < petBindings.size()) {
+            UiMotionUtils.animateSelectionPop(petBindings.get(index).getRoot());
+        }
         updatePetSelectionUI();
     }
 
@@ -386,16 +388,18 @@ public class MyPetsActivity extends AppCompatActivity {
             Intent intent = new Intent(this, MainActivity.class);
             intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
             startActivity(intent);
+            overridePendingTransition(R.anim.fade_scale_in, R.anim.fade_scale_out);
             finish();
         });
 
         binding.navAppointments.setOnClickListener(v -> {
             Intent intent = new Intent(this, com.example.petcareui.ui.appointments.MyAppointmentsActivity.class);
             startActivity(intent);
+            overridePendingTransition(R.anim.fade_scale_in, R.anim.fade_scale_out);
         });
 
         binding.navPets.setOnClickListener(v -> {
-            // Đang ở tab Thú cưng
+            binding.scrollViewContent.smoothScrollTo(0, 0);
         });
 
         binding.navProfile.setOnClickListener(v -> {

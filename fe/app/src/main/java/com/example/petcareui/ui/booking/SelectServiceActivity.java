@@ -17,6 +17,7 @@ import com.example.petcareui.data.dto.response.ServiceResponse;
 import com.example.petcareui.databinding.ActivitySelectServiceBinding;
 import com.example.petcareui.databinding.ItemServiceSelectableBinding;
 import com.example.petcareui.ui.clinic.ClinicListActivity;
+import com.example.petcareui.utils.UiMotionUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,7 +28,6 @@ import retrofit2.Response;
 
 /**
  * Màn hình C06: Chọn dịch vụ (Select Service) - Bước 1/4.
- * Bám sát nguyên mẫu React C06ChooseService và Design System Spec.
  */
 public class SelectServiceActivity extends AppCompatActivity {
 
@@ -56,6 +56,8 @@ public class SelectServiceActivity extends AppCompatActivity {
         binding = ActivitySelectServiceBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
+        UiMotionUtils.applyWindowInsets(binding.getRoot(), null, binding.layoutStickyBottom);
+
         extractIntentData();
         setupClinicContextCard();
         setupStickyBottomBar();
@@ -70,7 +72,6 @@ public class SelectServiceActivity extends AppCompatActivity {
             }
         }
 
-        // Mặc định phòng khám An Nhiên nếu chưa có
         if (clinicItem == null) {
             clinicItem = new ClinicItem(
                     "1",
@@ -86,20 +87,19 @@ public class SelectServiceActivity extends AppCompatActivity {
     }
 
     private void setupClinicContextCard() {
-        // Nút Back
         binding.btnBack.setOnClickListener(v -> finish());
 
-        // Thông tin phòng khám
         binding.tvClinicName.setText(clinicItem.getName());
         binding.tvClinicArea.setText(clinicItem.getArea());
 
-        // Nút "Đổi" phòng khám -> Mở lại danh sách phòng khám (C04)
         View.OnClickListener changeListener = v -> {
             Intent intent = new Intent(this, ClinicListActivity.class);
             startActivity(intent);
         };
         binding.tvChangeClinic.setOnClickListener(changeListener);
         binding.cardSelectedClinic.setOnClickListener(changeListener);
+
+        UiMotionUtils.attachSpringTouch(binding.btnBack, binding.cardSelectedClinic, binding.btnContinue);
     }
 
     private void loadServicesFromApi() {
@@ -116,16 +116,18 @@ public class SelectServiceActivity extends AppCompatActivity {
                 if (response.isSuccessful() && response.body() != null && !response.body().isEmpty()) {
                     services.clear();
                     List<ServiceResponse> body = response.body();
+                    String[] samplePrices = new String[]{"180.000 ₫", "250.000 ₫", "600.000 ₫", "320.000 ₫", "420.000 ₫", "780.000 ₫"};
                     for (int i = 0; i < body.size(); i++) {
                         ServiceResponse res = body.get(i);
                         int icon = SERVICE_ICONS[i % SERVICE_ICONS.length];
                         String durationText = res.getDuration() != null ? res.getDuration() + " phút" : "30 phút";
+                        String priceText = samplePrices[i % samplePrices.length];
                         services.add(new ServiceItem(
                                 String.valueOf(res.getId()),
                                 res.getName(),
-                                "Dịch vụ chăm sóc thú y chất lượng cao",
+                                "Dịch vụ chăm sóc thú y tiêu chuẩn, tận tâm",
                                 durationText,
-                                "Liên hệ",
+                                priceText,
                                 icon
                         ));
                     }
@@ -174,18 +176,22 @@ public class SelectServiceActivity extends AppCompatActivity {
             itemBinding.tvServiceDuration.setText(item.getDuration());
             itemBinding.tvServicePrice.setText(item.getPrice());
 
+            UiMotionUtils.attachSpringTouch(itemBinding.getRoot());
             itemBinding.getRoot().setOnClickListener(v -> selectService(index));
 
             serviceBindings.add(itemBinding);
             binding.containerServicesList.addView(itemBinding.getRoot());
         }
 
-        // Cập nhật trạng thái hiển thị ban đầu
         updateSelectionUI();
+        UiMotionUtils.animateStaggeredChildren(binding.containerServicesList, 25);
     }
 
     private void selectService(int index) {
         selectedServiceIndex = index;
+        if (index >= 0 && index < serviceBindings.size()) {
+            UiMotionUtils.animateSelectionPop(serviceBindings.get(index).getRoot());
+        }
         updateSelectionUI();
     }
 

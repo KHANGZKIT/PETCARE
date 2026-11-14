@@ -1,25 +1,35 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
-    <!-- Base application theme. -->
-    <style name="Base.Theme.PetcareUI" parent="Theme.Material3.DayNight.NoActionBar">
-        <!-- Brand Colors -->
+    <!-- Base application theme — Warm Companion UI -->
+    <style name="Base.Theme.PetcareUI" parent="Theme.Material3.Light.NoActionBar">
         <item name="colorPrimary">@color/brand_primary</item>
+        <item name="colorPrimaryDark">@color/brand_deep</item>
         <item name="colorOnPrimary">@color/white</item>
         <item name="colorPrimaryContainer">@color/brand_soft</item>
         <item name="colorOnPrimaryContainer">@color/brand_ink</item>
+        <item name="colorSecondary">@color/warm_coral</item>
+        <item name="colorOnSecondary">@color/white</item>
         <item name="colorSurface">@color/surface_card</item>
         <item name="colorOnSurface">@color/text_foreground</item>
+        <item name="android:colorBackground">@color/surface_background</item>
+        <item name="android:windowBackground">@color/surface_background</item>
 
-        <!-- Status Bar: Liền mạch với nền app, icon chữ tối màu hiện đại -->
+        <!-- Status Bar & Navigation Bar -->
         <item name="android:statusBarColor">@color/surface_background</item>
         <item name="android:windowLightStatusBar">true</item>
-
-        <!-- Navigation Bar đáy: Đồng bộ màu nền, icon tối màu -->
-        <item name="android:navigationBarColor">@color/surface_background</item>
+        <item name="android:navigationBarColor">@color/surface_card</item>
         <item name="android:windowLightNavigationBar">true</item>
-        <item name="android:windowBackground">@color/surface_background</item>
+        <item name="android:windowAnimationStyle">@style/PetCareWindowAnimations</item>
     </style>
 
     <style name="Theme.PetcareUI" parent="Base.Theme.PetcareUI" />
+
+    <!-- Global smooth activity transition animations -->
+    <style name="PetCareWindowAnimations" parent="@android:style/Animation.Activity">
+        <item name="android:activityOpenEnterAnimation">@anim/slide_in_right</item>
+        <item name="android:activityOpenExitAnimation">@anim/slide_out_left</item>
+        <item name="android:activityCloseEnterAnimation">@anim/slide_in_left</item>
+        <item name="android:activityCloseExitAnimation">@anim/slide_out_right</item>
+    </style>
 
     <style name="RoundedCorner12">
         <item name="cornerSize">12dp</item>
@@ -27,5 +37,13 @@
 
     <style name="RoundedCorner16">
         <item name="cornerSize">16dp</item>
+    </style>
+    <style name="RoundedCorner20">
+        <item name="cornerSize">20dp</item>
+    </style>
+
+    <style name="CircleImage">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSize">50%</item>
     </style>
 </resources>

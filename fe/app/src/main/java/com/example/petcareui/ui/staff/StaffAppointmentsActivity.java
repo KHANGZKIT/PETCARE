@@ -17,6 +17,8 @@ import com.example.petcareui.data.dto.response.AppointmentResponse;
 import com.example.petcareui.data.model.StaffAppointmentItem;
 import com.example.petcareui.databinding.ActivityStaffAppointmentsBinding;
 import com.example.petcareui.databinding.ItemStaffApptCardBinding;
+import com.example.petcareui.ui.auth.LoginActivity;
+import com.example.petcareui.utils.TokenManager;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -37,6 +39,7 @@ public class StaffAppointmentsActivity extends AppCompatActivity {
     public static final String EXTRA_STATE = "extra_state"; // "default", "loading", "empty", "error"
 
     private ActivityStaffAppointmentsBinding binding;
+    private TokenManager tokenManager;
     private final List<StaffAppointmentItem> allStaffAppts = new ArrayList<>();
     private final List<StaffAppointmentItem> displayedList = new ArrayList<>();
 
@@ -50,18 +53,33 @@ public class StaffAppointmentsActivity extends AppCompatActivity {
         binding = ActivityStaffAppointmentsBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
+        tokenManager = TokenManager.getInstance(this);
+        if (!tokenManager.isLoggedIn()) {
+            goToLogin();
+            return;
+        }
+
         extractIntentData();
+        bindClinicHeader();
         setupAppBar();
         setupStateToggles();
+        setupSearchAndFilterChips();
         setupBottomNav();
         setupEmptyAndErrorActions();
 
+        StaffClinicHelper.syncStaffAndClinicInfo(this, this::bindClinicHeader, this::handleUnauthorized);
         loadAppointmentsFromApi();
     }
 
     @Override
     protected void onResume() {
         super.onResume();
+        if (!tokenManager.isLoggedIn()) {
+            goToLogin();
+            return;
+        }
+        bindClinicHeader();
+        StaffClinicHelper.syncStaffAndClinicInfo(this, this::bindClinicHeader, this::handleUnauthorized);
         loadAppointmentsFromApi();
     }
 
@@ -74,6 +92,26 @@ public class StaffAppointmentsActivity extends AppCompatActivity {
         }
     }
 
+    private void bindClinicHeader() {
+        binding.tvStaffClinicSubtitle.setText(StaffClinicHelper.buildClinicSubtitleWithArea(tokenManager));
+    }
+
+    private void handleUnauthorized() {
+        if (isFinishing() || isDestroyed()) {
+            return;
+        }
+        Toast.makeText(this, "Phiên đăng nhập không hợp lệ hoặc đã hết hạn, vui lòng đăng nhập lại", Toast.LENGTH_LONG).show();
+        tokenManager.clear();
+        goToLogin();
+    }
+
+    private void goToLogin() {
+        Intent intent = new Intent(this, LoginActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        startActivity(intent);
+        finish();
+    }
+
     private void loadAppointmentsFromApi() {
         applyState("loading");
         ApiClient.getAppointmentApi().getClinicAppointments(null).enqueue(new Callback<List<AppointmentResponse>>() {
@@ -84,13 +122,18 @@ public class StaffAppointmentsActivity extends AppCompatActivity {
                     for (AppointmentResponse res : response.body()) {
                         allStaffAppts.add(res.toStaffAppointmentItem());
                     }
+                    updateFilterCounts();
                     setupSearchAndFilterChips();
                     if (allStaffAppts.isEmpty()) {
                         applyState("empty");
                     } else {
                         applyState("default");
                     }
+                } else if (response.code() == 401 || response.code() == 403) {
+                    handleUnauthorized();
                 } else {
+                    allStaffAppts.clear();
+                    updateFilterCounts();
                     applyState("error");
                 }
             }
@@ -98,6 +141,7 @@ public class StaffAppointmentsActivity extends AppCompatActivity {
             @Override
             public void onFailure(Call<List<AppointmentResponse>> call, Throwable t) {
                 allStaffAppts.clear();
+                updateFilterCounts();
                 applyState("error");
             }
         });
@@ -137,6 +181,7 @@ public class StaffAppointmentsActivity extends AppCompatActivity {
             binding.layoutDefaultContent.setVisibility(View.GONE);
             binding.layoutLoadingState.setVisibility(View.GONE);
             binding.layoutErrorState.setVisibility(View.GONE);
+            updateEmptyStateCopy();
             binding.layoutEmptyState.setVisibility(View.VISIBLE);
         } else if ("error".equals(state)) {
             binding.layoutDefaultContent.setVisibility(View.GONE);
@@ -163,25 +208,6 @@ public class StaffAppointmentsActivity extends AppCompatActivity {
     }
 
     private void setupSearchAndFilterChips() {
-        // Cập nhật số lượng đếm trên các tab
-        int pendingCount = 0;
-        int confirmedCount = 0;
-        int completedCount = 0;
-        int noShowCount = 0;
-
-        for (StaffAppointmentItem item : allStaffAppts) {
-            if ("PENDING".equalsIgnoreCase(item.getStatus())) pendingCount++;
-            else if ("CONFIRMED".equalsIgnoreCase(item.getStatus())) confirmedCount++;
-            else if ("COMPLETED".equalsIgnoreCase(item.getStatus())) completedCount++;
-            else if ("NO_SHOW".equalsIgnoreCase(item.getStatus())) noShowCount++;
-        }
-
-        binding.chipFilterAll.setText("Tất cả · " + allStaffAppts.size());
-        binding.chipFilterPending.setText("Chờ xác nhận · " + pendingCount);
-        binding.chipFilterConfirmed.setText("Đã xác nhận · " + confirmedCount);
-        binding.chipFilterCompleted.setText("Đã hoàn thành · " + completedCount);
-        binding.chipFilterNoShow.setText("Không đến · " + noShowCount);
-
         // Bắt sự kiện chọn chip
         binding.chipFilterAll.setOnClickListener(v -> setFilter("ALL"));
         binding.chipFilterPending.setOnClickListener(v -> setFilter("PENDING"));
@@ -189,7 +215,7 @@ public class StaffAppointmentsActivity extends AppCompatActivity {
         binding.chipFilterCompleted.setOnClickListener(v -> setFilter("COMPLETED"));
         binding.chipFilterNoShow.setOnClickListener(v -> setFilter("NO_SHOW"));
 
-        // Lắng nghe tìm kiếm
+        // Lắng nghe tìm kiếm (chỉ đăng ký 1 lần trong onCreate)
         binding.etStaffSearch.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
@@ -209,6 +235,28 @@ public class StaffAppointmentsActivity extends AppCompatActivity {
         binding.btnFilterSliders.setOnClickListener(v -> {
             Toast.makeText(this, "Bộ lọc nâng cao theo ngày & bác sĩ", Toast.LENGTH_SHORT).show();
         });
+
+        updateFilterCounts();
+    }
+
+    private void updateFilterCounts() {
+        int pendingCount = 0;
+        int confirmedCount = 0;
+        int completedCount = 0;
+        int noShowCount = 0;
+
+        for (StaffAppointmentItem item : allStaffAppts) {
+            if ("PENDING".equalsIgnoreCase(item.getStatus())) pendingCount++;
+            else if ("CONFIRMED".equalsIgnoreCase(item.getStatus())) confirmedCount++;
+            else if ("COMPLETED".equalsIgnoreCase(item.getStatus())) completedCount++;
+            else if ("NO_SHOW".equalsIgnoreCase(item.getStatus())) noShowCount++;
+        }
+
+        binding.chipFilterAll.setText("Tất cả · " + allStaffAppts.size());
+        binding.chipFilterPending.setText("Chờ xác nhận · " + pendingCount);
+        binding.chipFilterConfirmed.setText("Đã xác nhận · " + confirmedCount);
+        binding.chipFilterCompleted.setText("Đã hoàn thành · " + completedCount);
+        binding.chipFilterNoShow.setText("Không đến · " + noShowCount);
 
         updateFilterChipStyles();
     }
@@ -263,18 +311,31 @@ public class StaffAppointmentsActivity extends AppCompatActivity {
 
         if (displayedList.isEmpty()) {
             binding.layoutDefaultContent.setVisibility(View.GONE);
+            updateEmptyStateCopy();
             binding.layoutEmptyState.setVisibility(View.VISIBLE);
         } else {
             binding.layoutEmptyState.setVisibility(View.GONE);
             binding.layoutDefaultContent.setVisibility(View.VISIBLE);
 
             if (pendingInList > 0) {
-                binding.tvSectionHeader.setText("Hôm nay · " + pendingInList + " yêu cầu chờ duyệt");
+                binding.tvSectionHeader.setText("Danh sách · " + pendingInList + " yêu cầu chờ duyệt");
             } else {
-                binding.tvSectionHeader.setText("Hôm nay · " + displayedList.size() + " lượt khám");
+                binding.tvSectionHeader.setText("Danh sách · " + displayedList.size() + " lịch hẹn");
             }
 
             renderAppointmentCards();
+        }
+    }
+
+    private void updateEmptyStateCopy() {
+        if (allStaffAppts.isEmpty()) {
+            binding.tvEmptyTitle.setText("Phòng khám chưa có lịch hẹn");
+            binding.tvEmptySubtitle.setText("Lịch hẹn mới từ khách hàng sẽ hiển thị tại đây ngay khi được đặt.");
+            binding.btnEmptyShowAll.setVisibility(View.GONE);
+        } else {
+            binding.tvEmptyTitle.setText("Không có lịch hẹn phù hợp");
+            binding.tvEmptySubtitle.setText("Thử đổi bộ lọc trạng thái hoặc xóa tìm kiếm để xem tất cả lịch hẹn.");
+            binding.btnEmptyShowAll.setVisibility(View.VISIBLE);
         }
     }
 

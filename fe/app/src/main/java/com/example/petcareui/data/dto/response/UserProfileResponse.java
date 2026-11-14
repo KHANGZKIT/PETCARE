@@ -6,6 +6,8 @@ public class UserProfileResponse {
     private String email;
     private String phone;
     private String role;
+    private Long clinicId;
+    private boolean active;
 
     public Long getId() {
         return id;
@@ -45,6 +47,22 @@ public class UserProfileResponse {
 
     public void setRole(String role) {
         this.role = role;
+    }
+
+    public Long getClinicId() {
+        return clinicId;
+    }
+
+    public void setClinicId(Long clinicId) {
+        this.clinicId = clinicId;
+    }
+
+    public boolean isActive() {
+        return active;
+    }
+
+    public void setActive(boolean active) {
+        this.active = active;
     }
 }
 
