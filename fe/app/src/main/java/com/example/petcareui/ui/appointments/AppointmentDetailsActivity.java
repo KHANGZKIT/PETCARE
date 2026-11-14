@@ -77,6 +77,19 @@ public class AppointmentDetailsActivity extends AppCompatActivity {
             if (ref == null || ref.isEmpty()) {
                 ref = "PC-48213";
             }
+            java.time.LocalDate today = java.time.LocalDate.now();
+            String dayOfWeekStr = "Thứ 2";
+            switch (today.getDayOfWeek()) {
+                case MONDAY: dayOfWeekStr = "Thứ 2"; break;
+                case TUESDAY: dayOfWeekStr = "Thứ 3"; break;
+                case WEDNESDAY: dayOfWeekStr = "Thứ 4"; break;
+                case THURSDAY: dayOfWeekStr = "Thứ 5"; break;
+                case FRIDAY: dayOfWeekStr = "Thứ 6"; break;
+                case SATURDAY: dayOfWeekStr = "Thứ 7"; break;
+                case SUNDAY: dayOfWeekStr = "Chủ nhật"; break;
+            }
+            String fallbackDate = dayOfWeekStr + ", " + String.format(java.util.Locale.US, "%02d/%02d/%d", today.getDayOfMonth(), today.getMonthValue(), today.getYear());
+
             appt = new AppointmentItem(
                     1L,
                     ref,
@@ -85,7 +98,7 @@ public class AppointmentDetailsActivity extends AppCompatActivity {
                     "Mochi",
                     R.drawable.img_pet_mochi,
                     "Tiêm phòng",
-                    "Thứ 2, 27/10/2026",
+                    fallbackDate,
                     "10:00",
                     "PENDING",
                     "250.000 ₫",

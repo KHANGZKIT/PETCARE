@@ -23,6 +23,7 @@ import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -131,6 +132,17 @@ public class StaffSlotManagementActivity extends AppCompatActivity {
     private void loadSlotsForSelectedDate() {
         StaffDateItem selectedDate = getSelectedDateItem();
         String isoDate = selectedDate != null ? selectedDate.isoDate : LocalDate.now().toString();
+
+        if (selectedDate != null) {
+            try {
+                LocalDate parsed = LocalDate.parse(isoDate);
+                String fullDate = selectedDate.day + ", " + String.format(Locale.US, "%02d/%02d/%d", parsed.getDayOfMonth(), parsed.getMonthValue(), parsed.getYear());
+                binding.tvNoticeDateTitle.setText(fullDate);
+                binding.tvSheetDesc.setText("Thêm khung giờ trống cho " + fullDate + ". Khách có thể đặt ngay khi bạn lưu.");
+            } catch (Exception ignored) {
+                binding.tvNoticeDateTitle.setText(selectedDate.day + ", " + selectedDate.isoDate);
+            }
+        }
 
         ApiClient.getStaffSlotApi().getStaffSlots(isoDate).enqueue(new Callback<List<ClinicSlotResponse>>() {
             @Override

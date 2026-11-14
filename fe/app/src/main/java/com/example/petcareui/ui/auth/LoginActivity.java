@@ -11,6 +11,7 @@ import androidx.lifecycle.ViewModelProvider;
 
 import com.example.petcareui.MainActivity;
 import com.example.petcareui.databinding.ActivityLoginBinding;
+import com.example.petcareui.ui.staff.StaffDashboardActivity;
 import com.example.petcareui.utils.TokenManager;
 
 public class LoginActivity extends AppCompatActivity {
@@ -28,9 +29,9 @@ public class LoginActivity extends AppCompatActivity {
 
         tokenManager = TokenManager.getInstance(this);
 
-        // Nếu đã đăng nhập trước đó thì chuyển thẳng vào màn hình chính
+        // Nếu đã đăng nhập trước đó thì chuyển thẳng theo vai trò
         if (tokenManager.isLoggedIn()) {
-            goToMainActivity();
+            navigateByRole(tokenManager.getUserRole());
             return;
         }
 
@@ -128,13 +129,18 @@ public class LoginActivity extends AppCompatActivity {
                 );
 
                 Toast.makeText(LoginActivity.this, "Chào mừng " + response.getFullName() + "!", Toast.LENGTH_SHORT).show();
-                goToMainActivity();
+                navigateByRole(response.getRole());
             }
         });
     }
 
-    private void goToMainActivity() {
-        Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+    private void navigateByRole(String role) {
+        Intent intent;
+        if ("STAFF".equalsIgnoreCase(role)) {
+            intent = new Intent(LoginActivity.this, StaffDashboardActivity.class);
+        } else {
+            intent = new Intent(LoginActivity.this, MainActivity.class);
+        }
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         startActivity(intent);
         finish();

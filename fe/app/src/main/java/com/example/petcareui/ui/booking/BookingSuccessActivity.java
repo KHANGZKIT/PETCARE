@@ -96,7 +96,21 @@ public class BookingSuccessActivity extends AppCompatActivity {
             serviceItem = new ServiceItem("sv-02", "Tiêm phòng", "Vaccine thiết yếu cho chó và mèo, khám sức khỏe trước khi tiêm.", "20 phút", "250.000 ₫", R.drawable.ic_syringe);
         }
         if (dateItem == null) {
-            dateItem = new DateItem("T2", "27", "Thứ 2, 27/10/2026", "Thứ 2 · 27/10", 6, "selected");
+            java.time.LocalDate today = java.time.LocalDate.now();
+            String dayOfWeekStr = "T2";
+            String fullDay = "Thứ 2";
+            switch (today.getDayOfWeek()) {
+                case MONDAY: dayOfWeekStr = "T2"; fullDay = "Thứ 2"; break;
+                case TUESDAY: dayOfWeekStr = "T3"; fullDay = "Thứ 3"; break;
+                case WEDNESDAY: dayOfWeekStr = "T4"; fullDay = "Thứ 4"; break;
+                case THURSDAY: dayOfWeekStr = "T5"; fullDay = "Thứ 5"; break;
+                case FRIDAY: dayOfWeekStr = "T6"; fullDay = "Thứ 6"; break;
+                case SATURDAY: dayOfWeekStr = "T7"; fullDay = "Thứ 7"; break;
+                case SUNDAY: dayOfWeekStr = "CN"; fullDay = "Chủ nhật"; break;
+            }
+            String formattedDate = fullDay + ", " + String.format(java.util.Locale.US, "%02d/%02d/%d", today.getDayOfMonth(), today.getMonthValue(), today.getYear());
+            String shortDate = fullDay + " · " + String.format(java.util.Locale.US, "%02d/%02d", today.getDayOfMonth(), today.getMonthValue());
+            dateItem = new DateItem(dayOfWeekStr, String.valueOf(today.getDayOfMonth()), formattedDate, shortDate, 6, "selected", today.toString());
         }
         if (timeSlotItem == null) {
             timeSlotItem = new TimeSlotItem("10:00", "selected");

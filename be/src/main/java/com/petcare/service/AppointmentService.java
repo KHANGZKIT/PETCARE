@@ -86,11 +86,6 @@ public class AppointmentService {
         if (slot.getSlotDate().atTime(slot.getStartTime()).isBefore(LocalDateTime.now())) {
             throw new IllegalArgumentException("Khung giờ đã qua, vui lòng chọn khung giờ khác");
         }
-        long slotMinutes = Duration.between(slot.getStartTime(), slot.getEndTime()).toMinutes();
-        if (slotMinutes < service.getDurationMinutes()) {
-            throw new IllegalArgumentException(
-                    "Thời lượng khung giờ ngắn hơn thời lượng dịch vụ đã chọn");
-        }
         if (appointmentRepository.existsBySlotIdAndStatusIn(request.getSlotId(),
                 List.of(AppointmentStatus.PENDING, AppointmentStatus.CONFIRMED))) {
             throw new DuplicateResourceException(

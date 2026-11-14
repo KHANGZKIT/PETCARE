@@ -116,6 +116,20 @@ public class ClinicDetailsActivity extends AppCompatActivity {
 
         // Mô tả vị trí dưới bản đồ
         binding.tvMapLocationDesc.setText(clinicItem.getAddress() + " · đi ô tô 6 phút");
+
+        // Khung giờ trống gần nhất
+        java.time.LocalDate today = java.time.LocalDate.now();
+        String dayOfWeekStr = "Hôm nay";
+        switch (today.getDayOfWeek()) {
+            case MONDAY: dayOfWeekStr = "Thứ 2"; break;
+            case TUESDAY: dayOfWeekStr = "Thứ 3"; break;
+            case WEDNESDAY: dayOfWeekStr = "Thứ 4"; break;
+            case THURSDAY: dayOfWeekStr = "Thứ 5"; break;
+            case FRIDAY: dayOfWeekStr = "Thứ 6"; break;
+            case SATURDAY: dayOfWeekStr = "Thứ 7"; break;
+            case SUNDAY: dayOfWeekStr = "Chủ nhật"; break;
+        }
+        binding.tvFastestSlot.setText("Khung giờ trống gần nhất · " + dayOfWeekStr + " " + today.getDayOfMonth() + "/" + today.getMonthValue() + " · 08:30");
     }
 
     private void setupTopBarActions() {

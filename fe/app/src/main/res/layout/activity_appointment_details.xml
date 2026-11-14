@@ -658,7 +658,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_alignParentEnd="true"
-                        android:text="Thứ 2, 27/10/2026"
+                        tools:text="Thứ 2, 27/10/2026"
                         android:textColor="@color/text_foreground"
                         android:textSize="13sp"
                         android:textStyle="bold" />

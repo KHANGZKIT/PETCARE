@@ -257,7 +257,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_alignParentEnd="true"
-                        android:text="12:00 – 13:00 nghỉ trưa"
+                        android:text="12:00 – 13:30 nghỉ trưa"
                         android:textColor="@color/brand_primary"
                         android:textSize="12sp"
                         android:textStyle="bold" />
@@ -517,7 +517,7 @@
                     android:paddingStart="24dp"
                     android:paddingEnd="24dp"
                     android:stateListAnimator="@null"
-                    android:text="Xem Thứ 3 28/10"
+                    android:text="Xem ngày còn chỗ trống"
                     android:textAllCaps="false"
                     android:textColor="@color/white"
                     android:textSize="13.5sp"

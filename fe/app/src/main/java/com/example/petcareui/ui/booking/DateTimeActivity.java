@@ -104,7 +104,7 @@ public class DateTimeActivity extends AppCompatActivity {
         binding.containerDates.removeAllViews();
 
         LocalDate today = LocalDate.now();
-        for (int i = 0; i < 7; i++) {
+        for (int i = 0; i < 14; i++) {
             LocalDate d = today.plusDays(i);
             String dayLabel = getDayOfWeekLabel(d.getDayOfWeek());
             String num = String.valueOf(d.getDayOfMonth());
@@ -130,6 +130,7 @@ public class DateTimeActivity extends AppCompatActivity {
             binding.containerDates.addView(itemBinding.getRoot());
         }
 
+        prefetchAllDateSlotCounts();
         selectDate(0);
     }
 
@@ -166,6 +167,54 @@ public class DateTimeActivity extends AppCompatActivity {
 
         updateDateSelectionUI();
         loadSlotsForDate(date);
+        scrollToDateCard(index);
+    }
+
+    private void scrollToDateCard(int index) {
+        if (index >= 0 && index < dateBindings.size()) {
+            View targetView = dateBindings.get(index).getRoot();
+            binding.scrollDatesStrip.post(() -> {
+                int scrollX = targetView.getLeft() - dpToPx(16);
+                binding.scrollDatesStrip.smoothScrollTo(Math.max(0, scrollX), 0);
+            });
+        }
+    }
+
+    private void prefetchAllDateSlotCounts() {
+        Long clinicId = clinicItem != null ? clinicItem.getNumericId() : 1L;
+        if (clinicId == null) clinicId = 1L;
+
+        for (int i = 0; i < dates.size(); i++) {
+            final int index = i;
+            DateItem d = dates.get(i);
+            ApiClient.getClinicApi().getSlotsByClinicAndDate(clinicId, d.getIsoDate()).enqueue(new Callback<List<ClinicSlotResponse>>() {
+                @Override
+                public void onResponse(Call<List<ClinicSlotResponse>> call, Response<List<ClinicSlotResponse>> response) {
+                    if (response.isSuccessful() && response.body() != null) {
+                        int count = 0;
+                        for (ClinicSlotResponse slot : response.body()) {
+                            if (slot.isAvailable()) {
+                                count++;
+                            }
+                        }
+                        d.setAvailable(count);
+                        d.setState(count > 0 ? "open" : "full");
+                    } else {
+                        d.setAvailable(0);
+                        d.setState("full");
+                    }
+                    updateDateSelectionUI();
+                    if (binding.layoutNoSlotsState.getVisibility() == View.VISIBLE) {
+                        updateJumpAvailableButton();
+                    }
+                }
+
+                @Override
+                public void onFailure(Call<List<ClinicSlotResponse>> call, Throwable t) {
+                    // ignore prefetch errors
+                }
+            });
+        }
     }
 
     private void loadSlotsForDate(DateItem date) {
@@ -257,6 +306,8 @@ public class DateTimeActivity extends AppCompatActivity {
 
         binding.btnContinue.setEnabled(false);
         binding.btnContinue.setAlpha(0.45f);
+
+        updateJumpAvailableButton();
     }
 
 
@@ -401,31 +452,63 @@ public class DateTimeActivity extends AppCompatActivity {
                 b.layoutDateCard.setBackgroundResource(R.drawable.bg_date_card_default);
                 b.tvDateDay.setTextColor(ContextCompat.getColor(this, R.color.text_muted));
                 b.tvDateNum.setTextColor(ContextCompat.getColor(this, R.color.text_foreground));
-                b.tvDateSlotCount.setTextColor(ContextCompat.getColor(this, R.color.text_muted));
 
-                if ("past".equals(d.getState()) || "full".equals(d.getState())) {
+                if ("past".equals(d.getState()) || "full".equals(d.getState()) || d.getAvailable() == 0) {
                     b.tvDateSlotCount.setText("Hết chỗ");
-                    b.layoutDateCard.setAlpha(0.45f);
+                    b.tvDateSlotCount.setTextColor(ContextCompat.getColor(this, R.color.status_destructive));
+                    b.layoutDateCard.setAlpha(0.6f);
                 } else {
-                    b.tvDateSlotCount.setText(d.getAvailable() + " trống");
+                    b.tvDateSlotCount.setText(d.getAvailable() + " chỗ");
+                    b.tvDateSlotCount.setTextColor(ContextCompat.getColor(this, R.color.text_muted));
                     b.layoutDateCard.setAlpha(1.0f);
                 }
             }
         }
     }
 
-    private void setupEmptyStateActions() {
-        binding.btnJumpAvailableDate.setOnClickListener(v -> {
-            for (int i = 0; i < dates.size(); i++) {
-                if (i != selectedDateIndex && dates.get(i).getAvailable() > 0) {
-                    selectDate(i);
-                    return;
+    private void updateJumpAvailableButton() {
+        int targetIndex = -1;
+        // Ưu tiên tìm ngày khả dụng tiếp theo
+        for (int i = selectedDateIndex + 1; i < dates.size(); i++) {
+            if (dates.get(i).getAvailable() > 0) {
+                targetIndex = i;
+                break;
+            }
+        }
+        // Nếu không có ngày tới, tìm ngày trước đó
+        if (targetIndex == -1) {
+            for (int i = 0; i < selectedDateIndex; i++) {
+                if (dates.get(i).getAvailable() > 0) {
+                    targetIndex = i;
+                    break;
                 }
             }
-            if (selectedDateIndex + 1 < dates.size()) {
-                selectDate(selectedDateIndex + 1);
+        }
+
+        if (targetIndex != -1) {
+            final int foundIndex = targetIndex;
+            DateItem targetDate = dates.get(targetIndex);
+            String fullDay = targetDate.getFullDate().split(",")[0].trim();
+            String month = "";
+            try {
+                month = "/" + LocalDate.parse(targetDate.getIsoDate()).getMonthValue();
+            } catch (Exception ignored) {
             }
-        });
+            String btnText = "Xem " + fullDay + " " + targetDate.getNum() + month + " (Còn " + targetDate.getAvailable() + " chỗ)";
+            binding.btnJumpAvailableDate.setText(btnText);
+            binding.btnJumpAvailableDate.setOnClickListener(v -> selectDate(foundIndex));
+        } else {
+            binding.btnJumpAvailableDate.setText("Xem ngày tiếp theo");
+            binding.btnJumpAvailableDate.setOnClickListener(v -> {
+                if (selectedDateIndex + 1 < dates.size()) {
+                    selectDate(selectedDateIndex + 1);
+                }
+            });
+        }
+    }
+
+    private void setupEmptyStateActions() {
+        updateJumpAvailableButton();
 
         binding.btnNotifyWhenAvailable.setOnClickListener(v -> {
             if (selectedDateIndex >= 0 && selectedDateIndex < dates.size()) {

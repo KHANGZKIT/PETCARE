@@ -19,7 +19,10 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.util.ArrayList;
 import java.util.List;
+import com.petcare.entity.ClinicEntity;
 
 @Service
 @RequiredArgsConstructor
@@ -29,18 +32,55 @@ public class ClinicSlotService {
     private final ClinicRepository clinicRepository;
     private final UserRepository userRepository;
 
+    private static final LocalTime[][] STANDARD_SLOTS = {
+            {LocalTime.of(8, 30), LocalTime.of(9, 0)},
+            {LocalTime.of(9, 0), LocalTime.of(9, 30)},
+            {LocalTime.of(9, 30), LocalTime.of(10, 0)},
+            {LocalTime.of(10, 0), LocalTime.of(10, 30)},
+            {LocalTime.of(10, 30), LocalTime.of(11, 0)},
+            {LocalTime.of(11, 0), LocalTime.of(11, 30)},
+            {LocalTime.of(11, 30), LocalTime.of(12, 0)},
+            // Nghỉ trưa 12:00 - 13:30
+            {LocalTime.of(13, 30), LocalTime.of(14, 0)},
+            {LocalTime.of(14, 0), LocalTime.of(14, 30)},
+            {LocalTime.of(14, 30), LocalTime.of(15, 0)},
+            {LocalTime.of(15, 0), LocalTime.of(15, 30)},
+            {LocalTime.of(15, 30), LocalTime.of(16, 0)},
+            {LocalTime.of(16, 0), LocalTime.of(16, 30)},
+            {LocalTime.of(16, 30), LocalTime.of(17, 0)},
+            {LocalTime.of(17, 0), LocalTime.of(17, 30)},
+            {LocalTime.of(17, 30), LocalTime.of(18, 0)},
+            {LocalTime.of(18, 0), LocalTime.of(18, 30)},
+            {LocalTime.of(18, 30), LocalTime.of(19, 0)},
+            {LocalTime.of(19, 0), LocalTime.of(19, 30)},
+            {LocalTime.of(19, 30), LocalTime.of(20, 0)},
+            {LocalTime.of(20, 0), LocalTime.of(20, 30)}
+    };
+
     /**
      * Returns all slots for the given clinic on the given date, ordered by start_time.
      * Throws ResourceNotFoundException if the clinic does not exist or is inactive.
+     * Tự động sinh 21 slots chuẩn nếu ngày đó trong tương lai chưa có slot.
      */
-    @Transactional(readOnly = true)
+    @Transactional
     public List<ClinicSlotResponse> getSlotsByClinicAndDate(Long clinicId, LocalDate date) {
-        // Validate clinic exists and is active
-        clinicRepository.findByIdAndActiveTrue(clinicId)
+        ClinicEntity clinic = clinicRepository.findByIdAndActiveTrue(clinicId)
                 .orElseThrow(() -> new ResourceNotFoundException("Phòng khám", "id", clinicId));
 
         List<ClinicSlotEntity> slots =
                 clinicSlotRepository.findByClinicIdAndSlotDateOrderByStartTimeAsc(clinicId, date);
+
+        if (slots.isEmpty() && date != null && !date.isBefore(LocalDate.now()) && date.isBefore(LocalDate.now().plusMonths(6))) {
+            List<ClinicSlotEntity> autoSlots = new ArrayList<>();
+            for (LocalTime[] range : STANDARD_SLOTS) {
+                autoSlots.add(new ClinicSlotEntity(clinic, date, range[0], range[1], SlotStatus.AVAILABLE));
+            }
+            try {
+                slots = clinicSlotRepository.saveAll(autoSlots);
+            } catch (Exception ignored) {
+                slots = clinicSlotRepository.findByClinicIdAndSlotDateOrderByStartTimeAsc(clinicId, date);
+            }
+        }
 
         return slots.stream()
                 .map(ClinicSlotResponse::fromEntity)
@@ -50,14 +90,27 @@ public class ClinicSlotService {
     /**
      * Retrieves slots belonging to the clinic of the authenticated staff.
      */
-    @Transactional(readOnly = true)
+    @Transactional
     public List<ClinicSlotResponse> getStaffSlots(String staffEmail, LocalDate date) {
         UserEntity staff = getStaffUser(staffEmail);
-        Long clinicId = staff.getClinic().getId();
+        ClinicEntity clinic = staff.getClinic();
+        Long clinicId = clinic.getId();
 
         List<ClinicSlotEntity> slots = (date != null)
                 ? clinicSlotRepository.findByClinicIdAndSlotDateOrderByStartTimeAsc(clinicId, date)
                 : clinicSlotRepository.findByClinicIdOrderBySlotDateAscStartTimeAsc(clinicId);
+
+        if (date != null && slots.isEmpty() && !date.isBefore(LocalDate.now()) && date.isBefore(LocalDate.now().plusMonths(6))) {
+            List<ClinicSlotEntity> autoSlots = new ArrayList<>();
+            for (LocalTime[] range : STANDARD_SLOTS) {
+                autoSlots.add(new ClinicSlotEntity(clinic, date, range[0], range[1], SlotStatus.AVAILABLE));
+            }
+            try {
+                slots = clinicSlotRepository.saveAll(autoSlots);
+            } catch (Exception ignored) {
+                slots = clinicSlotRepository.findByClinicIdAndSlotDateOrderByStartTimeAsc(clinicId, date);
+            }
+        }
 
         return slots.stream()
                 .map(ClinicSlotResponse::fromEntity)

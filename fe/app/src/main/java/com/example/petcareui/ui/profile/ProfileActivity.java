@@ -12,6 +12,7 @@ import android.widget.Toast;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.petcareui.MainActivity;
 import com.example.petcareui.data.api.ApiClient;
 import com.example.petcareui.data.dto.response.UserProfileResponse;
 import com.example.petcareui.databinding.ActivityProfileBinding;
@@ -46,6 +47,7 @@ public class ProfileActivity extends AppCompatActivity {
 
         displayCachedUserInfo();
         setupListeners();
+        setupBottomNav();
         fetchLiveProfile();
     }
 
@@ -169,6 +171,36 @@ public class ProfileActivity extends AppCompatActivity {
 
         // Nút Đăng xuất -> Mở Custom Dialog xác nhận
         binding.btnLogout.setOnClickListener(v -> showLogoutConfirmationDialog());
+    }
+
+    private void setupBottomNav() {
+        // Tab 1: Trang chủ -> Mở MainActivity
+        binding.navHome.setOnClickListener(v -> {
+            Intent intent = new Intent(this, MainActivity.class);
+            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+            startActivity(intent);
+            finish();
+        });
+
+        // Tab 2: Lịch hẹn -> Mở MyAppointmentsActivity
+        binding.navAppointments.setOnClickListener(v -> {
+            Intent intent = new Intent(this, MyAppointmentsActivity.class);
+            startActivity(intent);
+            finish();
+        });
+
+        // Tab 3: Thú cưng -> Mở MyPetsActivity
+        binding.navPets.setOnClickListener(v -> {
+            Intent intent = new Intent(this, MyPetsActivity.class);
+            intent.putExtra(MyPetsActivity.EXTRA_BOOKING_MODE, false);
+            startActivity(intent);
+            finish();
+        });
+
+        // Tab 4: Tài khoản -> Đang ở màn hình Profile, cuộn mượt lên đầu trang
+        binding.navProfile.setOnClickListener(v -> {
+            binding.scrollProfile.smoothScrollTo(0, 0);
+        });
     }
 
     private void toggleSettingsSection() {

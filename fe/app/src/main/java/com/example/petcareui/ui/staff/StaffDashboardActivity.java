@@ -18,6 +18,7 @@ import com.example.petcareui.data.model.StaffAppointmentItem;
 import com.example.petcareui.databinding.ActivityStaffDashboardBinding;
 import com.example.petcareui.databinding.ItemStaffPendingCardBinding;
 import com.example.petcareui.databinding.ItemStaffScheduleRowBinding;
+import com.example.petcareui.ui.auth.LoginActivity;
 import com.example.petcareui.ui.notifications.NotificationsActivity;
 import com.example.petcareui.utils.TokenManager;
 
@@ -172,6 +173,20 @@ public class StaffDashboardActivity extends AppCompatActivity {
     }
 
     private void renderDefaultContent() {
+        // Cập nhật ngày hôm nay động
+        java.time.LocalDate today = java.time.LocalDate.now();
+        String dayOfWeekStr = "Thứ 2";
+        switch (today.getDayOfWeek()) {
+            case MONDAY: dayOfWeekStr = "Thứ 2"; break;
+            case TUESDAY: dayOfWeekStr = "Thứ 3"; break;
+            case WEDNESDAY: dayOfWeekStr = "Thứ 4"; break;
+            case THURSDAY: dayOfWeekStr = "Thứ 5"; break;
+            case FRIDAY: dayOfWeekStr = "Thứ 6"; break;
+            case SATURDAY: dayOfWeekStr = "Thứ 7"; break;
+            case SUNDAY: dayOfWeekStr = "Chủ nhật"; break;
+        }
+        binding.tvTodayHeader.setText("Hôm nay · " + dayOfWeekStr + " " + today.getDayOfMonth() + "/" + today.getMonthValue());
+
         // 1. Render danh sách chờ duyệt (Pending cards)
         binding.layoutPendingList.removeAllViews();
         binding.tvPendingNoticeTitle.setText(pendingList.size() + " yêu cầu đang chờ duyệt");
@@ -291,6 +306,13 @@ public class StaffDashboardActivity extends AppCompatActivity {
                     finish();
                 })
                 .setNegativeButton("Đóng", (dialog, which) -> dialog.dismiss())
+                .setNeutralButton("Đăng xuất", (dialog, which) -> {
+                    tokenManager.clear();
+                    Intent intent = new Intent(this, LoginActivity.class);
+                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                    startActivity(intent);
+                    finish();
+                })
                 .show();
     }
 }

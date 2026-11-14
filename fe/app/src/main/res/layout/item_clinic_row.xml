@@ -108,7 +108,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="4dp"
-                android:text="4.8"
+                tools:text="4.8"
                 android:textSize="11.5sp"
                 android:textStyle="bold"
                 android:textColor="@color/text_foreground" />
@@ -117,7 +117,7 @@
                 android:id="@+id/tvClinicMeta"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text=" · 214 đánh giá · 1,2 km"
+                tools:text=" · 214 đánh giá · 1,2 km"
                 android:textSize="11.5sp"
                 android:textColor="@color/text_muted" />
         </LinearLayout>

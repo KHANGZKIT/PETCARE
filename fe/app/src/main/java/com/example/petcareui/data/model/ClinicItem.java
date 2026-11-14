@@ -160,6 +160,13 @@ public class ClinicItem implements Serializable {
         } else if (lower.contains("đống đa") || lower.contains("thái hà")) {
             return com.example.petcareui.R.drawable.img_clinic_dongda;
         }
+        Long numId = getNumericId();
+        if (numId != null) {
+            long mod = numId % 3;
+            if (mod == 1) return com.example.petcareui.R.drawable.img_clinic_annhien;
+            if (mod == 2) return com.example.petcareui.R.drawable.img_clinic_haui;
+            return com.example.petcareui.R.drawable.img_clinic_dongda;
+        }
         return com.example.petcareui.R.drawable.img_clinic_annhien;
     }
 }
