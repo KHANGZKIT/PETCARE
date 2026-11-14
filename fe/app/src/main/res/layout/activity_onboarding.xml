@@ -139,30 +139,15 @@
             android:elevation="4dp"
             android:focusable="true">
 
-            <LinearLayout
+            <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:gravity="center_vertical"
-                android:orientation="horizontal">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:fontFamily="@font/font_be_vietnam_pro"
-                    android:text="Bắt đầu"
-                    android:textColor="@color/white"
-                    android:textSize="16sp"
-                    android:textStyle="bold" />
-
-                <ImageView
-                    android:layout_width="16dp"
-                    android:layout_height="16dp"
-                    android:layout_marginStart="8dp"
-                    android:src="@drawable/ic_paw_minimal"
-                    app:tint="@color/white"
-                    tools:ignore="ContentDescription" />
-            </LinearLayout>
+                android:fontFamily="@font/font_be_vietnam_pro"
+                android:text="Bắt đầu"
+                android:textColor="@color/white"
+                android:textSize="16.5sp"
+                android:textStyle="bold" />
         </FrameLayout>
 
         <!-- Secondary Action: "Đã có tài khoản? Đăng nhập" -->

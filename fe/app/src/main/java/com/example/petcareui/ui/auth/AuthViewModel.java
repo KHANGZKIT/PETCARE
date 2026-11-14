@@ -37,13 +37,21 @@ public class AuthViewModel extends ViewModel {
     }
 
     public void login(String email, String password) {
-        if (email.trim().isEmpty() || password.trim().isEmpty()) {
-            errorMessage.setValue("Vui lòng nhập đầy đủ email và mật khẩu");
+        String cleanEmail = email != null ? email.trim() : "";
+        String cleanPassword = password != null ? password.trim() : "";
+
+        if (cleanEmail.isEmpty()) {
+            errorMessage.setValue("Vui lòng nhập email.");
+            return;
+        }
+        if (cleanPassword.isEmpty()) {
+            errorMessage.setValue("Vui lòng nhập mật khẩu.");
             return;
         }
 
         isLoading.setValue(true);
-        authRepository.login(email.trim(), password.trim(), new AuthRepository.AuthCallback<LoginResponse>() {
+        errorMessage.setValue(null);
+        authRepository.login(cleanEmail, cleanPassword, new AuthRepository.AuthCallback<LoginResponse>() {
             @Override
             public void onSuccess(LoginResponse data) {
                 isLoading.setValue(false);
@@ -59,13 +67,19 @@ public class AuthViewModel extends ViewModel {
     }
 
     public void register(String fullName, String email, String phone, String password) {
-        if (fullName.trim().isEmpty() || email.trim().isEmpty() || phone.trim().isEmpty() || password.trim().isEmpty()) {
-            errorMessage.setValue("Vui lòng điền đầy đủ tất cả các trường");
+        String cleanName = fullName != null ? fullName.trim() : "";
+        String cleanEmail = email != null ? email.trim() : "";
+        String cleanPhone = phone != null ? phone.trim() : "";
+        String cleanPass = password != null ? password.trim() : "";
+
+        if (cleanName.isEmpty() || cleanEmail.isEmpty() || cleanPhone.isEmpty() || cleanPass.isEmpty()) {
+            errorMessage.setValue("Vui lòng điền đầy đủ các thông tin bắt buộc.");
             return;
         }
 
         isLoading.setValue(true);
-        authRepository.register(fullName.trim(), email.trim(), phone.trim(), password.trim(), new AuthRepository.AuthCallback<LoginResponse>() {
+        errorMessage.setValue(null);
+        authRepository.register(cleanName, cleanEmail, cleanPhone, cleanPass, new AuthRepository.AuthCallback<LoginResponse>() {
             @Override
             public void onSuccess(LoginResponse data) {
                 isLoading.setValue(false);

@@ -1,9 +1,7 @@
 package com.example.petcareui.data.repository;
 
-import androidx.lifecycle.LiveData;
-import androidx.lifecycle.MutableLiveData;
-
 import com.example.petcareui.data.api.ApiClient;
+import com.example.petcareui.data.api.ApiErrorParser;
 import com.example.petcareui.data.api.AuthApi;
 import com.example.petcareui.data.dto.request.LoginRequest;
 import com.example.petcareui.data.dto.request.RegisterRequest;
@@ -33,14 +31,16 @@ public class AuthRepository {
             public void onResponse(Call<LoginResponse> call, Response<LoginResponse> response) {
                 if (response.isSuccessful() && response.body() != null) {
                     callback.onSuccess(response.body());
+                } else if (response.code() == 401 || response.code() == 400) {
+                    callback.onError(ApiErrorParser.getMessage(response, "Thông tin đăng nhập chưa chính xác"));
                 } else {
-                    callback.onError("Đăng nhập thất bại: Kiểm tra lại email hoặc mật khẩu (Mã " + response.code() + ")");
+                    callback.onError(ApiErrorParser.getMessage(response, "Đăng nhập không thành công"));
                 }
             }
 
             @Override
             public void onFailure(Call<LoginResponse> call, Throwable t) {
-                callback.onError("Lỗi kết nối: " + t.getMessage());
+                callback.onError("Không thể kết nối máy chủ. Vui lòng kiểm tra lại kết nối mạng và thử lại.");
             }
         });
     }
@@ -52,14 +52,16 @@ public class AuthRepository {
             public void onResponse(Call<LoginResponse> call, Response<LoginResponse> response) {
                 if (response.isSuccessful() && response.body() != null) {
                     callback.onSuccess(response.body());
+                } else if (response.code() == 409) {
+                    callback.onError(ApiErrorParser.getMessage(response, "Email đã được sử dụng. Vui lòng đăng nhập hoặc dùng email khác."));
                 } else {
-                    callback.onError("Đăng ký thất bại: " + response.code());
+                    callback.onError(ApiErrorParser.getMessage(response, "Đăng ký không thành công"));
                 }
             }
 
             @Override
             public void onFailure(Call<LoginResponse> call, Throwable t) {
-                callback.onError("Lỗi kết nối: " + t.getMessage());
+                callback.onError("Không thể kết nối máy chủ. Vui lòng kiểm tra lại kết nối mạng và thử lại.");
             }
         });
     }
