@@ -15,6 +15,7 @@ import com.example.petcareui.data.model.PetItem;
 import com.example.petcareui.data.model.ServiceItem;
 import com.example.petcareui.data.model.TimeSlotItem;
 import com.example.petcareui.databinding.ActivityBookingSuccessBinding;
+import com.example.petcareui.utils.UiMotionUtils;
 
 /**
  * Màn hình C11: Đặt lịch thành công (Booking Success).
@@ -45,6 +46,9 @@ public class BookingSuccessActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         binding = ActivityBookingSuccessBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
+
+        UiMotionUtils.applyWindowInsets(binding.getRoot(), null, null);
+        UiMotionUtils.attachSpringTouch(binding.btnViewAppointmentDetails, binding.btnBackToHome);
 
         extractIntentData();
         populateData();

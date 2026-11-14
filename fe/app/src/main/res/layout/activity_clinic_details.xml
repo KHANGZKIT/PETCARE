@@ -40,10 +40,11 @@
 
                 <!-- Floating Top Bar Actions -->
                 <RelativeLayout
+                    android:id="@+id/layoutFloatingTopBar"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="36dp"
                     android:paddingStart="16dp"
+                    android:paddingTop="12dp"
                     android:paddingEnd="16dp">
 
                     <!-- Nút quay lại (Nền tối mờ kính viền trắng) -->

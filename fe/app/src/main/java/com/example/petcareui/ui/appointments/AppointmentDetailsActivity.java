@@ -18,6 +18,7 @@ import com.example.petcareui.databinding.ActivityAppointmentDetailsBinding;
 import com.example.petcareui.ui.clinic.ClinicDetailsActivity;
 import com.example.petcareui.ui.clinic.ClinicListActivity;
 import com.example.petcareui.ui.pets.MyPetsActivity;
+import com.example.petcareui.utils.UiMotionUtils;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -50,6 +51,8 @@ public class AppointmentDetailsActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         binding = ActivityAppointmentDetailsBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
+
+        UiMotionUtils.applyWindowInsets(binding.getRoot(), binding.layoutTopBar, null);
 
         extractIntentData();
         setupTopBar();

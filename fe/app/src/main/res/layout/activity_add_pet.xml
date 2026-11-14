@@ -5,31 +5,36 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/surface_background"
+    android:clipToPadding="false"
     android:fillViewport="true">
 
     <LinearLayout
+        android:id="@+id/layoutAddPetRoot"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:clipToPadding="false"
         android:orientation="vertical"
         android:paddingBottom="40dp">
 
         <!-- 1. Thanh tiêu đề (App Bar) -->
         <RelativeLayout
+            android:id="@+id/layoutTopBar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:paddingStart="16dp"
-            android:paddingTop="36dp"
+            android:paddingTop="12dp"
             android:paddingEnd="16dp"
             android:paddingBottom="12dp">
 
             <ImageButton
                 android:id="@+id/btnBack"
-                android:layout_width="40dp"
-                android:layout_height="40dp"
+                android:layout_width="42dp"
+                android:layout_height="42dp"
                 android:layout_alignParentStart="true"
                 android:layout_centerVertical="true"
                 android:background="@drawable/bg_floating_glass_btn_light"
                 android:contentDescription="Quay lại"
+                android:elevation="2dp"
                 android:padding="10dp"
                 android:scaleType="fitCenter"
                 android:src="@drawable/ic_chevron_left"
@@ -41,37 +46,79 @@
                 android:layout_centerInParent="true"
                 android:text="Thêm thú cưng mới"
                 android:textColor="@color/text_foreground"
-                android:textSize="17sp"
+                android:textSize="18sp"
                 android:textStyle="bold" />
         </RelativeLayout>
 
-        <!-- 2. Thẻ giới thiệu -->
+        <!-- 2. Thẻ Thẻ Căn Cước Thú Cưng (Hero Avatar Preview Card) -->
         <LinearLayout
+            android:id="@+id/cardHeroPreview"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
-            android:layout_marginTop="12dp"
-            android:layout_marginEnd="16dp"
-            android:background="@drawable/bg_service_card_default"
-            android:orientation="vertical"
+            android:layout_marginStart="20dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="20dp"
+            android:background="@drawable/bg_card_clinic"
+            android:elevation="3dp"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
             android:padding="18dp">
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Hồ sơ thú cưng"
-                android:textColor="@color/brand_primary"
-                android:textSize="18sp"
-                android:textStyle="bold" />
+            <FrameLayout
+                android:layout_width="76dp"
+                android:layout_height="76dp">
 
-            <TextView
-                android:layout_width="wrap_content"
+                <com.google.android.material.imageview.ShapeableImageView
+                    android:id="@+id/ivPetPreviewAvatar"
+                    android:layout_width="76dp"
+                    android:layout_height="76dp"
+                    android:padding="1dp"
+                    android:scaleType="centerCrop"
+                    android:src="@drawable/ic_avatar_shiba"
+                    app:shapeAppearanceOverlay="@style/RoundedCorner20"
+                    app:strokeColor="@color/brand_primary"
+                    app:strokeWidth="1.5dp" />
+            </FrameLayout>
+
+            <LinearLayout
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="6dp"
-                android:lineSpacingExtra="3dp"
-                android:text="Nhập thông tin bé cưng của bạn để quản lý hồ sơ và đặt lịch khám dễ dàng tại các phòng khám thú y."
-                android:textColor="@color/text_muted"
-                android:textSize="13sp" />
+                android:layout_marginStart="16dp"
+                android:layout_weight="1"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/bg_service_icon"
+                    android:paddingStart="8dp"
+                    android:paddingTop="2dp"
+                    android:paddingEnd="8dp"
+                    android:paddingBottom="2dp"
+                    android:text="✨ SỔ SỨC KHỎE ĐIỆN TỬ"
+                    android:textColor="@color/brand_ink"
+                    android:textSize="10sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/tvPreviewTitle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="6dp"
+                    android:text="Hồ sơ bé cưng"
+                    android:textColor="@color/text_foreground"
+                    android:textSize="17sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="2dp"
+                    android:lineSpacingExtra="2dp"
+                    android:text="Lưu thông tin để bác sĩ nắm rõ thể trạng trước mỗi lần khám."
+                    android:textColor="@color/text_muted"
+                    android:textSize="12.5sp" />
+            </LinearLayout>
         </LinearLayout>
 
         <!-- Banner thông báo lỗi nếu có -->
@@ -79,10 +126,10 @@
             android:id="@+id/layoutErrorBanner"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
-            android:layout_marginTop="16dp"
-            android:layout_marginEnd="16dp"
-            android:background="@drawable/bg_slot_unavailable"
+            android:layout_marginStart="20dp"
+            android:layout_marginTop="14dp"
+            android:layout_marginEnd="20dp"
+            android:background="@drawable/bg_notice_danger"
             android:orientation="horizontal"
             android:padding="12dp"
             android:visibility="gone">
@@ -91,18 +138,20 @@
                 android:id="@+id/tvErrorMessage"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textColor="@color/status_destructive"
+                android:textColor="@color/status_destructive_ink"
                 android:textSize="13sp"
+                android:textStyle="bold"
                 tools:text="Vui lòng nhập đầy đủ thông tin bắt buộc" />
         </LinearLayout>
 
         <!-- 3. Form nhập liệu -->
         <LinearLayout
+            android:id="@+id/layoutFormSection"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
+            android:layout_marginStart="20dp"
             android:layout_marginTop="20dp"
-            android:layout_marginEnd="16dp"
+            android:layout_marginEnd="20dp"
             android:orientation="vertical">
 
             <!-- Tên thú cưng -->
@@ -119,6 +168,7 @@
                 android:layout_height="@dimen/input_height"
                 android:layout_marginTop="8dp"
                 android:background="@drawable/bg_input_field"
+                android:elevation="1dp"
                 android:gravity="center_vertical"
                 android:orientation="horizontal"
                 android:paddingStart="16dp"
@@ -129,7 +179,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:background="@android:color/transparent"
-                    android:hint="Ví dụ: Mochi, Bông, Lu..."
+                    android:hint="Ví dụ: Mochi, Bông, Kiki..."
                     android:inputType="textPersonName|textCapWords"
                     android:textColor="@color/text_foreground"
                     android:textColorHint="@color/text_muted"
@@ -155,12 +205,13 @@
                 <TextView
                     android:id="@+id/chipDog"
                     android:layout_width="0dp"
-                    android:layout_height="40dp"
+                    android:layout_height="44dp"
                     android:layout_marginEnd="8dp"
                     android:layout_weight="1"
                     android:background="@drawable/bg_chip_active"
+                    android:elevation="2dp"
                     android:gravity="center"
-                    android:text="🐶 Chó"
+                    android:text="Chó cưng"
                     android:textColor="@color/white"
                     android:textSize="13.5sp"
                     android:textStyle="bold" />
@@ -168,12 +219,13 @@
                 <TextView
                     android:id="@+id/chipCat"
                     android:layout_width="0dp"
-                    android:layout_height="40dp"
+                    android:layout_height="44dp"
                     android:layout_marginEnd="8dp"
                     android:layout_weight="1"
                     android:background="@drawable/bg_chip_inactive"
+                    android:elevation="1dp"
                     android:gravity="center"
-                    android:text="🐱 Mèo"
+                    android:text="Mèo cưng"
                     android:textColor="@color/text_muted"
                     android:textSize="13.5sp"
                     android:textStyle="bold" />
@@ -181,11 +233,12 @@
                 <TextView
                     android:id="@+id/chipOther"
                     android:layout_width="0dp"
-                    android:layout_height="40dp"
+                    android:layout_height="44dp"
                     android:layout_weight="1"
                     android:background="@drawable/bg_chip_inactive"
+                    android:elevation="1dp"
                     android:gravity="center"
-                    android:text="🐾 Khác"
+                    android:text="Loài khác"
                     android:textColor="@color/text_muted"
                     android:textSize="13.5sp"
                     android:textStyle="bold" />
@@ -197,6 +250,7 @@
                 android:layout_height="@dimen/input_height"
                 android:layout_marginTop="8dp"
                 android:background="@drawable/bg_input_field"
+                android:elevation="1dp"
                 android:gravity="center_vertical"
                 android:orientation="horizontal"
                 android:paddingStart="16dp"
@@ -208,7 +262,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:background="@android:color/transparent"
-                    android:hint="Nhập loài khác (Thỏ, Chuột Hamster...)"
+                    android:hint="Nhập loài khác (Thỏ, Hamster...)"
                     android:inputType="textCapWords"
                     android:textColor="@color/text_foreground"
                     android:textColorHint="@color/text_muted"
@@ -230,6 +284,7 @@
                 android:layout_height="@dimen/input_height"
                 android:layout_marginTop="8dp"
                 android:background="@drawable/bg_input_field"
+                android:elevation="1dp"
                 android:gravity="center_vertical"
                 android:orientation="horizontal"
                 android:paddingStart="16dp"
@@ -240,7 +295,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:background="@android:color/transparent"
-                    android:hint="Ví dụ: Corgi, Poodle, Anh lông ngắn..."
+                    android:hint="Ví dụ: Corgi, Shiba, Anh lông ngắn..."
                     android:inputType="textCapWords"
                     android:textColor="@color/text_foreground"
                     android:textColorHint="@color/text_muted"
@@ -262,6 +317,7 @@
                 android:layout_height="@dimen/input_height"
                 android:layout_marginTop="8dp"
                 android:background="@drawable/bg_input_field"
+                android:elevation="1dp"
                 android:gravity="center_vertical"
                 android:orientation="horizontal"
                 android:paddingStart="16dp"
@@ -279,19 +335,21 @@
                     android:textSize="14.5sp" />
             </LinearLayout>
 
-            <!-- Nút Lưu Thú Cưng -->
+            <!-- Nút Lưu Thú Cưng (Chuẩn màu Brand Teal, không bị biến thành màu tím Material3) -->
             <FrameLayout
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/button_height_lg"
-                android:layout_marginTop="32dp">
+                android:layout_marginTop="28dp"
+                android:elevation="4dp">
 
-                <Button
+                <android.widget.Button
                     android:id="@+id/btnSavePet"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:background="@drawable/bg_btn_primary"
                     android:stateListAnimator="@null"
-                    android:text="Thêm thú cưng"
+                    android:text="Lưu hồ sơ thú cưng"
+                    android:textAllCaps="false"
                     android:textColor="@color/white"
                     android:textSize="15.5sp"
                     android:textStyle="bold" />

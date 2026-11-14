@@ -19,6 +19,7 @@ import com.example.petcareui.databinding.ActivityMyAppointmentsBinding;
 import com.example.petcareui.databinding.ItemAppointmentCardBinding;
 import com.example.petcareui.ui.clinic.ClinicListActivity;
 import com.example.petcareui.ui.pets.MyPetsActivity;
+import com.example.petcareui.utils.UiMotionUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -30,23 +31,25 @@ import retrofit2.Response;
 /**
  * Màn hình C12: Lịch hẹn của tôi (My Appointments).
  * Bám sát nguyên mẫu React C12MyAppointments và kết nối REST API /api/v1/appointments/my.
- * Hỗ trợ chuyển đổi tab Sắp tới, Đã qua, Tất cả và Trạng thái rỗng (Empty State).
  */
 public class MyAppointmentsActivity extends AppCompatActivity {
 
-    public static final String EXTRA_STATE = "extra_state"; // "upcoming", "past", "empty"
+    public static final String EXTRA_STATE = "extra_state";
 
     private ActivityMyAppointmentsBinding binding;
     private final List<AppointmentItem> upcomingList = new ArrayList<>();
     private final List<AppointmentItem> pastList = new ArrayList<>();
     private final List<AppointmentItem> allList = new ArrayList<>();
-    private String currentTab = "upcoming"; // "upcoming", "past", "all", "empty"
+    private String currentTab = "upcoming";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         binding = ActivityMyAppointmentsBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
+
+        // Chống đè Status Bar và cắt chữ Bottom Nav
+        UiMotionUtils.applyWindowInsets(binding.getRoot(), binding.layoutTopHeader, binding.layoutBottomNav);
 
         extractIntentData();
         setupTopBar();
@@ -135,14 +138,14 @@ public class MyAppointmentsActivity extends AppCompatActivity {
 
         pastList.add(new AppointmentItem(
                 3L, "PC-46902", "Spa & Phòng khám Thú cưng Mimi", "Quận 7",
-                "Mochi", R.drawable.img_pet_mochi, "Tắm & cắt tỉa",
+                "Kiki", R.drawable.ic_avatar_shiba, "Tắm & cắt tỉa",
                 "Thứ 7, 11/10/2026", "11:00", "COMPLETED",
                 "320.000 ₫", "Đã hoàn thành lượt khám", null
         ));
 
         pastList.add(new AppointmentItem(
                 4L, "PC-45877", "Bệnh viện Thú y Gia Định", "Quận 2",
-                "Lựu", R.drawable.img_pet_luu, "Tư vấn da & dị ứng",
+                "Lựu", R.drawable.ic_avatar_corgi, "Tư vấn da & dị ứng",
                 "Thứ 3, 09/09/2026", "15:00", "CANCELLED",
                 "420.000 ₫", "Bạn đã hủy lịch hẹn", null
         ));
@@ -158,20 +161,25 @@ public class MyAppointmentsActivity extends AppCompatActivity {
     private void setupTopBar() {
         binding.tvHeaderSubtitle.setText(upcomingList.size() + " sắp tới · " + pastList.size() + " đã qua");
 
-        // Nút + Đặt lịch -> C04 Danh sách phòng khám
         binding.btnNewBooking.setOnClickListener(v -> {
             Intent intent = new Intent(this, ClinicListActivity.class);
             startActivity(intent);
         });
 
-        // Nút Xem tất cả trong phần Đã qua thu gọn
         binding.tvSeeAllPastAppts.setOnClickListener(v -> renderTab("past"));
 
-        // Nút Tìm phòng khám khi ở trạng thái Rỗng
         binding.btnEmptyFindClinic.setOnClickListener(v -> {
             Intent intent = new Intent(this, ClinicListActivity.class);
             startActivity(intent);
         });
+
+        UiMotionUtils.attachSpringTouch(
+                binding.btnNewBooking,
+                binding.btnEmptyFindClinic,
+                binding.chipUpcoming,
+                binding.chipPast,
+                binding.chipAll
+        );
     }
 
     private void setupFilterChips() {
@@ -179,9 +187,18 @@ public class MyAppointmentsActivity extends AppCompatActivity {
         binding.chipPast.setText("Đã qua · " + pastList.size());
         binding.chipAll.setText("Tất cả");
 
-        binding.chipUpcoming.setOnClickListener(v -> renderTab("upcoming"));
-        binding.chipPast.setOnClickListener(v -> renderTab("past"));
-        binding.chipAll.setOnClickListener(v -> renderTab("all"));
+        binding.chipUpcoming.setOnClickListener(v -> {
+            UiMotionUtils.animateSelectionPop(binding.chipUpcoming);
+            renderTab("upcoming");
+        });
+        binding.chipPast.setOnClickListener(v -> {
+            UiMotionUtils.animateSelectionPop(binding.chipPast);
+            renderTab("past");
+        });
+        binding.chipAll.setOnClickListener(v -> {
+            UiMotionUtils.animateSelectionPop(binding.chipAll);
+            renderTab("all");
+        });
 
         binding.chipAll.setOnLongClickListener(v -> {
             renderTab("empty");
@@ -225,6 +242,7 @@ public class MyAppointmentsActivity extends AppCompatActivity {
                     View cardView = createAppointmentCardView(pastList.get(i));
                     binding.layoutPastPreviewList.addView(cardView);
                 }
+                UiMotionUtils.animateStaggeredChildren(binding.layoutPastPreviewList, 120);
             } else {
                 binding.layoutPastSectionInUpcoming.setVisibility(View.GONE);
             }
@@ -241,6 +259,8 @@ public class MyAppointmentsActivity extends AppCompatActivity {
                 binding.layoutApptList.addView(cardView);
             }
         }
+
+        UiMotionUtils.animateStaggeredChildren(binding.layoutApptList, 20);
     }
 
     private void updateChipStyle(TextView chip, boolean active) {
@@ -257,12 +277,14 @@ public class MyAppointmentsActivity extends AppCompatActivity {
         ItemAppointmentCardBinding cardBinding = ItemAppointmentCardBinding.inflate(getLayoutInflater());
 
         cardBinding.tvApptRef.setText(item.getRef());
-        applyBadgeStatus(cardBinding.tvApptStatus, item.getStatus());
+        applyBadgeStatus(cardBinding.tvApptStatus, cardBinding.viewStatusAccent, item.getStatus());
         cardBinding.ivPetImage.setImageResource(item.getPetImgRes());
         cardBinding.tvServiceTitle.setText(item.getService());
-        cardBinding.tvPetAndClinic.setText(item.getPet() + " · " + item.getClinic());
+        cardBinding.tvPetAndClinic.setText("🐾 " + item.getPet() + " · " + item.getClinic());
         cardBinding.tvApptDate.setText(item.getDate());
         cardBinding.tvApptTime.setText(item.getTime());
+
+        UiMotionUtils.attachSpringTouch(cardBinding.getRoot());
 
         cardBinding.getRoot().setOnClickListener(v -> {
             Intent intent = new Intent(this, AppointmentDetailsActivity.class);
@@ -274,31 +296,37 @@ public class MyAppointmentsActivity extends AppCompatActivity {
         return cardBinding.getRoot();
     }
 
-    private void applyBadgeStatus(TextView tvBadge, String status) {
+    private void applyBadgeStatus(TextView tvBadge, View viewAccent, String status) {
         if ("CONFIRMED".equalsIgnoreCase(status)) {
             tvBadge.setText("• Đã xác nhận");
             tvBadge.setBackgroundResource(R.drawable.bg_badge_confirmed);
             tvBadge.setTextColor(ContextCompat.getColor(this, R.color.status_success_ink));
+            viewAccent.setBackgroundColor(ContextCompat.getColor(this, R.color.status_success));
         } else if ("COMPLETED".equalsIgnoreCase(status)) {
             tvBadge.setText("• Đã hoàn thành");
             tvBadge.setBackgroundResource(R.drawable.bg_badge_confirmed);
             tvBadge.setTextColor(ContextCompat.getColor(this, R.color.status_success_ink));
+            viewAccent.setBackgroundColor(ContextCompat.getColor(this, R.color.brand_primary));
         } else if ("NO_SHOW".equalsIgnoreCase(status)) {
             tvBadge.setText("• Không đến");
             tvBadge.setBackgroundResource(R.drawable.bg_badge_no_show);
             tvBadge.setTextColor(ContextCompat.getColor(this, R.color.status_info_ink));
+            viewAccent.setBackgroundColor(ContextCompat.getColor(this, R.color.status_info));
         } else if ("CANCELLED".equalsIgnoreCase(status)) {
             tvBadge.setText("• Đã hủy");
             tvBadge.setBackgroundResource(R.drawable.bg_badge_cancelled);
             tvBadge.setTextColor(ContextCompat.getColor(this, R.color.status_neutral_ink));
+            viewAccent.setBackgroundColor(ContextCompat.getColor(this, R.color.status_neutral));
         } else if ("REJECTED".equalsIgnoreCase(status)) {
             tvBadge.setText("• Đã từ chối");
             tvBadge.setBackgroundResource(R.drawable.bg_badge_rejected);
             tvBadge.setTextColor(ContextCompat.getColor(this, R.color.status_destructive_ink));
+            viewAccent.setBackgroundColor(ContextCompat.getColor(this, R.color.status_destructive));
         } else {
             tvBadge.setText("• Chờ xác nhận");
             tvBadge.setBackgroundResource(R.drawable.bg_badge_pending);
             tvBadge.setTextColor(ContextCompat.getColor(this, R.color.status_warning_ink));
+            viewAccent.setBackgroundColor(ContextCompat.getColor(this, R.color.status_warning));
         }
     }
 
@@ -307,6 +335,7 @@ public class MyAppointmentsActivity extends AppCompatActivity {
             Intent intent = new Intent(this, MainActivity.class);
             intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
             startActivity(intent);
+            overridePendingTransition(R.anim.fade_scale_in, R.anim.fade_scale_out);
             finish();
         });
 
@@ -318,6 +347,7 @@ public class MyAppointmentsActivity extends AppCompatActivity {
             Intent intent = new Intent(this, MyPetsActivity.class);
             intent.putExtra(MyPetsActivity.EXTRA_BOOKING_MODE, false);
             startActivity(intent);
+            overridePendingTransition(R.anim.fade_scale_in, R.anim.fade_scale_out);
         });
 
         binding.navProfile.setOnClickListener(v -> showAccountDialog());

@@ -15,6 +15,7 @@ import com.example.petcareui.data.model.NotificationItem;
 import com.example.petcareui.databinding.ActivityNotificationsBinding;
 import com.example.petcareui.databinding.ItemNotificationCardBinding;
 import com.example.petcareui.ui.appointments.AppointmentDetailsActivity;
+import com.example.petcareui.utils.UiMotionUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -38,6 +39,8 @@ public class NotificationsActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         binding = ActivityNotificationsBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
+
+        UiMotionUtils.applyWindowInsets(binding.getRoot(), binding.layoutAppBar, null);
 
         extractIntentData();
         initMockData();

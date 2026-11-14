@@ -15,6 +15,7 @@ import com.example.petcareui.data.model.UserProfileResponse;
 import com.example.petcareui.databinding.ActivityMainBinding;
 import com.example.petcareui.ui.auth.LoginActivity;
 import com.example.petcareui.utils.TokenManager;
+import com.example.petcareui.utils.UiMotionUtils;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -31,6 +32,9 @@ public class MainActivity extends AppCompatActivity {
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
+        // Xử lý chống tràn Status Bar & Navigation Bar
+        UiMotionUtils.applyWindowInsets(binding.main, binding.layoutHomeBody, binding.bottomNavigation);
+
         tokenManager = TokenManager.getInstance(this);
 
         // Kiểm tra phiên đăng nhập
@@ -42,6 +46,36 @@ public class MainActivity extends AppCompatActivity {
         displayUserInfo();
         refreshUserProfile(false);
         setupListeners();
+        setupMotionEffects();
+    }
+
+    private void setupMotionEffects() {
+        UiMotionUtils.animateEntranceSections(
+                binding.sectionHeader,
+                binding.sectionSearch,
+                binding.bannerBooking,
+                binding.sectionClinics,
+                binding.sectionServices
+        );
+
+        UiMotionUtils.attachSpringTouch(
+                binding.btnNotification,
+                binding.btnAvatar,
+                binding.btnSearchBar,
+                binding.btnFilter,
+                binding.bannerBooking,
+                binding.btnBookNow,
+                binding.cardClinicAnNhien,
+                binding.cardClinicGiaDinh,
+                binding.rowServiceCheckup,
+                binding.rowServiceVaccine,
+                binding.rowServiceDental,
+                binding.chipAll,
+                binding.chipNearby,
+                binding.chipOpen,
+                binding.chipEmergency,
+                binding.chipSpa
+        );
     }
 
     private void refreshUserProfile(boolean showDialogAfterLoad) {
@@ -72,19 +106,16 @@ public class MainActivity extends AppCompatActivity {
                                 showAccountDialog();
                             }
                         } else if (response.code() == 401 || response.code() == 403) {
-                            // Luồng rẽ nhánh 1: Token không hợp lệ hoặc đã hết hạn
                             Toast.makeText(MainActivity.this,
                                     "Phiên đăng nhập không hợp lệ hoặc đã hết hạn, vui lòng đăng nhập lại",
                                     Toast.LENGTH_LONG).show();
                             tokenManager.clear();
                             goToLogin();
                         } else if (response.code() == 404) {
-                            // Luồng rẽ nhánh 2: Không tìm thấy tài khoản trong CSDL
                             if (showDialogAfterLoad) {
                                 showProfileErrorDialog("Không thể tìm thấy thông tin tài khoản", false);
                             }
                         } else {
-                            // Luồng rẽ nhánh 3: Lỗi trong quá trình truy xuất dữ liệu
                             if (showDialogAfterLoad) {
                                 showProfileErrorDialog("Không thể tải thông tin tài khoản. Vui lòng thực hiện lại thao tác.", true);
                             }
@@ -93,7 +124,6 @@ public class MainActivity extends AppCompatActivity {
 
                     @Override
                     public void onFailure(Call<UserProfileResponse> call, Throwable t) {
-                        // Luồng rẽ nhánh 4: Mất kết nối mạng hoặc không nhận được phản hồi
                         if (showDialogAfterLoad) {
                             showProfileErrorDialog("Lỗi kết nối mạng. Vui lòng khôi phục kết nối và tải lại thông tin tài khoản.", true);
                         }
@@ -118,7 +148,6 @@ public class MainActivity extends AppCompatActivity {
         if (name != null && !name.isEmpty()) {
             binding.tvWelcomeName.setText(name);
 
-            // Tạo chữ viết tắt cho Avatar (ví dụ "Nguyễn Lan" -> "NL")
             String[] parts = name.trim().split("\\s+");
             StringBuilder initials = new StringBuilder();
             if (parts.length > 0 && !parts[0].isEmpty()) {
@@ -197,18 +226,20 @@ public class MainActivity extends AppCompatActivity {
 
         // 7. Bottom Navigation Tabs
         binding.navHome.setOnClickListener(v -> {
-            // Đang ở Trang chủ
+            binding.scrollContent.smoothScrollTo(0, 0);
         });
 
         binding.navAppointments.setOnClickListener(v -> {
             Intent intent = new Intent(MainActivity.this, com.example.petcareui.ui.appointments.MyAppointmentsActivity.class);
             startActivity(intent);
+            overridePendingTransition(R.anim.fade_scale_in, R.anim.fade_scale_out);
         });
 
         binding.navPets.setOnClickListener(v -> {
             Intent intent = new Intent(MainActivity.this, com.example.petcareui.ui.pets.MyPetsActivity.class);
             intent.putExtra(com.example.petcareui.ui.pets.MyPetsActivity.EXTRA_BOOKING_MODE, false);
             startActivity(intent);
+            overridePendingTransition(R.anim.fade_scale_in, R.anim.fade_scale_out);
         });
 
         binding.navProfile.setOnClickListener(v -> refreshUserProfile(true));
@@ -225,6 +256,7 @@ public class MainActivity extends AppCompatActivity {
 
         for (TextView chip : chips) {
             chip.setOnClickListener(v -> {
+                UiMotionUtils.animateSelectionPop(chip);
                 for (TextView c : chips) {
                     if (c == chip) {
                         c.setBackgroundResource(R.drawable.bg_chip_active);
@@ -255,7 +287,6 @@ public class MainActivity extends AppCompatActivity {
                     goToLogin();
                 });
 
-        // Chỉ hiển thị lối tắt Bảng nhân viên nếu tài khoản có vai trò STAFF
         if ("STAFF".equalsIgnoreCase(role)) {
             builder.setNeutralButton("Bảng nhân viên (S01)", (dialog, which) -> {
                 Intent intent = new Intent(this, com.example.petcareui.ui.staff.StaffDashboardActivity.class);
