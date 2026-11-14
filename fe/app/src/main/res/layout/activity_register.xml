@@ -20,20 +20,26 @@
 
         <!-- 1. Top Navigation & Header -->
         <FrameLayout
-            android:id="@+id/btnBack"
-            android:layout_width="42dp"
-            android:layout_height="42dp"
-            android:background="@drawable/bg_btn_outline"
-            android:clickable="true"
-            android:focusable="true">
+            android:id="@+id/layoutTopBar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
 
-            <ImageView
-                android:layout_width="20dp"
-                android:layout_height="20dp"
-                android:layout_gravity="center"
-                android:src="@drawable/ic_chevron_left"
-                app:tint="@color/ds_text_primary"
-                tools:ignore="ContentDescription" />
+            <FrameLayout
+                android:id="@+id/btnBack"
+                android:layout_width="42dp"
+                android:layout_height="42dp"
+                android:background="@drawable/bg_btn_outline"
+                android:clickable="true"
+                android:focusable="true">
+
+                <ImageView
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:layout_gravity="center"
+                    android:src="@drawable/ic_chevron_left"
+                    app:tint="@color/ds_text_primary"
+                    tools:ignore="ContentDescription" />
+            </FrameLayout>
         </FrameLayout>
 
         <!-- Branding & Title Row -->

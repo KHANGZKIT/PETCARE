@@ -50,7 +50,7 @@ public class RegisterActivity extends AppCompatActivity {
         tokenManager = TokenManager.getInstance(this);
         viewModel = new ViewModelProvider(this).get(AuthViewModel.class);
 
-        UiMotionUtils.applyWindowInsets(binding.getRoot(), binding.btnBack, null);
+        UiMotionUtils.applyWindowInsets(binding.getRoot(), binding.layoutTopBar, null);
 
         setupLoginLinkSpannable();
         setupInputInteractions();

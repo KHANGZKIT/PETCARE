@@ -105,7 +105,7 @@
         <!-- Màn hình Đăng ký -->
         <activity
             android:name=".ui.auth.RegisterActivity"
-            android:exported="false" />
+            android:exported="true" />
 
         <!-- Màn hình Đăng nhập -->
         <activity
