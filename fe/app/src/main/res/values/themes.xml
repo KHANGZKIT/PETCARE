@@ -1,27 +1,39 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
-    <!-- Base application theme — Warm Companion UI -->
+    <!-- Base application theme — PETCARE Design System 1.0 (Warm & Cute - Modern Veterinary) -->
     <style name="Base.Theme.PetcareUI" parent="Theme.Material3.Light.NoActionBar">
-        <item name="colorPrimary">@color/brand_primary</item>
-        <item name="colorPrimaryDark">@color/brand_deep</item>
+        <item name="colorPrimary">@color/ds_primary</item>
+        <item name="colorPrimaryDark">@color/ds_primary_dark</item>
         <item name="colorOnPrimary">@color/white</item>
-        <item name="colorPrimaryContainer">@color/brand_soft</item>
-        <item name="colorOnPrimaryContainer">@color/brand_ink</item>
+        <item name="colorPrimaryContainer">@color/ds_soft_peach</item>
+        <item name="colorOnPrimaryContainer">@color/ds_primary_dark</item>
         <item name="colorSecondary">@color/warm_coral</item>
         <item name="colorOnSecondary">@color/white</item>
-        <item name="colorSurface">@color/surface_card</item>
-        <item name="colorOnSurface">@color/text_foreground</item>
-        <item name="android:colorBackground">@color/surface_background</item>
-        <item name="android:windowBackground">@color/surface_background</item>
+        <item name="colorSurface">@color/ds_surface</item>
+        <item name="colorOnSurface">@color/ds_text_primary</item>
+        <item name="android:colorBackground">@color/ds_background</item>
+        <item name="android:windowBackground">@color/ds_background</item>
 
         <!-- Status Bar & Navigation Bar -->
-        <item name="android:statusBarColor">@color/surface_background</item>
+        <item name="android:statusBarColor">@color/ds_background</item>
         <item name="android:windowLightStatusBar">true</item>
-        <item name="android:navigationBarColor">@color/surface_card</item>
+        <item name="android:navigationBarColor">@color/ds_surface</item>
         <item name="android:windowLightNavigationBar">true</item>
         <item name="android:windowAnimationStyle">@style/PetCareWindowAnimations</item>
+
+        <!-- Default font family -->
+        <item name="fontFamily">@font/font_be_vietnam_pro</item>
+        <item name="android:fontFamily">@font/font_be_vietnam_pro</item>
     </style>
 
     <style name="Theme.PetcareUI" parent="Base.Theme.PetcareUI" />
+
+    <!-- Dedicated Intro Theme -->
+    <style name="Theme.PetcareUI.Intro" parent="Theme.PetcareUI">
+        <item name="android:statusBarColor">@color/ds_background</item>
+        <item name="android:windowLightStatusBar">true</item>
+        <item name="android:navigationBarColor">@color/ds_surface</item>
+        <item name="android:windowLightNavigationBar">true</item>
+    </style>
 
     <!-- Global smooth activity transition animations -->
     <style name="PetCareWindowAnimations" parent="@android:style/Animation.Activity">
@@ -31,6 +43,53 @@
         <item name="android:activityCloseExitAnimation">@anim/slide_out_right</item>
     </style>
 
+    <!-- Typography Styles (Design System 1.0 - Be Vietnam Pro) -->
+    <style name="TextAppearance.PetCare.Display" parent="TextAppearance.Material3.HeadlineLarge">
+        <item name="fontFamily">@font/font_be_vietnam_pro</item>
+        <item name="android:fontFamily">@font/font_be_vietnam_pro</item>
+        <item name="android:textSize">@dimen/text_size_display</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:textColor">@color/ds_text_primary</item>
+    </style>
+
+    <style name="TextAppearance.PetCare.Headline" parent="TextAppearance.Material3.HeadlineMedium">
+        <item name="fontFamily">@font/font_be_vietnam_pro</item>
+        <item name="android:fontFamily">@font/font_be_vietnam_pro</item>
+        <item name="android:textSize">@dimen/text_size_heading</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:textColor">@color/ds_text_primary</item>
+    </style>
+
+    <style name="TextAppearance.PetCare.Body" parent="TextAppearance.Material3.BodyLarge">
+        <item name="fontFamily">@font/font_be_vietnam_pro</item>
+        <item name="android:fontFamily">@font/font_be_vietnam_pro</item>
+        <item name="android:textSize">@dimen/text_size_body</item>
+        <item name="android:textColor">@color/ds_text_primary</item>
+    </style>
+
+    <style name="TextAppearance.PetCare.Description" parent="TextAppearance.Material3.BodyMedium">
+        <item name="fontFamily">@font/font_be_vietnam_pro</item>
+        <item name="android:fontFamily">@font/font_be_vietnam_pro</item>
+        <item name="android:textSize">@dimen/text_size_desc</item>
+        <item name="android:textColor">@color/ds_text_secondary</item>
+    </style>
+
+    <style name="TextAppearance.PetCare.Button" parent="TextAppearance.Material3.LabelLarge">
+        <item name="fontFamily">@font/font_be_vietnam_pro</item>
+        <item name="android:fontFamily">@font/font_be_vietnam_pro</item>
+        <item name="android:textSize">@dimen/text_size_button</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:textColor">@color/white</item>
+    </style>
+
+    <style name="TextAppearance.PetCare.Caption" parent="TextAppearance.Material3.LabelSmall">
+        <item name="fontFamily">@font/font_be_vietnam_pro</item>
+        <item name="android:fontFamily">@font/font_be_vietnam_pro</item>
+        <item name="android:textSize">@dimen/text_size_caption</item>
+        <item name="android:textColor">@color/ds_text_secondary</item>
+    </style>
+
+    <!-- Shape Styles -->
     <style name="RoundedCorner12">
         <item name="cornerSize">12dp</item>
     </style>
@@ -38,6 +97,7 @@
     <style name="RoundedCorner16">
         <item name="cornerSize">16dp</item>
     </style>
+
     <style name="RoundedCorner20">
         <item name="cornerSize">20dp</item>
     </style>

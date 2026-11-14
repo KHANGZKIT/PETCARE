@@ -5,14 +5,33 @@
     <color name="white">#FFFFFFFF</color>
     <color name="transparent">#00000000</color>
 
-    <!-- 1. Brand — PET CARE Warm Teal & Companion Palette -->
-    <color name="brand_primary">#1E8278</color>
-    <color name="brand_deep">#114C46</color>
-    <color name="brand_soft">#E6F6F3</color>
-    <color name="brand_ink">#124E47</color>
-    <color name="brand_mint_glow">#C7EFE9</color>
+    <!-- ============================================================ -->
+    <!-- PETCARE DESIGN SYSTEM 1.0 (WARM & CUTE - MODERN VETERINARY)  -->
+    <!-- ============================================================ -->
+    <color name="ds_primary">#D97B60</color>
+    <color name="ds_primary_dark">#B95740</color>
+    <color name="ds_background">#FFF9F5</color>
+    <color name="ds_surface">#FFFFFF</color>
+    <color name="ds_soft_peach">#FCE9E2</color>
+    <color name="ds_mint">#DCEDE4</color>
+    <color name="ds_butter">#F6E6A9</color>
+    <color name="ds_text_primary">#292524</color>
+    <color name="ds_text_secondary">#6F6662</color>
+    <color name="ds_success">#2E7D5B</color>
+    <color name="ds_warning">#B7791F</color>
+    <color name="ds_error">#B3261E</color>
 
-    <!-- Warm Companion Accents (Coral, Peach, Amber) -->
+    <!-- 1. Brand Tokens & Onboarding Palette -->
+    <color name="coral_terracotta">#D97B60</color>
+    <color name="coral_terracotta_dark">#B95740</color>
+    <color name="cream_soft_bg">#FFF9F5</color>
+    <color name="peach_accent">#FCE9E2</color>
+    <color name="butter_yellow">#F6E6A9</color>
+    <color name="soft_mint">#DCEDE4</color>
+    <color name="text_onboarding_title">#292524</color>
+    <color name="text_onboarding_desc">#6F6662</color>
+
+    <!-- Warm Companion Accents -->
     <color name="warm_coral">#FF6B4A</color>
     <color name="warm_coral_deep">#E05030</color>
     <color name="warm_coral_soft">#FFF0EC</color>
@@ -25,28 +44,28 @@
     <color name="warm_purple_soft">#F3EEFF</color>
     <color name="warm_purple_ink">#5B37B7</color>
 
-    <!-- 2. Surfaces & Neutral (Warm Organic Cream & Crisp White) -->
+    <!-- 2. Surfaces & Neutral -->
     <color name="surface_background">#FAF8F4</color>
     <color name="surface_card">#FFFFFF</color>
     <color name="surface_muted">#F2EFE9</color>
     <color name="stroke_border">#E6EAE8</color>
     <color name="stroke_input">#D8E2DF</color>
-    <color name="text_foreground">#162024</color>
-    <color name="text_muted">#637278</color>
+    <color name="text_foreground">#292524</color>
+    <color name="text_muted">#6F6662</color>
 
-    <!-- 3. Status (Main, Soft, Ink) -->
+    <!-- 3. Status Tokens (3 sắc thái: Main, Soft, Ink) -->
     <!-- Pending / Warning -->
-    <color name="status_warning">#D9820F</color>
+    <color name="status_warning">#B7791F</color>
     <color name="status_warning_soft">#FEF3E0</color>
     <color name="status_warning_ink">#854D06</color>
 
     <!-- Confirmed / Success -->
-    <color name="status_success">#1F8A5B</color>
+    <color name="status_success">#2E7D5B</color>
     <color name="status_success_soft">#E6F7EE</color>
     <color name="status_success_ink">#156340</color>
 
-    <!-- Rejected / Destructive / Danger -->
-    <color name="status_destructive">#CC3939</color>
+    <!-- Rejected / Destructive / Error -->
+    <color name="status_destructive">#B3261E</color>
     <color name="status_destructive_soft">#FDECEC</color>
     <color name="status_destructive_ink">#992424</color>
 
@@ -56,7 +75,7 @@
     <color name="status_info_ink">#17568F</color>
 
     <!-- Cancelled / Neutral Status -->
-    <color name="status_neutral">#637278</color>
+    <color name="status_neutral">#6F6662</color>
     <color name="status_neutral_soft">#F1EFEA</color>
     <color name="status_neutral_ink">#475257</color>
 
@@ -66,26 +85,22 @@
     <color name="google_yellow">#FBBC05</color>
     <color name="google_green">#34A853</color>
 
-    <!-- Onboarding Palette -->
-    <color name="coral_terracotta">#D97B60</color>
-    <color name="coral_terracotta_dark">#BF6349</color>
-    <color name="cream_soft_bg">#FFF9F5</color>
-    <color name="peach_accent">#FCE9E2</color>
-    <color name="butter_yellow">#F6E6A9</color>
-    <color name="soft_mint">#DCEDE4</color>
-    <color name="text_onboarding_title">#2D2422</color>
-    <color name="text_onboarding_desc">#7A6F6B</color>
+    <!-- Legacy Brand Palette & Backward compatibility aliases (đảm bảo không gãy màn hình khác) -->
+    <color name="brand_primary">#1E8278</color>
+    <color name="brand_deep">#114C46</color>
+    <color name="brand_soft">#E6F6F3</color>
+    <color name="brand_ink">#124E47</color>
+    <color name="brand_mint_glow">#C7EFE9</color>
 
-    <!-- Backward compatibility aliases (đảm bảo không gãy code cũ) -->
-    <color name="primary">#1E8278</color>
-    <color name="primary_dark">#114C46</color>
-    <color name="primary_light">#E6F6F3</color>
-    <color name="secondary">#E6F6F3</color>
+    <color name="primary">#D97B60</color>
+    <color name="primary_dark">#B95740</color>
+    <color name="primary_light">#FCE9E2</color>
+    <color name="secondary">#DCEDE4</color>
     <color name="accent">#FF6B4A</color>
     <color name="dark_teal">#114C46</color>
-    <color name="bg_light">#FAF8F4</color>
-    <color name="text_primary">#162024</color>
-    <color name="text_secondary">#637278</color>
+    <color name="bg_light">#FFF9F5</color>
+    <color name="text_primary">#292524</color>
+    <color name="text_secondary">#6F6662</color>
     <color name="border_color">#E6EAE8</color>
-    <color name="error_red">#CC3939</color>
+    <color name="error_red">#B3261E</color>
 </resources>

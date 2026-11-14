@@ -5,35 +5,35 @@
     android:id="@+id/layoutRootOnboarding"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/cream_soft_bg">
+    android:background="@color/ds_background">
 
-    <!-- Decorative Soft Pastel Accents in Background -->
+    <!-- Decorative Soft Pastel Accents in Background (Subtle & Restrained) -->
     <View
         android:layout_width="120dp"
         android:layout_height="120dp"
-        android:layout_marginStart="-40dp"
-        android:layout_marginTop="40dp"
-        android:alpha="0.4"
+        android:layout_marginStart="-30dp"
+        android:layout_marginTop="32dp"
+        android:alpha="0.35"
         android:background="@drawable/bg_service_icon_amber"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <View
-        android:layout_width="90dp"
-        android:layout_height="90dp"
-        android:layout_marginEnd="-25dp"
-        android:layout_marginTop="90dp"
-        android:alpha="0.5"
+        android:layout_width="96dp"
+        android:layout_height="96dp"
+        android:layout_marginEnd="-20dp"
+        android:layout_marginTop="80dp"
+        android:alpha="0.4"
         android:background="@drawable/bg_service_icon_coral"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <!-- 1. Top Branding Header: Cute Paw Icon + "PETCARE" -->
+    <!-- 1. Top Branding Header: Cute Minimal Paw Icon + "PETCARE" -->
     <LinearLayout
         android:id="@+id/layoutHeaderBranding"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="48dp"
+        android:layout_marginTop="40dp"
         android:gravity="center"
         android:orientation="vertical"
         app:layout_constraintEnd_toEndOf="parent"
@@ -42,9 +42,10 @@
 
         <ImageView
             android:id="@+id/ivAppLogoPaw"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
+            android:layout_width="38dp"
+            android:layout_height="38dp"
             android:src="@drawable/ic_paw_minimal"
+            app:tint="@color/ds_primary"
             tools:ignore="ContentDescription" />
 
         <TextView
@@ -52,20 +53,22 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="6dp"
-            android:fontFamily="sans-serif-black"
+            android:fontFamily="@font/font_be_vietnam_pro"
             android:letterSpacing="0.08"
             android:text="PETCARE"
-            android:textColor="@color/coral_terracotta"
+            android:textColor="@color/ds_primary"
             android:textSize="22sp"
             android:textStyle="bold" />
     </LinearLayout>
 
-    <!-- 2. Hero Peeking Puppy Illustration -->
+    <!-- 2. Mascot Hero: Real Cute 2D Puppy PNG Mascot (Peeking naturally over card) -->
     <FrameLayout
         android:id="@+id/layoutHeroPet"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:layout_marginBottom="-18dp"
+        android:layout_marginStart="24dp"
+        android:layout_marginEnd="24dp"
+        android:layout_marginBottom="-16dp"
         app:layout_constraintBottom_toTopOf="@+id/cardWelcomeContent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -73,15 +76,16 @@
 
         <ImageView
             android:id="@+id/ivPeekingDog"
-            android:layout_width="260dp"
-            android:layout_height="240dp"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
             android:layout_gravity="bottom|center_horizontal"
+            android:adjustViewBounds="true"
+            android:contentDescription="PETCARE Mascot"
             android:scaleType="fitCenter"
-            android:src="@drawable/ic_peeking_dog"
-            tools:ignore="ContentDescription" />
+            android:src="@drawable/mascot_petcare_intro" />
     </FrameLayout>
 
-    <!-- 3. Welcome Content Card (Smooth Rounded Top Corners 36dp) -->
+    <!-- 3. Welcome Content Card (Smooth Rounded Top Corners 28dp, Pure White Surface) -->
     <LinearLayout
         android:id="@+id/cardWelcomeContent"
         android:layout_width="match_parent"
@@ -90,10 +94,10 @@
         android:elevation="8dp"
         android:gravity="center_horizontal"
         android:orientation="vertical"
-        android:paddingStart="28dp"
-        android:paddingTop="36dp"
-        android:paddingEnd="28dp"
-        android:paddingBottom="36dp"
+        android:paddingStart="@dimen/screen_padding_horizontal"
+        android:paddingTop="32dp"
+        android:paddingEnd="@dimen/screen_padding_horizontal"
+        android:paddingBottom="32dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent">
@@ -103,31 +107,33 @@
             android:id="@+id/tvWelcomeTitle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:fontFamily="@font/font_be_vietnam_pro"
             android:gravity="center"
-            android:lineSpacingExtra="4dp"
+            android:lineSpacingExtra="5dp"
             android:text="Chăm sóc tốt hơn\nCho thú cưng của bạn"
-            android:textColor="@color/text_onboarding_title"
-            android:textSize="23sp"
+            android:textColor="@color/ds_text_primary"
+            android:textSize="24sp"
             android:textStyle="bold" />
 
-        <!-- Subtitle description -->
+        <!-- Subtitle description: Exact Vietnamese copy -->
         <TextView
             android:id="@+id/tvWelcomeSubtitle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="12dp"
+            android:fontFamily="@font/font_be_vietnam_pro"
             android:gravity="center"
             android:lineSpacingExtra="4dp"
-            android:text="Đặt lịch khám dễ dàng, tìm phòng khám thú y và chăm sóc sức khỏe cho bé yêu."
-            android:textColor="@color/text_onboarding_desc"
-            android:textSize="14sp" />
+            android:text="Tìm phòng khám phù hợp và đặt lịch khám cho bé yêu chỉ trong vài bước."
+            android:textColor="@color/ds_text_secondary"
+            android:textSize="14.5sp" />
 
-        <!-- Primary Action Button: "Bắt đầu" -->
+        <!-- Primary Action Button: "Bắt đầu" (Pill 54dp, #B95740 with pressed state) -->
         <FrameLayout
             android:id="@+id/btnGetStarted"
             android:layout_width="match_parent"
-            android:layout_height="56dp"
-            android:layout_marginTop="32dp"
+            android:layout_height="@dimen/button_height_primary"
+            android:layout_marginTop="28dp"
             android:background="@drawable/bg_btn_onboarding_coral"
             android:clickable="true"
             android:elevation="4dp"
@@ -143,9 +149,10 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:fontFamily="@font/font_be_vietnam_pro"
                     android:text="Bắt đầu"
                     android:textColor="@color/white"
-                    android:textSize="17sp"
+                    android:textSize="16sp"
                     android:textStyle="bold" />
 
                 <ImageView
@@ -163,13 +170,19 @@
             android:id="@+id/tvLoginPrompt"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="18dp"
+            android:layout_marginTop="16dp"
             android:clickable="true"
             android:focusable="true"
-            android:padding="8dp"
+            android:fontFamily="@font/font_be_vietnam_pro"
+            android:minHeight="@dimen/touch_target_min"
+            android:gravity="center"
+            android:paddingStart="16dp"
+            android:paddingTop="8dp"
+            android:paddingEnd="16dp"
+            android:paddingBottom="8dp"
             android:text="Đã có tài khoản? Đăng nhập"
-            android:textColor="@color/text_onboarding_desc"
-            android:textSize="14.5sp" />
+            android:textColor="@color/ds_text_secondary"
+            android:textSize="14sp" />
 
     </LinearLayout>
 

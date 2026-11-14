@@ -2,11 +2,13 @@ package com.example.petcareui.ui.onboarding;
 
 import android.content.Intent;
 import android.graphics.Typeface;
+import android.os.Build;
 import android.os.Bundle;
 import android.text.SpannableString;
 import android.text.Spanned;
 import android.text.style.ForegroundColorSpan;
 import android.text.style.StyleSpan;
+import android.view.WindowManager;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
@@ -18,10 +20,11 @@ import com.example.petcareui.utils.TokenManager;
 import com.example.petcareui.utils.UiMotionUtils;
 
 /**
- * Màn hình giới thiệu / Onboarding cao cấp của PetCare:
- * - Tone màu ấm áp Coral Terracotta (#D97B60) và Soft Cream (#FFF9F5).
- * - Hình ảnh cún cưng lấp ló trên mép thẻ trắng bo tròn 36dp.
- * - Nút bấm "Bắt đầu" nổi bật và link "Đăng nhập".
+ * Màn hình giới thiệu / Intro cao cấp của PETCARE:
+ * - Tuân thủ PETCARE Design System 1.0 (Warm & Cute - Modern Veterinary).
+ * - Sử dụng ảnh mascot PNG chính thức của PetCare.
+ * - Font Be Vietnam Pro chuẩn Unicode tiếng Việt.
+ * - Tone màu Coral (#D97B60), Coral Dark (#B95740) và Soft Cream (#FFF9F5).
  */
 public class OnboardingActivity extends AppCompatActivity {
 
@@ -30,6 +33,13 @@ public class OnboardingActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        // Hỗ trợ đánh thức màn hình khi kiểm thử
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O_MR1) {
+            setShowWhenLocked(true);
+            setTurnScreenOn(true);
+        }
+        getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 
         // Nếu người dùng đã đăng nhập từ trước, chuyển thẳng vào Dashboard
         TokenManager tokenManager = TokenManager.getInstance(this);
@@ -63,9 +73,9 @@ public class OnboardingActivity extends AppCompatActivity {
         int startIndex = fullText.indexOf("Đăng nhập");
         if (startIndex != -1) {
             int endIndex = startIndex + "Đăng nhập".length();
-            int coralColor = ContextCompat.getColor(this, R.color.coral_terracotta);
+            int coralDarkColor = ContextCompat.getColor(this, R.color.ds_primary_dark);
 
-            spannable.setSpan(new ForegroundColorSpan(coralColor), startIndex, endIndex, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+            spannable.setSpan(new ForegroundColorSpan(coralDarkColor), startIndex, endIndex, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
             spannable.setSpan(new StyleSpan(Typeface.BOLD), startIndex, endIndex, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
         }
 
