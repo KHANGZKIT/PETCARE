@@ -6,13 +6,13 @@
     android:layout_height="match_parent"
     android:background="@color/surface_background">
 
-    <!-- 1. Thanh AppBar cố định trên cùng -->
     <LinearLayout
         android:id="@+id/layoutAppBar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
         android:background="@color/surface_background"
+        android:clipToPadding="false"
         android:gravity="center_vertical"
         android:orientation="horizontal"
         android:paddingStart="20dp"
@@ -22,10 +22,11 @@
 
         <FrameLayout
             android:id="@+id/btnBack"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:background="@drawable/bg_chip_inactive"
+            android:layout_width="42dp"
+            android:layout_height="42dp"
+            android:background="@drawable/bg_btn_outline"
             android:clickable="true"
+            android:elevation="2dp"
             android:focusable="true">
 
             <ImageView
@@ -58,18 +59,20 @@
                 android:id="@+id/tvApptDate"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="1dp"
+                android:layout_marginTop="2dp"
                 android:text="Thứ 2, 27/10/2026"
-                android:textColor="@color/text_muted"
-                android:textSize="12.5sp" />
+                android:textColor="@color/brand_primary"
+                android:textSize="12.5sp"
+                android:textStyle="bold" />
         </LinearLayout>
 
         <FrameLayout
             android:id="@+id/btnMoreMenu"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:background="@drawable/bg_chip_inactive"
+            android:layout_width="42dp"
+            android:layout_height="42dp"
+            android:background="@drawable/bg_btn_outline"
             android:clickable="true"
+            android:elevation="2dp"
             android:focusable="true">
 
             <ImageView
@@ -82,7 +85,6 @@
         </FrameLayout>
     </LinearLayout>
 
-    <!-- 2. Thanh chuyển đổi trạng thái kiểm thử (Chờ duyệt / Hộp thoại xác nhận / Hộp thoại từ chối / Đã xác nhận / Đã từ chối / Thất bại) -->
     <LinearLayout
         android:id="@+id/layoutStateToggle"
         android:layout_width="match_parent"
@@ -220,25 +222,25 @@
         </HorizontalScrollView>
     </LinearLayout>
 
-    <!-- 3. Nội dung cuộn chính -->
     <androidx.core.widget.NestedScrollView
         android:id="@+id/scrollDetailsBody"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_above="@id/layoutStickyBar"
         android:layout_below="@id/layoutStateToggle"
+        android:clipToPadding="false"
         android:fillViewport="true">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:clipToPadding="false"
             android:orientation="vertical"
             android:paddingStart="20dp"
             android:paddingTop="4dp"
             android:paddingEnd="20dp"
             android:paddingBottom="24dp">
 
-            <!-- Hàng Huy hiệu trạng thái & Thời gian gửi -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -270,8 +272,6 @@
                     android:textStyle="bold" />
             </LinearLayout>
 
-            <!-- Hộp Thông báo cảnh báo động theo trạng thái -->
-            <!-- 1. Notice Warning: Đang chờ xử lý -->
             <LinearLayout
                 android:id="@+id/noticePending"
                 android:layout_width="match_parent"
@@ -314,7 +314,6 @@
                 </LinearLayout>
             </LinearLayout>
 
-            <!-- 2. Notice Success: Đã xác nhận -->
             <LinearLayout
                 android:id="@+id/noticeConfirmed"
                 android:layout_width="match_parent"
@@ -359,7 +358,6 @@
                 </LinearLayout>
             </LinearLayout>
 
-            <!-- 3. Notice Danger: Đã từ chối -->
             <LinearLayout
                 android:id="@+id/noticeRejected"
                 android:layout_width="match_parent"
@@ -404,7 +402,6 @@
                 </LinearLayout>
             </LinearLayout>
 
-            <!-- 4. Notice Failed: Thất bại -->
             <LinearLayout
                 android:id="@+id/noticeFailed"
                 android:layout_width="match_parent"
@@ -448,12 +445,13 @@
                 </LinearLayout>
             </LinearLayout>
 
-            <!-- ===================== KHỐI 1: CHỦ NUÔI ===================== -->
             <LinearLayout
+                android:id="@+id/cardCustomerInfo"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
                 android:background="@drawable/bg_card_clinic"
+                android:elevation="2dp"
                 android:orientation="vertical"
                 android:padding="16dp">
 
@@ -468,7 +466,7 @@
                         android:layout_height="14dp"
                         android:contentDescription="@null"
                         android:src="@drawable/ic_user"
-                        app:tint="@color/text_muted" />
+                        app:tint="@color/brand_primary" />
 
                     <TextView
                         android:layout_width="wrap_content"
@@ -488,7 +486,6 @@
                     android:gravity="center_vertical"
                     android:orientation="horizontal">
 
-                    <!-- Avatar chữ NL -->
                     <FrameLayout
                         android:layout_width="48dp"
                         android:layout_height="48dp"
@@ -519,7 +516,7 @@
                             android:layout_height="wrap_content"
                             android:text="Nguyễn Lan"
                             android:textColor="@color/text_foreground"
-                            android:textSize="14.5sp"
+                            android:textSize="15sp"
                             android:textStyle="bold" />
 
                         <TextView
@@ -528,8 +525,9 @@
                             android:layout_height="wrap_content"
                             android:layout_marginTop="2dp"
                             android:text="+84 90 123 4567"
-                            android:textColor="@color/text_muted"
-                            android:textSize="12.5sp" />
+                            android:textColor="@color/brand_primary"
+                            android:textSize="12.5sp"
+                            android:textStyle="bold" />
 
                         <TextView
                             android:id="@+id/tvCustomerSince"
@@ -541,13 +539,13 @@
                             android:textSize="11.5sp" />
                     </LinearLayout>
 
-                    <!-- Nút Gọi điện thoại -->
                     <FrameLayout
                         android:id="@+id/btnCallCustomer"
-                        android:layout_width="40dp"
-                        android:layout_height="40dp"
-                        android:background="@drawable/bg_chip_inactive"
+                        android:layout_width="42dp"
+                        android:layout_height="42dp"
+                        android:background="@drawable/bg_btn_outline"
                         android:clickable="true"
+                        android:elevation="2dp"
                         android:focusable="true">
 
                         <ImageView
@@ -556,17 +554,18 @@
                             android:layout_gravity="center"
                             android:contentDescription="@null"
                             android:src="@drawable/ic_phone"
-                            app:tint="@color/text_foreground" />
+                            app:tint="@color/brand_primary" />
                     </FrameLayout>
                 </LinearLayout>
             </LinearLayout>
 
-            <!-- ===================== KHỐI 2: THÚ CƯNG ===================== -->
             <LinearLayout
+                android:id="@+id/cardPetInfo"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="14dp"
                 android:background="@drawable/bg_card_clinic"
+                android:elevation="2dp"
                 android:orientation="vertical"
                 android:padding="16dp">
 
@@ -581,7 +580,7 @@
                         android:layout_height="14dp"
                         android:contentDescription="@null"
                         android:src="@drawable/ic_paw"
-                        app:tint="@color/text_muted" />
+                        app:tint="@color/warm_coral" />
 
                     <TextView
                         android:layout_width="wrap_content"
@@ -603,12 +602,16 @@
 
                     <com.google.android.material.imageview.ShapeableImageView
                         android:id="@+id/ivPetPhoto"
-                        android:layout_width="56dp"
-                        android:layout_height="56dp"
+                        android:layout_width="60dp"
+                        android:layout_height="60dp"
+                        android:background="@color/surface_muted"
                         android:contentDescription="@null"
+                        android:padding="1dp"
                         android:scaleType="centerCrop"
                         android:src="@drawable/img_pet_mochi"
-                        app:shapeAppearanceOverlay="@style/RoundedCorner16" />
+                        app:shapeAppearanceOverlay="@style/RoundedCorner16"
+                        app:strokeColor="@color/stroke_border"
+                        app:strokeWidth="1dp" />
 
                     <LinearLayout
                         android:layout_width="0dp"
@@ -623,27 +626,29 @@
                             android:layout_height="wrap_content"
                             android:text="Mochi"
                             android:textColor="@color/text_foreground"
-                            android:textSize="14.5sp"
+                            android:textSize="15sp"
                             android:textStyle="bold" />
 
                         <TextView
                             android:id="@+id/tvPetBreed"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_marginTop="2dp"
+                            android:layout_marginTop="3dp"
                             android:text="Pomeranian · 2 tuổi · Cái · 3,4 kg"
-                            android:textColor="@color/text_muted"
-                            android:textSize="12.5sp" />
+                            android:textColor="@color/brand_primary"
+                            android:textSize="12.5sp"
+                            android:textStyle="bold" />
                     </LinearLayout>
                 </LinearLayout>
             </LinearLayout>
 
-            <!-- ===================== KHỐI 3: DỊCH VỤ & LỊCH KHÁM ===================== -->
             <LinearLayout
+                android:id="@+id/cardServiceInfo"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="14dp"
                 android:background="@drawable/bg_card_clinic"
+                android:elevation="2dp"
                 android:orientation="vertical"
                 android:padding="16dp">
 
@@ -656,7 +661,6 @@
                     android:textSize="11sp"
                     android:textStyle="bold" />
 
-                <!-- Hàng 1: Dịch vụ -->
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -669,7 +673,7 @@
                         android:layout_height="15dp"
                         android:contentDescription="@null"
                         android:src="@drawable/ic_paw"
-                        app:tint="@color/text_muted" />
+                        app:tint="@color/brand_primary" />
 
                     <TextView
                         android:layout_width="0dp"
@@ -690,7 +694,6 @@
                         android:textStyle="bold" />
                 </LinearLayout>
 
-                <!-- Hàng 2: Thời lượng -->
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -703,7 +706,7 @@
                         android:layout_height="15dp"
                         android:contentDescription="@null"
                         android:src="@drawable/ic_clock"
-                        app:tint="@color/text_muted" />
+                        app:tint="@color/warm_coral" />
 
                     <TextView
                         android:layout_width="0dp"
@@ -724,7 +727,6 @@
                         android:textStyle="bold" />
                 </LinearLayout>
 
-                <!-- Hàng 3: Ngày -->
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -737,7 +739,7 @@
                         android:layout_height="15dp"
                         android:contentDescription="@null"
                         android:src="@drawable/ic_calendar_days"
-                        app:tint="@color/text_muted" />
+                        app:tint="@color/brand_primary" />
 
                     <TextView
                         android:layout_width="0dp"
@@ -758,7 +760,6 @@
                         android:textStyle="bold" />
                 </LinearLayout>
 
-                <!-- Hàng 4: Giờ -->
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -771,7 +772,7 @@
                         android:layout_height="15dp"
                         android:contentDescription="@null"
                         android:src="@drawable/ic_clock"
-                        app:tint="@color/text_muted" />
+                        app:tint="@color/warm_coral" />
 
                     <TextView
                         android:layout_width="0dp"
@@ -792,7 +793,6 @@
                         android:textStyle="bold" />
                 </LinearLayout>
 
-                <!-- Hàng 5: Giá dự kiến -->
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -813,19 +813,19 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="250.000 ₫"
-                        android:textColor="@color/text_foreground"
-                        android:textSize="14sp"
+                        android:textColor="@color/brand_primary"
+                        android:textSize="14.5sp"
                         android:textStyle="bold" />
                 </LinearLayout>
             </LinearLayout>
 
-            <!-- ===================== KHỐI 4: GHI CHÚ TỪ CHỦ NUÔI ===================== -->
             <LinearLayout
                 android:id="@+id/blockOwnerNote"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="14dp"
                 android:background="@drawable/bg_card_clinic"
+                android:elevation="2dp"
                 android:orientation="vertical"
                 android:padding="16dp">
 
@@ -840,7 +840,7 @@
                         android:layout_height="14dp"
                         android:contentDescription="@null"
                         android:src="@drawable/ic_pencil"
-                        app:tint="@color/text_muted" />
+                        app:tint="@color/brand_primary" />
 
                     <TextView
                         android:layout_width="wrap_content"
@@ -860,16 +860,17 @@
                     android:layout_marginTop="8dp"
                     android:lineSpacingExtra="3dp"
                     android:text="“Mochi hơi mẩn nhẹ sau mũi tiêm lần trước.”"
-                    android:textColor="@color/text_muted"
+                    android:textColor="@color/text_foreground"
                     android:textSize="13sp" />
             </LinearLayout>
 
-            <!-- ===================== KHỐI 5: LỊCH SỬ TRẠNG THÁI (TIMELINE) ===================== -->
             <LinearLayout
+                android:id="@+id/cardTimelineInfo"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="14dp"
                 android:background="@drawable/bg_card_clinic"
+                android:elevation="2dp"
                 android:orientation="vertical"
                 android:padding="16dp">
 
@@ -882,7 +883,6 @@
                     android:textSize="11sp"
                     android:textStyle="bold" />
 
-                <!-- Bước 1: Nhận yêu cầu (Done) -->
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -933,7 +933,6 @@
                     </LinearLayout>
                 </LinearLayout>
 
-                <!-- Bước 2: Chờ phòng khám xử lý / Phòng khám đã xác nhận -->
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -986,7 +985,6 @@
                     </LinearLayout>
                 </LinearLayout>
 
-                <!-- Bước 3: Ngày khám / Đã từ chối -->
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -1037,7 +1035,6 @@
         </LinearLayout>
     </androidx.core.widget.NestedScrollView>
 
-    <!-- 4. Thanh hành động cố định dưới cùng (Sticky Bar) -->
     <FrameLayout
         android:id="@+id/layoutStickyBar"
         android:layout_width="match_parent"
@@ -1050,7 +1047,6 @@
         android:paddingEnd="20dp"
         android:paddingBottom="16dp">
 
-        <!-- Nhóm A: Chờ duyệt (Từ chối / Xác nhận) -->
         <LinearLayout
             android:id="@+id/layoutActionsPending"
             android:layout_width="match_parent"
@@ -1095,7 +1091,6 @@
                 android:textStyle="bold" />
         </LinearLayout>
 
-        <!-- Nhóm B: Đã xác nhận (Hoàn thành / Không đến hẹn) -->
         <LinearLayout
             android:id="@+id/layoutActionsConfirmed"
             android:layout_width="match_parent"
@@ -1141,7 +1136,6 @@
                 android:textStyle="bold" />
         </LinearLayout>
 
-        <!-- Nhóm C: Đã đóng / Đã hoàn thành / Đã từ chối (Nút về danh sách) -->
         <Button
             android:id="@+id/btnBackToList"
             android:layout_width="match_parent"
@@ -1156,7 +1150,6 @@
             android:visibility="gone" />
     </FrameLayout>
 
-    <!-- 5. Toast nổi xanh ngọc (Floating Snackbar) khi đã xác nhận -->
     <LinearLayout
         android:id="@+id/layoutFloatingToast"
         android:layout_width="wrap_content"
@@ -1191,9 +1184,6 @@
             android:textStyle="bold" />
     </LinearLayout>
 
-    <!-- ================================================================= -->
-    <!-- 6. OVERLAY 1: HỘP THOẠI XÁC NHẬN LỊCH HẸN (CENTER MODAL DIALOG)   -->
-    <!-- ================================================================= -->
     <FrameLayout
         android:id="@+id/layoutConfirmDialogOverlay"
         android:layout_width="match_parent"
@@ -1216,7 +1206,6 @@
             android:orientation="vertical"
             android:padding="24dp">
 
-            <!-- Vòng tròn icon xanh ngọc -->
             <FrameLayout
                 android:layout_width="48dp"
                 android:layout_height="48dp"
@@ -1281,9 +1270,6 @@
         </LinearLayout>
     </FrameLayout>
 
-    <!-- ================================================================= -->
-    <!-- 7. OVERLAY 2: HỘP THOẠI TỪ CHỐI YÊU CẦU (BOTTOM SHEET MODAL)       -->
-    <!-- ================================================================= -->
     <FrameLayout
         android:id="@+id/layoutRejectSheetOverlay"
         android:layout_width="match_parent"
@@ -1302,7 +1288,6 @@
             android:orientation="vertical"
             android:padding="20dp">
 
-            <!-- Tay kéo (drag handle) -->
             <View
                 android:layout_width="44dp"
                 android:layout_height="4dp"
@@ -1310,7 +1295,6 @@
                 android:layout_marginBottom="16dp"
                 android:background="@drawable/bg_pill_gray" />
 
-            <!-- Icon X đỏ tròn -->
             <FrameLayout
                 android:layout_width="44dp"
                 android:layout_height="44dp"
@@ -1343,7 +1327,6 @@
                 android:textColor="@color/text_muted"
                 android:textSize="12.5sp" />
 
-            <!-- Các chip lý do từ chối (2 hàng) -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -1424,7 +1407,6 @@
                     android:textStyle="bold" />
             </LinearLayout>
 
-            <!-- Nút Từ chối màu đỏ nguy hiểm -->
             <Button
                 android:id="@+id/btnSheetRejectAction"
                 android:layout_width="match_parent"
@@ -1439,7 +1421,6 @@
                 android:textSize="13.5sp"
                 android:textStyle="bold" />
 
-            <!-- Nút Đóng -->
             <TextView
                 android:id="@+id/btnSheetRejectDismiss"
                 android:layout_width="wrap_content"

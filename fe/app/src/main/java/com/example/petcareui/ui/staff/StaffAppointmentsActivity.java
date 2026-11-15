@@ -18,7 +18,9 @@ import com.example.petcareui.data.model.StaffAppointmentItem;
 import com.example.petcareui.databinding.ActivityStaffAppointmentsBinding;
 import com.example.petcareui.databinding.ItemStaffApptCardBinding;
 import com.example.petcareui.ui.auth.LoginActivity;
+import com.example.petcareui.ui.profile.ProfileActivity;
 import com.example.petcareui.utils.TokenManager;
+import com.example.petcareui.utils.UiMotionUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,23 +29,17 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-/**
- * Màn hình S02: Danh sách lịch hẹn cho nhân viên (Staff Appointments List).
- * Thuộc phân hệ com.example.petcareui.ui.staff,
- * bám sát thiết kế nguyên mẫu React S02AppointmentList và kết nối API /api/v1/staff/appointments.
- * Hỗ trợ 4 trạng thái: Mặc định, Đang tải (Loading), Không khớp (Empty), Lỗi (Error).
- */
 public class StaffAppointmentsActivity extends AppCompatActivity {
 
-    public static final String EXTRA_INITIAL_FILTER = "extra_filter"; // "ALL", "PENDING", "CONFIRMED", etc.
-    public static final String EXTRA_STATE = "extra_state"; // "default", "loading", "empty", "error"
+    public static final String EXTRA_INITIAL_FILTER = "extra_filter";
+    public static final String EXTRA_STATE = "extra_state";
 
     private ActivityStaffAppointmentsBinding binding;
     private TokenManager tokenManager;
     private final List<StaffAppointmentItem> allStaffAppts = new ArrayList<>();
     private final List<StaffAppointmentItem> displayedList = new ArrayList<>();
 
-    private String currentFilter = "PENDING"; // Mặc định trong screenshot S02 là "Chờ xác nhận · 2"
+    private String currentFilter = "PENDING";
     private String currentState = "default";
     private String searchQuery = "";
 
@@ -60,12 +56,18 @@ public class StaffAppointmentsActivity extends AppCompatActivity {
         }
 
         extractIntentData();
+        UiMotionUtils.applyWindowInsets(binding.getRoot(), binding.layoutStaffAppBar, binding.bottomNavStaff);
         bindClinicHeader();
         setupAppBar();
         setupStateToggles();
         setupSearchAndFilterChips();
         setupBottomNav();
         setupEmptyAndErrorActions();
+
+        UiMotionUtils.animateEntranceSections(
+                binding.layoutStaffAppBar,
+                binding.layoutSearchAndFilter
+        );
 
         StaffClinicHelper.syncStaffAndClinicInfo(this, this::bindClinicHeader, this::handleUnauthorized);
         loadAppointmentsFromApi();
@@ -148,6 +150,7 @@ public class StaffAppointmentsActivity extends AppCompatActivity {
     }
 
     private void setupAppBar() {
+        UiMotionUtils.attachSpringTouch(binding.btnBack, binding.btnFilterSliders, binding.btnRetry, binding.btnEmptyShowAll);
         binding.btnBack.setOnClickListener(v -> finish());
         binding.btnRetry.setOnClickListener(v -> loadAppointmentsFromApi());
         binding.btnEmptyShowAll.setOnClickListener(v -> {
@@ -158,7 +161,6 @@ public class StaffAppointmentsActivity extends AppCompatActivity {
     }
 
     private void setupStateToggles() {
-        // Ẩn thanh toggle trạng thái giả lập khi dùng ứng dụng thật
         if (binding.chipStateDefault.getParent() instanceof View) {
             ((View) binding.chipStateDefault.getParent()).setVisibility(View.GONE);
         }
@@ -208,14 +210,35 @@ public class StaffAppointmentsActivity extends AppCompatActivity {
     }
 
     private void setupSearchAndFilterChips() {
-        // Bắt sự kiện chọn chip
-        binding.chipFilterAll.setOnClickListener(v -> setFilter("ALL"));
-        binding.chipFilterPending.setOnClickListener(v -> setFilter("PENDING"));
-        binding.chipFilterConfirmed.setOnClickListener(v -> setFilter("CONFIRMED"));
-        binding.chipFilterCompleted.setOnClickListener(v -> setFilter("COMPLETED"));
-        binding.chipFilterNoShow.setOnClickListener(v -> setFilter("NO_SHOW"));
+        UiMotionUtils.attachSpringTouch(
+                binding.chipFilterAll,
+                binding.chipFilterPending,
+                binding.chipFilterConfirmed,
+                binding.chipFilterCompleted,
+                binding.chipFilterNoShow
+        );
 
-        // Lắng nghe tìm kiếm (chỉ đăng ký 1 lần trong onCreate)
+        binding.chipFilterAll.setOnClickListener(v -> {
+            UiMotionUtils.animateSelectionPop(v);
+            setFilter("ALL");
+        });
+        binding.chipFilterPending.setOnClickListener(v -> {
+            UiMotionUtils.animateSelectionPop(v);
+            setFilter("PENDING");
+        });
+        binding.chipFilterConfirmed.setOnClickListener(v -> {
+            UiMotionUtils.animateSelectionPop(v);
+            setFilter("CONFIRMED");
+        });
+        binding.chipFilterCompleted.setOnClickListener(v -> {
+            UiMotionUtils.animateSelectionPop(v);
+            setFilter("COMPLETED");
+        });
+        binding.chipFilterNoShow.setOnClickListener(v -> {
+            UiMotionUtils.animateSelectionPop(v);
+            setFilter("NO_SHOW");
+        });
+
         binding.etStaffSearch.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
@@ -303,7 +326,6 @@ public class StaffAppointmentsActivity extends AppCompatActivity {
             }
         }
 
-        // Đếm số lượng chờ duyệt hiện tại
         int pendingInList = 0;
         for (StaffAppointmentItem item : displayedList) {
             if ("PENDING".equalsIgnoreCase(item.getStatus())) pendingInList++;
@@ -345,7 +367,6 @@ public class StaffAppointmentsActivity extends AppCompatActivity {
         for (StaffAppointmentItem item : displayedList) {
             ItemStaffApptCardBinding cardBinding = ItemStaffApptCardBinding.inflate(getLayoutInflater());
 
-            // 1. Dữ liệu cơ bản
             cardBinding.tvStaffApptRef.setText(item.getRef());
             cardBinding.ivStaffPetAvatar.setImageResource(item.getPetImgRes());
             cardBinding.tvStaffServiceTitle.setText(item.getService());
@@ -354,65 +375,61 @@ public class StaffAppointmentsActivity extends AppCompatActivity {
             cardBinding.tvStaffTime.setText(item.getTime());
             cardBinding.tvStaffDuration.setText(item.getDuration());
 
-            // 2. Định dạng theo trạng thái & thanh ưu tiên cam
-            boolean isPending = "PENDING".equalsIgnoreCase(item.getStatus());
-            if (isPending) {
-                cardBinding.viewPriorityBar.setVisibility(View.VISIBLE);
-                cardBinding.cardContainer.setBackgroundResource(R.drawable.bg_card_priority);
+            cardBinding.viewPriorityBar.setVisibility(View.VISIBLE);
+            cardBinding.cardContainer.setBackgroundResource(R.drawable.bg_card_clinic);
+            if ("PENDING".equalsIgnoreCase(item.getStatus())) {
+                cardBinding.viewPriorityBar.setBackgroundColor(ContextCompat.getColor(this, R.color.status_warning));
                 cardBinding.tvStaffApptStatus.setText("• Chờ xác nhận");
                 cardBinding.tvStaffApptStatus.setBackgroundResource(R.drawable.bg_badge_pending);
                 cardBinding.tvStaffApptStatus.setTextColor(ContextCompat.getColor(this, R.color.status_warning_ink));
             } else if ("CONFIRMED".equalsIgnoreCase(item.getStatus())) {
-                cardBinding.viewPriorityBar.setVisibility(View.GONE);
-                cardBinding.cardContainer.setBackgroundResource(R.drawable.bg_card_clinic);
+                cardBinding.viewPriorityBar.setBackgroundColor(ContextCompat.getColor(this, R.color.status_success));
                 cardBinding.tvStaffApptStatus.setText("• Đã xác nhận");
                 cardBinding.tvStaffApptStatus.setBackgroundResource(R.drawable.bg_badge_confirmed);
                 cardBinding.tvStaffApptStatus.setTextColor(ContextCompat.getColor(this, R.color.status_success_ink));
             } else if ("COMPLETED".equalsIgnoreCase(item.getStatus())) {
-                cardBinding.viewPriorityBar.setVisibility(View.GONE);
-                cardBinding.cardContainer.setBackgroundResource(R.drawable.bg_card_clinic);
+                cardBinding.viewPriorityBar.setBackgroundColor(ContextCompat.getColor(this, R.color.brand_primary));
                 cardBinding.tvStaffApptStatus.setText("• Đã hoàn thành");
                 cardBinding.tvStaffApptStatus.setBackgroundResource(R.drawable.bg_badge_completed);
                 cardBinding.tvStaffApptStatus.setTextColor(ContextCompat.getColor(this, R.color.brand_ink));
             } else if ("NO_SHOW".equalsIgnoreCase(item.getStatus())) {
-                cardBinding.viewPriorityBar.setVisibility(View.GONE);
-                cardBinding.cardContainer.setBackgroundResource(R.drawable.bg_card_clinic);
+                cardBinding.viewPriorityBar.setBackgroundColor(ContextCompat.getColor(this, R.color.status_info));
                 cardBinding.tvStaffApptStatus.setText("• Không đến");
                 cardBinding.tvStaffApptStatus.setBackgroundResource(R.drawable.bg_badge_no_show);
                 cardBinding.tvStaffApptStatus.setTextColor(ContextCompat.getColor(this, R.color.status_info_ink));
             } else {
-                cardBinding.viewPriorityBar.setVisibility(View.GONE);
-                cardBinding.cardContainer.setBackgroundResource(R.drawable.bg_card_clinic);
+                cardBinding.viewPriorityBar.setBackgroundColor(ContextCompat.getColor(this, R.color.status_destructive));
                 cardBinding.tvStaffApptStatus.setText("• Đã hủy / Từ chối");
                 cardBinding.tvStaffApptStatus.setBackgroundResource(R.drawable.bg_badge_cancelled);
                 cardBinding.tvStaffApptStatus.setTextColor(ContextCompat.getColor(this, R.color.status_destructive_ink));
             }
 
-            // 3. Click xem chi tiết (S03)
+            UiMotionUtils.attachSpringTouch(cardBinding.getRoot());
             cardBinding.getRoot().setOnClickListener(v -> {
                 Intent intent = new Intent(this, StaffAppointmentDetailsActivity.class);
                 intent.putExtra(StaffAppointmentDetailsActivity.EXTRA_REF, item.getRef());
                 intent.putExtra(StaffAppointmentDetailsActivity.EXTRA_APPT, item);
                 startActivity(intent);
+                overridePendingTransition(R.anim.fade_scale_in, R.anim.fade_scale_out);
             });
 
             binding.layoutApptList.addView(cardBinding.getRoot());
         }
+        UiMotionUtils.animateStaggeredChildren(binding.layoutApptList, 40L);
 
+        UiMotionUtils.attachSpringTouch(binding.btnLoadOlder);
         binding.btnLoadOlder.setOnClickListener(v -> {
             Toast.makeText(this, "Đang tải thêm lịch hẹn của các ngày trước...", Toast.LENGTH_SHORT).show();
         });
     }
 
     private void setupEmptyAndErrorActions() {
-        // Nút "Xem tất cả trạng thái" khi không có kết quả tìm kiếm
         binding.btnEmptyShowAll.setOnClickListener(v -> {
             binding.etStaffSearch.setText("");
             setFilter("ALL");
             applyState("default");
         });
 
-        // Nút "Thử lại" khi gặp lỗi kết nối
         binding.btnRetry.setOnClickListener(v -> {
             Toast.makeText(this, "Đang kết nối lại...", Toast.LENGTH_SHORT).show();
             loadAppointmentsFromApi();
@@ -420,24 +437,36 @@ public class StaffAppointmentsActivity extends AppCompatActivity {
     }
 
     private void setupBottomNav() {
-        // Tab 1: Hôm nay -> Mở S01
+        UiMotionUtils.attachSpringTouch(
+                binding.navStaffToday,
+                binding.navStaffAppointments,
+                binding.navStaffSlots,
+                binding.navStaffProfile
+        );
+
         binding.navStaffToday.setOnClickListener(v -> {
             Intent intent = new Intent(this, StaffDashboardActivity.class);
             intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
             startActivity(intent);
+            overridePendingTransition(R.anim.fade_scale_in, R.anim.fade_scale_out);
             finish();
         });
 
-        // Tab 2: Lịch hẹn -> Đang ở màn này, cuộn lên đầu trang
         binding.navStaffAppointments.setOnClickListener(v -> {
             binding.scrollStaffAppointmentsBody.smoothScrollTo(0, 0);
         });
 
-        // Tab 3: Khung giờ -> Mở S04
         binding.navStaffSlots.setOnClickListener(v -> {
             Intent intent = new Intent(this, StaffSlotManagementActivity.class);
             startActivity(intent);
+            overridePendingTransition(R.anim.fade_scale_in, R.anim.fade_scale_out);
             finish();
+        });
+
+        binding.navStaffProfile.setOnClickListener(v -> {
+            Intent intent = new Intent(this, ProfileActivity.class);
+            startActivity(intent);
+            overridePendingTransition(R.anim.fade_scale_in, R.anim.fade_scale_out);
         });
     }
 }

@@ -19,7 +19,9 @@ import com.example.petcareui.data.model.StaffSlotItem;
 import com.example.petcareui.databinding.ActivityStaffSlotManagementBinding;
 import com.example.petcareui.databinding.ItemStaffSlotRowBinding;
 import com.example.petcareui.ui.auth.LoginActivity;
+import com.example.petcareui.ui.profile.ProfileActivity;
 import com.example.petcareui.utils.TokenManager;
+import com.example.petcareui.utils.UiMotionUtils;
 
 import java.time.DayOfWeek;
 import java.time.LocalDate;
@@ -31,16 +33,6 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-/**
- * Màn hình S04: Quản lý khung giờ (nhân viên) - Staff Slot Management.
- * Màn hình trong phân hệ nhân viên,
- * bám sát nguyên mẫu React S04SlotManagement và kết nối REST API /api/v1/staff/slots.
- * Hỗ trợ các trạng thái:
- * - Mặc định (default)
- * - Tạo khung giờ (new-slot bottom sheet)
- * - Đã tạo (created với notice & floating toast)
- * - Không có khung giờ (empty)
- */
 public class StaffSlotManagementActivity extends AppCompatActivity {
 
     public static final String EXTRA_STATE = "extra_state";
@@ -83,12 +75,19 @@ public class StaffSlotManagementActivity extends AppCompatActivity {
         }
 
         extractIntentData();
+        UiMotionUtils.applyWindowInsets(binding.getRoot(), binding.layoutAppBar, binding.bottomNavStaff);
         bindClinicHeader();
         setupDates();
         setupAppBar();
         setupStateToggles();
         setupSheetInteractions();
         setupBottomNav();
+
+        UiMotionUtils.animateEntranceSections(
+                binding.layoutAppBar,
+                binding.layoutDateStripContainer,
+                binding.noticeInfo
+        );
 
         StaffClinicHelper.syncStaffAndClinicInfo(this, this::bindClinicHeader, this::handleUnauthorized);
         loadSlotsForSelectedDate();
@@ -253,6 +252,17 @@ public class StaffSlotManagementActivity extends AppCompatActivity {
     }
 
     private void setupAppBar() {
+        UiMotionUtils.attachSpringTouch(
+                binding.btnBack,
+                binding.btnTopAddSlot,
+                binding.btnCreateNewSlot,
+                binding.btnEmptyCreateSlot,
+                binding.btnStartTimePicker,
+                binding.btnEndTimePicker,
+                binding.btnSheetCreateSlotAction,
+                binding.chipRecurrenceOnce,
+                binding.chipRecurrenceDaily
+        );
         binding.btnBack.setOnClickListener(v -> finish());
         binding.btnTopAddSlot.setOnClickListener(v -> applyState("new-slot"));
         binding.btnCreateNewSlot.setOnClickListener(v -> applyState("new-slot"));
@@ -260,7 +270,6 @@ public class StaffSlotManagementActivity extends AppCompatActivity {
     }
 
     private void setupStateToggles() {
-        // Ẩn thanh toggle trạng thái giả lập khi dùng ứng dụng thật
         if (binding.chipStateDefault.getParent() instanceof View) {
             ((View) binding.chipStateDefault.getParent()).setVisibility(View.GONE);
         }
@@ -274,14 +283,12 @@ public class StaffSlotManagementActivity extends AppCompatActivity {
         updateToggleChip(binding.chipStateCreated, "created".equals(state));
         updateToggleChip(binding.chipStateEmpty, "empty".equals(state));
 
-        // Ẩn/Hiện Overlay tạo khung giờ
         if ("new-slot".equals(state)) {
             binding.layoutNewSlotSheetOverlay.setVisibility(View.VISIBLE);
         } else {
             binding.layoutNewSlotSheetOverlay.setVisibility(View.GONE);
         }
 
-        // Cấu hình hiển thị theo từng trạng thái
         if ("empty".equals(state)) {
             binding.noticeCreated.setVisibility(View.GONE);
             binding.noticeInfo.setVisibility(View.VISIBLE);
@@ -298,7 +305,6 @@ public class StaffSlotManagementActivity extends AppCompatActivity {
 
             renderSlotsList(true);
         } else {
-            // default & new-slot
             binding.noticeCreated.setVisibility(View.GONE);
             binding.noticeInfo.setVisibility(View.VISIBLE);
             binding.layoutFloatingToast.setVisibility(View.GONE);
@@ -354,7 +360,9 @@ public class StaffSlotManagementActivity extends AppCompatActivity {
             }
 
             int finalIndex = i;
+            UiMotionUtils.attachSpringTouch(card);
             card.setOnClickListener(v -> {
+                UiMotionUtils.animateSelectionPop(v);
                 for (int j = 0; j < dateList.size(); j++) {
                     dateList.get(j).selected = (j == finalIndex);
                 }
@@ -376,11 +384,15 @@ public class StaffSlotManagementActivity extends AppCompatActivity {
             rowBinding.tvSlotTime.setText(slot.getTime());
 
             if ("booked".equals(slot.getState())) {
+                rowBinding.tvSlotTime.setBackgroundResource(R.drawable.bg_service_icon);
+                rowBinding.tvSlotTime.setTextColor(ContextCompat.getColor(this, R.color.brand_ink));
                 rowBinding.tvSlotPrimaryText.setText((slot.getPet() != null ? slot.getPet() : "Thú cưng") + " · " + (slot.getService() != null ? slot.getService() : "Lịch khám"));
                 rowBinding.tvSlotSecondaryText.setText(slot.getCustomer() != null ? slot.getCustomer() : "Đã có khách đặt");
                 rowBinding.tvSlotBookedBadge.setVisibility(View.VISIBLE);
                 rowBinding.btnToggleLock.setVisibility(View.GONE);
             } else if ("closed".equals(slot.getState())) {
+                rowBinding.tvSlotTime.setBackgroundResource(R.drawable.bg_pill_gray);
+                rowBinding.tvSlotTime.setTextColor(ContextCompat.getColor(this, R.color.text_muted));
                 rowBinding.tvSlotPrimaryText.setText("Đã đóng");
                 rowBinding.tvSlotSecondaryText.setText("Ẩn khỏi ứng dụng của khách");
                 rowBinding.tvSlotBookedBadge.setVisibility(View.GONE);
@@ -388,13 +400,14 @@ public class StaffSlotManagementActivity extends AppCompatActivity {
                 rowBinding.ivLockIcon.setImageResource(R.drawable.ic_lock);
                 rowBinding.ivLockIcon.setImageTintList(ContextCompat.getColorStateList(this, R.color.status_destructive));
             } else {
-                // open
+                rowBinding.tvSlotTime.setBackgroundResource(R.drawable.bg_service_icon);
+                rowBinding.tvSlotTime.setTextColor(ContextCompat.getColor(this, R.color.brand_ink));
                 rowBinding.tvSlotPrimaryText.setText("Đang mở nhận đặt lịch");
                 rowBinding.tvSlotSecondaryText.setText("Khung 30 phút");
                 rowBinding.tvSlotBookedBadge.setVisibility(View.GONE);
                 rowBinding.btnToggleLock.setVisibility(View.VISIBLE);
                 rowBinding.ivLockIcon.setImageResource(R.drawable.ic_lock);
-                rowBinding.ivLockIcon.setImageTintList(ContextCompat.getColorStateList(this, R.color.text_muted));
+                rowBinding.ivLockIcon.setImageTintList(ContextCompat.getColorStateList(this, R.color.brand_primary));
             }
 
             if (highlightNewSlot && "14:00".equals(slot.getTime())) {
@@ -403,7 +416,9 @@ public class StaffSlotManagementActivity extends AppCompatActivity {
                 rowBinding.slotRowContainer.setBackgroundResource(R.drawable.bg_card_clinic);
             }
 
+            UiMotionUtils.attachSpringTouch(rowBinding.getRoot(), rowBinding.btnToggleLock);
             rowBinding.btnToggleLock.setOnClickListener(v -> {
+                UiMotionUtils.animateSelectionPop(v);
                 if ("open".equals(slot.getState())) {
                     slot.setState("closed");
                     Toast.makeText(this, "Đã đóng khung giờ " + slot.getTime(), Toast.LENGTH_SHORT).show();
@@ -416,6 +431,7 @@ public class StaffSlotManagementActivity extends AppCompatActivity {
 
             binding.layoutSlotsList.addView(rowBinding.getRoot());
         }
+        UiMotionUtils.animateStaggeredChildren(binding.layoutSlotsList, 35L);
     }
 
     private void setupSheetInteractions() {
@@ -449,7 +465,6 @@ public class StaffSlotManagementActivity extends AppCompatActivity {
             }, 14, 30, true).show();
         });
 
-        // Nút Tạo khung giờ -> Gọi API Backend
         binding.btnSheetCreateSlotAction.setOnClickListener(v -> {
             String start = binding.tvNewSlotStartTime.getText().toString();
             String end = binding.tvNewSlotEndTime.getText().toString();
@@ -490,21 +505,36 @@ public class StaffSlotManagementActivity extends AppCompatActivity {
     }
 
     private void setupBottomNav() {
+        UiMotionUtils.attachSpringTouch(
+                binding.navStaffToday,
+                binding.navStaffAppointments,
+                binding.navStaffSlots,
+                binding.navStaffProfile
+        );
+
         binding.navStaffToday.setOnClickListener(v -> {
             Intent intent = new Intent(this, StaffDashboardActivity.class);
             intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
             startActivity(intent);
+            overridePendingTransition(R.anim.fade_scale_in, R.anim.fade_scale_out);
             finish();
         });
 
         binding.navStaffAppointments.setOnClickListener(v -> {
             Intent intent = new Intent(this, StaffAppointmentsActivity.class);
             startActivity(intent);
+            overridePendingTransition(R.anim.fade_scale_in, R.anim.fade_scale_out);
             finish();
         });
 
         binding.navStaffSlots.setOnClickListener(v -> {
             binding.scrollSlotsBody.smoothScrollTo(0, 0);
+        });
+
+        binding.navStaffProfile.setOnClickListener(v -> {
+            Intent intent = new Intent(this, ProfileActivity.class);
+            startActivity(intent);
+            overridePendingTransition(R.anim.fade_scale_in, R.anim.fade_scale_out);
         });
     }
 }

@@ -19,7 +19,9 @@ import com.example.petcareui.databinding.ItemStaffPendingCardBinding;
 import com.example.petcareui.databinding.ItemStaffScheduleRowBinding;
 import com.example.petcareui.ui.auth.LoginActivity;
 import com.example.petcareui.ui.notifications.NotificationsActivity;
+import com.example.petcareui.ui.profile.ProfileActivity;
 import com.example.petcareui.utils.TokenManager;
+import com.example.petcareui.utils.UiMotionUtils;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -29,15 +31,9 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-/**
- * Màn hình S01: Bảng làm việc nhân viên (Staff Dashboard).
- * Thuộc phân hệ riêng biệt com.example.petcareui.ui.staff,
- * bám sát nguyên mẫu React S01Dashboard và kết nối API thật /api/v1/staff/appointments.
- * Hỗ trợ 3 trạng thái: Mặc định, Đang tải (Loading), Không có lịch hẹn (Empty).
- */
 public class StaffDashboardActivity extends AppCompatActivity {
 
-    public static final String EXTRA_STATE = "extra_state"; // "default", "loading", "empty"
+    public static final String EXTRA_STATE = "extra_state";
 
     private ActivityStaffDashboardBinding binding;
     private TokenManager tokenManager;
@@ -58,11 +54,18 @@ public class StaffDashboardActivity extends AppCompatActivity {
         }
 
         extractIntentData();
+        UiMotionUtils.applyWindowInsets(binding.getRoot(), binding.layoutStaffAppBar, binding.layoutStaffBottomNav);
         bindStaffHeader();
         setupTopBar();
         setupStateToggles();
         setupShortcuts();
         setupBottomNav();
+
+        UiMotionUtils.animateEntranceSections(
+                binding.layoutStaffAppBar,
+                binding.cardStaffHero,
+                binding.cardClinicShortcuts
+        );
 
         StaffClinicHelper.syncStaffAndClinicInfo(this, this::bindStaffHeader, this::handleUnauthorized);
         loadDashboardData();
@@ -157,32 +160,22 @@ public class StaffDashboardActivity extends AppCompatActivity {
     }
 
     private void setupTopBar() {
-        TokenManager tokenManager = TokenManager.getInstance(this);
-        Long clinicId = tokenManager.getClinicId();
-        String clinicName = (clinicId != null && clinicId == 1) ? "Phòng khám An Nhiên"
-                : (clinicId != null && clinicId == 2) ? "Bệnh viện Thú y HaUI"
-                : (clinicId != null && clinicId == 3) ? "Bệnh viện PetCare Đống Đa"
-                : "Phòng khám #" + (clinicId != null ? clinicId : "");
-        String clinicArea = (clinicId != null && clinicId == 1) ? "Cầu Giấy · Hà Nội"
-                : (clinicId != null && clinicId == 2) ? "Bắc Từ Liêm · Hà Nội"
-                : (clinicId != null && clinicId == 3) ? "Đống Đa · Hà Nội"
-                : "Hà Nội";
+        UiMotionUtils.attachSpringTouch(binding.btnStaffNotifications, binding.btnStaffAvatar);
 
-        binding.tvStaffClinicName.setText(clinicName);
-        binding.tvStaffSubtitle.setText("Khu vực nhân viên · " + clinicArea);
-
-        // Mở Thông báo nhân viên
         binding.btnStaffNotifications.setOnClickListener(v -> {
             Intent intent = new Intent(this, NotificationsActivity.class);
             startActivity(intent);
+            overridePendingTransition(R.anim.fade_scale_in, R.anim.fade_scale_out);
         });
 
-        // Hộp thoại thông tin nhân viên & Chuyển đổi vai trò Khách hàng / Nhân viên
-        binding.btnStaffAvatar.setOnClickListener(v -> showStaffAccountDialog());
+        binding.btnStaffAvatar.setOnClickListener(v -> {
+            Intent intent = new Intent(this, ProfileActivity.class);
+            startActivity(intent);
+            overridePendingTransition(R.anim.fade_scale_in, R.anim.fade_scale_out);
+        });
     }
 
     private void setupStateToggles() {
-        // Ẩn thanh toggle trạng thái giả lập khi dùng ứng dụng thật
         if (binding.chipStateDefault.getParent() instanceof View) {
             ((View) binding.chipStateDefault.getParent()).setVisibility(View.GONE);
         }
@@ -222,7 +215,6 @@ public class StaffDashboardActivity extends AppCompatActivity {
     }
 
     private void renderDefaultContent() {
-        // Cập nhật ngày hôm nay động
         java.time.LocalDate today = java.time.LocalDate.now();
         String dayOfWeekStr = "Thứ 2";
         switch (today.getDayOfWeek()) {
@@ -236,7 +228,6 @@ public class StaffDashboardActivity extends AppCompatActivity {
         }
         binding.tvTodayScheduleTitle.setText("Hôm nay · " + dayOfWeekStr + " " + today.getDayOfMonth() + "/" + today.getMonthValue());
 
-        // 1. Render danh sách chờ duyệt (Pending cards)
         binding.layoutPendingList.removeAllViews();
         binding.tvPendingNoticeTitle.setText(pendingList.size() + " yêu cầu đang chờ duyệt");
 
@@ -250,17 +241,19 @@ public class StaffDashboardActivity extends AppCompatActivity {
             cardBinding.tvStaffTime.setText(item.getTime());
             cardBinding.tvStaffDuration.setText(item.getDuration());
 
+            UiMotionUtils.attachSpringTouch(cardBinding.getRoot());
             cardBinding.getRoot().setOnClickListener(v -> {
                 Intent intent = new Intent(this, StaffAppointmentDetailsActivity.class);
                 intent.putExtra(StaffAppointmentDetailsActivity.EXTRA_REF, item.getRef());
                 intent.putExtra(StaffAppointmentDetailsActivity.EXTRA_APPT, item);
                 startActivity(intent);
+                overridePendingTransition(R.anim.fade_scale_in, R.anim.fade_scale_out);
             });
 
             binding.layoutPendingList.addView(cardBinding.getRoot());
         }
+        UiMotionUtils.animateStaggeredChildren(binding.layoutPendingList, 50L);
 
-        // 2. Render danh sách hôm nay (Schedule rows)
         binding.layoutTodaySchedule.removeAllViews();
         for (StaffAppointmentItem item : todayScheduleList) {
             ItemStaffScheduleRowBinding rowBinding = ItemStaffScheduleRowBinding.inflate(getLayoutInflater());
@@ -268,65 +261,98 @@ public class StaffDashboardActivity extends AppCompatActivity {
             rowBinding.tvSchedulePetService.setText(item.getPet() + " · " + item.getService());
             rowBinding.tvScheduleCustomer.setText(item.getCustomer());
 
+            UiMotionUtils.attachSpringTouch(rowBinding.getRoot());
             rowBinding.getRoot().setOnClickListener(v -> {
                 Intent intent = new Intent(this, StaffAppointmentDetailsActivity.class);
                 intent.putExtra(StaffAppointmentDetailsActivity.EXTRA_REF, item.getRef());
                 intent.putExtra(StaffAppointmentDetailsActivity.EXTRA_APPT, item);
                 startActivity(intent);
+                overridePendingTransition(R.anim.fade_scale_in, R.anim.fade_scale_out);
             });
 
             binding.layoutTodaySchedule.addView(rowBinding.getRoot());
         }
+        UiMotionUtils.animateStaggeredChildren(binding.layoutTodaySchedule, 120L);
     }
 
     private void setupShortcuts() {
+        UiMotionUtils.attachSpringTouch(
+                binding.shortcutNewSlot,
+                binding.shortcutManageSlots,
+                binding.shortcutClinicProfile,
+                binding.tvSeeAllPending,
+                binding.tvSeeAllToday,
+                binding.btnEmptyManageSlots
+        );
+
         binding.shortcutNewSlot.setOnClickListener(v -> {
             Intent intent = new Intent(this, StaffSlotManagementActivity.class);
             intent.putExtra(StaffSlotManagementActivity.EXTRA_STATE, "new-slot");
             startActivity(intent);
+            overridePendingTransition(R.anim.fade_scale_in, R.anim.fade_scale_out);
         });
 
         binding.shortcutManageSlots.setOnClickListener(v -> {
             Intent intent = new Intent(this, StaffSlotManagementActivity.class);
             startActivity(intent);
+            overridePendingTransition(R.anim.fade_scale_in, R.anim.fade_scale_out);
         });
 
-        binding.shortcutClinicProfile.setOnClickListener(v -> showStaffAccountDialog());
+        binding.shortcutClinicProfile.setOnClickListener(v -> {
+            Intent intent = new Intent(this, ProfileActivity.class);
+            startActivity(intent);
+            overridePendingTransition(R.anim.fade_scale_in, R.anim.fade_scale_out);
+        });
 
         binding.tvSeeAllPending.setOnClickListener(v -> {
             Intent intent = new Intent(this, StaffAppointmentsActivity.class);
             intent.putExtra(StaffAppointmentsActivity.EXTRA_INITIAL_FILTER, "PENDING");
             startActivity(intent);
+            overridePendingTransition(R.anim.fade_scale_in, R.anim.fade_scale_out);
         });
 
         binding.tvSeeAllToday.setOnClickListener(v -> {
             Intent intent = new Intent(this, StaffAppointmentsActivity.class);
             intent.putExtra(StaffAppointmentsActivity.EXTRA_INITIAL_FILTER, "ALL");
             startActivity(intent);
+            overridePendingTransition(R.anim.fade_scale_in, R.anim.fade_scale_out);
         });
 
         binding.btnEmptyManageSlots.setOnClickListener(v -> {
             Intent intent = new Intent(this, StaffSlotManagementActivity.class);
             startActivity(intent);
+            overridePendingTransition(R.anim.fade_scale_in, R.anim.fade_scale_out);
         });
     }
 
     private void setupBottomNav() {
-        // Tab 1: Hôm nay (Đang ở màn này)
+        UiMotionUtils.attachSpringTouch(
+                binding.navStaffToday,
+                binding.navStaffAppointments,
+                binding.navStaffSlots,
+                binding.navStaffProfile
+        );
+
         binding.navStaffToday.setOnClickListener(v -> {
             binding.scrollStaffBody.smoothScrollTo(0, 0);
         });
 
-        // Tab 2: Lịch hẹn (S02)
         binding.navStaffAppointments.setOnClickListener(v -> {
             Intent intent = new Intent(this, StaffAppointmentsActivity.class);
             startActivity(intent);
+            overridePendingTransition(R.anim.fade_scale_in, R.anim.fade_scale_out);
         });
 
-        // Tab 3: Khung giờ (S04)
         binding.navStaffSlots.setOnClickListener(v -> {
             Intent intent = new Intent(this, StaffSlotManagementActivity.class);
             startActivity(intent);
+            overridePendingTransition(R.anim.fade_scale_in, R.anim.fade_scale_out);
+        });
+
+        binding.navStaffProfile.setOnClickListener(v -> {
+            Intent intent = new Intent(this, ProfileActivity.class);
+            startActivity(intent);
+            overridePendingTransition(R.anim.fade_scale_in, R.anim.fade_scale_out);
         });
     }
 

@@ -6,7 +6,6 @@
     android:layout_height="match_parent"
     android:background="@color/surface_background">
 
-    <!-- 1. Thanh AppBar nhân viên cố định trên cùng -->
     <LinearLayout
         android:id="@+id/layoutStaffAppBar"
         android:layout_width="match_parent"
@@ -26,64 +25,81 @@
             android:layout_weight="1"
             android:orientation="vertical">
 
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:layout_width="14dp"
+                    android:layout_height="14dp"
+                    android:src="@drawable/ic_paw"
+                    app:tint="@color/warm_coral"
+                    tools:ignore="ContentDescription" />
+
+                <TextView
+                    android:id="@+id/tvStaffSubtitle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="6dp"
+                    android:text="Khu vực nhân viên"
+                    android:textColor="@color/text_muted"
+                    android:textSize="13sp"
+                    android:textStyle="bold"
+                    tools:text="Khu vực nhân viên · Cầu Giấy · Hà Nội" />
+            </LinearLayout>
+
             <TextView
                 android:id="@+id/tvStaffClinicName"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="2dp"
                 android:ellipsize="end"
                 android:letterSpacing="-0.02"
                 android:maxLines="2"
                 android:text="Phòng khám"
                 android:textColor="@color/text_foreground"
-                android:textSize="19sp"
+                android:textSize="21sp"
                 android:textStyle="bold"
                 tools:text="Phòng khám Thú y An Nhiên" />
-
-            <TextView
-                android:id="@+id/tvStaffSubtitle"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="1dp"
-                android:text="Khu vực nhân viên"
-                android:textColor="@color/text_muted"
-                android:textSize="12.5sp"
-                tools:text="Khu vực nhân viên · Cầu Giấy · Hà Nội" />
         </LinearLayout>
 
-        <!-- Nút Chuông thông báo có chấm cam -->
         <FrameLayout
             android:id="@+id/btnStaffNotifications"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:background="@drawable/bg_chip_inactive"
+            android:layout_width="44dp"
+            android:layout_height="44dp"
+            android:background="@drawable/bg_btn_outline"
             android:clickable="true"
+            android:elevation="2dp"
             android:focusable="true">
 
             <ImageView
-                android:layout_width="19dp"
-                android:layout_height="19dp"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
                 android:layout_gravity="center"
                 android:contentDescription="@null"
                 android:src="@drawable/ic_bell"
                 app:tint="@color/text_foreground" />
 
             <View
-                android:layout_width="8dp"
-                android:layout_height="8dp"
+                android:layout_width="9dp"
+                android:layout_height="9dp"
                 android:layout_gravity="top|end"
-                android:layout_marginTop="8dp"
-                android:layout_marginEnd="8dp"
-                android:background="@drawable/bg_badge_pending" />
+                android:layout_marginTop="10dp"
+                android:layout_marginEnd="10dp"
+                android:background="@drawable/bg_step_dot_active"
+                android:backgroundTint="@color/warm_coral" />
         </FrameLayout>
 
-        <!-- Avatar nhân viên -->
         <FrameLayout
             android:id="@+id/btnStaffAvatar"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
+            android:layout_width="44dp"
+            android:layout_height="44dp"
             android:layout_marginStart="10dp"
-            android:background="@drawable/bg_avatar_staff"
+            android:background="@drawable/bg_avatar_placeholder"
             android:clickable="true"
+            android:elevation="2dp"
             android:focusable="true">
 
             <TextView
@@ -94,13 +110,12 @@
                 android:letterSpacing="0.04"
                 android:text="NV"
                 android:textColor="@color/brand_ink"
-                android:textSize="13sp"
+                android:textSize="14.5sp"
                 android:textStyle="bold"
                 tools:text="TT" />
         </FrameLayout>
     </LinearLayout>
 
-    <!-- 2. Thanh chuyển đổi trạng thái Mặc định / Đang tải / Không có lịch hẹn -->
     <LinearLayout
         android:id="@+id/layoutStateToggle"
         android:layout_width="match_parent"
@@ -162,33 +177,110 @@
             android:textStyle="bold" />
     </LinearLayout>
 
-    <!-- 3. Khu vực nội dung cuộn chính -->
     <androidx.core.widget.NestedScrollView
         android:id="@+id/scrollStaffBody"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_above="@id/layoutStaffBottomNav"
         android:layout_below="@id/layoutStateToggle"
+        android:clipToPadding="false"
         android:fillViewport="true"
         android:scrollbars="none">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:clipToPadding="false"
             android:orientation="vertical"
             android:paddingStart="20dp"
-            android:paddingTop="4dp"
+            android:paddingTop="6dp"
             android:paddingEnd="20dp"
-            android:paddingBottom="24dp">
+            android:paddingBottom="28dp">
 
-            <!-- A. Nội dung chính mặc định -->
             <LinearLayout
                 android:id="@+id/layoutDefaultContent"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:clipToPadding="false"
                 android:orientation="vertical">
 
-                <!-- Phần 1: Cần bạn xử lý -->
+                <FrameLayout
+                    android:id="@+id/cardStaffHero"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="20dp"
+                    android:background="@drawable/bg_hero_banner_gradient"
+                    android:elevation="4dp"
+                    android:padding="20dp">
+
+                    <ImageView
+                        android:layout_width="104dp"
+                        android:layout_height="104dp"
+                        android:layout_gravity="bottom|end"
+                        android:layout_marginEnd="-14dp"
+                        android:layout_marginBottom="-16dp"
+                        android:alpha="0.12"
+                        android:rotation="-18"
+                        android:src="@drawable/ic_paw"
+                        app:tint="@color/white"
+                        tools:ignore="ContentDescription" />
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical">
+
+                        <LinearLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:background="@drawable/bg_pill_gray"
+                            android:backgroundTint="#26FFFFFF"
+                            android:gravity="center_vertical"
+                            android:orientation="horizontal"
+                            android:paddingStart="10dp"
+                            android:paddingTop="4dp"
+                            android:paddingEnd="10dp"
+                            android:paddingBottom="4dp">
+
+                            <ImageView
+                                android:layout_width="13dp"
+                                android:layout_height="13dp"
+                                android:src="@drawable/ic_stethoscope"
+                                app:tint="@color/white"
+                                tools:ignore="ContentDescription" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginStart="6dp"
+                                android:letterSpacing="0.04"
+                                android:text="ĐIỀU PHỐI PHÒNG KHÁM"
+                                android:textColor="@color/white"
+                                android:textSize="10.5sp"
+                                android:textStyle="bold" />
+                        </LinearLayout>
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="10dp"
+                            android:letterSpacing="-0.02"
+                            android:text="Tổng quan ca trực hôm nay"
+                            android:textColor="@color/white"
+                            android:textSize="18.5sp"
+                            android:textStyle="bold" />
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="4dp"
+                            android:lineSpacingExtra="2dp"
+                            android:text="Kiểm tra nhanh các yêu cầu đặt lịch mới và quản lý khung giờ trực của phòng khám."
+                            android:textColor="#E0F2FE"
+                            android:textSize="12.5sp" />
+                    </LinearLayout>
+                </FrameLayout>
+
                 <RelativeLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -198,9 +290,10 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_alignParentStart="true"
+                        android:letterSpacing="-0.02"
                         android:text="Cần bạn xử lý"
                         android:textColor="@color/text_foreground"
-                        android:textSize="16sp"
+                        android:textSize="17sp"
                         android:textStyle="bold" />
 
                     <TextView
@@ -208,19 +301,20 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_alignParentEnd="true"
+                        android:layout_centerVertical="true"
                         android:clickable="true"
                         android:focusable="true"
-                        android:text="Xem tất cả"
+                        android:text="Xem tất cả ›"
                         android:textColor="@color/brand_primary"
-                        android:textSize="12.5sp"
+                        android:textSize="13sp"
                         android:textStyle="bold" />
                 </RelativeLayout>
 
-                <!-- Banner thông báo số lượng yêu cầu chờ duyệt -->
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:background="@drawable/bg_notice_warning"
+                    android:elevation="1dp"
                     android:gravity="top"
                     android:orientation="horizontal"
                     android:padding="14dp">
@@ -260,19 +354,18 @@
                     </LinearLayout>
                 </LinearLayout>
 
-                <!-- Danh sách các thẻ chờ duyệt (Pending cards có thanh viền cam) -->
                 <LinearLayout
                     android:id="@+id/layoutPendingList"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="12dp"
+                    android:clipToPadding="false"
                     android:orientation="vertical" />
 
-                <!-- Phần 2: Hôm nay · Thứ 2 27/10 -->
                 <RelativeLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="20dp"
+                    android:layout_marginTop="18dp"
                     android:layout_marginBottom="12dp">
 
                     <TextView
@@ -280,9 +373,10 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_alignParentStart="true"
+                        android:letterSpacing="-0.02"
                         android:text="Hôm nay"
                         android:textColor="@color/text_foreground"
-                        android:textSize="16sp"
+                        android:textSize="17sp"
                         android:textStyle="bold"
                         tools:text="Hôm nay · Thứ 2 27/10" />
 
@@ -291,37 +385,39 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_alignParentEnd="true"
+                        android:layout_centerVertical="true"
                         android:clickable="true"
                         android:focusable="true"
-                        android:text="Danh sách đầy đủ"
+                        android:text="Danh sách đầy đủ ›"
                         android:textColor="@color/brand_primary"
-                        android:textSize="12.5sp"
+                        android:textSize="13sp"
                         android:textStyle="bold" />
                 </RelativeLayout>
 
-                <!-- Danh sách lịch khám trong ngày (Schedule rows) -->
                 <LinearLayout
                     android:id="@+id/layoutTodaySchedule"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:clipToPadding="false"
                     android:orientation="vertical" />
 
-                <!-- Phần 3: Thẻ Quản lý phòng khám (Shortcuts) -->
                 <LinearLayout
+                    android:id="@+id/cardClinicShortcuts"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="20dp"
+                    android:layout_marginTop="18dp"
                     android:background="@drawable/bg_card_clinic"
+                    android:elevation="2dp"
                     android:orientation="vertical"
                     android:padding="16dp">
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:letterSpacing="-0.01"
+                        android:letterSpacing="-0.02"
                         android:text="Quản lý phòng khám"
                         android:textColor="@color/text_foreground"
-                        android:textSize="16sp"
+                        android:textSize="16.5sp"
                         android:textStyle="bold" />
 
                     <LinearLayout
@@ -330,11 +426,10 @@
                         android:layout_marginTop="12dp"
                         android:orientation="vertical">
 
-                        <!-- Shortcut 1: Tạo khung giờ khám -->
                         <LinearLayout
                             android:id="@+id/shortcutNewSlot"
                             android:layout_width="match_parent"
-                            android:layout_height="48dp"
+                            android:layout_height="52dp"
                             android:clickable="true"
                             android:focusable="true"
                             android:foreground="?attr/selectableItemBackground"
@@ -344,17 +439,17 @@
                             android:paddingEnd="4dp">
 
                             <FrameLayout
-                                android:layout_width="36dp"
-                                android:layout_height="36dp"
+                                android:layout_width="40dp"
+                                android:layout_height="40dp"
                                 android:background="@drawable/bg_service_icon">
 
                                 <ImageView
-                                    android:layout_width="16dp"
-                                    android:layout_height="16dp"
+                                    android:layout_width="18dp"
+                                    android:layout_height="18dp"
                                     android:layout_gravity="center"
                                     android:contentDescription="@null"
                                     android:src="@drawable/ic_plus"
-                                    app:tint="@color/brand_ink" />
+                                    app:tint="@color/brand_primary" />
                             </FrameLayout>
 
                             <TextView
@@ -364,22 +459,28 @@
                                 android:layout_weight="1"
                                 android:text="Tạo khung giờ khám"
                                 android:textColor="@color/text_foreground"
-                                android:textSize="13.5sp"
+                                android:textSize="14sp"
                                 android:textStyle="bold" />
 
                             <ImageView
-                                android:layout_width="16dp"
-                                android:layout_height="16dp"
+                                android:layout_width="18dp"
+                                android:layout_height="18dp"
                                 android:contentDescription="@null"
                                 android:src="@drawable/ic_chevron_right"
-                                app:tint="@color/text_muted" />
+                                app:tint="@color/brand_primary" />
                         </LinearLayout>
 
-                        <!-- Shortcut 2: Quản lý lịch trong tuần -->
+                        <View
+                            android:layout_width="match_parent"
+                            android:layout_height="1dp"
+                            android:layout_marginTop="2dp"
+                            android:layout_marginBottom="2dp"
+                            android:background="#F0EEE9" />
+
                         <LinearLayout
                             android:id="@+id/shortcutManageSlots"
                             android:layout_width="match_parent"
-                            android:layout_height="48dp"
+                            android:layout_height="52dp"
                             android:clickable="true"
                             android:focusable="true"
                             android:foreground="?attr/selectableItemBackground"
@@ -389,17 +490,17 @@
                             android:paddingEnd="4dp">
 
                             <FrameLayout
-                                android:layout_width="36dp"
-                                android:layout_height="36dp"
-                                android:background="@drawable/bg_service_icon">
+                                android:layout_width="40dp"
+                                android:layout_height="40dp"
+                                android:background="@drawable/bg_service_icon_amber">
 
                                 <ImageView
-                                    android:layout_width="16dp"
-                                    android:layout_height="16dp"
+                                    android:layout_width="18dp"
+                                    android:layout_height="18dp"
                                     android:layout_gravity="center"
                                     android:contentDescription="@null"
                                     android:src="@drawable/ic_calendar_clock"
-                                    app:tint="@color/brand_ink" />
+                                    app:tint="@color/status_warning_ink" />
                             </FrameLayout>
 
                             <TextView
@@ -409,22 +510,28 @@
                                 android:layout_weight="1"
                                 android:text="Quản lý lịch trong tuần"
                                 android:textColor="@color/text_foreground"
-                                android:textSize="13.5sp"
+                                android:textSize="14sp"
                                 android:textStyle="bold" />
 
                             <ImageView
-                                android:layout_width="16dp"
-                                android:layout_height="16dp"
+                                android:layout_width="18dp"
+                                android:layout_height="18dp"
                                 android:contentDescription="@null"
                                 android:src="@drawable/ic_chevron_right"
-                                app:tint="@color/text_muted" />
+                                app:tint="@color/brand_primary" />
                         </LinearLayout>
 
-                        <!-- Shortcut 3: Hồ sơ phòng khám & nhân viên -->
+                        <View
+                            android:layout_width="match_parent"
+                            android:layout_height="1dp"
+                            android:layout_marginTop="2dp"
+                            android:layout_marginBottom="2dp"
+                            android:background="#F0EEE9" />
+
                         <LinearLayout
                             android:id="@+id/shortcutClinicProfile"
                             android:layout_width="match_parent"
-                            android:layout_height="48dp"
+                            android:layout_height="52dp"
                             android:clickable="true"
                             android:focusable="true"
                             android:foreground="?attr/selectableItemBackground"
@@ -434,17 +541,17 @@
                             android:paddingEnd="4dp">
 
                             <FrameLayout
-                                android:layout_width="36dp"
-                                android:layout_height="36dp"
-                                android:background="@drawable/bg_service_icon">
+                                android:layout_width="40dp"
+                                android:layout_height="40dp"
+                                android:background="@drawable/bg_service_icon_coral">
 
                                 <ImageView
-                                    android:layout_width="16dp"
-                                    android:layout_height="16dp"
+                                    android:layout_width="18dp"
+                                    android:layout_height="18dp"
                                     android:layout_gravity="center"
                                     android:contentDescription="@null"
-                                    android:src="@drawable/ic_settings"
-                                    app:tint="@color/brand_ink" />
+                                    android:src="@drawable/ic_user"
+                                    app:tint="@color/warm_coral" />
                             </FrameLayout>
 
                             <TextView
@@ -454,21 +561,20 @@
                                 android:layout_weight="1"
                                 android:text="Hồ sơ phòng khám &amp; nhân viên"
                                 android:textColor="@color/text_foreground"
-                                android:textSize="13.5sp"
+                                android:textSize="14sp"
                                 android:textStyle="bold" />
 
                             <ImageView
-                                android:layout_width="16dp"
-                                android:layout_height="16dp"
+                                android:layout_width="18dp"
+                                android:layout_height="18dp"
                                 android:contentDescription="@null"
                                 android:src="@drawable/ic_chevron_right"
-                                app:tint="@color/text_muted" />
+                                app:tint="@color/brand_primary" />
                         </LinearLayout>
                     </LinearLayout>
                 </LinearLayout>
             </LinearLayout>
 
-            <!-- B. Trạng thái Đang tải (Loading Skeleton State) -->
             <LinearLayout
                 android:id="@+id/layoutLoadingState"
                 android:layout_width="match_parent"
@@ -480,6 +586,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="12dp"
+                    android:layout_marginBottom="16dp"
                     android:gravity="center_vertical"
                     android:orientation="horizontal">
 
@@ -498,116 +605,16 @@
                         android:textStyle="bold" />
                 </LinearLayout>
 
-                <!-- 3 Thẻ Skeleton mô phỏng tải trang -->
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="110dp"
-                    android:layout_marginTop="16dp"
-                    android:background="@drawable/bg_card_clinic"
-                    android:gravity="center_vertical"
-                    android:orientation="horizontal"
-                    android:padding="16dp">
-
-                    <View
-                        android:layout_width="56dp"
-                        android:layout_height="56dp"
-                        android:background="@drawable/bg_skeleton_rect" />
-
-                    <LinearLayout
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="14dp"
-                        android:layout_weight="1"
-                        android:orientation="vertical">
-
-                        <View
-                            android:layout_width="160dp"
-                            android:layout_height="14dp"
-                            android:background="@drawable/bg_skeleton_rect" />
-
-                        <View
-                            android:layout_width="110dp"
-                            android:layout_height="12dp"
-                            android:layout_marginTop="10dp"
-                            android:background="@drawable/bg_skeleton_rect" />
-                    </LinearLayout>
-                </LinearLayout>
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="110dp"
-                    android:layout_marginTop="12dp"
-                    android:background="@drawable/bg_card_clinic"
-                    android:gravity="center_vertical"
-                    android:orientation="horizontal"
-                    android:padding="16dp">
-
-                    <View
-                        android:layout_width="56dp"
-                        android:layout_height="56dp"
-                        android:background="@drawable/bg_skeleton_rect" />
-
-                    <LinearLayout
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="14dp"
-                        android:layout_weight="1"
-                        android:orientation="vertical">
-
-                        <View
-                            android:layout_width="180dp"
-                            android:layout_height="14dp"
-                            android:background="@drawable/bg_skeleton_rect" />
-
-                        <View
-                            android:layout_width="130dp"
-                            android:layout_height="12dp"
-                            android:layout_marginTop="10dp"
-                            android:background="@drawable/bg_skeleton_rect" />
-                    </LinearLayout>
-                </LinearLayout>
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="110dp"
-                    android:layout_marginTop="12dp"
-                    android:background="@drawable/bg_card_clinic"
-                    android:gravity="center_vertical"
-                    android:orientation="horizontal"
-                    android:padding="16dp">
-
-                    <View
-                        android:layout_width="56dp"
-                        android:layout_height="56dp"
-                        android:background="@drawable/bg_skeleton_rect" />
-
-                    <LinearLayout
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="14dp"
-                        android:layout_weight="1"
-                        android:orientation="vertical">
-
-                        <View
-                            android:layout_width="140dp"
-                            android:layout_height="14dp"
-                            android:background="@drawable/bg_skeleton_rect" />
-
-                        <View
-                            android:layout_width="90dp"
-                            android:layout_height="12dp"
-                            android:layout_marginTop="10dp"
-                            android:background="@drawable/bg_skeleton_rect" />
-                    </LinearLayout>
-                </LinearLayout>
+                <include layout="@layout/item_clinic_row_skeleton" />
+                <include layout="@layout/item_clinic_row_skeleton" />
+                <include layout="@layout/item_clinic_row_skeleton" />
             </LinearLayout>
 
-            <!-- C. Trạng thái Không có lịch hẹn (Empty State) -->
             <LinearLayout
                 android:id="@+id/layoutEmptyState"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="80dp"
+                android:layout_marginTop="64dp"
                 android:gravity="center"
                 android:orientation="vertical"
                 android:paddingStart="20dp"
@@ -615,9 +622,9 @@
                 android:visibility="gone">
 
                 <FrameLayout
-                    android:layout_width="72dp"
-                    android:layout_height="72dp"
-                    android:background="@drawable/bg_empty_circle_soft">
+                    android:layout_width="80dp"
+                    android:layout_height="80dp"
+                    android:background="@drawable/bg_empty_circle">
 
                     <ImageView
                         android:layout_width="32dp"
@@ -634,7 +641,7 @@
                     android:layout_marginTop="18dp"
                     android:text="Hôm nay chưa có lịch hẹn"
                     android:textColor="@color/text_foreground"
-                    android:textSize="18sp"
+                    android:textSize="17sp"
                     android:textStyle="bold" />
 
                 <TextView
@@ -651,14 +658,15 @@
                 <LinearLayout
                     android:id="@+id/btnEmptyManageSlots"
                     android:layout_width="wrap_content"
-                    android:layout_height="44dp"
+                    android:layout_height="46dp"
                     android:layout_marginTop="20dp"
                     android:background="@drawable/bg_btn_primary"
                     android:clickable="true"
+                    android:elevation="2dp"
                     android:focusable="true"
                     android:gravity="center"
-                    android:paddingStart="22dp"
-                    android:paddingEnd="22dp">
+                    android:paddingStart="24dp"
+                    android:paddingEnd="24dp">
 
                     <TextView
                         android:layout_width="wrap_content"
@@ -673,18 +681,16 @@
         </LinearLayout>
     </androidx.core.widget.NestedScrollView>
 
-    <!-- 4. Thanh điều hướng dưới đáy dành riêng cho Nhân viên (Staff BottomNav 3 tabs) -->
     <LinearLayout
         android:id="@+id/layoutStaffBottomNav"
         android:layout_width="match_parent"
         android:layout_height="64dp"
         android:layout_alignParentBottom="true"
         android:background="@color/surface_card"
-        android:elevation="8dp"
+        android:elevation="12dp"
         android:gravity="center_vertical"
         android:orientation="horizontal">
 
-        <!-- Tab 1: Hôm nay (ACTIVE) -->
         <LinearLayout
             android:id="@+id/navStaffToday"
             android:layout_width="0dp"
@@ -719,7 +725,6 @@
                 android:textStyle="bold" />
         </LinearLayout>
 
-        <!-- Tab 2: Lịch hẹn -->
         <LinearLayout
             android:id="@+id/navStaffAppointments"
             android:layout_width="0dp"
@@ -740,13 +745,12 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="6dp"
+                android:layout_marginTop="4dp"
                 android:text="Lịch hẹn"
                 android:textColor="@color/text_muted"
                 android:textSize="11sp" />
         </LinearLayout>
 
-        <!-- Tab 3: Khung giờ -->
         <LinearLayout
             android:id="@+id/navStaffSlots"
             android:layout_width="0dp"
@@ -761,14 +765,40 @@
                 android:layout_width="19dp"
                 android:layout_height="19dp"
                 android:contentDescription="@null"
-                android:src="@drawable/ic_paw"
+                android:src="@drawable/ic_calendar_clock"
                 app:tint="@color/text_muted" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="6dp"
+                android:layout_marginTop="4dp"
                 android:text="Khung giờ"
+                android:textColor="@color/text_muted"
+                android:textSize="11sp" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/navStaffProfile"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:clickable="true"
+            android:focusable="true"
+            android:gravity="center"
+            android:orientation="vertical">
+
+            <ImageView
+                android:layout_width="19dp"
+                android:layout_height="19dp"
+                android:contentDescription="@null"
+                android:src="@drawable/ic_user"
+                app:tint="@color/text_muted" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:text="Tài khoản"
                 android:textColor="@color/text_muted"
                 android:textSize="11sp" />
         </LinearLayout>

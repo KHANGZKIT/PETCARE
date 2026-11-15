@@ -15,22 +15,12 @@ import com.example.petcareui.data.api.ApiClient;
 import com.example.petcareui.data.dto.response.AppointmentResponse;
 import com.example.petcareui.data.model.StaffAppointmentItem;
 import com.example.petcareui.databinding.ActivityStaffAppointmentDetailsBinding;
+import com.example.petcareui.utils.UiMotionUtils;
 
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-/**
- * Màn hình S03: Chi tiết lịch hẹn (nhân viên) - Staff Appointment Details.
- * Bám sát thiết kế nguyên mẫu React S03StaffAppointmentDetails và kết nối API /api/v1/staff/appointments.
- * Hỗ trợ các trạng thái & hộp thoại:
- * - Chờ duyệt (default)
- * - Hộp thoại xác nhận (confirm-dialog)
- * - Hộp thoại từ chối (reject-dialog)
- * - Đã xác nhận (success / confirmed)
- * - Đã từ chối (rejected)
- * - Thất bại (failed)
- */
 public class StaffAppointmentDetailsActivity extends AppCompatActivity {
 
     public static final String EXTRA_REF = "extra_ref";
@@ -53,6 +43,7 @@ public class StaffAppointmentDetailsActivity extends AppCompatActivity {
         if (isFinishing()) {
             return;
         }
+        UiMotionUtils.applyWindowInsets(binding.getRoot(), binding.layoutAppBar, binding.layoutStickyBar);
         bindAppointmentData();
         setupAppBar();
         setupStateToggles();
@@ -60,6 +51,14 @@ public class StaffAppointmentDetailsActivity extends AppCompatActivity {
         setupStickyBarActions();
 
         applyState(currentState);
+        UiMotionUtils.animateEntranceSections(
+                binding.layoutAppBar,
+                binding.cardCustomerInfo,
+                binding.cardPetInfo,
+                binding.cardServiceInfo,
+                binding.blockOwnerNote,
+                binding.cardTimelineInfo
+        );
     }
 
     private void extractIntentData() {
@@ -92,15 +91,12 @@ public class StaffAppointmentDetailsActivity extends AppCompatActivity {
     private void bindAppointmentData() {
         if (currentAppt == null) return;
 
-        // 1. AppBar
         binding.tvApptRef.setText(currentAppt.getRef());
         binding.tvApptDate.setText(currentAppt.getDate());
 
-        // 2. Status Badge & Request Time
         updateStatusBadge(currentAppt.getStatus());
         binding.tvRequestedTime.setText(currentAppt.getRequested());
 
-        // 3. Customer Info
         binding.tvCustomerName.setText(currentAppt.getCustomer());
         binding.tvCustomerPhone.setText(currentAppt.getCustomerPhone());
         binding.tvCustomerSince.setText(currentAppt.getCustomerSince());
@@ -118,19 +114,16 @@ public class StaffAppointmentDetailsActivity extends AppCompatActivity {
             startActivity(callIntent);
         });
 
-        // 4. Pet Info
         binding.ivPetPhoto.setImageResource(currentAppt.getPetImgRes());
         binding.tvPetName.setText(currentAppt.getPet());
         binding.tvPetBreed.setText(currentAppt.getBreed());
 
-        // 5. Service & Schedule Info
         binding.tvServiceName.setText(currentAppt.getService());
         binding.tvDuration.setText(currentAppt.getDuration());
         binding.tvDate.setText(currentAppt.getDate());
         binding.tvTime.setText(currentAppt.getTime());
         binding.tvPrice.setText(currentAppt.getPrice());
 
-        // 6. Owner Note
         if (currentAppt.getNote() != null && !currentAppt.getNote().trim().isEmpty()) {
             binding.blockOwnerNote.setVisibility(View.VISIBLE);
             binding.tvOwnerNote.setText("“" + currentAppt.getNote() + "”");
@@ -138,7 +131,6 @@ public class StaffAppointmentDetailsActivity extends AppCompatActivity {
             binding.blockOwnerNote.setVisibility(View.GONE);
         }
 
-        // 7. Dialogs Text
         binding.tvConfirmDialogBody.setText(currentAppt.getCustomer() + " sẽ được thông báo: "
                 + currentAppt.getPet() + " đã được xác nhận cho "
                 + currentAppt.getService() + " ngày " + currentAppt.getDate()
@@ -175,6 +167,22 @@ public class StaffAppointmentDetailsActivity extends AppCompatActivity {
     }
 
     private void setupAppBar() {
+        UiMotionUtils.attachSpringTouch(
+                binding.btnBack,
+                binding.btnMoreMenu,
+                binding.btnCallCustomer,
+                binding.btnConfirm,
+                binding.btnReject,
+                binding.btnComplete,
+                binding.btnNoShow,
+                binding.btnBackToList,
+                binding.btnDialogConfirmAction,
+                binding.btnSheetRejectAction,
+                binding.chipReason1,
+                binding.chipReason2,
+                binding.chipReason3,
+                binding.chipReason4
+        );
         binding.btnBack.setOnClickListener(v -> finish());
         binding.btnMoreMenu.setOnClickListener(v -> {
             Toast.makeText(this, "Tùy chọn khác cho lịch hẹn", Toast.LENGTH_SHORT).show();
@@ -182,7 +190,6 @@ public class StaffAppointmentDetailsActivity extends AppCompatActivity {
     }
 
     private void setupStateToggles() {
-        // Ẩn thanh toggle trạng thái giả lập khi dùng ứng dụng thật
         if (binding.chipStatePending.getParent() instanceof View) {
             ((View) binding.chipStatePending.getParent()).setVisibility(View.GONE);
         }
@@ -202,13 +209,11 @@ public class StaffAppointmentDetailsActivity extends AppCompatActivity {
         binding.layoutRejectSheetOverlay.setVisibility(View.GONE);
         binding.layoutFloatingToast.setVisibility(View.GONE);
 
-        // Reset các hộp thông báo trên cùng
         binding.noticePending.setVisibility(View.GONE);
         binding.noticeConfirmed.setVisibility(View.GONE);
         binding.noticeRejected.setVisibility(View.GONE);
         binding.noticeFailed.setVisibility(View.GONE);
 
-        // Cấu hình theo từng trạng thái
         if ("confirm-dialog".equals(state)) {
             binding.layoutConfirmDialogOverlay.setVisibility(View.VISIBLE);
             binding.layoutActionsPending.setVisibility(View.VISIBLE);
@@ -231,7 +236,6 @@ public class StaffAppointmentDetailsActivity extends AppCompatActivity {
             binding.btnBackToList.setVisibility(View.GONE);
             updateStatusBadge("CONFIRMED");
 
-            // Cập nhật Timeline
             binding.dotTimelineStep2.setBackgroundResource(R.drawable.bg_step_dot_active);
             binding.tvTimelineStep2Title.setText("Phòng khám đã xác nhận");
             binding.tvTimelineStep2Time.setText("Vừa xong");
@@ -245,7 +249,6 @@ public class StaffAppointmentDetailsActivity extends AppCompatActivity {
             binding.btnBackToList.setVisibility(View.VISIBLE);
             updateStatusBadge("REJECTED");
 
-            // Cập nhật Timeline
             binding.dotTimelineStep2.setBackgroundResource(R.drawable.bg_step_dot_inactive);
             binding.tvTimelineStep2Title.setText("Chờ phòng khám xử lý");
             binding.tvTimelineStep2Time.setText("Đã xử lý");
@@ -260,7 +263,6 @@ public class StaffAppointmentDetailsActivity extends AppCompatActivity {
             updateStatusBadge("PENDING");
             resetTimelineToPending();
         } else {
-            // Default: Chờ duyệt
             binding.noticePending.setVisibility(View.VISIBLE);
             binding.layoutActionsPending.setVisibility(View.VISIBLE);
             binding.layoutActionsConfirmed.setVisibility(View.GONE);
@@ -290,13 +292,10 @@ public class StaffAppointmentDetailsActivity extends AppCompatActivity {
     }
 
     private void setupStickyBarActions() {
-        // Nút Xác nhận -> Mở Hộp thoại xác nhận
         binding.btnConfirm.setOnClickListener(v -> applyState("confirm-dialog"));
 
-        // Nút Từ chối -> Mở Hộp thoại từ chối
         binding.btnReject.setOnClickListener(v -> applyState("reject-dialog"));
 
-        // Nút Hoàn thành lịch hẹn (sau khi đã xác nhận) -> Gọi API Backend
         binding.btnComplete.setOnClickListener(v -> {
             Long apptId = currentAppt != null ? currentAppt.getId() : null;
             if (apptId != null) {
@@ -322,7 +321,6 @@ public class StaffAppointmentDetailsActivity extends AppCompatActivity {
             }
         });
 
-        // Nút Không đến hẹn -> Gọi API Backend
         binding.btnNoShow.setOnClickListener(v -> {
             Long apptId = currentAppt != null ? currentAppt.getId() : null;
             if (apptId != null) {
@@ -348,12 +346,10 @@ public class StaffAppointmentDetailsActivity extends AppCompatActivity {
             }
         });
 
-        // Nút Về danh sách lịch hẹn
         binding.btnBackToList.setOnClickListener(v -> finish());
     }
 
     private void setupDialogInteractions() {
-        // 1. Confirm Modal Dialog -> Gọi API Backend PUT /api/v1/staff/appointments/{id}/confirm
         binding.btnDialogConfirmAction.setOnClickListener(v -> {
             Long apptId = currentAppt != null ? currentAppt.getId() : null;
             if (apptId != null) {
@@ -390,7 +386,6 @@ public class StaffAppointmentDetailsActivity extends AppCompatActivity {
             applyState("default");
         });
 
-        // 2. Reject Bottom Sheet -> Gọi API Backend PUT /api/v1/staff/appointments/{id}/reject
         binding.chipReason1.setOnClickListener(v -> selectRejectReason(binding.chipReason1, "Hết chỗ"));
         binding.chipReason2.setOnClickListener(v -> selectRejectReason(binding.chipReason2, "Khung giờ không phù hợp"));
         binding.chipReason3.setOnClickListener(v -> selectRejectReason(binding.chipReason3, "Chưa có dịch vụ này"));
@@ -435,6 +430,7 @@ public class StaffAppointmentDetailsActivity extends AppCompatActivity {
 
     private void selectRejectReason(TextView selectedChip, String reason) {
         selectedRejectReason = reason;
+        UiMotionUtils.animateSelectionPop(selectedChip);
 
         TextView[] allChips = {binding.chipReason1, binding.chipReason2, binding.chipReason3, binding.chipReason4};
         for (TextView chip : allChips) {
