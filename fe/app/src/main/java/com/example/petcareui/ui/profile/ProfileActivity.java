@@ -13,6 +13,7 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.petcareui.MainActivity;
+import com.example.petcareui.R;
 import com.example.petcareui.data.api.ApiClient;
 import com.example.petcareui.data.dto.response.UserProfileResponse;
 import com.example.petcareui.databinding.ActivityProfileBinding;
@@ -20,8 +21,11 @@ import com.example.petcareui.databinding.DialogLogoutConfirmationBinding;
 import com.example.petcareui.ui.appointments.MyAppointmentsActivity;
 import com.example.petcareui.ui.auth.LoginActivity;
 import com.example.petcareui.ui.pets.MyPetsActivity;
+import com.example.petcareui.ui.staff.StaffAppointmentsActivity;
 import com.example.petcareui.ui.staff.StaffDashboardActivity;
+import com.example.petcareui.ui.staff.StaffSlotManagementActivity;
 import com.example.petcareui.utils.TokenManager;
+import com.example.petcareui.utils.UiMotionUtils;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -38,6 +42,8 @@ public class ProfileActivity extends AppCompatActivity {
         binding = ActivityProfileBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
+        UiMotionUtils.applyWindowInsets(binding.getRoot(), binding.layoutTopBar, binding.bottomNavigation);
+
         tokenManager = TokenManager.getInstance(this);
 
         if (!tokenManager.isLoggedIn()) {
@@ -49,26 +55,37 @@ public class ProfileActivity extends AppCompatActivity {
         setupListeners();
         setupBottomNav();
         fetchLiveProfile();
+
+        UiMotionUtils.attachSpringTouch(
+                binding.btnBack,
+                binding.btnLogout,
+                binding.rowMyPets,
+                binding.rowMyAppointments,
+                binding.rowStaffPortal
+        );
+    }
+
+    private boolean isStaffRole() {
+        return "STAFF".equalsIgnoreCase(tokenManager.getUserRole());
     }
 
     private void displayCachedUserInfo() {
         String name = tokenManager.getUserName();
         String email = tokenManager.getUserEmail();
         String phone = tokenManager.getUserPhone();
-        String role = tokenManager.getUserRole();
         Long userId = tokenManager.getUserId();
+        boolean isStaff = isStaffRole();
 
-        // 1. Tên & Email
-        binding.tvProfileName.setText(name != null && !name.isEmpty() ? name : "Khách hàng");
+        binding.tvProfileName.setText(name != null && !name.isEmpty()
+                ? name
+                : (isStaff ? "Nhân viên phòng khám" : "Khách hàng"));
         binding.tvProfileEmail.setText(email != null && !email.isEmpty() ? email : "Chưa cập nhật email");
 
-        // 2. Chi tiết
         binding.tvDetailFullName.setText(name != null && !name.isEmpty() ? name : "Chưa cập nhật");
         binding.tvDetailEmail.setText(email != null && !email.isEmpty() ? email : "Chưa cập nhật");
         binding.tvDetailPhone.setText(phone != null && !phone.isEmpty() ? phone : "Chưa cập nhật");
         binding.tvDetailUserId.setText(userId != null ? "#" + userId : "#--");
 
-        // 3. Avatar initials (ví dụ: "Lê Thị Thu Hà" -> "LH")
         if (name != null && !name.trim().isEmpty()) {
             String[] parts = name.trim().split("\\s+");
             StringBuilder initials = new StringBuilder();
@@ -80,17 +97,23 @@ public class ProfileActivity extends AppCompatActivity {
             }
             binding.tvAvatarInitials.setText(initials.toString().toUpperCase());
         } else {
-            binding.tvAvatarInitials.setText("KH");
+            binding.tvAvatarInitials.setText(isStaff ? "NV" : "KH");
         }
 
-        // 4. Vai trò (Role)
-        boolean isStaff = "STAFF".equalsIgnoreCase(role);
         if (isStaff) {
             binding.tvProfileRole.setText("Nhân viên phòng khám");
             binding.rowStaffPortal.setVisibility(View.VISIBLE);
+            binding.rowMyPets.setVisibility(View.GONE);
+            binding.tvNavHomeLabel.setText("Tổng quan");
+            binding.ivNavPetsIcon.setImageResource(R.drawable.ic_calendar_clock);
+            binding.tvNavPetsLabel.setText("Ca khám");
         } else {
             binding.tvProfileRole.setText("Khách hàng");
             binding.rowStaffPortal.setVisibility(View.GONE);
+            binding.rowMyPets.setVisibility(View.VISIBLE);
+            binding.tvNavHomeLabel.setText("Trang chủ");
+            binding.ivNavPetsIcon.setImageResource(R.drawable.ic_paw);
+            binding.tvNavPetsLabel.setText("Thú cưng");
         }
     }
 
@@ -114,6 +137,7 @@ public class ProfileActivity extends AppCompatActivity {
                             );
                             tokenManager.saveUserPhone(profile.getPhone());
                             displayCachedUserInfo();
+                            setupBottomNav();
                         } else if (response.code() == 401 || response.code() == 403) {
                             Toast.makeText(ProfileActivity.this, "Phiên đăng nhập hết hạn", Toast.LENGTH_SHORT).show();
                             tokenManager.clear();
@@ -123,44 +147,44 @@ public class ProfileActivity extends AppCompatActivity {
 
                     @Override
                     public void onFailure(Call<UserProfileResponse> call, Throwable t) {
-                        // Vẫn dùng thông tin lưu trong cache
                     }
                 });
     }
 
     private void setupListeners() {
-        // Nút Quay lại
         binding.btnBack.setOnClickListener(v -> finish());
 
-        // Tiện ích: Thú cưng của tôi
         binding.rowMyPets.setOnClickListener(v -> {
             Intent intent = new Intent(this, MyPetsActivity.class);
             intent.putExtra(MyPetsActivity.EXTRA_BOOKING_MODE, false);
             startActivity(intent);
         });
 
-        // Tiện ích: Lịch hẹn của tôi
         binding.rowMyAppointments.setOnClickListener(v -> {
-            Intent intent = new Intent(this, MyAppointmentsActivity.class);
-            startActivity(intent);
+            if (isStaffRole()) {
+                Intent intent = new Intent(this, StaffAppointmentsActivity.class);
+                startActivity(intent);
+            } else {
+                Intent intent = new Intent(this, MyAppointmentsActivity.class);
+                startActivity(intent);
+            }
         });
 
-        // Tiện ích: Bảng nhân viên (nếu có role STAFF)
         binding.rowStaffPortal.setOnClickListener(v -> {
             Intent intent = new Intent(this, StaffDashboardActivity.class);
+            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
             startActivity(intent);
+            overridePendingTransition(R.anim.fade_scale_in, R.anim.fade_scale_out);
+            finish();
         });
 
-        // Cài đặt: Menu xổ xuống (Collapsible Accordion)
         binding.headerSettingsGroup.setOnClickListener(v -> toggleSettingsSection());
 
-        // Cài đặt: Thông báo
         binding.switchNotifications.setOnCheckedChangeListener((buttonView, isChecked) -> {
             String msg = isChecked ? "Đã bật thông báo nhắc lịch khám" : "Đã tắt thông báo";
             Toast.makeText(this, msg, Toast.LENGTH_SHORT).show();
         });
 
-        // Hỗ trợ CSKH
         binding.rowHelpCenter.setOnClickListener(v -> {
             new AlertDialog.Builder(this)
                     .setTitle("Hỗ trợ khách hàng")
@@ -169,38 +193,41 @@ public class ProfileActivity extends AppCompatActivity {
                     .show();
         });
 
-        // Nút Đăng xuất -> Mở Custom Dialog xác nhận
         binding.btnLogout.setOnClickListener(v -> showLogoutConfirmationDialog());
     }
 
     private void setupBottomNav() {
-        // Tab 1: Trang chủ -> Mở MainActivity
         binding.navHome.setOnClickListener(v -> {
-            Intent intent = new Intent(this, MainActivity.class);
+            Intent intent = new Intent(this, isStaffRole() ? StaffDashboardActivity.class : MainActivity.class);
             intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
             startActivity(intent);
+            overridePendingTransition(R.anim.fade_scale_in, R.anim.fade_scale_out);
             finish();
         });
 
-        // Tab 2: Lịch hẹn -> Mở MyAppointmentsActivity
         binding.navAppointments.setOnClickListener(v -> {
-            Intent intent = new Intent(this, MyAppointmentsActivity.class);
+            Intent intent = new Intent(this, isStaffRole() ? StaffAppointmentsActivity.class : MyAppointmentsActivity.class);
             startActivity(intent);
+            overridePendingTransition(R.anim.fade_scale_in, R.anim.fade_scale_out);
             finish();
         });
 
-        // Tab 3: Thú cưng -> Mở MyPetsActivity
         binding.navPets.setOnClickListener(v -> {
-            Intent intent = new Intent(this, MyPetsActivity.class);
-            intent.putExtra(MyPetsActivity.EXTRA_BOOKING_MODE, false);
-            startActivity(intent);
+            if (isStaffRole()) {
+                Intent intent = new Intent(this, StaffSlotManagementActivity.class);
+                startActivity(intent);
+            } else {
+                Intent intent = new Intent(this, MyPetsActivity.class);
+                intent.putExtra(MyPetsActivity.EXTRA_BOOKING_MODE, false);
+                startActivity(intent);
+            }
+            overridePendingTransition(R.anim.fade_scale_in, R.anim.fade_scale_out);
             finish();
         });
 
-        // Tab 4: Tài khoản -> Đang ở màn hình Profile, cuộn mượt lên đầu trang
-        binding.navProfile.setOnClickListener(v -> {
-            binding.scrollProfile.smoothScrollTo(0, 0);
-        });
+        binding.navProfile.setOnClickListener(v ->
+                binding.scrollProfile.smoothScrollTo(0, 0)
+        );
     }
 
     private void toggleSettingsSection() {
@@ -243,4 +270,3 @@ public class ProfileActivity extends AppCompatActivity {
         finish();
     }
 }
-

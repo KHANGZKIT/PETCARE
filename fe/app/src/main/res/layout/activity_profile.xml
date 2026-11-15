@@ -7,7 +7,6 @@
     android:background="@color/surface_background"
     android:orientation="vertical">
 
-    <!-- 1. Thanh tiêu đề cố định (App Bar - sạch sẽ, không bị cắt chữ) -->
     <LinearLayout
         android:id="@+id/layoutTopBar"
         android:layout_width="match_parent"
@@ -58,7 +57,6 @@
         </LinearLayout>
     </LinearLayout>
 
-    <!-- Thân cuộn nội dung -->
     <androidx.core.widget.NestedScrollView
         android:id="@+id/scrollProfile"
         android:layout_width="match_parent"
@@ -73,7 +71,6 @@
             android:orientation="vertical"
             android:paddingBottom="40dp">
 
-            <!-- 2. Thẻ Hồ sơ chính (Profile Header Card) -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -88,7 +85,6 @@
                 android:paddingEnd="20dp"
                 android:paddingBottom="22dp">
 
-                <!-- Avatar Tròn lớn có viền & Viết tắt -->
                 <FrameLayout
                     android:layout_width="80dp"
                     android:layout_height="80dp"
@@ -105,7 +101,6 @@
                         android:textStyle="bold" />
                 </FrameLayout>
 
-                <!-- Tên đầy đủ -->
                 <TextView
                     android:id="@+id/tvProfileName"
                     android:layout_width="wrap_content"
@@ -117,7 +112,6 @@
                     android:textSize="19sp"
                     android:textStyle="bold" />
 
-                <!-- Email -->
                 <TextView
                     android:id="@+id/tvProfileEmail"
                     android:layout_width="wrap_content"
@@ -128,7 +122,6 @@
                     android:textColor="@color/text_muted"
                     android:textSize="13.5sp" />
 
-                <!-- Huy hiệu vai trò (Role Badge) -->
                 <TextView
                     android:id="@+id/tvProfileRole"
                     android:layout_width="wrap_content"
@@ -145,7 +138,6 @@
                     android:textStyle="bold" />
             </LinearLayout>
 
-            <!-- 3. NHÓM 1: THÔNG TIN CHI TIẾT -->
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -170,7 +162,6 @@
                 android:paddingEnd="16dp"
                 android:paddingBottom="6dp">
 
-                <!-- Họ và tên -->
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -209,7 +200,6 @@
                     android:layout_height="1dp"
                     android:background="@color/stroke_border" />
 
-                <!-- Email -->
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -248,7 +238,6 @@
                     android:layout_height="1dp"
                     android:background="@color/stroke_border" />
 
-                <!-- Số điện thoại -->
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -287,7 +276,6 @@
                     android:layout_height="1dp"
                     android:background="@color/stroke_border" />
 
-                <!-- Mã tài khoản -->
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -322,7 +310,6 @@
                 </LinearLayout>
             </LinearLayout>
 
-            <!-- 4. NHÓM 2: QUẢN LÝ & TIỆN ÍCH -->
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -347,7 +334,6 @@
                 android:paddingEnd="16dp"
                 android:paddingBottom="6dp">
 
-                <!-- Thú cưng của tôi -->
                 <LinearLayout
                     android:id="@+id/rowMyPets"
                     android:layout_width="match_parent"
@@ -400,7 +386,6 @@
                     android:layout_height="1dp"
                     android:background="@color/stroke_border" />
 
-                <!-- Lịch hẹn đã đặt -->
                 <LinearLayout
                     android:id="@+id/rowMyAppointments"
                     android:layout_width="match_parent"
@@ -448,7 +433,6 @@
                         app:tint="@color/text_muted" />
                 </LinearLayout>
 
-                <!-- Dòng Bảng nhân viên (Chỉ hiện nếu là STAFF) -->
                 <LinearLayout
                     android:id="@+id/rowStaffPortal"
                     android:layout_width="match_parent"
@@ -499,7 +483,6 @@
                 </LinearLayout>
             </LinearLayout>
 
-            <!-- 5. NHÓM 3: CÀI ĐẶT ỨNG DỤNG (Accordion xổ xuống dạng Menu tiện ích) -->
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -520,7 +503,6 @@
                 android:background="@drawable/bg_card_clinic"
                 android:orientation="vertical">
 
-                <!-- Tiêu đề menu xổ xuống (Click để đóng/mở) -->
                 <LinearLayout
                     android:id="@+id/headerSettingsGroup"
                     android:layout_width="match_parent"
@@ -574,7 +556,6 @@
                         app:tint="@color/text_muted" />
                 </LinearLayout>
 
-                <!-- Vùng nội dung xổ xuống (Collapsible content) -->
                 <LinearLayout
                     android:id="@+id/layoutSettingsContent"
                     android:layout_width="match_parent"
@@ -591,7 +572,6 @@
                         android:layout_height="1dp"
                         android:background="@color/stroke_border" />
 
-                    <!-- 1. Thông báo nhắc lịch -->
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -642,7 +622,6 @@
                         android:layout_height="1dp"
                         android:background="@color/stroke_border" />
 
-                    <!-- 2. Trợ giúp & Hotline -->
                     <LinearLayout
                         android:id="@+id/rowHelpCenter"
                         android:layout_width="match_parent"
@@ -698,7 +677,6 @@
                         android:layout_height="1dp"
                         android:background="@color/stroke_border" />
 
-                    <!-- 3. Phiên bản ứng dụng -->
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -732,7 +710,6 @@
                 </LinearLayout>
             </LinearLayout>
 
-            <!-- 6. Nút ĐĂNG XUẤT (Danger Outline Button) -->
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/btnLogout"
                 android:layout_width="match_parent"
@@ -755,13 +732,11 @@
         </LinearLayout>
     </androidx.core.widget.NestedScrollView>
 
-    <!-- Đường viền ngăn cách thanh điều hướng đáy -->
     <View
         android:layout_width="match_parent"
         android:layout_height="1dp"
         android:background="@color/stroke_border" />
 
-    <!-- Bottom Navigation Bar chuẩn 4 tab -->
     <LinearLayout
         android:id="@+id/bottomNavigation"
         android:layout_width="match_parent"
@@ -771,7 +746,6 @@
         android:gravity="center_vertical"
         android:orientation="horizontal">
 
-        <!-- Tab 1: Trang chủ -->
         <LinearLayout
             android:id="@+id/navHome"
             android:layout_width="0dp"
@@ -790,15 +764,15 @@
                 app:tint="@color/text_muted" />
 
             <TextView
+                android:id="@+id/tvNavHomeLabel"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="6dp"
+                android:layout_marginTop="4dp"
                 android:text="Trang chủ"
                 android:textColor="@color/text_muted"
                 android:textSize="11sp" />
         </LinearLayout>
 
-        <!-- Tab 2: Lịch hẹn -->
         <LinearLayout
             android:id="@+id/navAppointments"
             android:layout_width="0dp"
@@ -819,13 +793,12 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="6dp"
+                android:layout_marginTop="4dp"
                 android:text="Lịch hẹn"
                 android:textColor="@color/text_muted"
                 android:textSize="11sp" />
         </LinearLayout>
 
-        <!-- Tab 3: Thú cưng -->
         <LinearLayout
             android:id="@+id/navPets"
             android:layout_width="0dp"
@@ -837,6 +810,7 @@
             android:orientation="vertical">
 
             <ImageView
+                android:id="@+id/ivNavPetsIcon"
                 android:layout_width="19dp"
                 android:layout_height="19dp"
                 android:contentDescription="@null"
@@ -844,15 +818,15 @@
                 app:tint="@color/text_muted" />
 
             <TextView
+                android:id="@+id/tvNavPetsLabel"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="6dp"
+                android:layout_marginTop="4dp"
                 android:text="Thú cưng"
                 android:textColor="@color/text_muted"
                 android:textSize="11sp" />
         </LinearLayout>
 
-        <!-- Tab 4: Tài khoản (Active) -->
         <LinearLayout
             android:id="@+id/navProfile"
             android:layout_width="0dp"
