@@ -21,6 +21,21 @@
     <color name="ds_warning">#B7791F</color>
     <color name="ds_error">#B3261E</color>
 
+    <!-- Design System Derived Surface, Border & Pastel Ink Tokens (Warm Family Only) -->
+    <color name="ds_home_bg">#FAF8F6</color>
+    <color name="ds_skeleton_soft">#F1ECE7</color>
+    <color name="ds_surface_subtle">#FAF8F6</color>
+    <color name="ds_icon_circle_cream">#F6F2EE</color>
+    <color name="ds_warm_brown">#5C4D47</color>
+    <color name="ds_divider_hairline">#F3EFEA</color>
+    <color name="ds_upload_dashed_stroke">#E6C7BC</color>
+    <color name="ds_input_border_thin">#E5DFD9</color>
+    <color name="ds_border">#EDE4DD</color>
+    <color name="ds_peach_border">#F2D2C4</color>
+    <color name="ds_peach_ink">#9A422D</color>
+    <color name="ds_mint_ink">#215C43</color>
+    <color name="ds_butter_ink">#7D5A12</color>
+
     <!-- 1. Brand Tokens & Onboarding Palette -->
     <color name="coral_terracotta">#D97B60</color>
     <color name="coral_terracotta_dark">#B95740</color>
@@ -31,29 +46,29 @@
     <color name="text_onboarding_title">#292524</color>
     <color name="text_onboarding_desc">#6F6662</color>
 
-    <!-- Warm Companion Accents -->
-    <color name="warm_coral">#FF6B4A</color>
-    <color name="warm_coral_deep">#E05030</color>
-    <color name="warm_coral_soft">#FFF0EC</color>
-    <color name="warm_coral_ink">#B5381A</color>
+    <!-- Warm Companion Accents (Harmonized to Official Brand Palette) -->
+    <color name="warm_coral">#D97B60</color>
+    <color name="warm_coral_deep">#B95740</color>
+    <color name="warm_coral_soft">#FCE9E2</color>
+    <color name="warm_coral_ink">#9A422D</color>
 
-    <color name="warm_amber">#F59E0B</color>
-    <color name="warm_amber_soft">#FEF4E2</color>
-    <color name="warm_amber_ink">#925604</color>
+    <color name="warm_amber">#B7791F</color>
+    <color name="warm_amber_soft">#F6E6A9</color>
+    <color name="warm_amber_ink">#7D5A12</color>
 
-    <color name="warm_purple_soft">#F3EEFF</color>
-    <color name="warm_purple_ink">#5B37B7</color>
+    <color name="warm_purple_soft">#FCE9E2</color>
+    <color name="warm_purple_ink">#9A422D</color>
 
-    <!-- 2. Surfaces & Neutral -->
-    <color name="surface_background">#FAF8F4</color>
+    <!-- 2. Surfaces & Warm Neutrals -->
+    <color name="surface_background">#FFF9F5</color>
     <color name="surface_card">#FFFFFF</color>
-    <color name="surface_muted">#F2EFE9</color>
-    <color name="stroke_border">#E6EAE8</color>
-    <color name="stroke_input">#D8E2DF</color>
+    <color name="surface_muted">#F5EEE8</color>
+    <color name="stroke_border">#EDE4DD</color>
+    <color name="stroke_input">#E5DBD3</color>
     <color name="text_foreground">#292524</color>
     <color name="text_muted">#6F6662</color>
 
-    <!-- 3. Status Tokens (3 sắc thái: Main, Soft, Ink) -->
+    <!-- 3. Status Tokens (Semantic — Never Replaced by Brand Color) -->
     <!-- Pending / Warning -->
     <color name="status_warning">#B7791F</color>
     <color name="status_warning_soft">#FEF3E0</color>
@@ -76,8 +91,8 @@
 
     <!-- Cancelled / Neutral Status -->
     <color name="status_neutral">#6F6662</color>
-    <color name="status_neutral_soft">#F1EFEA</color>
-    <color name="status_neutral_ink">#475257</color>
+    <color name="status_neutral_soft">#F5EEE8</color>
+    <color name="status_neutral_ink">#4A4340</color>
 
     <!-- Google Button Accent -->
     <color name="google_blue">#4285F4</color>
@@ -85,22 +100,22 @@
     <color name="google_yellow">#FBBC05</color>
     <color name="google_green">#34A853</color>
 
-    <!-- Legacy Brand Palette & Backward compatibility aliases (đảm bảo không gãy màn hình khác) -->
-    <color name="brand_primary">#1E8278</color>
-    <color name="brand_deep">#114C46</color>
-    <color name="brand_soft">#E6F6F3</color>
-    <color name="brand_ink">#124E47</color>
-    <color name="brand_mint_glow">#C7EFE9</color>
+    <!-- Legacy Brand Aliases Unified to Design System 1.0 -->
+    <color name="brand_primary">#D97B60</color>
+    <color name="brand_deep">#B95740</color>
+    <color name="brand_soft">#FCE9E2</color>
+    <color name="brand_ink">#9A422D</color>
+    <color name="brand_mint_glow">#DCEDE4</color>
 
     <color name="primary">#D97B60</color>
     <color name="primary_dark">#B95740</color>
     <color name="primary_light">#FCE9E2</color>
     <color name="secondary">#DCEDE4</color>
-    <color name="accent">#FF6B4A</color>
-    <color name="dark_teal">#114C46</color>
+    <color name="accent">#D97B60</color>
+    <color name="dark_teal">#B95740</color>
     <color name="bg_light">#FFF9F5</color>
     <color name="text_primary">#292524</color>
     <color name="text_secondary">#6F6662</color>
-    <color name="border_color">#E6EAE8</color>
+    <color name="border_color">#EDE4DD</color>
     <color name="error_red">#B3261E</color>
 </resources>

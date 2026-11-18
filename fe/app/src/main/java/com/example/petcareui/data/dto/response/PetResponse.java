@@ -70,7 +70,7 @@ public class PetResponse implements Serializable {
         String[] sampleWeights = new String[]{"4,2 kg", "5,8 kg", "8,5 kg", "3,6 kg", "6,4 kg"};
         int seed = (int) (Math.abs(id != null ? id : 1L) % sampleAges.length);
 
-        return new PetItem(
+        PetItem item = new PetItem(
                 String.valueOf(id),
                 name != null ? name : "Bé cưng",
                 cleanSpecies,
@@ -81,6 +81,8 @@ public class PetResponse implements Serializable {
                 sampleWeights[seed],
                 avatar
         );
+        item.setRawSpecies(species != null && !species.trim().isEmpty() ? species.trim() : cleanSpecies);
+        return item;
     }
 }
 

@@ -1,23 +1,27 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
-    <!-- Force Light Warm Companion Theme even when system dark mode is on -->
+    <!-- Force Light Warm & Cute Theme even when system dark mode is enabled -->
     <style name="Base.Theme.PetcareUI" parent="Theme.Material3.Light.NoActionBar">
-        <item name="colorPrimary">@color/brand_primary</item>
-        <item name="colorPrimaryDark">@color/brand_deep</item>
+        <item name="colorPrimary">@color/ds_primary</item>
+        <item name="colorPrimaryDark">@color/ds_primary_dark</item>
         <item name="colorOnPrimary">@color/white</item>
-        <item name="colorPrimaryContainer">@color/brand_soft</item>
-        <item name="colorOnPrimaryContainer">@color/brand_ink</item>
-        <item name="colorSecondary">@color/warm_coral</item>
+        <item name="colorPrimaryContainer">@color/ds_soft_peach</item>
+        <item name="colorOnPrimaryContainer">@color/ds_primary_dark</item>
+        <item name="colorSecondary">@color/ds_primary_dark</item>
         <item name="colorOnSecondary">@color/white</item>
-        <item name="android:colorBackground">@color/surface_background</item>
-        <item name="android:windowBackground">@color/surface_background</item>
-        <item name="colorSurface">@color/surface_card</item>
-        <item name="colorOnSurface">@color/text_foreground</item>
+        <item name="colorSurface">@color/ds_surface</item>
+        <item name="colorOnSurface">@color/ds_text_primary</item>
+        <item name="android:colorBackground">@color/ds_home_bg</item>
+        <item name="android:windowBackground">@color/ds_home_bg</item>
 
         <!-- Status Bar & Navigation Bar -->
-        <item name="android:statusBarColor">@color/surface_background</item>
+        <item name="android:statusBarColor">@color/ds_home_bg</item>
         <item name="android:windowLightStatusBar">true</item>
-        <item name="android:navigationBarColor">@color/surface_card</item>
+        <item name="android:navigationBarColor">@color/ds_surface</item>
         <item name="android:windowLightNavigationBar">true</item>
         <item name="android:windowAnimationStyle">@style/PetCareWindowAnimations</item>
+
+        <!-- Unified Global Primary Font Family -->
+        <item name="fontFamily">@font/font_app_primary</item>
+        <item name="android:fontFamily">@font/font_app_primary</item>
     </style>
 </resources>

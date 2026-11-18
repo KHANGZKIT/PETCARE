@@ -130,7 +130,7 @@ final class StaffClinicHelper {
             return clinicName;
         }
         Long clinicId = tokenManager.getClinicId();
-        return clinicId != null ? "Phòng khám #" + clinicId : "Chưa gán phòng khám";
+        return clinicId != null ? "Phòng khám thú y" : "Chưa gán phòng khám";
     }
 
     static String buildClinicSubtitleWithArea(TokenManager tokenManager) {
@@ -140,7 +140,7 @@ final class StaffClinicHelper {
             return !clinicArea.isEmpty() ? clinicName + " · " + clinicArea : clinicName;
         }
         Long clinicId = tokenManager.getClinicId();
-        return clinicId != null ? "Phòng khám #" + clinicId : "Chưa gán phòng khám";
+        return clinicId != null ? "Phòng khám thú y" : "Chưa gán phòng khám";
     }
 
     static String getDayOfWeekFullLabel(DayOfWeek dow) {

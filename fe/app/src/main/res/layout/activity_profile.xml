@@ -270,44 +270,6 @@
                         android:textSize="14sp"
                         android:textStyle="bold" />
                 </LinearLayout>
-
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="1dp"
-                    android:background="@color/stroke_border" />
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:gravity="center_vertical"
-                    android:orientation="horizontal"
-                    android:paddingTop="12dp"
-                    android:paddingBottom="12dp">
-
-                    <ImageView
-                        android:layout_width="20dp"
-                        android:layout_height="20dp"
-                        android:src="@drawable/ic_shield_check"
-                        app:tint="@color/brand_primary" />
-
-                    <TextView
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="12dp"
-                        android:layout_weight="1"
-                        android:text="Mã người dùng"
-                        android:textColor="@color/text_muted"
-                        android:textSize="13.5sp" />
-
-                    <TextView
-                        android:id="@+id/tvDetailUserId"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="#4"
-                        android:textColor="@color/brand_ink"
-                        android:textSize="13.5sp"
-                        android:textStyle="bold" />
-                </LinearLayout>
             </LinearLayout>
 
             <TextView
@@ -733,6 +695,7 @@
     </androidx.core.widget.NestedScrollView>
 
     <View
+        android:id="@+id/dividerBottomNav"
         android:layout_width="match_parent"
         android:layout_height="1dp"
         android:background="@color/stroke_border" />

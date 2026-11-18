@@ -46,11 +46,10 @@
             android:orientation="vertical">
 
             <TextView
-                android:id="@+id/tvApptRef"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:letterSpacing="-0.02"
-                android:text="PC-48213"
+                android:text="Chi tiết lịch hẹn"
                 android:textColor="@color/text_foreground"
                 android:textSize="20sp"
                 android:textStyle="bold" />

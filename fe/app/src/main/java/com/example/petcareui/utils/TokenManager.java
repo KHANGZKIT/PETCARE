@@ -97,7 +97,19 @@ public class TokenManager {
         return getToken() != null && !getToken().isEmpty();
     }
 
+    public boolean isOnboardingCompleted() {
+        return prefs.getBoolean(Constants.KEY_ONBOARDING_COMPLETED, false);
+    }
+
+    public void setOnboardingCompleted(boolean completed) {
+        prefs.edit().putBoolean(Constants.KEY_ONBOARDING_COMPLETED, completed).apply();
+    }
+
     public void clear() {
-        prefs.edit().clear().apply();
+        boolean onboardingDone = isOnboardingCompleted();
+        prefs.edit()
+                .clear()
+                .putBoolean(Constants.KEY_ONBOARDING_COMPLETED, onboardingDone)
+                .apply();
     }
 }

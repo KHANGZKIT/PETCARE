@@ -5,170 +5,171 @@
     android:id="@+id/layoutRootOnboarding"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/ds_background">
+    android:background="@color/ds_home_bg">
 
-    <!-- Decorative Soft Pastel Accents in Background (Subtle & Restrained) -->
-    <View
-        android:layout_width="120dp"
-        android:layout_height="120dp"
-        android:layout_marginStart="-30dp"
-        android:layout_marginTop="32dp"
-        android:alpha="0.35"
-        android:background="@drawable/bg_service_icon_amber"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <View
-        android:layout_width="96dp"
-        android:layout_height="96dp"
-        android:layout_marginEnd="-20dp"
-        android:layout_marginTop="80dp"
-        android:alpha="0.4"
-        android:background="@drawable/bg_service_icon_coral"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <!-- 1. Top Branding Header: Cute Minimal Paw Icon + "PETCARE" -->
-    <LinearLayout
-        android:id="@+id/layoutHeaderBranding"
-        android:layout_width="wrap_content"
+    <!-- 1. Thanh trên cùng chứa nút 'Bỏ qua' (Skip) góc trên bên phải -->
+    <FrameLayout
+        android:id="@+id/layoutTopBar"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="40dp"
-        android:gravity="center"
-        android:orientation="vertical"
+        android:paddingStart="16dp"
+        android:paddingTop="8dp"
+        android:paddingEnd="16dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
-        <ImageView
-            android:id="@+id/ivAppLogoPaw"
-            android:layout_width="38dp"
-            android:layout_height="38dp"
-            android:src="@drawable/ic_paw_minimal"
-            app:tint="@color/ds_primary"
-            tools:ignore="ContentDescription" />
-
         <TextView
-            android:id="@+id/tvAppBrandName"
+            android:id="@+id/tvSkip"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="6dp"
-            android:fontFamily="@font/font_be_vietnam_pro"
-            android:letterSpacing="0.08"
-            android:text="PETCARE"
-            android:textColor="@color/ds_primary"
-            android:textSize="22sp"
-            android:textStyle="bold" />
-    </LinearLayout>
-
-    <!-- 2. Mascot Hero: Real Cute 2D Puppy PNG Mascot (Peeking naturally over card) -->
-    <FrameLayout
-        android:id="@+id/layoutHeroPet"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:layout_marginStart="24dp"
-        android:layout_marginEnd="24dp"
-        android:layout_marginBottom="-16dp"
-        app:layout_constraintBottom_toTopOf="@+id/cardWelcomeContent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/layoutHeaderBranding">
-
-        <ImageView
-            android:id="@+id/ivPeekingDog"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_gravity="bottom|center_horizontal"
-            android:adjustViewBounds="true"
-            android:contentDescription="PETCARE Mascot"
-            android:scaleType="fitCenter"
-            android:src="@drawable/mascot_petcare_intro" />
+            android:layout_gravity="end|center_vertical"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:clickable="true"
+            android:focusable="true"
+            android:fontFamily="@font/plus_jakarta_sans_medium"
+            android:gravity="center"
+            android:includeFontPadding="false"
+            android:minWidth="64dp"
+            android:minHeight="48dp"
+            android:paddingStart="16dp"
+            android:paddingTop="12dp"
+            android:paddingEnd="16dp"
+            android:paddingBottom="12dp"
+            android:text="Bỏ qua"
+            android:textColor="@color/ds_text_secondary"
+            android:textSize="14sp" />
     </FrameLayout>
 
-    <!-- 3. Welcome Content Card (Smooth Rounded Top Corners 28dp, Pure White Surface) -->
-    <LinearLayout
-        android:id="@+id/cardWelcomeContent"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@drawable/bg_onboarding_card"
-        android:elevation="8dp"
-        android:gravity="center_horizontal"
-        android:orientation="vertical"
-        android:paddingStart="@dimen/screen_padding_horizontal"
-        android:paddingTop="32dp"
-        android:paddingEnd="@dimen/screen_padding_horizontal"
-        android:paddingBottom="32dp"
+    <!-- 2. Phần trung tâm: ViewPager2 chuyển mượt giữa 2 trang Intro -->
+    <androidx.viewpager2.widget.ViewPager2
+        android:id="@+id/viewPagerOnboarding"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:overScrollMode="never"
+        app:layout_constraintBottom_toTopOf="@id/layoutBottomControls"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/layoutTopBar" />
+
+    <!-- 3. Phần dưới cùng: Dot Indicators + Nút chuyển đổi theo từng trang -->
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/layoutBottomControls"
+        android:layout_width="0dp"
+        android:layout_height="148dp"
+        android:paddingStart="24dp"
+        android:paddingEnd="24dp"
+        android:paddingBottom="20dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent">
 
-        <!-- Title: Chăm sóc tốt hơn Cho thú cưng của bạn -->
-        <TextView
-            android:id="@+id/tvWelcomeTitle"
-            android:layout_width="match_parent"
+        <!-- Custom Pill Dot Indicators (Dot 1 active Coral #B95740, Dot 2 inactive #E5DFD9; đảo ở trang 2) -->
+        <LinearLayout
+            android:id="@+id/layoutDotIndicators"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:fontFamily="@font/font_be_vietnam_pro"
-            android:gravity="center"
-            android:lineSpacingExtra="5dp"
-            android:text="Chăm sóc tốt hơn\nCho thú cưng của bạn"
-            android:textColor="@color/ds_text_primary"
-            android:textSize="24sp"
-            android:textStyle="bold" />
+            android:layout_marginTop="37dp"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
 
-        <!-- Subtitle description: Exact Vietnamese copy -->
-        <TextView
-            android:id="@+id/tvWelcomeSubtitle"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="12dp"
-            android:fontFamily="@font/font_be_vietnam_pro"
-            android:gravity="center"
-            android:lineSpacingExtra="4dp"
-            android:text="Tìm phòng khám phù hợp và đặt lịch khám cho bé yêu chỉ trong vài bước."
-            android:textColor="@color/ds_text_secondary"
-            android:textSize="14.5sp" />
+            <View
+                android:id="@+id/dotIndicator1"
+                android:layout_width="24dp"
+                android:layout_height="8dp"
+                android:background="@drawable/bg_onboarding_dot_active" />
 
-        <!-- Primary Action Button: "Bắt đầu" (Pill 54dp, #B95740 with pressed state) -->
+            <View
+                android:id="@+id/dotIndicator2"
+                android:layout_width="8dp"
+                android:layout_height="8dp"
+                android:layout_marginStart="8dp"
+                android:background="@drawable/bg_onboarding_dot_inactive" />
+        </LinearLayout>
+
+        <!-- Trang 1 (Cột phải): Nút 'Tiếp tục' dạng viên thuốc màu Coral #B95740 -->
         <FrameLayout
-            android:id="@+id/btnGetStarted"
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/button_height_primary"
-            android:layout_marginTop="28dp"
-            android:background="@drawable/bg_btn_onboarding_coral"
+            android:id="@+id/btnNext"
+            android:layout_width="wrap_content"
+            android:layout_height="50dp"
+            android:layout_marginTop="16dp"
+            android:background="@drawable/bg_onboarding_btn_cta"
             android:clickable="true"
-            android:elevation="4dp"
-            android:focusable="true">
+            android:focusable="true"
+            android:minWidth="132dp"
+            android:paddingStart="28dp"
+            android:paddingEnd="28dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:fontFamily="@font/font_be_vietnam_pro"
-                android:text="Bắt đầu"
+                android:fontFamily="@font/plus_jakarta_sans_medium"
+                android:includeFontPadding="false"
+                android:text="Tiếp tục"
                 android:textColor="@color/white"
-                android:textSize="16.5sp"
-                android:textStyle="bold" />
+                android:textSize="15sp" />
         </FrameLayout>
 
-        <!-- Secondary Action: "Đã có tài khoản? Đăng nhập" -->
-        <TextView
-            android:id="@+id/tvLoginPrompt"
-            android:layout_width="wrap_content"
+        <!-- Trang 2: Nút full-width 'Bắt đầu ngay' (54dp, bo góc 27dp) + 'Đã có tài khoản? Đăng nhập' -->
+        <LinearLayout
+            android:id="@+id/layoutPage2Actions"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:clickable="true"
-            android:focusable="true"
-            android:fontFamily="@font/font_be_vietnam_pro"
-            android:minHeight="@dimen/touch_target_min"
-            android:gravity="center"
-            android:paddingStart="16dp"
-            android:paddingTop="8dp"
-            android:paddingEnd="16dp"
-            android:paddingBottom="8dp"
-            android:text="Đã có tài khoản? Đăng nhập"
-            android:textColor="@color/ds_text_secondary"
-            android:textSize="14sp" />
+            android:layout_marginTop="26dp"
+            android:gravity="center_horizontal"
+            android:orientation="vertical"
+            android:visibility="gone"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:visibility="visible">
 
-    </LinearLayout>
+            <FrameLayout
+                android:id="@+id/btnGetStarted"
+                android:layout_width="match_parent"
+                android:layout_height="54dp"
+                android:background="@drawable/bg_onboarding_btn_cta"
+                android:clickable="true"
+                android:focusable="true">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:fontFamily="@font/plus_jakarta_sans_semibold"
+                    android:includeFontPadding="false"
+                    android:text="Bắt đầu ngay"
+                    android:textColor="@color/white"
+                    android:textSize="15.5sp" />
+            </FrameLayout>
+
+            <TextView
+                android:id="@+id/tvLoginPrompt"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="6dp"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:clickable="true"
+                android:focusable="true"
+                android:fontFamily="@font/plus_jakarta_sans_regular"
+                android:gravity="center"
+                android:minHeight="42dp"
+                android:paddingStart="16dp"
+                android:paddingTop="8dp"
+                android:paddingEnd="16dp"
+                android:paddingBottom="8dp"
+                android:text="Đã có tài khoản? Đăng nhập"
+                android:textColor="@color/ds_text_secondary"
+                android:textSize="13sp" />
+        </LinearLayout>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -279,13 +279,13 @@
         </LinearLayout>
     </androidx.core.widget.NestedScrollView>
 
-    <!-- 3. Thanh điều hướng dưới đáy (Bottom Navigation Bar) -->
+    <!-- 3. Thanh điều hướng dưới đáy (Phương án B: Trang chủ · Phòng khám · Lịch hẹn · Thú cưng) -->
     <LinearLayout
         android:id="@+id/layoutBottomNav"
         android:layout_width="match_parent"
         android:layout_height="64dp"
         android:layout_alignParentBottom="true"
-        android:background="@color/surface_card"
+        android:background="@color/ds_surface"
         android:elevation="8dp"
         android:gravity="center_vertical"
         android:orientation="horizontal">
@@ -301,23 +301,62 @@
             android:gravity="center"
             android:orientation="vertical">
 
-            <ImageView
-                android:layout_width="19dp"
-                android:layout_height="19dp"
-                android:contentDescription="@null"
-                android:src="@drawable/ic_home"
-                app:tint="@color/text_muted" />
+            <FrameLayout
+                android:layout_width="56dp"
+                android:layout_height="30dp">
+
+                <ImageView
+                    android:layout_width="19dp"
+                    android:layout_height="19dp"
+                    android:layout_gravity="center"
+                    android:contentDescription="@null"
+                    android:src="@drawable/ic_home"
+                    app:tint="@color/ds_text_secondary" />
+            </FrameLayout>
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="6dp"
+                android:layout_marginTop="2dp"
                 android:text="Trang chủ"
-                android:textColor="@color/text_muted"
+                android:textColor="@color/ds_text_secondary"
                 android:textSize="11sp" />
         </LinearLayout>
 
-        <!-- Tab 2: Lịch hẹn (ĐANG CHỌN - ACTIVE) -->
+        <!-- Tab 2: Phòng khám -->
+        <LinearLayout
+            android:id="@+id/navClinics"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:clickable="true"
+            android:focusable="true"
+            android:gravity="center"
+            android:orientation="vertical">
+
+            <FrameLayout
+                android:layout_width="56dp"
+                android:layout_height="30dp">
+
+                <ImageView
+                    android:layout_width="19dp"
+                    android:layout_height="19dp"
+                    android:layout_gravity="center"
+                    android:contentDescription="@null"
+                    android:src="@drawable/ic_stethoscope"
+                    app:tint="@color/ds_text_secondary" />
+            </FrameLayout>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="2dp"
+                android:text="Phòng khám"
+                android:textColor="@color/ds_text_secondary"
+                android:textSize="11sp" />
+        </LinearLayout>
+
+        <!-- Tab 3: Lịch hẹn (ĐANG CHỌN - ACTIVE) -->
         <LinearLayout
             android:id="@+id/navAppointments"
             android:layout_width="0dp"
@@ -330,7 +369,7 @@
 
             <FrameLayout
                 android:layout_width="56dp"
-                android:layout_height="32dp"
+                android:layout_height="30dp"
                 android:background="@drawable/bg_bottom_nav_active_pill">
 
                 <ImageView
@@ -339,7 +378,7 @@
                     android:layout_gravity="center"
                     android:contentDescription="@null"
                     android:src="@drawable/ic_calendar_days"
-                    app:tint="@color/brand_primary" />
+                    app:tint="@color/ds_primary_dark" />
             </FrameLayout>
 
             <TextView
@@ -347,12 +386,12 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="2dp"
                 android:text="Lịch hẹn"
-                android:textColor="@color/brand_primary"
+                android:textColor="@color/ds_primary_dark"
                 android:textSize="11sp"
                 android:textStyle="bold" />
         </LinearLayout>
 
-        <!-- Tab 3: Thú cưng -->
+        <!-- Tab 4: Thú cưng -->
         <LinearLayout
             android:id="@+id/navPets"
             android:layout_width="0dp"
@@ -363,46 +402,25 @@
             android:gravity="center"
             android:orientation="vertical">
 
-            <ImageView
-                android:layout_width="19dp"
-                android:layout_height="19dp"
-                android:contentDescription="@null"
-                android:src="@drawable/ic_paw"
-                app:tint="@color/text_muted" />
+            <FrameLayout
+                android:layout_width="56dp"
+                android:layout_height="30dp">
+
+                <ImageView
+                    android:layout_width="19dp"
+                    android:layout_height="19dp"
+                    android:layout_gravity="center"
+                    android:contentDescription="@null"
+                    android:src="@drawable/ic_paw"
+                    app:tint="@color/ds_text_secondary" />
+            </FrameLayout>
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="6dp"
+                android:layout_marginTop="2dp"
                 android:text="Thú cưng"
-                android:textColor="@color/text_muted"
-                android:textSize="11sp" />
-        </LinearLayout>
-
-        <!-- Tab 4: Tài khoản -->
-        <LinearLayout
-            android:id="@+id/navProfile"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:clickable="true"
-            android:focusable="true"
-            android:gravity="center"
-            android:orientation="vertical">
-
-            <ImageView
-                android:layout_width="19dp"
-                android:layout_height="19dp"
-                android:contentDescription="@null"
-                android:src="@drawable/ic_user"
-                app:tint="@color/text_muted" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="6dp"
-                android:text="Tài khoản"
-                android:textColor="@color/text_muted"
+                android:textColor="@color/ds_text_secondary"
                 android:textSize="11sp" />
         </LinearLayout>
     </LinearLayout>

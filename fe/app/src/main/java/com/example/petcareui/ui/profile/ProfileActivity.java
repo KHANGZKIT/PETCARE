@@ -73,7 +73,6 @@ public class ProfileActivity extends AppCompatActivity {
         String name = tokenManager.getUserName();
         String email = tokenManager.getUserEmail();
         String phone = tokenManager.getUserPhone();
-        Long userId = tokenManager.getUserId();
         boolean isStaff = isStaffRole();
 
         binding.tvProfileName.setText(name != null && !name.isEmpty()
@@ -84,7 +83,6 @@ public class ProfileActivity extends AppCompatActivity {
         binding.tvDetailFullName.setText(name != null && !name.isEmpty() ? name : "Chưa cập nhật");
         binding.tvDetailEmail.setText(email != null && !email.isEmpty() ? email : "Chưa cập nhật");
         binding.tvDetailPhone.setText(phone != null && !phone.isEmpty() ? phone : "Chưa cập nhật");
-        binding.tvDetailUserId.setText(userId != null ? "#" + userId : "#--");
 
         if (name != null && !name.trim().isEmpty()) {
             String[] parts = name.trim().split("\\s+");
@@ -104,6 +102,8 @@ public class ProfileActivity extends AppCompatActivity {
             binding.tvProfileRole.setText("Nhân viên phòng khám");
             binding.rowStaffPortal.setVisibility(View.VISIBLE);
             binding.rowMyPets.setVisibility(View.GONE);
+            binding.dividerBottomNav.setVisibility(View.VISIBLE);
+            binding.bottomNavigation.setVisibility(View.VISIBLE);
             binding.tvNavHomeLabel.setText("Tổng quan");
             binding.ivNavPetsIcon.setImageResource(R.drawable.ic_calendar_clock);
             binding.tvNavPetsLabel.setText("Ca khám");
@@ -111,9 +111,8 @@ public class ProfileActivity extends AppCompatActivity {
             binding.tvProfileRole.setText("Khách hàng");
             binding.rowStaffPortal.setVisibility(View.GONE);
             binding.rowMyPets.setVisibility(View.VISIBLE);
-            binding.tvNavHomeLabel.setText("Trang chủ");
-            binding.ivNavPetsIcon.setImageResource(R.drawable.ic_paw);
-            binding.tvNavPetsLabel.setText("Thú cưng");
+            binding.dividerBottomNav.setVisibility(View.GONE);
+            binding.bottomNavigation.setVisibility(View.GONE);
         }
     }
 

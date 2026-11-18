@@ -20,12 +20,15 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
+import com.example.petcareui.MainActivity;
 import com.example.petcareui.R;
 import com.example.petcareui.data.api.ApiClient;
 import com.example.petcareui.data.model.ClinicItem;
 import com.example.petcareui.data.dto.response.ClinicResponse;
 import com.example.petcareui.databinding.ActivityClinicListBinding;
 import com.example.petcareui.databinding.ItemClinicRowBinding;
+import com.example.petcareui.ui.appointments.MyAppointmentsActivity;
+import com.example.petcareui.ui.pets.MyPetsActivity;
 import com.example.petcareui.utils.UiMotionUtils;
 
 import java.util.ArrayList;
@@ -39,6 +42,7 @@ import retrofit2.Response;
 
 public class ClinicListActivity extends AppCompatActivity {
 
+    public static final String EXTRA_TAB_MODE = "extra_tab_mode";
     private static final int REQ_LOCATION = 1001;
     // Tọa độ gốc mặc định: Đại học Công nghiệp Hà Nội (HaUI - Bắc Từ Liêm)
     private static final double DEFAULT_LAT = 21.0537;
@@ -66,11 +70,50 @@ public class ClinicListActivity extends AppCompatActivity {
         binding = ActivityClinicListBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
-        UiMotionUtils.applyWindowInsets(binding.getRoot(), binding.layoutTopBar, binding.layoutResultsBody);
+        boolean isTabMode = getIntent().getBooleanExtra(EXTRA_TAB_MODE, false);
+        if (isTabMode) {
+            binding.btnBack.setVisibility(View.GONE);
+            binding.layoutBottomNavContainer.setVisibility(View.VISIBLE);
+            UiMotionUtils.applyWindowInsets(binding.getRoot(), binding.layoutTopBar, binding.bottomNavigation);
+            setupBottomNav();
+        } else {
+            binding.btnBack.setVisibility(View.VISIBLE);
+            binding.layoutBottomNavContainer.setVisibility(View.GONE);
+            UiMotionUtils.applyWindowInsets(binding.getRoot(), binding.layoutTopBar, binding.layoutResultsBody);
+        }
+
         requestLocationPermission();
         updateUserLocation();
         setupListeners();
         loadClinicsFromApi();
+    }
+
+    private void setupBottomNav() {
+        binding.navHome.setOnClickListener(v -> {
+            Intent intent = new Intent(this, MainActivity.class);
+            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+            startActivity(intent);
+            overridePendingTransition(0, 0);
+            finish();
+        });
+
+        binding.navClinics.setOnClickListener(v ->
+                binding.layoutResultsState.smoothScrollTo(0, 0));
+
+        binding.navAppointments.setOnClickListener(v -> {
+            Intent intent = new Intent(this, MyAppointmentsActivity.class);
+            startActivity(intent);
+            overridePendingTransition(0, 0);
+            finish();
+        });
+
+        binding.navPets.setOnClickListener(v -> {
+            Intent intent = new Intent(this, MyPetsActivity.class);
+            intent.putExtra(MyPetsActivity.EXTRA_BOOKING_MODE, false);
+            startActivity(intent);
+            overridePendingTransition(0, 0);
+            finish();
+        });
     }
 
     private void requestLocationPermission() {

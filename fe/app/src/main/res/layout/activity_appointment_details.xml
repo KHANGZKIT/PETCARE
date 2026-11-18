@@ -45,11 +45,9 @@
             android:orientation="vertical">
 
             <TextView
-                android:id="@+id/tvApptRefTop"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:letterSpacing="0.04"
-                android:text="PC-48213"
+                android:text="Chi tiết lịch hẹn"
                 android:textColor="@color/text_foreground"
                 android:textSize="17sp"
                 android:textStyle="bold" />
@@ -701,31 +699,6 @@
                         android:text="10:00"
                         android:textColor="@color/text_foreground"
                         android:textSize="13.5sp"
-                        android:textStyle="bold" />
-                </RelativeLayout>
-
-                <!-- Mã lịch hẹn -->
-                <RelativeLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="12dp">
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_alignParentStart="true"
-                        android:text="Mã lịch hẹn"
-                        android:textColor="@color/text_muted"
-                        android:textSize="13sp" />
-
-                    <TextView
-                        android:id="@+id/tvRefCode"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_alignParentEnd="true"
-                        android:text="PC-48213"
-                        android:textColor="@color/text_foreground"
-                        android:textSize="13sp"
                         android:textStyle="bold" />
                 </RelativeLayout>
             </LinearLayout>

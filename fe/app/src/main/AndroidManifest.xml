@@ -47,6 +47,11 @@
             android:name=".ui.pets.MyPetsActivity"
             android:exported="false" />
 
+        <!-- Màn hình Hồ sơ chi tiết thú cưng -->
+        <activity
+            android:name=".ui.pets.PetDetailsActivity"
+            android:exported="false" />
+
         <!-- Màn hình Thêm thú cưng (C09) -->
         <activity
             android:name=".ui.pets.AddPetActivity"

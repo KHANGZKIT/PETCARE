@@ -12,7 +12,6 @@ import android.text.style.ForegroundColorSpan;
 import android.text.style.StyleSpan;
 import android.util.Patterns;
 import android.view.View;
-import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
@@ -227,7 +226,6 @@ public class LoginActivity extends AppCompatActivity {
                         response.getClinicId()
                 );
 
-                Toast.makeText(LoginActivity.this, "Chào mừng " + response.getFullName() + "!", Toast.LENGTH_SHORT).show();
                 navigateByRole(response.getRole());
             }
         });

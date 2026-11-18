@@ -1,38 +1,42 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
-    <!-- Base application theme — PETCARE Design System 1.0 (Warm & Cute - Modern Veterinary) -->
+    <!-- Base application theme — PETCARE Design System (Plus Jakarta Sans) -->
     <style name="Base.Theme.PetcareUI" parent="Theme.Material3.Light.NoActionBar">
         <item name="colorPrimary">@color/ds_primary</item>
         <item name="colorPrimaryDark">@color/ds_primary_dark</item>
         <item name="colorOnPrimary">@color/white</item>
         <item name="colorPrimaryContainer">@color/ds_soft_peach</item>
         <item name="colorOnPrimaryContainer">@color/ds_primary_dark</item>
-        <item name="colorSecondary">@color/warm_coral</item>
+        <item name="colorSecondary">@color/ds_primary_dark</item>
         <item name="colorOnSecondary">@color/white</item>
         <item name="colorSurface">@color/ds_surface</item>
         <item name="colorOnSurface">@color/ds_text_primary</item>
-        <item name="android:colorBackground">@color/ds_background</item>
-        <item name="android:windowBackground">@color/ds_background</item>
+        <item name="android:colorBackground">@color/ds_home_bg</item>
+        <item name="android:windowBackground">@color/ds_home_bg</item>
 
         <!-- Status Bar & Navigation Bar -->
-        <item name="android:statusBarColor">@color/ds_background</item>
+        <item name="android:statusBarColor">@color/ds_home_bg</item>
         <item name="android:windowLightStatusBar">true</item>
         <item name="android:navigationBarColor">@color/ds_surface</item>
         <item name="android:windowLightNavigationBar">true</item>
         <item name="android:windowAnimationStyle">@style/PetCareWindowAnimations</item>
 
-        <!-- Default font family -->
-        <item name="fontFamily">@font/font_be_vietnam_pro</item>
-        <item name="android:fontFamily">@font/font_be_vietnam_pro</item>
+        <!-- Unified Global Primary Font Family -->
+        <item name="fontFamily">@font/font_app_primary</item>
+        <item name="android:fontFamily">@font/font_app_primary</item>
     </style>
 
     <style name="Theme.PetcareUI" parent="Base.Theme.PetcareUI" />
 
     <!-- Dedicated Intro Theme -->
     <style name="Theme.PetcareUI.Intro" parent="Theme.PetcareUI">
-        <item name="android:statusBarColor">@color/ds_background</item>
+        <item name="android:colorBackground">@color/ds_home_bg</item>
+        <item name="android:windowBackground">@color/ds_home_bg</item>
+        <item name="android:statusBarColor">@color/ds_home_bg</item>
         <item name="android:windowLightStatusBar">true</item>
-        <item name="android:navigationBarColor">@color/ds_surface</item>
+        <item name="android:navigationBarColor">@color/ds_home_bg</item>
         <item name="android:windowLightNavigationBar">true</item>
+        <item name="fontFamily">@font/font_app_primary</item>
+        <item name="android:fontFamily">@font/font_app_primary</item>
     </style>
 
     <!-- Global smooth activity transition animations -->
@@ -43,50 +47,104 @@
         <item name="android:activityCloseExitAnimation">@anim/slide_out_right</item>
     </style>
 
-    <!-- Typography Styles (Design System 1.0 - Be Vietnam Pro) -->
+    <!-- ========================================================================= -->
+    <!-- STANDARDIZED TYPOGRAPHY SYSTEM (Plus Jakarta Sans: 400 / 500 / 600 / 700) -->
+    <!-- ========================================================================= -->
+
+    <!-- Display / User Name Header: Bold (700) · 22sp -->
     <style name="TextAppearance.PetCare.Display" parent="TextAppearance.Material3.HeadlineLarge">
-        <item name="fontFamily">@font/font_be_vietnam_pro</item>
-        <item name="android:fontFamily">@font/font_be_vietnam_pro</item>
-        <item name="android:textSize">@dimen/text_size_display</item>
-        <item name="android:textStyle">bold</item>
+        <item name="fontFamily">@font/plus_jakarta_sans_bold</item>
+        <item name="android:fontFamily">@font/plus_jakarta_sans_bold</item>
+        <item name="android:textFontWeight" tools:targetApi="p">700</item>
+        <item name="android:textStyle">normal</item>
+        <item name="android:textSize">22sp</item>
+        <item name="android:letterSpacing">-0.015</item>
+        <item name="android:lineSpacingMultiplier">1.2</item>
         <item name="android:textColor">@color/ds_text_primary</item>
     </style>
 
+    <!-- Headline (Hero Banner Main Title): Bold (700) · 20sp · lineHeight 1.2x -->
     <style name="TextAppearance.PetCare.Headline" parent="TextAppearance.Material3.HeadlineMedium">
-        <item name="fontFamily">@font/font_be_vietnam_pro</item>
-        <item name="android:fontFamily">@font/font_be_vietnam_pro</item>
-        <item name="android:textSize">@dimen/text_size_heading</item>
-        <item name="android:textStyle">bold</item>
+        <item name="fontFamily">@font/plus_jakarta_sans_bold</item>
+        <item name="android:fontFamily">@font/plus_jakarta_sans_bold</item>
+        <item name="android:textFontWeight" tools:targetApi="p">700</item>
+        <item name="android:textStyle">normal</item>
+        <item name="android:textSize">20sp</item>
+        <item name="android:letterSpacing">-0.01</item>
+        <item name="android:lineSpacingMultiplier">1.2</item>
         <item name="android:textColor">@color/ds_text_primary</item>
     </style>
 
-    <style name="TextAppearance.PetCare.Body" parent="TextAppearance.Material3.BodyLarge">
-        <item name="fontFamily">@font/font_be_vietnam_pro</item>
-        <item name="android:fontFamily">@font/font_be_vietnam_pro</item>
-        <item name="android:textSize">@dimen/text_size_body</item>
+    <!-- Section Title (Lịch khám sắp tới, Thú cưng của tôi, Phòng khám): SemiBold (600) · 17sp -->
+    <style name="TextAppearance.PetCare.Title" parent="TextAppearance.Material3.TitleMedium">
+        <item name="fontFamily">@font/plus_jakarta_sans_semibold</item>
+        <item name="android:fontFamily">@font/plus_jakarta_sans_semibold</item>
+        <item name="android:textFontWeight" tools:targetApi="p">600</item>
+        <item name="android:textStyle">normal</item>
+        <item name="android:textSize">17sp</item>
+        <item name="android:letterSpacing">-0.01</item>
+        <item name="android:lineSpacingMultiplier">1.2</item>
         <item name="android:textColor">@color/ds_text_primary</item>
     </style>
 
-    <style name="TextAppearance.PetCare.Description" parent="TextAppearance.Material3.BodyMedium">
-        <item name="fontFamily">@font/font_be_vietnam_pro</item>
-        <item name="android:fontFamily">@font/font_be_vietnam_pro</item>
-        <item name="android:textSize">@dimen/text_size_desc</item>
+    <!-- Alias kept for backward compatibility -->
+    <style name="TextAppearance.PetCare.SectionTitle" parent="TextAppearance.PetCare.Title" />
+
+    <!-- CardTitle (Tên thú cưng, Tên phòng khám, Tiêu đề trong Card): SemiBold (600) · 15sp -->
+    <style name="TextAppearance.PetCare.CardTitle" parent="TextAppearance.Material3.TitleSmall">
+        <item name="fontFamily">@font/plus_jakarta_sans_semibold</item>
+        <item name="android:fontFamily">@font/plus_jakarta_sans_semibold</item>
+        <item name="android:textFontWeight" tools:targetApi="p">600</item>
+        <item name="android:textStyle">normal</item>
+        <item name="android:textSize">15sp</item>
+        <item name="android:lineSpacingMultiplier">1.2</item>
+        <item name="android:textColor">@color/ds_text_primary</item>
+    </style>
+
+    <!-- Body (Địa chỉ, Giờ mở cửa, Mô tả phụ): Regular (400) · 13sp · #6F6662 -->
+    <style name="TextAppearance.PetCare.Body" parent="TextAppearance.Material3.BodyMedium">
+        <item name="fontFamily">@font/plus_jakarta_sans_regular</item>
+        <item name="android:fontFamily">@font/plus_jakarta_sans_regular</item>
+        <item name="android:textFontWeight" tools:targetApi="p">400</item>
+        <item name="android:textStyle">normal</item>
+        <item name="android:textSize">13sp</item>
+        <item name="android:lineSpacingMultiplier">1.2</item>
         <item name="android:textColor">@color/ds_text_secondary</item>
     </style>
 
+    <!-- Alias kept for backward compatibility -->
+    <style name="TextAppearance.PetCare.Description" parent="TextAppearance.PetCare.Body" />
+
+    <!-- Caption (Nút bấm phụ, Link điều hướng, Badge, Chip): Medium (500) · 12sp -->
+    <style name="TextAppearance.PetCare.Caption" parent="TextAppearance.Material3.LabelMedium">
+        <item name="fontFamily">@font/plus_jakarta_sans_medium</item>
+        <item name="android:fontFamily">@font/plus_jakarta_sans_medium</item>
+        <item name="android:textFontWeight" tools:targetApi="p">500</item>
+        <item name="android:textStyle">normal</item>
+        <item name="android:textSize">12sp</item>
+        <item name="android:includeFontPadding">false</item>
+        <item name="android:textColor">@color/ds_text_secondary</item>
+    </style>
+
+    <!-- Primary CTA Button Label: SemiBold (600) · 14.5sp · White -->
     <style name="TextAppearance.PetCare.Button" parent="TextAppearance.Material3.LabelLarge">
-        <item name="fontFamily">@font/font_be_vietnam_pro</item>
-        <item name="android:fontFamily">@font/font_be_vietnam_pro</item>
-        <item name="android:textSize">@dimen/text_size_button</item>
-        <item name="android:textStyle">bold</item>
+        <item name="fontFamily">@font/plus_jakarta_sans_semibold</item>
+        <item name="android:fontFamily">@font/plus_jakarta_sans_semibold</item>
+        <item name="android:textFontWeight" tools:targetApi="p">600</item>
+        <item name="android:textStyle">normal</item>
+        <item name="android:textSize">14.5sp</item>
+        <item name="android:includeFontPadding">false</item>
         <item name="android:textColor">@color/white</item>
     </style>
 
-    <style name="TextAppearance.PetCare.Caption" parent="TextAppearance.Material3.LabelSmall">
-        <item name="fontFamily">@font/font_be_vietnam_pro</item>
-        <item name="android:fontFamily">@font/font_be_vietnam_pro</item>
-        <item name="android:textSize">@dimen/text_size_caption</item>
-        <item name="android:textColor">@color/ds_text_secondary</item>
+    <!-- Reusable Section Action Button (Medium 500 · 12sp · #B95740) -->
+    <style name="Widget.PetCare.SectionAction" parent="TextAppearance.PetCare.Caption">
+        <item name="android:minHeight">@dimen/touch_target_min</item>
+        <item name="android:gravity">center_vertical</item>
+        <item name="android:paddingStart">8dp</item>
+        <item name="android:paddingEnd">4dp</item>
+        <item name="android:textColor">@color/ds_primary_dark</item>
+        <item name="android:background">?attr/selectableItemBackgroundBorderless</item>
     </style>
 
     <!-- Shape Styles -->
@@ -96,6 +154,10 @@
 
     <style name="RoundedCorner16">
         <item name="cornerSize">16dp</item>
+    </style>
+
+    <style name="RoundedCorner18">
+        <item name="cornerSize">18dp</item>
     </style>
 
     <style name="RoundedCorner20">

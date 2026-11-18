@@ -124,7 +124,6 @@ public class AppointmentDetailsActivity extends AppCompatActivity {
     }
 
     private void setupTopBar() {
-        binding.tvApptRefTop.setText(appt.getRef());
         binding.tvClinicNameTop.setText(appt.getClinic());
         binding.btnBack.setOnClickListener(v -> finish());
     }
@@ -157,10 +156,9 @@ public class AppointmentDetailsActivity extends AppCompatActivity {
             binding.tvPetDetails.setText("Golden Retriever · 1 tuổi · Đực");
         }
 
-        // Thẻ Ngày, Giờ & Mã hẹn
+        // Thẻ Ngày & Giờ
         binding.tvDate.setText(appt.getDate());
         binding.tvTime.setText(appt.getTime());
-        binding.tvRefCode.setText(appt.getRef());
 
         // Thẻ Timeline Step 1
         binding.tvTimelineStep1Time.setText(appt.getDate() + " · 07:40");
@@ -345,7 +343,7 @@ public class AppointmentDetailsActivity extends AppCompatActivity {
                             Toast.makeText(AppointmentDetailsActivity.this, "Đã hủy lịch hẹn thành công!", Toast.LENGTH_SHORT).show();
                         } else {
                             applyState(previousStateBeforeDialog);
-                            Toast.makeText(AppointmentDetailsActivity.this, "Không thể hủy lịch lúc này (Mã lỗi: " + response.code() + ")", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(AppointmentDetailsActivity.this, "Không thể hủy lịch lúc này", Toast.LENGTH_SHORT).show();
                         }
                     }
 
@@ -357,7 +355,7 @@ public class AppointmentDetailsActivity extends AppCompatActivity {
                     }
                 });
             } else {
-                Toast.makeText(AppointmentDetailsActivity.this, "Không tìm thấy mã lịch hẹn hợp lệ để hủy.", Toast.LENGTH_SHORT).show();
+                Toast.makeText(AppointmentDetailsActivity.this, "Không thể hủy lịch hẹn lúc này.", Toast.LENGTH_SHORT).show();
                 applyState(previousStateBeforeDialog);
             }
         });

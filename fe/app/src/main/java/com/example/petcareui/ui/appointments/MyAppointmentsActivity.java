@@ -101,7 +101,7 @@ public class MyAppointmentsActivity extends AppCompatActivity {
                     }
                 } else {
                     renderTab("empty");
-                    Toast.makeText(MyAppointmentsActivity.this, "Không thể tải danh sách lịch hẹn (Mã lỗi: " + response.code() + ")", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(MyAppointmentsActivity.this, "Không thể tải danh sách lịch hẹn", Toast.LENGTH_SHORT).show();
                 }
             }
 
@@ -234,11 +234,10 @@ public class MyAppointmentsActivity extends AppCompatActivity {
     private View createAppointmentCardView(AppointmentItem item) {
         ItemAppointmentCardBinding cardBinding = ItemAppointmentCardBinding.inflate(getLayoutInflater());
 
-        cardBinding.tvApptRef.setText(item.getRef());
         applyBadgeStatus(cardBinding.tvApptStatus, cardBinding.viewStatusAccent, item.getStatus());
         cardBinding.ivPetImage.setImageResource(item.getPetImgRes());
         cardBinding.tvServiceTitle.setText(item.getService());
-        cardBinding.tvPetAndClinic.setText("🐾 " + item.getPet() + " · " + item.getClinic());
+        cardBinding.tvPetAndClinic.setText(item.getPet() + " · " + item.getClinic());
         cardBinding.tvApptDate.setText(item.getDate());
         cardBinding.tvApptTime.setText(item.getTime());
 
@@ -293,24 +292,27 @@ public class MyAppointmentsActivity extends AppCompatActivity {
             Intent intent = new Intent(this, MainActivity.class);
             intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
             startActivity(intent);
-            overridePendingTransition(R.anim.fade_scale_in, R.anim.fade_scale_out);
+            overridePendingTransition(0, 0);
             finish();
         });
 
-        binding.navAppointments.setOnClickListener(v -> {
-            binding.scrollViewContent.smoothScrollTo(0, 0);
+        binding.navClinics.setOnClickListener(v -> {
+            Intent intent = new Intent(this, ClinicListActivity.class);
+            intent.putExtra(ClinicListActivity.EXTRA_TAB_MODE, true);
+            startActivity(intent);
+            overridePendingTransition(0, 0);
+            finish();
         });
+
+        binding.navAppointments.setOnClickListener(v ->
+                binding.scrollViewContent.smoothScrollTo(0, 0));
 
         binding.navPets.setOnClickListener(v -> {
             Intent intent = new Intent(this, MyPetsActivity.class);
             intent.putExtra(MyPetsActivity.EXTRA_BOOKING_MODE, false);
             startActivity(intent);
-            overridePendingTransition(R.anim.fade_scale_in, R.anim.fade_scale_out);
-        });
-
-        binding.navProfile.setOnClickListener(v -> {
-            Intent intent = new Intent(this, com.example.petcareui.ui.profile.ProfileActivity.class);
-            startActivity(intent);
+            overridePendingTransition(0, 0);
+            finish();
         });
     }
 }

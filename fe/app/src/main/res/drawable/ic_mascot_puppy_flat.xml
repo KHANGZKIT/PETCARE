@@ -1,0 +1,124 @@
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="180dp"
+    android:height="164dp"
+    android:viewportWidth="180"
+    android:viewportHeight="164">
+
+    <!-- Subtle warm butter organic backdrop circle (Headspace/Flo minimalist flat depth) -->
+    <path
+        android:fillColor="#90F6E6A9"
+        android:pathData="M98,94m-62,0a62,62 0 1,0 124,0a62,62 0 1,0 -124,0" />
+
+    <!-- Small floating minimal heart/paw accent (top-left, flat terracotta, no border) -->
+    <path
+        android:fillColor="#38D97B60"
+        android:pathData="M34,38m-5,0a5,5 0 1,0 10,0a5,5 0 1,0 -10,0" />
+    <path
+        android:fillColor="#28D97B60"
+        android:pathData="M46,28m-3.2,0a3.2,3.2 0 1,0 6.4,0a3.2,3.2 0 1,0 -6.4,0" />
+
+    <!-- Left Floppy Caramel Ear (Borderless smooth curve) -->
+    <path
+        android:fillColor="#DA8265"
+        android:pathData="M56,52 C32,48 16,80 22,110 C26,128 44,132 54,116 C62,102 64,70 56,52 Z" />
+    <!-- Left Ear Soft Highlight -->
+    <path
+        android:fillColor="#E99F84"
+        android:pathData="M43,66 C34,68 28,86 31,102 C33,110 40,111 44,102 C48,92 49,74 43,66 Z" />
+
+    <!-- Right Floppy Caramel Ear (Borderless smooth curve) -->
+    <path
+        android:fillColor="#DA8265"
+        android:pathData="M132,52 C156,48 172,80 166,110 C162,128 144,132 134,116 C126,102 124,70 132,52 Z" />
+    <!-- Right Ear Soft Highlight -->
+    <path
+        android:fillColor="#E99F84"
+        android:pathData="M145,66 C154,68 160,86 157,102 C155,110 148,111 144,102 C140,92 139,74 145,66 Z" />
+
+    <!-- Torso / Chest Base (Soft Cream resting at y=164) -->
+    <path
+        android:fillColor="#F7E6D8"
+        android:pathData="M56,126 C56,114 132,114 132,126 L138,164 L50,164 Z" />
+
+    <!-- Chest Warm Cream Front Fur -->
+    <path
+        android:fillColor="#FFF9F4"
+        android:pathData="M70,128 C70,120 118,120 118,128 L122,164 L66,164 Z" />
+
+    <!-- Head Base (Plump, soft rounded cream puppy head — zero black border) -->
+    <path
+        android:fillColor="#FFF8F2"
+        android:pathData="M94,34 C56,34 42,64 42,96 C42,126 62,140 94,140 C126,140 146,126 146,96 C146,64 132,34 94,34 Z" />
+
+    <!-- Caramel Forehead & Right-Side Patch (Clipped organically to head contour) -->
+    <path
+        android:fillColor="#E39276"
+        android:pathData="M98,34 C128,35 145,62 146,92 C132,96 114,88 106,72 C99,58 96,44 98,34 Z" />
+
+    <!-- Soft Chin Warmth Shadow -->
+    <path
+        android:fillColor="#F9EAE0"
+        android:pathData="M56,122 C68,134 120,134 132,122 C124,137 64,137 56,122 Z" />
+
+    <!-- Rosy Peach Cheeks (Pure soft flat ovals) -->
+    <path
+        android:fillColor="#F6B5A2"
+        android:pathData="M62,104a10,7 0 1,0 20,0a10,7 0 1,0 -20,0" />
+    <path
+        android:fillColor="#F6B5A2"
+        android:pathData="M106,104a10,7 0 1,0 20,0a10,7 0 1,0 -20,0" />
+
+    <!-- Left Friendly Eye (Warm Deep Espresso, NOT harsh #000000) -->
+    <path
+        android:fillColor="#3A2B27"
+        android:pathData="M75,86m-6.8,0a6.8,6.8 0 1,0 13.6,0a6.8,6.8 0 1,0 -13.6,0" />
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M72.8,83.5m-2.4,0a2.4,2.4 0 1,0 4.8,0a2.4,2.4 0 1,0 -4.8,0" />
+
+    <!-- Right Friendly Eye -->
+    <path
+        android:fillColor="#3A2B27"
+        android:pathData="M113,86m-6.8,0a6.8,6.8 0 1,0 13.6,0a6.8,6.8 0 1,0 -13.6,0" />
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M110.8,83.5m-2.4,0a2.4,2.4 0 1,0 4.8,0a2.4,2.4 0 1,0 -4.8,0" />
+
+    <!-- Soft Muzzle Cushion -->
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M79,98 a15,12 0 1,0 30,0 a15,12 0 1,0 -30,0" />
+
+    <!-- Rounded Button Nose (Warm Cocoa) -->
+    <path
+        android:fillColor="#4E362F"
+        android:pathData="M94,91 C87,91 85,96 89,100 C91.5,102.2 96.5,102.2 99,100 C103,96 101,91 94,91 Z" />
+    <path
+        android:fillColor="#55FFFFFF"
+        android:pathData="M91.5,93.8m-2,0a2,1.2 0 1,0 4,0a2,1.2 0 1,0 -4,0" />
+
+    <!-- Gentle Minimal Smile (Warm Cocoa rounded stroke) -->
+    <path
+        android:fillColor="#00000000"
+        android:pathData="M86,105 Q90,110 94,106 Q98,110 102,105"
+        android:strokeColor="#5C4038"
+        android:strokeLineCap="round"
+        android:strokeLineJoin="round"
+        android:strokeWidth="2.4" />
+
+    <!-- Left Chubby Peeking Paw (Borderless cream + subtle toe shadows, flush at y=164) -->
+    <path
+        android:fillColor="#FFFDFB"
+        android:pathData="M46,164 C46,147 54,142 64,142 C74,142 82,147 82,164 Z" />
+    <path
+        android:fillColor="#EDD8C8"
+        android:pathData="M57,154 L57,164 L59.2,164 L59.2,154 Z M68.8,154 L68.8,164 L71,164 L71,154 Z" />
+
+    <!-- Right Chubby Peeking Paw (Flush at y=164) -->
+    <path
+        android:fillColor="#FFFDFB"
+        android:pathData="M106,164 C106,147 114,142 124,142 C134,142 142,147 142,164 Z" />
+    <path
+        android:fillColor="#EDD8C8"
+        android:pathData="M117,154 L117,164 L119.2,164 L119.2,154 Z M128.8,154 L128.8,164 L131,164 L131,154 Z" />
+</vector>

@@ -91,7 +91,6 @@ public class StaffAppointmentDetailsActivity extends AppCompatActivity {
     private void bindAppointmentData() {
         if (currentAppt == null) return;
 
-        binding.tvApptRef.setText(currentAppt.getRef());
         binding.tvApptDate.setText(currentAppt.getDate());
 
         updateStatusBadge(currentAppt.getStatus());
@@ -139,7 +138,7 @@ public class StaffAppointmentDetailsActivity extends AppCompatActivity {
         binding.tvNoticeConfirmedBody.setText(currentAppt.getCustomer() + " được thông báo: "
                 + currentAppt.getPet() + " đã xác nhận lúc " + currentAppt.getTime() + ".");
 
-        binding.tvFloatingToastMessage.setText("Đã xác nhận lịch hẹn " + currentAppt.getRef() + " cho " + currentAppt.getCustomer());
+        binding.tvFloatingToastMessage.setText("Đã xác nhận lịch hẹn cho " + currentAppt.getCustomer());
     }
 
     private void updateStatusBadge(String status) {
@@ -307,7 +306,7 @@ public class StaffAppointmentDetailsActivity extends AppCompatActivity {
                             Toast.makeText(StaffAppointmentDetailsActivity.this, "Đã hoàn thành lượt khám cho " + currentAppt.getPet(), Toast.LENGTH_SHORT).show();
                             finish();
                         } else {
-                            Toast.makeText(StaffAppointmentDetailsActivity.this, "Không thể hoàn thành lịch hẹn (Mã " + response.code() + ")", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(StaffAppointmentDetailsActivity.this, "Không thể hoàn thành lịch hẹn", Toast.LENGTH_SHORT).show();
                         }
                     }
 
@@ -317,7 +316,7 @@ public class StaffAppointmentDetailsActivity extends AppCompatActivity {
                     }
                 });
             } else {
-                Toast.makeText(this, "Thiếu mã lịch hẹn hợp lệ", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "Không tìm thấy thông tin lịch hẹn hợp lệ", Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -332,7 +331,7 @@ public class StaffAppointmentDetailsActivity extends AppCompatActivity {
                             Toast.makeText(StaffAppointmentDetailsActivity.this, "Đã ghi nhận khách không đến hẹn", Toast.LENGTH_SHORT).show();
                             finish();
                         } else {
-                            Toast.makeText(StaffAppointmentDetailsActivity.this, "Không thể cập nhật trạng thái (Mã " + response.code() + ")", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(StaffAppointmentDetailsActivity.this, "Không thể cập nhật trạng thái", Toast.LENGTH_SHORT).show();
                         }
                     }
 
@@ -342,7 +341,7 @@ public class StaffAppointmentDetailsActivity extends AppCompatActivity {
                     }
                 });
             } else {
-                Toast.makeText(this, "Thiếu mã lịch hẹn hợp lệ", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "Không tìm thấy thông tin lịch hẹn hợp lệ", Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -362,7 +361,7 @@ public class StaffAppointmentDetailsActivity extends AppCompatActivity {
                             Toast.makeText(StaffAppointmentDetailsActivity.this, "Đã xác nhận lịch hẹn thành công!", Toast.LENGTH_SHORT).show();
                         } else {
                             applyState("failed");
-                            Toast.makeText(StaffAppointmentDetailsActivity.this, "Không thể xác nhận lịch hẹn (Mã " + response.code() + ")", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(StaffAppointmentDetailsActivity.this, "Không thể xác nhận lịch hẹn", Toast.LENGTH_SHORT).show();
                         }
                     }
 
@@ -374,7 +373,7 @@ public class StaffAppointmentDetailsActivity extends AppCompatActivity {
                 });
             } else {
                 applyState("failed");
-                Toast.makeText(this, "Thiếu mã lịch hẹn hợp lệ", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "Không tìm thấy thông tin lịch hẹn hợp lệ", Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -403,7 +402,7 @@ public class StaffAppointmentDetailsActivity extends AppCompatActivity {
                             applyState("rejected");
                         } else {
                             applyState("failed");
-                            Toast.makeText(StaffAppointmentDetailsActivity.this, "Không thể từ chối lịch hẹn (Mã " + response.code() + ")", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(StaffAppointmentDetailsActivity.this, "Không thể từ chối lịch hẹn", Toast.LENGTH_SHORT).show();
                         }
                     }
 
@@ -415,7 +414,7 @@ public class StaffAppointmentDetailsActivity extends AppCompatActivity {
                 });
             } else {
                 applyState("failed");
-                Toast.makeText(this, "Thiếu mã lịch hẹn hợp lệ", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "Không tìm thấy thông tin lịch hẹn hợp lệ", Toast.LENGTH_SHORT).show();
             }
         });
 

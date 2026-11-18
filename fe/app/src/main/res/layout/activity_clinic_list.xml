@@ -207,7 +207,7 @@
                     android:gravity="center"
                     android:paddingStart="14dp"
                     android:paddingEnd="14dp"
-                    android:text="🚑 Cấp cứu 24/7"
+                    android:text="Cấp cứu 24/7"
                     android:textColor="@color/text_muted"
                     android:textSize="12.5sp"
                     android:textStyle="bold" />
@@ -218,7 +218,8 @@
     <!-- Khối chuyển đổi các Trạng thái (Results / Loading / Empty / Error) -->
     <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="0dp"
+        android:layout_weight="1">
 
         <!-- ==================== TRẠNG THÁI 1: CÓ KẾT QUẢ (RESULTS) ==================== -->
         <ScrollView
@@ -502,5 +503,163 @@
         </LinearLayout>
 
     </FrameLayout>
+
+    <!-- Thanh điều hướng dưới cùng (Phương án B: Trang chủ · Phòng khám · Lịch hẹn · Thú cưng) -->
+    <LinearLayout
+        android:id="@+id/layoutBottomNavContainer"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/ds_surface"
+        android:elevation="12dp"
+        android:orientation="vertical"
+        android:visibility="gone">
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/ds_border" />
+
+        <LinearLayout
+            android:id="@+id/bottomNavigation"
+            android:layout_width="match_parent"
+            android:layout_height="64dp"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
+            <!-- Tab 1: Trang chủ -->
+            <LinearLayout
+                android:id="@+id/navHome"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:clickable="true"
+                android:focusable="true"
+                android:gravity="center"
+                android:orientation="vertical">
+
+                <FrameLayout
+                    android:layout_width="56dp"
+                    android:layout_height="30dp">
+
+                    <ImageView
+                        android:layout_width="19dp"
+                        android:layout_height="19dp"
+                        android:layout_gravity="center"
+                        android:contentDescription="@null"
+                        android:src="@drawable/ic_home"
+                        app:tint="@color/ds_text_secondary" />
+                </FrameLayout>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="2dp"
+                    android:text="Trang chủ"
+                    android:textColor="@color/ds_text_secondary"
+                    android:textSize="11sp" />
+            </LinearLayout>
+
+            <!-- Tab 2: Phòng khám (Active) -->
+            <LinearLayout
+                android:id="@+id/navClinics"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:clickable="true"
+                android:focusable="true"
+                android:gravity="center"
+                android:orientation="vertical">
+
+                <FrameLayout
+                    android:layout_width="56dp"
+                    android:layout_height="30dp"
+                    android:background="@drawable/bg_bottom_nav_active_pill">
+
+                    <ImageView
+                        android:layout_width="19dp"
+                        android:layout_height="19dp"
+                        android:layout_gravity="center"
+                        android:contentDescription="@null"
+                        android:src="@drawable/ic_stethoscope"
+                        app:tint="@color/ds_primary_dark" />
+                </FrameLayout>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="2dp"
+                    android:text="Phòng khám"
+                    android:textColor="@color/ds_primary_dark"
+                    android:textSize="11sp"
+                    android:textStyle="bold" />
+            </LinearLayout>
+
+            <!-- Tab 3: Lịch hẹn -->
+            <LinearLayout
+                android:id="@+id/navAppointments"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:clickable="true"
+                android:focusable="true"
+                android:gravity="center"
+                android:orientation="vertical">
+
+                <FrameLayout
+                    android:layout_width="56dp"
+                    android:layout_height="30dp">
+
+                    <ImageView
+                        android:layout_width="19dp"
+                        android:layout_height="19dp"
+                        android:layout_gravity="center"
+                        android:contentDescription="@null"
+                        android:src="@drawable/ic_calendar_days"
+                        app:tint="@color/ds_text_secondary" />
+                </FrameLayout>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="2dp"
+                    android:text="Lịch hẹn"
+                    android:textColor="@color/ds_text_secondary"
+                    android:textSize="11sp" />
+            </LinearLayout>
+
+            <!-- Tab 4: Thú cưng -->
+            <LinearLayout
+                android:id="@+id/navPets"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:clickable="true"
+                android:focusable="true"
+                android:gravity="center"
+                android:orientation="vertical">
+
+                <FrameLayout
+                    android:layout_width="56dp"
+                    android:layout_height="30dp">
+
+                    <ImageView
+                        android:layout_width="19dp"
+                        android:layout_height="19dp"
+                        android:layout_gravity="center"
+                        android:contentDescription="@null"
+                        android:src="@drawable/ic_paw"
+                        app:tint="@color/ds_text_secondary" />
+                </FrameLayout>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="2dp"
+                    android:text="Thú cưng"
+                    android:textColor="@color/ds_text_secondary"
+                    android:textSize="11sp" />
+            </LinearLayout>
+        </LinearLayout>
+    </LinearLayout>
 
 </LinearLayout>

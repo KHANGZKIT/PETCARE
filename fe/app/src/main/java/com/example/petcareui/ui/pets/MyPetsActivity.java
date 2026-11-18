@@ -16,16 +16,18 @@ import androidx.core.content.ContextCompat;
 import com.example.petcareui.MainActivity;
 import com.example.petcareui.R;
 import com.example.petcareui.data.api.ApiClient;
+import com.example.petcareui.data.dto.response.PetResponse;
 import com.example.petcareui.data.model.ClinicItem;
 import com.example.petcareui.data.model.DateItem;
 import com.example.petcareui.data.model.PetItem;
-import com.example.petcareui.data.dto.response.PetResponse;
 import com.example.petcareui.data.model.ServiceItem;
 import com.example.petcareui.data.model.TimeSlotItem;
 import com.example.petcareui.databinding.ActivityMyPetsBinding;
 import com.example.petcareui.databinding.DialogPetDeleteConfirmBinding;
-import com.example.petcareui.databinding.DialogPetOptionsBinding;
-import com.example.petcareui.databinding.ItemPetSelectableBinding;
+import com.example.petcareui.databinding.ItemPetCardBinding;
+import com.example.petcareui.ui.appointments.MyAppointmentsActivity;
+import com.example.petcareui.ui.booking.BookingReviewActivity;
+import com.example.petcareui.ui.clinic.ClinicListActivity;
 import com.example.petcareui.utils.UiMotionUtils;
 
 import java.util.ArrayList;
@@ -35,9 +37,6 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-/**
- * Màn hình C08: Thú cưng của tôi (My Pets) - Bước 3/4 của luồng đặt lịch & Tab chính "Thú cưng".
- */
 public class MyPetsActivity extends AppCompatActivity {
 
     public static final String EXTRA_CLINIC = "extra_clinic";
@@ -55,7 +54,7 @@ public class MyPetsActivity extends AppCompatActivity {
     private boolean isBookingMode = true;
 
     private final List<PetItem> pets = new ArrayList<>();
-    private final List<ItemPetSelectableBinding> petBindings = new ArrayList<>();
+    private final List<ItemPetCardBinding> petBindings = new ArrayList<>();
     private int selectedPetIndex = 0;
 
     @Override
@@ -64,6 +63,7 @@ public class MyPetsActivity extends AppCompatActivity {
         binding = ActivityMyPetsBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
+        getWindow().setStatusBarColor(ContextCompat.getColor(this, R.color.ds_home_bg));
         UiMotionUtils.applyWindowInsets(binding.getRoot(), binding.layoutTopBar, binding.bottomNavigation);
 
         extractIntentData();
@@ -72,12 +72,13 @@ public class MyPetsActivity extends AppCompatActivity {
         setupStickyBottomBar();
         setupBottomNav();
 
-        // Ẩn/hiện ngay thanh Đặt lịch và thanh Điều hướng đáy theo chế độ
         if (!isBookingMode) {
+            binding.btnBack.setVisibility(View.GONE);
             binding.layoutStickyBottom.setVisibility(View.GONE);
             binding.tvSubtitleBooking.setVisibility(View.GONE);
             binding.bottomNavigation.setVisibility(View.VISIBLE);
         } else {
+            binding.btnBack.setVisibility(View.VISIBLE);
             binding.layoutStickyBottom.setVisibility(View.VISIBLE);
             binding.tvSubtitleBooking.setVisibility(View.VISIBLE);
             binding.bottomNavigation.setVisibility(View.GONE);
@@ -138,16 +139,14 @@ public class MyPetsActivity extends AppCompatActivity {
                 binding.btnAddFirstPet,
                 binding.btnContinue
         );
-
-        if (!isBookingMode) {
-            binding.tvSubtitleBooking.setText("Sổ sức khỏe & hồ sơ thú cưng của bạn");
-        }
     }
 
     private void loadPetsFromApi() {
         ApiClient.getPetApi().getMyPets().enqueue(new Callback<List<PetResponse>>() {
             @Override
             public void onResponse(Call<List<PetResponse>> call, Response<List<PetResponse>> response) {
+                if (isFinishing() || isDestroyed()) return;
+
                 if (response.isSuccessful() && response.body() != null) {
                     List<PetResponse> body = response.body();
                     pets.clear();
@@ -168,16 +167,15 @@ public class MyPetsActivity extends AppCompatActivity {
                     if (pets.isEmpty()) {
                         showEmptyState();
                     }
-                    Toast.makeText(MyPetsActivity.this, "Không thể tải danh sách thú cưng (Mã: " + response.code() + ")", Toast.LENGTH_SHORT).show();
                 }
             }
 
             @Override
             public void onFailure(Call<List<PetResponse>> call, Throwable t) {
+                if (isFinishing() || isDestroyed()) return;
                 if (pets.isEmpty()) {
                     showEmptyState();
                 }
-                Toast.makeText(MyPetsActivity.this, "Lỗi kết nối máy chủ khi tải thú cưng.", Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -191,44 +189,44 @@ public class MyPetsActivity extends AppCompatActivity {
         for (int i = 0; i < pets.size(); i++) {
             final int index = i;
             PetItem pet = pets.get(i);
-            ItemPetSelectableBinding itemBinding = ItemPetSelectableBinding.inflate(inflater, binding.containerPetsList, false);
+            ItemPetCardBinding itemBinding = ItemPetCardBinding.inflate(inflater, binding.containerPetsList, false);
 
             itemBinding.ivPetAvatar.setImageResource(pet.getImageResId());
             itemBinding.tvPetName.setText(pet.getName());
 
-            // Xử lý hiển thị loài và giống sạch sẽ, tránh lặp chữ
-            if (pet.getSpecies() != null && pet.getBreed() != null
-                    && !pet.getSpecies().trim().equalsIgnoreCase(pet.getBreed().trim())) {
-                itemBinding.tvPetBreed.setText(pet.getSpecies() + " · " + pet.getBreed());
-            } else if (pet.getSpecies() != null) {
-                itemBinding.tvPetBreed.setText(pet.getSpecies());
-            } else {
-                itemBinding.tvPetBreed.setText("Thú cưng");
-            }
+            String realSpecies = pet.getRawSpecies();
+            itemBinding.tvPetSpecies.setText(realSpecies != null && !realSpecies.isEmpty() ? realSpecies : "Thú cưng");
 
-            // Badge loài: 🐾 Mèo / 🐾 Chó
-            String sp = pet.getSpecies() != null ? pet.getSpecies() : "Thú cưng";
-            itemBinding.tvPetSpeciesBadge.setText("🐾 " + sp);
-
-            bindBadgeOrHide(itemBinding.tvPetAge, pet.getAge());
-            bindBadgeOrHide(itemBinding.tvPetSex, pet.getSex());
-            bindBadgeOrHide(itemBinding.tvPetWeight, pet.getWeight());
-
-            UiMotionUtils.attachSpringTouch(itemBinding.getRoot());
+            UiMotionUtils.attachSpringTouch(itemBinding.getRoot(), itemBinding.btnEditPet, itemBinding.btnHistoryPet);
 
             if (isBookingMode) {
-                itemBinding.btnDeletePetDirect.setVisibility(View.GONE);
+                itemBinding.layoutPetActions.setVisibility(View.GONE);
                 itemBinding.ivPetCheck.setVisibility(View.VISIBLE);
                 itemBinding.getRoot().setOnClickListener(v -> selectPet(index));
             } else {
-                itemBinding.btnDeletePetDirect.setVisibility(View.VISIBLE);
+                itemBinding.layoutPetActions.setVisibility(View.VISIBLE);
                 itemBinding.ivPetCheck.setVisibility(View.GONE);
-                itemBinding.btnDeletePetDirect.setOnClickListener(v -> showDeletePetDialog(pet));
+
+                itemBinding.btnEditPet.setOnClickListener(v -> {
+                    Intent intent = new Intent(this, AddPetActivity.class);
+                    intent.putExtra(AddPetActivity.EXTRA_EDIT_PET, pet);
+                    startActivity(intent);
+                });
+
+                itemBinding.btnHistoryPet.setOnClickListener(v -> {
+                    Intent intent = new Intent(this, PetDetailsActivity.class);
+                    intent.putExtra(PetDetailsActivity.EXTRA_PET, pet);
+                    intent.putExtra(PetDetailsActivity.EXTRA_SCROLL_TO_HISTORY, true);
+                    startActivity(intent);
+                });
+
                 itemBinding.getRoot().setOnClickListener(v -> {
-                    Intent intent = new Intent(this, com.example.petcareui.ui.clinic.ClinicListActivity.class);
+                    Intent intent = new Intent(this, PetDetailsActivity.class);
+                    intent.putExtra(PetDetailsActivity.EXTRA_PET, pet);
                     startActivity(intent);
                 });
             }
+
             itemBinding.getRoot().setOnLongClickListener(v -> {
                 showDeletePetDialog(pet);
                 return true;
@@ -240,15 +238,6 @@ public class MyPetsActivity extends AppCompatActivity {
 
         updatePetSelectionUI();
         UiMotionUtils.animateStaggeredChildren(binding.containerPetsList, 25);
-    }
-
-    private void bindBadgeOrHide(android.widget.TextView badge, String value) {
-        if (value == null || value.trim().isEmpty() || "—".equals(value.trim()) || "-".equals(value.trim())) {
-            badge.setVisibility(View.GONE);
-        } else {
-            badge.setVisibility(View.VISIBLE);
-            badge.setText(value);
-        }
     }
 
     private void selectPet(int index) {
@@ -281,16 +270,17 @@ public class MyPetsActivity extends AppCompatActivity {
                 ApiClient.getPetApi().deletePet(numericId).enqueue(new Callback<Void>() {
                     @Override
                     public void onResponse(Call<Void> call, Response<Void> response) {
+                        if (isFinishing() || isDestroyed()) return;
                         if (response.isSuccessful()) {
-                            Toast.makeText(MyPetsActivity.this, "Đã xóa bé " + pet.getName() + " thành công", Toast.LENGTH_SHORT).show();
                             loadPetsFromApi();
                         } else {
-                            Toast.makeText(MyPetsActivity.this, "Không thể xóa bé lúc này (Mã: " + response.code() + ")", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(MyPetsActivity.this, "Không thể xóa bé lúc này", Toast.LENGTH_SHORT).show();
                         }
                     }
 
                     @Override
                     public void onFailure(Call<Void> call, Throwable t) {
+                        if (isFinishing() || isDestroyed()) return;
                         Toast.makeText(MyPetsActivity.this, "Lỗi kết nối khi xóa thú cưng", Toast.LENGTH_SHORT).show();
                     }
                 });
@@ -302,20 +292,20 @@ public class MyPetsActivity extends AppCompatActivity {
 
     private void updatePetSelectionUI() {
         for (int i = 0; i < petBindings.size(); i++) {
-            ItemPetSelectableBinding b = petBindings.get(i);
+            ItemPetCardBinding b = petBindings.get(i);
             if (!isBookingMode) {
-                b.layoutPetCard.setBackgroundResource(R.drawable.bg_service_card_default);
-                b.btnDeletePetDirect.setVisibility(View.VISIBLE);
+                b.layoutPetCard.setBackgroundResource(R.drawable.bg_home_card_borderless);
+                b.layoutPetActions.setVisibility(View.VISIBLE);
                 b.ivPetCheck.setVisibility(View.GONE);
             } else {
-                b.btnDeletePetDirect.setVisibility(View.GONE);
+                b.layoutPetActions.setVisibility(View.GONE);
                 b.ivPetCheck.setVisibility(View.VISIBLE);
                 boolean isSelected = (i == selectedPetIndex);
                 if (isSelected) {
-                    b.layoutPetCard.setBackgroundResource(R.drawable.bg_service_card_selected);
+                    b.layoutPetCard.setBackgroundResource(R.drawable.bg_pet_card_selected_minimal);
                     b.ivPetCheck.setImageResource(R.drawable.bg_radio_selected);
                 } else {
-                    b.layoutPetCard.setBackgroundResource(R.drawable.bg_service_card_default);
+                    b.layoutPetCard.setBackgroundResource(R.drawable.bg_home_card_borderless);
                     b.ivPetCheck.setImageResource(R.drawable.bg_radio_unselected);
                 }
             }
@@ -370,12 +360,12 @@ public class MyPetsActivity extends AppCompatActivity {
         binding.btnContinue.setOnClickListener(v -> {
             if (selectedPetIndex >= 0 && selectedPetIndex < pets.size()) {
                 PetItem chosen = pets.get(selectedPetIndex);
-                Intent intent = new Intent(this, com.example.petcareui.ui.booking.BookingReviewActivity.class);
-                intent.putExtra(com.example.petcareui.ui.booking.BookingReviewActivity.EXTRA_CLINIC, clinicItem);
-                intent.putExtra(com.example.petcareui.ui.booking.BookingReviewActivity.EXTRA_SELECTED_SERVICE, serviceItem);
-                intent.putExtra(com.example.petcareui.ui.booking.BookingReviewActivity.EXTRA_SELECTED_DATE, dateItem);
-                intent.putExtra(com.example.petcareui.ui.booking.BookingReviewActivity.EXTRA_SELECTED_TIME, timeSlotItem);
-                intent.putExtra(com.example.petcareui.ui.booking.BookingReviewActivity.EXTRA_SELECTED_PET, chosen);
+                Intent intent = new Intent(this, BookingReviewActivity.class);
+                intent.putExtra(BookingReviewActivity.EXTRA_CLINIC, clinicItem);
+                intent.putExtra(BookingReviewActivity.EXTRA_SELECTED_SERVICE, serviceItem);
+                intent.putExtra(BookingReviewActivity.EXTRA_SELECTED_DATE, dateItem);
+                intent.putExtra(BookingReviewActivity.EXTRA_SELECTED_TIME, timeSlotItem);
+                intent.putExtra(BookingReviewActivity.EXTRA_SELECTED_PET, chosen);
                 startActivity(intent);
             } else {
                 Toast.makeText(this, "Vui lòng chọn một bé để tiếp tục", Toast.LENGTH_SHORT).show();
@@ -388,23 +378,26 @@ public class MyPetsActivity extends AppCompatActivity {
             Intent intent = new Intent(this, MainActivity.class);
             intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
             startActivity(intent);
-            overridePendingTransition(R.anim.fade_scale_in, R.anim.fade_scale_out);
+            overridePendingTransition(0, 0);
+            finish();
+        });
+
+        binding.navClinics.setOnClickListener(v -> {
+            Intent intent = new Intent(this, ClinicListActivity.class);
+            intent.putExtra(ClinicListActivity.EXTRA_TAB_MODE, true);
+            startActivity(intent);
+            overridePendingTransition(0, 0);
             finish();
         });
 
         binding.navAppointments.setOnClickListener(v -> {
-            Intent intent = new Intent(this, com.example.petcareui.ui.appointments.MyAppointmentsActivity.class);
+            Intent intent = new Intent(this, MyAppointmentsActivity.class);
             startActivity(intent);
-            overridePendingTransition(R.anim.fade_scale_in, R.anim.fade_scale_out);
+            overridePendingTransition(0, 0);
+            finish();
         });
 
-        binding.navPets.setOnClickListener(v -> {
-            binding.scrollViewContent.smoothScrollTo(0, 0);
-        });
-
-        binding.navProfile.setOnClickListener(v -> {
-            Intent intent = new Intent(this, com.example.petcareui.ui.profile.ProfileActivity.class);
-            startActivity(intent);
-        });
+        binding.navPets.setOnClickListener(v ->
+                binding.scrollViewContent.smoothScrollTo(0, 0));
     }
 }

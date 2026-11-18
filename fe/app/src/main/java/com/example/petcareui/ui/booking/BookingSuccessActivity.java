@@ -136,9 +136,6 @@ public class BookingSuccessActivity extends AppCompatActivity {
         }
         binding.tvSuccessSubtitle.setText(clinicShort + " đã nhận yêu cầu của bạn. Lịch hẹn đang chờ phòng khám xác nhận.");
 
-        // Mã lịch hẹn
-        binding.tvBookingRef.setText("Mã lịch hẹn · " + bookingRef);
-
         // Thẻ tóm tắt: Dịch vụ
         binding.tvServiceName.setText(serviceItem.getName());
         binding.tvServiceDurationPrice.setText(serviceItem.getDuration() + " · " + serviceItem.getPrice());

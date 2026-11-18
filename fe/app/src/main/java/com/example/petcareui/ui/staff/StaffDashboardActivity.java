@@ -142,7 +142,7 @@ public class StaffDashboardActivity extends AppCompatActivity {
                     todayScheduleList.clear();
                     applyState("empty");
                     Toast.makeText(StaffDashboardActivity.this,
-                            "Không tải được dữ liệu lịch hẹn (Mã " + response.code() + ")",
+                            "Không tải được dữ liệu lịch hẹn",
                             Toast.LENGTH_SHORT).show();
                 }
             }
@@ -233,7 +233,6 @@ public class StaffDashboardActivity extends AppCompatActivity {
 
         for (StaffAppointmentItem item : pendingList) {
             ItemStaffPendingCardBinding cardBinding = ItemStaffPendingCardBinding.inflate(getLayoutInflater());
-            cardBinding.tvStaffApptRef.setText(item.getRef());
             cardBinding.ivStaffPetAvatar.setImageResource(item.getPetImgRes());
             cardBinding.tvStaffServiceTitle.setText(item.getService());
             cardBinding.tvStaffCustomerPet.setText(item.getCustomer() + " · " + item.getPet());
@@ -367,7 +366,7 @@ public class StaffDashboardActivity extends AppCompatActivity {
         if (!clinicName.isEmpty()) {
             clinicDisplay = !clinicArea.isEmpty() ? clinicName + " (" + clinicArea + ")" : clinicName;
         } else if (tokenManager.getClinicId() != null) {
-            clinicDisplay = "Phòng khám #" + tokenManager.getClinicId();
+            clinicDisplay = "Phòng khám thú y";
         } else {
             clinicDisplay = "Chưa gắn phòng khám";
         }
@@ -378,7 +377,7 @@ public class StaffDashboardActivity extends AppCompatActivity {
                         + "\nEmail: " + email
                         + "\nSố điện thoại: " + phone
                         + "\nPhòng khám: " + clinicDisplay
-                        + "\nVai trò: Nhân viên phòng khám (STAFF)")
+                        + "\nVai trò: Nhân viên phòng khám")
                 .setPositiveButton("Đóng", (dialog, which) -> dialog.dismiss())
                 .setNeutralButton("Chuyển sang Khách hàng", (dialog, which) -> {
                     Intent intent = new Intent(this, com.example.petcareui.MainActivity.class);

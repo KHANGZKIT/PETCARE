@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/rowPetHistory"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="?attr/selectableItemBackground"
+    android:clickable="true"
+    android:focusable="true"
+    android:gravity="center_vertical"
+    android:orientation="horizontal"
+    android:paddingTop="12dp"
+    android:paddingBottom="12dp">
+
+    <!-- Bên trái: Icon tròn nền Soft Peach #FCE9E2 -->
+    <FrameLayout
+        android:layout_width="42dp"
+        android:layout_height="42dp"
+        android:background="@drawable/bg_home_avatar_peach">
+
+        <ImageView
+            android:layout_width="18dp"
+            android:layout_height="18dp"
+            android:layout_gravity="center"
+            android:contentDescription="@null"
+            android:src="@drawable/ic_stethoscope"
+            app:tint="@color/ds_primary_dark" />
+    </FrameLayout>
+
+    <!-- Ở giữa: Tên dịch vụ (SemiBold) + Ngày khám (12sp, #6F6662) -->
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="12dp"
+        android:layout_marginEnd="10dp"
+        android:layout_weight="1"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/tvHistoryServiceName"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:ellipsize="end"
+            android:fontFamily="@font/plus_jakarta_sans_semibold"
+            android:lineSpacingMultiplier="1.2"
+            android:maxLines="2"
+            android:textColor="@color/ds_text_primary"
+            android:textSize="14.5sp"
+            tools:text="Khám sức khỏe tổng quát" />
+
+        <TextView
+            android:id="@+id/tvHistoryDate"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="2dp"
+            android:fontFamily="@font/plus_jakarta_sans_regular"
+            android:lineSpacingMultiplier="1.2"
+            android:textColor="@color/ds_text_secondary"
+            android:textSize="12sp"
+            tools:text="15/11/2026 · 09:00" />
+    </LinearLayout>
+
+    <!-- Bên phải: Chip trạng thái nền Mint #DCEDE4 chữ 'Hoàn thành' -->
+    <TextView
+        android:id="@+id/tvHistoryStatusChip"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/bg_pill_mint"
+        android:fontFamily="@font/plus_jakarta_sans_medium"
+        android:includeFontPadding="false"
+        android:paddingStart="10dp"
+        android:paddingTop="4dp"
+        android:paddingEnd="10dp"
+        android:paddingBottom="4dp"
+        android:text="Hoàn thành"
+        android:textColor="@color/ds_success"
+        android:textSize="12sp" />
+
+</LinearLayout>

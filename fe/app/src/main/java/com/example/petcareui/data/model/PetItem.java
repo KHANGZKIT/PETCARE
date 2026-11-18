@@ -13,6 +13,7 @@ public class PetItem implements Serializable {
     private String weight;
     private int imageResId;
     private boolean selected;
+    private String rawSpecies;
 
     public PetItem(String id, String name, String species, String breed, String age, String dob, String sex, String weight, int imageResId) {
         this.id = id;
@@ -77,5 +78,13 @@ public class PetItem implements Serializable {
 
     public void setSelected(boolean selected) {
         this.selected = selected;
+    }
+
+    public String getRawSpecies() {
+        return rawSpecies != null && !rawSpecies.trim().isEmpty() ? rawSpecies.trim() : species;
+    }
+
+    public void setRawSpecies(String rawSpecies) {
+        this.rawSpecies = rawSpecies;
     }
 }

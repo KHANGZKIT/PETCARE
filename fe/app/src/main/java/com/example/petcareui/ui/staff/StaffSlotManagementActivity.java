@@ -229,7 +229,7 @@ public class StaffSlotManagementActivity extends AppCompatActivity {
                         applyState("empty");
                     }
                     Toast.makeText(StaffSlotManagementActivity.this,
-                            "Không tải được khung giờ (Mã " + response.code() + ")",
+                            "Không tải được khung giờ",
                             Toast.LENGTH_SHORT).show();
                 }
             }

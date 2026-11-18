@@ -318,7 +318,6 @@ public class StaffAppointmentsActivity extends AppCompatActivity {
             boolean matchesSearch = searchQuery.isEmpty()
                     || item.getPet().toLowerCase().contains(searchQuery)
                     || item.getCustomer().toLowerCase().contains(searchQuery)
-                    || item.getRef().toLowerCase().contains(searchQuery)
                     || item.getService().toLowerCase().contains(searchQuery);
 
             if (matchesFilter && matchesSearch) {
@@ -367,7 +366,6 @@ public class StaffAppointmentsActivity extends AppCompatActivity {
         for (StaffAppointmentItem item : displayedList) {
             ItemStaffApptCardBinding cardBinding = ItemStaffApptCardBinding.inflate(getLayoutInflater());
 
-            cardBinding.tvStaffApptRef.setText(item.getRef());
             cardBinding.ivStaffPetAvatar.setImageResource(item.getPetImgRes());
             cardBinding.tvStaffServiceTitle.setText(item.getService());
             cardBinding.tvStaffCustomerPet.setText(item.getCustomer() + " · " + item.getPet());

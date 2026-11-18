@@ -14,7 +14,6 @@ import android.util.Patterns;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.LinearLayout;
-import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
@@ -276,8 +275,6 @@ public class RegisterActivity extends AppCompatActivity {
                         response.getClinicId()
                 );
                 tokenManager.saveUserPhone(binding.etPhone.getText().toString().trim());
-
-                Toast.makeText(RegisterActivity.this, "Tạo tài khoản thành công! Chào mừng " + response.getFullName(), Toast.LENGTH_SHORT).show();
 
                 Intent intent = new Intent(RegisterActivity.this, MainActivity.class);
                 intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);

@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/cardHomeClinic"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginTop="2dp"
+    android:layout_marginBottom="12dp"
+    android:background="@drawable/bg_home_card_borderless"
+    android:clickable="true"
+    android:elevation="1dp"
+    android:focusable="true"
+    android:gravity="top"
+    android:orientation="horizontal"
+    android:padding="16dp">
+
+    <com.google.android.material.imageview.ShapeableImageView
+        android:id="@+id/ivHomeClinicImage"
+        android:layout_width="72dp"
+        android:layout_height="72dp"
+        android:background="@color/ds_soft_peach"
+        android:contentDescription="@null"
+        android:scaleType="centerCrop"
+        android:src="@drawable/img_clinic_annhien"
+        app:shapeAppearanceOverlay="@style/RoundedCorner16"
+        app:strokeWidth="0dp" />
+
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="14dp"
+        android:layout_marginEnd="8dp"
+        android:layout_weight="1"
+        android:orientation="vertical">
+
+        <!-- Tên phòng khám: SemiBold (600) 15sp, maxLines=2, lineSpacingMultiplier=1.2 -->
+        <TextView
+            android:id="@+id/tvHomeClinicName"
+            style="@style/TextAppearance.PetCare.CardTitle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:ellipsize="end"
+            android:lineSpacingMultiplier="1.2"
+            android:maxLines="2"
+            tools:text="Phòng khám Thú y PetCare Cầu Diễn" />
+
+        <!-- Tầng 1: Địa chỉ phòng khám (Regular 400 · 13sp · #6F6662) -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="6dp"
+            android:gravity="top"
+            android:orientation="horizontal">
+
+            <ImageView
+                android:layout_width="14dp"
+                android:layout_height="14dp"
+                android:layout_marginTop="3dp"
+                android:contentDescription="@null"
+                android:src="@drawable/ic_map_pin"
+                app:tint="@color/ds_primary" />
+
+            <TextView
+                android:id="@+id/tvHomeClinicAddress"
+                style="@style/TextAppearance.PetCare.Body"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="6dp"
+                android:ellipsize="end"
+                android:lineSpacingMultiplier="1.2"
+                android:maxLines="2"
+                tools:text="Số 298 Đường Cầu Diễn, Phường Minh Khai" />
+        </LinearLayout>
+
+        <!-- Tầng 2: Giờ mở cửa tách biệt (Regular 400 · 13sp · #6F6662) -->
+        <LinearLayout
+            android:id="@+id/layoutHomeClinicHours"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
+            <ImageView
+                android:layout_width="13.5dp"
+                android:layout_height="13.5dp"
+                android:contentDescription="@null"
+                android:src="@drawable/ic_clock"
+                app:tint="@color/ds_text_secondary" />
+
+            <TextView
+                android:id="@+id/tvHomeClinicHours"
+                style="@style/TextAppearance.PetCare.Body"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="6dp"
+                android:ellipsize="end"
+                android:lineSpacingMultiplier="1.2"
+                android:maxLines="2"
+                tools:text="24/7 Cấp cứu &amp; Khám chữa" />
+        </LinearLayout>
+
+        <!-- Huy hiệu trạng thái độc lập: Medium (500) 12sp, wrap_content, includeFontPadding=false, padding dọc 5dp -->
+        <TextView
+            android:id="@+id/tvHomeClinicStatus"
+            style="@style/TextAppearance.PetCare.Caption"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:background="@drawable/bg_badge_status_success_flat"
+            android:includeFontPadding="false"
+            android:paddingStart="10dp"
+            android:paddingTop="5dp"
+            android:paddingEnd="10dp"
+            android:paddingBottom="5dp"
+            android:textColor="@color/status_success_ink"
+            tools:text="● Đang hoạt động" />
+    </LinearLayout>
+
+    <ImageView
+        android:layout_width="18dp"
+        android:layout_height="18dp"
+        android:layout_gravity="center_vertical"
+        android:alpha="0.55"
+        android:contentDescription="@null"
+        android:src="@drawable/ic_chevron_right"
+        app:tint="@color/ds_text_secondary" />
+
+</LinearLayout>

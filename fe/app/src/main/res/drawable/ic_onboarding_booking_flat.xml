@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="240dp"
+    android:height="220dp"
+    android:viewportWidth="240"
+    android:viewportHeight="220">
+
+    <!-- Warm Butter Soft Ambient Circle (Minimalist Headspace/Flo depth, borderless) -->
+    <path
+        android:fillColor="#9AF6E6A9"
+        android:pathData="M120,112m-78,0a78,78 0 1,0 156,0a78,78 0 1,0 -156,0" />
+
+    <!-- Subtle Floating Decorative Dots (Terracotta & Mint) -->
+    <path
+        android:fillColor="#40D97B60"
+        android:pathData="M42,56m-6,0a6,6 0 1,0 12,0a6,6 0 1,0 -12,0" />
+    <path
+        android:fillColor="#90DCEDE4"
+        android:pathData="M202,68m-8,0a8,8 0 1,0 16,0a8,8 0 1,0 -16,0" />
+    <path
+        android:fillColor="#30B95740"
+        android:pathData="M50,174m-4.5,0a4.5,4.5 0 1,0 9,0a4.5,4.5 0 1,0 -9,0" />
+
+    <!-- Soft Warm Drop Shadow Under Calendar Card -->
+    <path
+        android:fillColor="#149A422D"
+        android:pathData="M62,52 L178,52 A22,22 0 0,1 200,74 L200,164 A22,22 0 0,1 178,186 L62,186 A22,22 0 0,1 40,164 L40,74 A22,22 0 0,1 62,52 Z" />
+
+    <!-- Main Pure White Veterinary Booking Card (Rounded 22dp, Zero Black Outline) -->
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M62,46 L178,46 A22,22 0 0,1 200,68 L200,158 A22,22 0 0,1 178,180 L62,180 A22,22 0 0,1 40,158 L40,68 A22,22 0 0,1 62,46 Z" />
+
+    <!-- Calendar Top Header Band (Coral Terracotta #D97B60) -->
+    <path
+        android:fillColor="#D97B60"
+        android:pathData="M62,46 L178,46 A22,22 0 0,1 200,68 L200,84 L40,84 L40,68 A22,22 0 0,1 62,46 Z" />
+
+    <!-- Minimal Rounded Calendar Rings (Warm Cream #FFF9F5) -->
+    <path
+        android:fillColor="#FFF9F5"
+        android:pathData="M82,36 L86,36 A5,5 0 0,1 91,41 L91,55 A5,5 0 0,1 86,60 L82,60 A5,5 0 0,1 77,55 L77,41 A5,5 0 0,1 82,36 Z" />
+    <path
+        android:fillColor="#FFF9F5"
+        android:pathData="M154,36 L158,36 A5,5 0 0,1 163,41 L163,55 A5,5 0 0,1 158,60 L154,60 A5,5 0 0,1 149,55 L149,41 A5,5 0 0,1 154,36 Z" />
+
+    <!-- Header Title Pill Placeholder (Soft Peach on Coral) -->
+    <path
+        android:fillColor="#66FFFFFF"
+        android:pathData="M98,62 L142,62 A4,4 0 0,1 146,66 L146,68 A4,4 0 0,1 142,72 L98,72 A4,4 0 0,1 94,68 L94,66 A4,4 0 0,1 98,62 Z" />
+
+    <!-- Row 1 Time Slot Pills -->
+    <!-- Slot 1: Soft Cream Available -->
+    <path
+        android:fillColor="#F6F2EE"
+        android:pathData="M62,100 L108,100 A9,9 0 0,1 117,109 L117,117 A9,9 0 0,1 108,126 L62,126 A9,9 0 0,1 53,117 L53,109 A9,9 0 0,1 62,100 Z" />
+    <path
+        android:fillColor="#CFC6BE"
+        android:pathData="M70,110 L100,110 A3,3 0 0,1 103,113 L103,113 A3,3 0 0,1 100,116 L70,116 A3,3 0 0,1 67,113 L67,113 A3,3 0 0,1 70,110 Z" />
+
+    <!-- Slot 2: Active Selected Time Slot (Coral Dark #B95740) -->
+    <path
+        android:fillColor="#B95740"
+        android:pathData="M132,100 L178,100 A9,9 0 0,1 187,109 L187,117 A9,9 0 0,1 178,126 L132,126 A9,9 0 0,1 123,117 L123,109 A9,9 0 0,1 132,100 Z" />
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M140,110 L170,110 A3,3 0 0,1 173,113 L173,113 A3,3 0 0,1 170,116 L140,116 A3,3 0 0,1 137,113 L137,113 A3,3 0 0,1 140,110 Z" />
+
+    <!-- Row 2 Time Slot Pills -->
+    <!-- Slot 3: Soft Mint Available (#DCEDE4) -->
+    <path
+        android:fillColor="#DCEDE4"
+        android:pathData="M62,138 L108,138 A9,9 0 0,1 117,147 L117,155 A9,9 0 0,1 108,164 L62,164 A9,9 0 0,1 53,155 L53,147 A9,9 0 0,1 62,138 Z" />
+    <path
+        android:fillColor="#2E7D5B"
+        android:pathData="M70,148 L100,148 A3,3 0 0,1 103,151 L103,151 A3,3 0 0,1 100,154 L70,154 A3,3 0 0,1 67,151 L67,151 A3,3 0 0,1 70,148 Z" />
+
+    <!-- Slot 4: Soft Cream Available -->
+    <path
+        android:fillColor="#F6F2EE"
+        android:pathData="M132,138 L166,138 A9,9 0 0,1 175,147 L175,155 A9,9 0 0,1 166,164 L132,164 A9,9 0 0,1 123,155 L123,147 A9,9 0 0,1 132,138 Z" />
+    <path
+        android:fillColor="#CFC6BE"
+        android:pathData="M138,148 L160,148 A3,3 0 0,1 163,151 L163,151 A3,3 0 0,1 160,154 L138,154 A3,3 0 0,1 135,151 L135,151 A3,3 0 0,1 138,148 Z" />
+
+    <!-- Floating Fast-Clock Badge (Top-Left: "30 giây", Pure Flat) -->
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M48,82m-22,0a22,22 0 1,0 44,0a22,22 0 1,0 -44,0" />
+    <path
+        android:fillColor="#FCE9E2"
+        android:pathData="M48,82m-16,0a16,16 0 1,0 32,0a16,16 0 1,0 -32,0" />
+    <path
+        android:fillColor="#00000000"
+        android:pathData="M48,73 L48,82 L55,86"
+        android:strokeColor="#B95740"
+        android:strokeLineCap="round"
+        android:strokeLineJoin="round"
+        android:strokeWidth="3" />
+
+    <!-- Floating Instant Confirmed Checkmark Badge (Bottom-Right: Mint + Emerald #2E7D5B) -->
+    <path
+        android:fillColor="#DCEDE4"
+        android:pathData="M186,166m-28,0a28,28 0 1,0 56,0a28,28 0 1,0 -56,0" />
+    <path
+        android:fillColor="#2E7D5B"
+        android:pathData="M186,166m-20,0a20,20 0 1,0 40,0a20,20 0 1,0 -40,0" />
+    <path
+        android:fillColor="#00000000"
+        android:pathData="M177,166.5 L183.5,173 L196,160"
+        android:strokeColor="#FFFFFF"
+        android:strokeLineCap="round"
+        android:strokeLineJoin="round"
+        android:strokeWidth="3.8" />
+
+    <!-- Cute Floating Minimal Paw Accent (Top-Right, Soft Peach & Coral) -->
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M196,42m-17,0a17,17 0 1,0 34,0a17,17 0 1,0 -34,0" />
+    <!-- Main Paw Pad -->
+    <path
+        android:fillColor="#D97B60"
+        android:pathData="M196,44 C191,44 189,47.5 190.5,50 C191.5,51.5 200.5,51.5 201.5,50 C203,47.5 201,44 196,44 Z" />
+    <!-- 3 Minimal Toe Beans -->
+    <path
+        android:fillColor="#D97B60"
+        android:pathData="M189.5,39.5m-2.4,0a2.4,2.8 0 1,0 4.8,0a2.4,2.8 0 1,0 -4.8,0" />
+    <path
+        android:fillColor="#D97B60"
+        android:pathData="M196,37m-2.5,0a2.5,3 0 1,0 5,0a2.5,3 0 1,0 -5,0" />
+    <path
+        android:fillColor="#D97B60"
+        android:pathData="M202.5,39.5m-2.4,0a2.4,2.8 0 1,0 4.8,0a2.4,2.8 0 1,0 -4.8,0" />
+</vector>
