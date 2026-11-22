@@ -43,6 +43,7 @@ import retrofit2.Response;
 public class ClinicListActivity extends AppCompatActivity {
 
     public static final String EXTRA_TAB_MODE = "extra_tab_mode";
+    public static final String EXTRA_INITIAL_FILTER = "extra_initial_filter";
     private static final int REQ_LOCATION = 1001;
     // Tọa độ gốc mặc định: Đại học Công nghiệp Hà Nội (HaUI - Bắc Từ Liêm)
     private static final double DEFAULT_LAT = 21.0537;
@@ -85,6 +86,16 @@ public class ClinicListActivity extends AppCompatActivity {
         requestLocationPermission();
         updateUserLocation();
         setupListeners();
+
+        String initialFilter = getIntent().getStringExtra(EXTRA_INITIAL_FILTER);
+        if ("emergency".equalsIgnoreCase(initialFilter)) {
+            currentFilterMode = "emergency";
+            setActiveChip(binding.chipEmergency);
+        } else {
+            currentFilterMode = "all";
+            setActiveChip(binding.chipAll);
+        }
+
         loadClinicsFromApi();
     }
 
@@ -200,7 +211,7 @@ public class ClinicListActivity extends AppCompatActivity {
                 float distKm = result[0] / 1000f;
                 c.setDistanceKm(distKm);
                 if (distKm < 0.2f) {
-                    c.setDistance("Gần đây · < 200m");
+                    c.setDistance("< 200m");
                 } else if (distKm < 1.0f) {
                     c.setDistance(String.format(Locale.US, "%.0f m", result[0]));
                 } else {
@@ -438,13 +449,15 @@ public class ClinicListActivity extends AppCompatActivity {
 
             if (c instanceof TextView) {
                 TextView tv = (TextView) c;
-                tv.setTextColor(ContextCompat.getColor(this, isActive ? R.color.white : R.color.text_muted));
+                tv.setTextColor(ContextCompat.getColor(this, isActive ? R.color.ds_primary : R.color.ds_text_secondary));
                 com.example.petcareui.utils.UiMotionUtils.applyFont(
-                        tv, isActive ? R.font.open_sans_semibold : R.font.open_sans_regular);
+                        tv, isActive ? R.font.open_sans_semibold : R.font.open_sans_medium);
             } else if (c == binding.chipNearby) {
-                binding.tvChipNearby.setTextColor(ContextCompat.getColor(this, isActive ? R.color.white : R.color.text_muted));
+                int tint = ContextCompat.getColor(this, isActive ? R.color.ds_primary : R.color.ds_text_secondary);
+                binding.tvChipNearby.setTextColor(tint);
+                binding.ivChipNearby.setColorFilter(tint);
                 com.example.petcareui.utils.UiMotionUtils.applyFont(
-                        binding.tvChipNearby, isActive ? R.font.open_sans_semibold : R.font.open_sans_regular);
+                        binding.tvChipNearby, isActive ? R.font.open_sans_semibold : R.font.open_sans_medium);
             }
         }
     }
@@ -472,24 +485,23 @@ public class ClinicListActivity extends AppCompatActivity {
             int thumbRes = CLINIC_THUMBNAILS[i % CLINIC_THUMBNAILS.length];
             rowBinding.ivClinicImage.setImageResource(thumbRes);
 
-            rowBinding.tvClinicName.setText(clinic.getName());
+            rowBinding.tvClinicName.setText(formatShortClinicName(clinic.getName()));
             rowBinding.tvClinicAddress.setText(clinic.getAddress());
             rowBinding.tvClinicRating.setText(String.valueOf(clinic.getRating()));
-            rowBinding.tvClinicMeta.setText(" · " + clinic.getReviews() + " đánh giá · " + clinic.getDistance());
+            rowBinding.tvClinicMeta.setText("(" + clinic.getReviews() + ") · " + clinic.getDistance());
             rowBinding.ivClinicImage.setImageResource(clinic.getImageResId());
             rowBinding.ivClinicImage.setColorFilter(null);
 
             if (clinic.isOpen()) {
-                rowBinding.tvClinicStatusBadge.setText("● ĐANG MỞ CỬA");
-                rowBinding.tvClinicStatusBadge.setBackgroundResource(R.drawable.bg_badge_open);
-                rowBinding.tvClinicStatusBadge.setTextColor(ContextCompat.getColor(this, R.color.status_success_ink));
+                rowBinding.tvClinicStatusBadge.setText("● Đang mở cửa");
+                rowBinding.tvClinicStatusBadge.setTextColor(ContextCompat.getColor(this, R.color.ds_success));
             } else {
-                rowBinding.tvClinicStatusBadge.setText("ĐÃ ĐÓNG CỬA");
-                rowBinding.tvClinicStatusBadge.setBackgroundResource(R.drawable.bg_badge_closed);
-                rowBinding.tvClinicStatusBadge.setTextColor(ContextCompat.getColor(this, R.color.text_muted));
+                rowBinding.tvClinicStatusBadge.setText("● Đã đóng cửa");
+                rowBinding.tvClinicStatusBadge.setTextColor(ContextCompat.getColor(this, R.color.ds_text_secondary));
             }
 
-            rowBinding.tvClinicHours.setText(clinic.getHours());
+            rowBinding.tvClinicHours.setText("· " + formatShortHours(clinic.getHours()));
+            rowBinding.dividerClinicRow.setVisibility(i == list.size() - 1 ? View.GONE : View.VISIBLE);
 
             UiMotionUtils.attachSpringTouch(rowBinding.getRoot());
 
@@ -504,6 +516,32 @@ public class ClinicListActivity extends AppCompatActivity {
 
         // Hiệu ứng đổ danh sách tuần tự (Staggered Animation)
         UiMotionUtils.animateStaggeredChildren(binding.containerClinicsList, 30);
+    }
+
+    private String formatShortClinicName(String raw) {
+        if (raw == null) return "Phòng khám thú y";
+        String s = raw.trim();
+        if (s.toLowerCase(Locale.ROOT).startsWith("phòng khám thú y ")) {
+            return "Thú y " + s.substring("Phòng khám Thú y ".length()).trim();
+        }
+        return s;
+    }
+
+    private String formatShortHours(String raw) {
+        if (raw == null || raw.trim().isEmpty()) return "08:00 - 20:00";
+        String s = raw.trim();
+        if (s.contains("24/7")) {
+            return "24/7 Cấp cứu";
+        }
+        int parenIdx = s.indexOf('(');
+        if (parenIdx > 0) {
+            s = s.substring(0, parenIdx).trim();
+        }
+        int ampIdx = s.indexOf('&');
+        if (ampIdx > 0) {
+            s = s.substring(0, ampIdx).trim();
+        }
+        return s;
     }
 
     public void showLoading() {

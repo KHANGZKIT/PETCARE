@@ -24,7 +24,7 @@
             android:layout_gravity="start|center_vertical"
             android:background="@drawable/bg_home_icon_btn_white"
             android:contentDescription="Quay lại"
-            android:elevation="1dp"
+            android:elevation="0dp"
             android:padding="10dp"
             android:scaleType="fitCenter"
             android:src="@drawable/ic_chevron_left"
@@ -159,7 +159,7 @@
             android:layout_marginTop="20dp"
             android:layout_marginEnd="20dp"
             android:background="@drawable/bg_form_card_24"
-            android:elevation="1dp"
+            android:elevation="0dp"
             android:orientation="vertical"
             android:padding="20dp">
 

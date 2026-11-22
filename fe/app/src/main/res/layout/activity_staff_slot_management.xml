@@ -26,7 +26,7 @@
             android:layout_height="42dp"
             android:background="@drawable/bg_btn_outline"
             android:clickable="true"
-            android:elevation="2dp"
+            android:elevation="0dp"
             android:focusable="true">
 
             <ImageView
@@ -75,7 +75,7 @@
             android:layout_height="42dp"
             android:background="@drawable/bg_service_icon"
             android:clickable="true"
-            android:elevation="2dp"
+            android:elevation="0dp"
             android:focusable="true">
 
             <ImageView
@@ -483,7 +483,7 @@
         android:layout_height="68dp"
         android:layout_alignParentBottom="true"
         android:background="@color/surface_card"
-        android:elevation="12dp"
+        android:elevation="0dp"
         android:gravity="center_vertical"
         android:orientation="horizontal"
         android:paddingTop="4dp"

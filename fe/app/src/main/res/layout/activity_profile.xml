@@ -718,7 +718,7 @@
         android:layout_width="match_parent"
         android:layout_height="64dp"
         android:background="@color/surface_card"
-        android:elevation="8dp"
+        android:elevation="0dp"
         android:gravity="center_vertical"
         android:orientation="horizontal">
 

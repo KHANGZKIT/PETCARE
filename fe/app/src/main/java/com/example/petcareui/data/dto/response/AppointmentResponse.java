@@ -48,26 +48,10 @@ public class AppointmentResponse implements Serializable {
     private int resolvePetAvatar() {
         String lowerSpec = petSpecies != null ? petSpecies.toLowerCase() : "";
         String lowerName = petName != null ? petName.toLowerCase() : "";
-        if (lowerSpec.contains("mèo") || lowerSpec.contains("cat") || lowerName.contains("bông") || lowerName.contains("mimi")) {
+        if (lowerSpec.contains("mèo") || lowerSpec.contains("cat") || lowerName.contains("bông") || lowerName.contains("mimi") || lowerName.contains("miu")) {
             return R.drawable.img_pet_bong;
         }
-        if (lowerSpec.contains("shiba") || lowerName.contains("kiki")) {
-            return R.drawable.ic_avatar_shiba;
-        }
-        if (lowerSpec.contains("golden") || lowerName.contains("lucky")) {
-            return R.drawable.ic_avatar_golden;
-        }
-        if (lowerSpec.contains("corgi") || lowerSpec.contains("beagle") || lowerName.contains("lựu") || lowerName.contains("max")) {
-            return R.drawable.ic_avatar_corgi;
-        }
-        int[] dogAvatars = new int[]{
-                R.drawable.img_pet_mochi,
-                R.drawable.ic_avatar_shiba,
-                R.drawable.ic_avatar_golden,
-                R.drawable.ic_avatar_corgi
-        };
-        long seed = (petId != null ? petId : (id != null ? id : 0L));
-        return dogAvatars[(int) (Math.abs(seed) % dogAvatars.length)];
+        return R.drawable.mascot_corgi_running;
     }
 
     public AppointmentItem toAppointmentItem() {

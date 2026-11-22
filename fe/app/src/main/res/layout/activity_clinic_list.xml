@@ -21,11 +21,11 @@
 
         <FrameLayout
             android:id="@+id/btnBack"
-            android:layout_width="42dp"
-            android:layout_height="42dp"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
             android:background="@drawable/bg_btn_outline"
             android:clickable="true"
-            android:elevation="2dp"
+            android:elevation="0dp"
             android:focusable="true">
 
             <ImageView
@@ -44,13 +44,16 @@
             android:orientation="vertical">
 
             <TextView
+                style="@style/TextAppearance.PetCare.Title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:fontFamily="@font/open_sans_bold"
                 android:letterSpacing="-0.01"
                 android:text="Khám phá Phòng khám"
-                android:textColor="@color/text_foreground"
-                android:fontFamily="@font/open_sans_bold"
-                android:textSize="19sp" />
+                android:textColor="@color/ds_text_primary"
+                android:textSize="19sp"
+                android:textStyle="bold"
+                app:fontFamily="@font/open_sans_bold" />
 
             <TextView
                 android:id="@+id/tvLocationSubtitle"
@@ -80,20 +83,20 @@
 
             <LinearLayout
                 android:layout_width="0dp"
-                android:layout_height="48dp"
+                android:layout_height="46dp"
                 android:layout_weight="1"
                 android:background="@drawable/bg_input_field"
-                android:elevation="2dp"
+                android:elevation="0dp"
                 android:gravity="center_vertical"
                 android:orientation="horizontal"
-                android:paddingStart="16dp"
-                android:paddingEnd="16dp">
+                android:paddingStart="14dp"
+                android:paddingEnd="14dp">
 
                 <ImageView
-                    android:layout_width="18dp"
-                    android:layout_height="18dp"
+                    android:layout_width="17dp"
+                    android:layout_height="17dp"
                     android:src="@drawable/ic_search"
-                    app:tint="@color/brand_primary"
+                    app:tint="@color/ds_primary"
                     tools:ignore="ContentDescription" />
 
                 <EditText
@@ -105,37 +108,37 @@
                     android:hint="Tìm theo tên, khu vực..."
                     android:importantForAutofill="no"
                     android:singleLine="true"
-                    android:textColor="@color/text_foreground"
-                    android:textColorHint="@color/text_muted"
+                    android:textColor="@color/ds_text_primary"
+                    android:textColorHint="@color/ds_text_secondary"
                     android:fontFamily="@font/open_sans_regular"
-                    android:textSize="14sp" />
+                    android:textSize="13.5sp" />
             </LinearLayout>
 
             <FrameLayout
                 android:id="@+id/btnFilter"
-                android:layout_width="48dp"
-                android:layout_height="48dp"
-                android:layout_marginStart="10dp"
+                android:layout_width="46dp"
+                android:layout_height="46dp"
+                android:layout_marginStart="8dp"
                 android:background="@drawable/bg_input_field"
                 android:clickable="true"
-                android:elevation="2dp"
+                android:elevation="0dp"
                 android:focusable="true">
 
                 <ImageView
-                    android:layout_width="18dp"
-                    android:layout_height="18dp"
+                    android:layout_width="17dp"
+                    android:layout_height="17dp"
                     android:layout_gravity="center"
                     android:src="@drawable/ic_sliders"
-                    app:tint="@color/brand_ink"
+                    app:tint="@color/ds_text_primary"
                     tools:ignore="ContentDescription" />
             </FrameLayout>
         </LinearLayout>
 
-        <!-- Thanh cuộn ngang các Chip bộ lọc -->
+        <!-- Thanh cuộn ngang các Chip bộ lọc (Warm Tactile: #FDF0EB + viền 1.5dp #C85428) -->
         <HorizontalScrollView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="12dp"
+            android:layout_marginTop="10dp"
             android:clipToPadding="false"
             android:scrollbars="none">
 
@@ -147,46 +150,48 @@
                 <TextView
                     android:id="@+id/chipAll"
                     android:layout_width="wrap_content"
-                    android:layout_height="36dp"
-                    android:background="@drawable/bg_chip_inactive"
+                    android:layout_height="34dp"
+                    android:background="@drawable/bg_chip_active"
                     android:gravity="center"
-                    android:paddingStart="14dp"
-                    android:paddingEnd="14dp"
+                    android:paddingStart="13dp"
+                    android:paddingEnd="13dp"
                     android:text="Tất cả"
-                    android:textColor="@color/text_muted"
-                    android:fontFamily="@font/open_sans_medium"
+                    android:textColor="@color/ds_primary"
+                    android:fontFamily="@font/open_sans_semibold"
                     android:textSize="12.5sp" />
 
                 <TextView
                     android:id="@+id/chipOpen"
                     android:layout_width="wrap_content"
-                    android:layout_height="36dp"
+                    android:layout_height="34dp"
                     android:layout_marginStart="8dp"
-                    android:background="@drawable/bg_chip_active"
+                    android:background="@drawable/bg_chip_inactive"
                     android:gravity="center"
-                    android:paddingStart="14dp"
-                    android:paddingEnd="14dp"
-                    android:text="🟢 Đang mở cửa"
-                    android:textColor="@color/white"
+                    android:paddingStart="13dp"
+                    android:paddingEnd="13dp"
+                    android:text="Đang mở cửa"
+                    android:textColor="@color/ds_text_secondary"
                     android:fontFamily="@font/open_sans_medium"
                     android:textSize="12.5sp" />
 
                 <LinearLayout
                     android:id="@+id/chipNearby"
                     android:layout_width="wrap_content"
-                    android:layout_height="36dp"
+                    android:layout_height="34dp"
                     android:layout_marginStart="8dp"
                     android:background="@drawable/bg_chip_inactive"
                     android:gravity="center"
                     android:orientation="horizontal"
-                    android:paddingStart="14dp"
-                    android:paddingEnd="14dp">
+                    android:paddingStart="13dp"
+                    android:paddingEnd="13dp">
 
                     <ImageView
+                        android:id="@+id/ivChipNearby"
                         android:layout_width="13dp"
                         android:layout_height="13dp"
                         android:layout_marginEnd="4dp"
                         android:src="@drawable/ic_map_pin"
+                        app:tint="@color/ds_text_secondary"
                         tools:ignore="ContentDescription" />
 
                     <TextView
@@ -194,7 +199,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Gần tôi"
-                        android:textColor="@color/text_muted"
+                        android:textColor="@color/ds_text_secondary"
                         android:fontFamily="@font/open_sans_medium"
                         android:textSize="12.5sp" />
                 </LinearLayout>
@@ -202,14 +207,14 @@
                 <TextView
                     android:id="@+id/chipEmergency"
                     android:layout_width="wrap_content"
-                    android:layout_height="36dp"
+                    android:layout_height="34dp"
                     android:layout_marginStart="8dp"
                     android:background="@drawable/bg_chip_inactive"
                     android:gravity="center"
-                    android:paddingStart="14dp"
-                    android:paddingEnd="14dp"
+                    android:paddingStart="13dp"
+                    android:paddingEnd="13dp"
                     android:text="Cấp cứu 24/7"
-                    android:textColor="@color/text_muted"
+                    android:textColor="@color/ds_text_secondary"
                     android:fontFamily="@font/open_sans_medium"
                     android:textSize="12.5sp" />
             </LinearLayout>
@@ -271,12 +276,13 @@
                         android:textSize="12.5sp" />
                 </RelativeLayout>
 
-                <!-- Danh sách các thẻ phòng khám -->
+                <!-- Danh sách phòng khám phẳng nguyên khối có viền 1dp #E6DFD5 -->
                 <LinearLayout
                     android:id="@+id/containerClinicsList"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:clipToPadding="false"
+                    android:background="@drawable/bg_home_card_static"
+                    android:clipToOutline="true"
                     android:orientation="vertical" />
 
                 <!-- Nút Xem thêm phòng khám -->
@@ -284,10 +290,10 @@
                     android:id="@+id/btnLoadMore"
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/button_height_md"
-                    android:layout_marginTop="4dp"
+                    android:layout_marginTop="12dp"
                     android:background="@drawable/bg_btn_outline"
                     android:clickable="true"
-                    android:elevation="1dp"
+                    android:elevation="0dp"
                     android:focusable="true">
 
                     <TextView
@@ -512,20 +518,15 @@
         android:id="@+id/layoutBottomNavContainer"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/ds_surface"
-        android:elevation="12dp"
+        android:background="@drawable/bg_bottom_nav_bar"
+        android:elevation="0dp"
         android:orientation="vertical"
         android:visibility="gone">
-
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:background="@color/ds_border" />
 
         <LinearLayout
             android:id="@+id/bottomNavigation"
             android:layout_width="match_parent"
-            android:layout_height="64dp"
+            android:layout_height="62dp"
             android:gravity="center_vertical"
             android:orientation="horizontal">
 
@@ -547,7 +548,8 @@
                     <ImageView
                         android:layout_width="19dp"
                         android:layout_height="19dp"
-                        android:layout_gravity="center"
+                        android:layout_gravity="center_horizontal|bottom"
+                        android:layout_marginBottom="2dp"
                         android:contentDescription="@null"
                         android:src="@drawable/ic_home"
                         app:tint="@color/ds_text_secondary" />
@@ -583,7 +585,8 @@
                     <ImageView
                         android:layout_width="19dp"
                         android:layout_height="19dp"
-                        android:layout_gravity="center"
+                        android:layout_gravity="center_horizontal|bottom"
+                        android:layout_marginBottom="2dp"
                         android:contentDescription="@null"
                         android:src="@drawable/ic_stethoscope"
                         app:tint="@color/ds_primary_dark" />
@@ -618,7 +621,8 @@
                     <ImageView
                         android:layout_width="19dp"
                         android:layout_height="19dp"
-                        android:layout_gravity="center"
+                        android:layout_gravity="center_horizontal|bottom"
+                        android:layout_marginBottom="2dp"
                         android:contentDescription="@null"
                         android:src="@drawable/ic_calendar_days"
                         app:tint="@color/ds_text_secondary" />
@@ -653,7 +657,8 @@
                     <ImageView
                         android:layout_width="19dp"
                         android:layout_height="19dp"
-                        android:layout_gravity="center"
+                        android:layout_gravity="center_horizontal|bottom"
+                        android:layout_marginBottom="2dp"
                         android:contentDescription="@null"
                         android:src="@drawable/ic_paw"
                         app:tint="@color/ds_text_secondary" />

@@ -5,20 +5,20 @@
         <selector>
             <item android:state_pressed="true">
                 <shape android:shape="rectangle">
-                    <solid android:color="#9D4530" />
-                    <corners android:radius="@dimen/radius_button_pill" />
+                    <solid android:color="@color/ds_primary_pressed" />
+                    <corners android:radius="12dp" />
                 </shape>
             </item>
             <item android:state_enabled="false">
                 <shape android:shape="rectangle">
-                    <solid android:color="#D8CEC9" />
-                    <corners android:radius="@dimen/radius_button_pill" />
+                    <solid android:color="#D8CEC2" />
+                    <corners android:radius="12dp" />
                 </shape>
             </item>
             <item>
                 <shape android:shape="rectangle">
-                    <solid android:color="@color/ds_primary_dark" />
-                    <corners android:radius="@dimen/radius_button_pill" />
+                    <solid android:color="@color/ds_primary" />
+                    <corners android:radius="12dp" />
                 </shape>
             </item>
         </selector>

@@ -13,6 +13,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_above="@id/layoutBottomNavContainer"
+        android:clipChildren="false"
         android:clipToPadding="false"
         android:fillViewport="true"
         android:scrollbars="none">
@@ -24,214 +25,430 @@
             android:clipChildren="false"
             android:clipToPadding="false"
             android:orientation="vertical"
-            android:paddingTop="14dp"
-            android:paddingBottom="32dp">
+            android:paddingTop="12dp"
+            android:paddingBottom="28dp">
 
             <!-- ============================================================ -->
-            <!-- 1. HEADER: Display Bold (700 · 22sp) + Body Regular (400)    -->
+            <!-- 1. HEADER: Compact 1-Row Utility Bar (Location + Bell + LH)  -->
             <!-- ============================================================ -->
             <LinearLayout
                 android:id="@+id/sectionHeader"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:clipChildren="false"
-                android:clipToPadding="false"
-                android:gravity="center_vertical"
-                android:orientation="horizontal"
+                android:orientation="vertical"
                 android:paddingStart="20dp"
                 android:paddingEnd="20dp">
 
                 <LinearLayout
-                    android:layout_width="0dp"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginEnd="12dp"
-                    android:layout_weight="1"
-                    android:orientation="vertical">
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
+
+                    <!-- Location Selector (Utility Pill-free tactile row) -->
+                    <LinearLayout
+                        android:id="@+id/btnHomeLocation"
+                        android:layout_width="0dp"
+                        android:layout_height="40dp"
+                        android:layout_marginEnd="10dp"
+                        android:layout_weight="1"
+                        android:background="?attr/selectableItemBackground"
+                        android:clickable="true"
+                        android:focusable="true"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal">
+
+                        <ImageView
+                            android:layout_width="16dp"
+                            android:layout_height="16dp"
+                            android:contentDescription="@null"
+                            android:src="@drawable/ic_map_pin"
+                            app:tint="@color/ds_primary" />
+
+                        <TextView
+                            android:id="@+id/tvHomeLocation"
+                            style="@style/TextAppearance.PetCare.CardTitle"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="6dp"
+                            android:ellipsize="end"
+                            android:fontFamily="@font/open_sans_semibold"
+                            android:maxLines="1"
+                            android:text="ĐH Công nghiệp Hà Nội"
+                            android:textColor="@color/ds_text_primary"
+                            android:textSize="14.5sp"
+                            app:fontFamily="@font/open_sans_semibold" />
+
+                        <ImageView
+                            android:layout_width="14dp"
+                            android:layout_height="14dp"
+                            android:layout_marginStart="4dp"
+                            android:contentDescription="@null"
+                            android:src="@drawable/ic_chevron_down"
+                            app:tint="@color/ds_text_secondary" />
+                    </LinearLayout>
+
+                    <!-- Nút Chuông thông báo (40dp tròn, 1dp viền #E6DFD5, 0 bóng đổ) -->
+                    <FrameLayout
+                        android:id="@+id/btnNotification"
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
+                        android:layout_marginEnd="8dp"
+                        android:background="@drawable/bg_home_icon_btn_white"
+                        android:clickable="true"
+                        android:contentDescription="Thông báo"
+                        android:elevation="0dp"
+                        android:focusable="true">
+
+                        <ImageView
+                            android:layout_width="18dp"
+                            android:layout_height="18dp"
+                            android:layout_gravity="center"
+                            android:contentDescription="@null"
+                            android:src="@drawable/ic_bell"
+                            app:tint="@color/ds_text_primary" />
+
+                        <View
+                            android:id="@+id/viewNotificationBadge"
+                            android:layout_width="7dp"
+                            android:layout_height="7dp"
+                            android:layout_gravity="top|end"
+                            android:layout_marginTop="9dp"
+                            android:layout_marginEnd="9dp"
+                            android:background="@drawable/bg_halo_butter"
+                            android:backgroundTint="@color/ds_primary" />
+                    </FrameLayout>
+
+                    <!-- Nút Avatar truy cập Tài khoản (40dp tròn, viền mảnh) -->
+                    <FrameLayout
+                        android:id="@+id/btnAvatar"
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
+                        android:background="@drawable/bg_home_avatar_peach"
+                        android:clickable="true"
+                        android:contentDescription="Tài khoản của tôi"
+                        android:elevation="0dp"
+                        android:focusable="true">
+
+                        <TextView
+                            android:id="@+id/tvAvatarInitials"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center"
+                            android:fontFamily="@font/open_sans_bold"
+                            android:includeFontPadding="false"
+                            android:text="KH"
+                            android:textColor="@color/ds_primary"
+                            android:textSize="13sp"
+                            tools:text="LH" />
+                    </FrameLayout>
+                </LinearLayout>
+
+                <!-- 1 dòng chào nhỏ gọn phía trên banner -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
 
                     <TextView
                         android:id="@+id/tvGreeting"
-                        style="@style/TextAppearance.PetCare.Body"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Chào buổi sáng," />
+                        android:fontFamily="@font/open_sans_regular"
+                        android:text="Xin chào, "
+                        android:textColor="@color/ds_text_secondary"
+                        android:textSize="13sp" />
 
-                    <!-- Tên người dùng ở Header: Bold (700) · 22sp -->
                     <TextView
                         android:id="@+id/tvWelcomeName"
-                        style="@style/TextAppearance.PetCare.Display"
-                        android:layout_width="match_parent"
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="2dp"
                         android:ellipsize="end"
+                        android:fontFamily="@font/open_sans_medium"
                         android:maxLines="1"
                         android:text="Khách hàng"
+                        android:textColor="@color/ds_text_primary"
+                        android:textSize="13sp"
+                        app:fontFamily="@font/open_sans_medium"
                         tools:text="Lê Thị Thu Hà" />
 
                     <TextView
                         android:id="@+id/tvHeaderQuestion"
-                        style="@style/TextAppearance.PetCare.Body"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="2dp"
-                        android:text="Hôm nay các bé thế nào rồi?" />
+                        android:layout_width="0dp"
+                        android:layout_height="0dp"
+                        android:visibility="gone" />
                 </LinearLayout>
-
-                <!-- Nút Chuông thông báo (48dp tròn, trắng tinh, không viền) -->
-                <FrameLayout
-                    android:id="@+id/btnNotification"
-                    android:layout_width="48dp"
-                    android:layout_height="48dp"
-                    android:layout_marginEnd="10dp"
-                    android:background="@drawable/bg_home_icon_btn_white"
-                    android:clickable="true"
-                    android:contentDescription="Thông báo"
-                    android:elevation="1dp"
-                    android:focusable="true">
-
-                    <ImageView
-                        android:layout_width="20dp"
-                        android:layout_height="20dp"
-                        android:layout_gravity="center"
-                        android:contentDescription="@null"
-                        android:src="@drawable/ic_bell"
-                        app:tint="@color/ds_text_primary" />
-
-                    <View
-                        android:id="@+id/viewNotificationBadge"
-                        android:layout_width="8dp"
-                        android:layout_height="8dp"
-                        android:layout_gravity="top|end"
-                        android:layout_marginTop="12dp"
-                        android:layout_marginEnd="12dp"
-                        android:background="@drawable/bg_halo_butter"
-                        android:backgroundTint="@color/ds_primary" />
-                </FrameLayout>
-
-                <!-- Nút Avatar truy cập Tài khoản (48dp tròn, Soft Peach, không viền) -->
-                <FrameLayout
-                    android:id="@+id/btnAvatar"
-                    android:layout_width="48dp"
-                    android:layout_height="48dp"
-                    android:background="@drawable/bg_home_avatar_peach"
-                    android:clickable="true"
-                    android:contentDescription="Tài khoản của tôi"
-                    android:focusable="true">
-
-                    <TextView
-                        android:id="@+id/tvAvatarInitials"
-                        style="@style/TextAppearance.PetCare.CardTitle"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center"
-                        android:includeFontPadding="false"
-                        android:text="KH"
-                        android:textColor="@color/ds_primary_dark"
-                        android:textSize="14sp"
-                        tools:text="LH" />
-                </FrameLayout>
             </LinearLayout>
 
             <!-- ============================================================ -->
-            <!-- 2. HERO BANNER: Headline Bold (700 · 20sp · lineHeight 1.2)  -->
+            <!-- 2. HERO BANNER: Break-the-Box Corgi ôm lịch trồi lên trên    -->
             <!-- ============================================================ -->
-            <androidx.constraintlayout.widget.ConstraintLayout
+            <FrameLayout
                 android:id="@+id/bannerBooking"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="20dp"
-                android:layout_marginTop="24dp"
+                android:layout_marginTop="4dp"
                 android:layout_marginEnd="20dp"
-                android:background="@drawable/bg_hero_soft_peach"
                 android:clickable="true"
-                android:clipChildren="true"
-                android:clipToOutline="true"
-                android:focusable="true">
+                android:clipChildren="false"
+                android:clipToPadding="false"
+                android:focusable="true"
+                android:paddingTop="18dp">
 
-                <!-- Linh vật phẳng không viền đen (Borderless Flat Illustration) -->
-                <ImageView
-                    android:id="@+id/ivHeroMascot"
-                    android:layout_width="134dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginEnd="6dp"
-                    android:adjustViewBounds="true"
-                    android:contentDescription="Mascot PETCARE"
-                    android:scaleType="fitEnd"
-                    android:src="@drawable/mascot_corgi_wave"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent" />
-
-                <!-- Nội dung thoáng gọn bên trái -->
+                <!-- Khung nền Banner sắc nét (viền 1dp #E6DFD5, bo 14dp, 0 bóng đổ) -->
                 <LinearLayout
-                    android:layout_width="0dp"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:background="@drawable/bg_hero_soft_peach"
                     android:orientation="vertical"
-                    android:paddingStart="22dp"
-                    android:paddingTop="22dp"
-                    android:paddingEnd="8dp"
-                    android:paddingBottom="22dp"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toStartOf="@id/ivHeroMascot"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent">
+                    android:paddingStart="18dp"
+                    android:paddingTop="18dp"
+                    android:paddingEnd="136dp"
+                    android:paddingBottom="18dp">
 
-                    <!-- Tiêu đề chính trên Hero Banner: Bold (700) · 20sp · lineSpacingMultiplier=1.2 -->
                     <TextView
                         style="@style/TextAppearance.PetCare.Headline"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:lineSpacingMultiplier="1.2"
-                        android:text="Bé cần đi khám?" />
+                        android:includeFontPadding="false"
+                        android:lineSpacingMultiplier="1.1"
+                        android:text="Đặt lịch cho bé"
+                        android:textSize="18.5sp"
+                        app:lineHeight="24sp" />
 
                     <TextView
                         style="@style/TextAppearance.PetCare.Body"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="6dp"
-                        android:lineSpacingMultiplier="1.2"
-                        android:text="Đặt lịch hẹn trước, không lo chờ đợi." />
+                        android:layout_marginTop="4dp"
+                        android:lineSpacingMultiplier="1.25"
+                        android:text="Chọn giờ trước, không phải chờ."
+                        android:textColor="@color/ds_text_secondary"
+                        android:textSize="13sp" />
 
-                    <!-- CTA chính #B95740 cao đúng 52dp -->
+                    <!-- CTA chính #C85428 bo 12dp -->
                     <LinearLayout
                         android:id="@+id/btnBookNow"
                         android:layout_width="wrap_content"
-                        android:layout_height="52dp"
-                        android:layout_marginTop="18dp"
+                        android:layout_height="44dp"
+                        android:layout_marginTop="14dp"
                         android:background="@drawable/bg_btn_primary"
                         android:clickable="true"
                         android:focusable="true"
                         android:gravity="center"
-                        android:minWidth="156dp"
                         android:orientation="horizontal"
-                        android:paddingStart="22dp"
-                        android:paddingEnd="18dp">
+                        android:paddingStart="16dp"
+                        android:paddingEnd="14dp">
 
                         <TextView
                             style="@style/TextAppearance.PetCare.Button"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Đặt lịch khám" />
+                            android:text="Đặt lịch ngay"
+                            android:textSize="13.5sp" />
 
                         <ImageView
-                            android:layout_width="16dp"
-                            android:layout_height="16dp"
+                            android:layout_width="15dp"
+                            android:layout_height="15dp"
                             android:layout_marginStart="6dp"
                             android:contentDescription="@null"
                             android:src="@drawable/ic_chevron_right"
                             app:tint="@color/white" />
                     </LinearLayout>
                 </LinearLayout>
-            </androidx.constraintlayout.widget.ConstraintLayout>
+
+                <!-- Corgi ôm lịch "trồi" vượt mép trên khung banner ~16dp (Break-the-box) -->
+                <ImageView
+                    android:id="@+id/ivHeroMascot"
+                    android:layout_width="136dp"
+                    android:layout_height="156dp"
+                    android:layout_gravity="bottom|end"
+                    android:layout_marginEnd="6dp"
+                    android:layout_marginBottom="4dp"
+                    android:contentDescription="Mascot Corgi đặt lịch"
+                    android:scaleType="fitEnd"
+                    android:src="@drawable/mascot_corgi_booking" />
+            </FrameLayout>
 
             <!-- ============================================================ -->
-            <!-- 3. UPCOMING APPOINTMENT: Section Title SemiBold (600 · 17sp) -->
+            <!-- 2B. 4 LỐI TẮT THỰC DỤNG (Khám · Tiêm · Cấp cứu · Spa)        -->
+            <!-- ============================================================ -->
+            <LinearLayout
+                android:id="@+id/layoutQuickShortcuts"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="20dp"
+                android:layout_marginTop="14dp"
+                android:layout_marginEnd="20dp"
+                android:orientation="horizontal">
+
+                <!-- 1. Khám -->
+                <LinearLayout
+                    android:id="@+id/btnShortcutExam"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="8dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/bg_quick_shortcut"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:gravity="center"
+                    android:orientation="vertical"
+                    android:paddingTop="12dp"
+                    android:paddingBottom="10dp">
+
+                    <FrameLayout
+                        android:layout_width="34dp"
+                        android:layout_height="34dp"
+                        android:background="@drawable/bg_shortcut_icon_cream">
+
+                        <ImageView
+                            android:layout_width="18dp"
+                            android:layout_height="18dp"
+                            android:layout_gravity="center"
+                            android:contentDescription="@null"
+                            android:src="@drawable/ic_stethoscope"
+                            app:tint="@color/ds_primary" />
+                    </FrameLayout>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="6dp"
+                        android:fontFamily="@font/open_sans_semibold"
+                        android:text="Khám"
+                        android:textColor="@color/ds_text_primary"
+                        android:textSize="12sp" />
+                </LinearLayout>
+
+                <!-- 2. Tiêm -->
+                <LinearLayout
+                    android:id="@+id/btnShortcutVaccine"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="8dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/bg_quick_shortcut"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:gravity="center"
+                    android:orientation="vertical"
+                    android:paddingTop="12dp"
+                    android:paddingBottom="10dp">
+
+                    <FrameLayout
+                        android:layout_width="34dp"
+                        android:layout_height="34dp"
+                        android:background="@drawable/bg_shortcut_icon_cream">
+
+                        <ImageView
+                            android:layout_width="18dp"
+                            android:layout_height="18dp"
+                            android:layout_gravity="center"
+                            android:contentDescription="@null"
+                            android:src="@drawable/ic_syringe"
+                            app:tint="@color/ds_success" />
+                    </FrameLayout>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="6dp"
+                        android:fontFamily="@font/open_sans_semibold"
+                        android:text="Tiêm"
+                        android:textColor="@color/ds_text_primary"
+                        android:textSize="12sp" />
+                </LinearLayout>
+
+                <!-- 3. Cấp cứu -->
+                <LinearLayout
+                    android:id="@+id/btnShortcutEmergency"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="8dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/bg_quick_shortcut"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:gravity="center"
+                    android:orientation="vertical"
+                    android:paddingTop="12dp"
+                    android:paddingBottom="10dp">
+
+                    <FrameLayout
+                        android:layout_width="34dp"
+                        android:layout_height="34dp"
+                        android:background="@drawable/bg_shortcut_icon_cream">
+
+                        <ImageView
+                            android:layout_width="18dp"
+                            android:layout_height="18dp"
+                            android:layout_gravity="center"
+                            android:contentDescription="@null"
+                            android:src="@drawable/ic_heart_pulse"
+                            app:tint="@color/ds_error" />
+                    </FrameLayout>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="6dp"
+                        android:fontFamily="@font/open_sans_semibold"
+                        android:text="Cấp cứu"
+                        android:textColor="@color/ds_text_primary"
+                        android:textSize="12sp" />
+                </LinearLayout>
+
+                <!-- 4. Spa -->
+                <LinearLayout
+                    android:id="@+id/btnShortcutSpa"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:background="@drawable/bg_quick_shortcut"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:gravity="center"
+                    android:orientation="vertical"
+                    android:paddingTop="12dp"
+                    android:paddingBottom="10dp">
+
+                    <FrameLayout
+                        android:layout_width="34dp"
+                        android:layout_height="34dp"
+                        android:background="@drawable/bg_shortcut_icon_cream">
+
+                        <ImageView
+                            android:layout_width="18dp"
+                            android:layout_height="18dp"
+                            android:layout_gravity="center"
+                            android:contentDescription="@null"
+                            android:src="@drawable/ic_scissors"
+                            app:tint="@color/ds_star_amber" />
+                    </FrameLayout>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="6dp"
+                        android:fontFamily="@font/open_sans_semibold"
+                        android:text="Spa"
+                        android:textColor="@color/ds_text_primary"
+                        android:textSize="12sp" />
+                </LinearLayout>
+            </LinearLayout>
+
+            <!-- ============================================================ -->
+            <!-- 3. UPCOMING APPOINTMENT: Phiếu hẹn thực tế (Ticket Style)    -->
             <!-- ============================================================ -->
             <LinearLayout
                 android:id="@+id/sectionUpcoming"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="24dp"
-                android:clipChildren="false"
-                android:clipToPadding="false"
+                android:layout_marginTop="22dp"
                 android:orientation="vertical"
                 android:paddingStart="20dp"
                 android:paddingEnd="20dp">
@@ -246,7 +463,8 @@
                         android:layout_height="wrap_content"
                         android:layout_alignParentStart="true"
                         android:layout_centerVertical="true"
-                        android:text="Lịch khám sắp tới" />
+                        android:text="Lịch hẹn sắp tới"
+                        android:textSize="17sp" />
 
                     <TextView
                         android:id="@+id/tvSeeAllAppointments"
@@ -257,7 +475,8 @@
                         android:layout_centerVertical="true"
                         android:clickable="true"
                         android:focusable="true"
-                        android:text="Tất cả lịch hẹn" />
+                        android:text="Tất cả ›"
+                        android:textSize="13sp" />
                 </RelativeLayout>
 
                 <!-- State 3A: Skeleton Loading -->
@@ -265,220 +484,203 @@
                     android:id="@+id/layoutUpcomingLoading"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="10dp"
+                    android:layout_marginTop="6dp"
                     android:background="@drawable/bg_home_card_static"
-                    android:elevation="1dp"
+                    android:elevation="0dp"
                     android:orientation="vertical"
-                    android:padding="18dp"
+                    android:padding="16dp"
                     android:visibility="visible">
 
                     <View
                         android:layout_width="110dp"
-                        android:layout_height="22dp"
+                        android:layout_height="18dp"
                         android:background="@drawable/bg_skeleton_rect" />
 
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="14dp"
+                        android:layout_marginTop="12dp"
                         android:gravity="center_vertical"
                         android:orientation="horizontal">
 
                         <View
-                            android:layout_width="52dp"
-                            android:layout_height="52dp"
+                            android:layout_width="48dp"
+                            android:layout_height="48dp"
                             android:background="@drawable/bg_skeleton_rect" />
 
                         <LinearLayout
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_marginStart="14dp"
+                            android:layout_marginStart="12dp"
                             android:orientation="vertical">
 
                             <View
                                 android:layout_width="170dp"
-                                android:layout_height="16dp"
+                                android:layout_height="15dp"
                                 android:background="@drawable/bg_skeleton_rect" />
 
                             <View
                                 android:layout_width="130dp"
-                                android:layout_height="14dp"
-                                android:layout_marginTop="8dp"
+                                android:layout_height="13dp"
+                                android:layout_marginTop="6dp"
                                 android:background="@drawable/bg_skeleton_rect" />
                         </LinearLayout>
                     </LinearLayout>
-
-                    <View
-                        android:layout_width="match_parent"
-                        android:layout_height="44dp"
-                        android:layout_marginTop="14dp"
-                        android:background="@drawable/bg_skeleton_rect" />
                 </LinearLayout>
 
-                <!-- State 3B: Có lịch hẹn gần nhất -->
+                <!-- State 3B: PHIẾU HẸN (Ticket Card — viền mảnh 1dp, đường kẻ nét đứt, mã phiếu) -->
                 <LinearLayout
                     android:id="@+id/cardUpcomingAppointment"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="10dp"
+                    android:layout_marginTop="6dp"
                     android:background="@drawable/bg_home_card_borderless"
                     android:clickable="true"
-                    android:clipToOutline="true"
-                    android:elevation="1dp"
+                    android:elevation="0dp"
                     android:focusable="true"
-                    android:orientation="horizontal"
+                    android:orientation="vertical"
+                    android:paddingStart="16dp"
+                    android:paddingTop="14dp"
+                    android:paddingEnd="16dp"
+                    android:paddingBottom="12dp"
                     android:visibility="gone"
                     tools:visibility="visible">
 
-                    <!-- Dải màu chỉ báo trạng thái nghiệp vụ -->
+                    <!-- Legacy accent view kept hidden for binding compatibility -->
                     <View
                         android:id="@+id/viewUpcomingAccent"
-                        android:layout_width="4dp"
-                        android:layout_height="match_parent"
-                        android:background="@color/ds_success" />
+                        android:layout_width="0dp"
+                        android:layout_height="0dp"
+                        android:visibility="gone" />
 
+                    <!-- Hàng đầu phiếu: ● Trạng thái -->
+                    <LinearLayout
+                        android:id="@+id/badgeUpcomingStatus"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal">
+
+                        <ImageView
+                            android:id="@+id/ivUpcomingStatusIcon"
+                            android:layout_width="0dp"
+                            android:layout_height="0dp"
+                            android:visibility="gone"
+                            android:contentDescription="@null" />
+
+                        <TextView
+                            android:id="@+id/tvUpcomingStatus"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:fontFamily="@font/open_sans_semibold"
+                            android:includeFontPadding="false"
+                            android:text="● Đã xác nhận"
+                            android:textColor="@color/ds_success"
+                            android:textSize="12.5sp" />
+                    </LinearLayout>
+
+                    <!-- Hàng giữa phiếu: Ảnh bé bo 10dp + Tên dịch vụ + Bé · Phòng khám -->
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:orientation="vertical"
-                        android:padding="18dp">
+                        android:layout_marginTop="12dp"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal">
 
-                        <!-- Hàng trên: Status Badge (wrap_content, includeFontPadding=false, padding dọc 5dp) & Mã lịch -->
+                        <com.google.android.material.imageview.ShapeableImageView
+                            android:id="@+id/ivUpcomingPetAvatar"
+                            android:layout_width="48dp"
+                            android:layout_height="48dp"
+                            android:background="@color/ds_cream_tile"
+                            android:contentDescription="@null"
+                            android:padding="4dp"
+                            android:scaleType="fitCenter"
+                            android:src="@drawable/mascot_corgi_running"
+                            app:shapeAppearanceOverlay="@style/RoundedCorner10"
+                            app:strokeWidth="0dp" />
+
                         <LinearLayout
-                            android:layout_width="match_parent"
+                            android:layout_width="0dp"
                             android:layout_height="wrap_content"
-                            android:gravity="center_vertical"
-                            android:orientation="horizontal">
-
-                            <LinearLayout
-                                android:id="@+id/badgeUpcomingStatus"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:background="@drawable/bg_badge_status_success_flat"
-                                android:gravity="center_vertical"
-                                android:orientation="horizontal"
-                                android:paddingStart="10dp"
-                                android:paddingTop="5dp"
-                                android:paddingEnd="10dp"
-                                android:paddingBottom="5dp">
-
-                                <ImageView
-                                    android:id="@+id/ivUpcomingStatusIcon"
-                                    android:layout_width="13dp"
-                                    android:layout_height="13dp"
-                                    android:contentDescription="@null"
-                                    android:src="@drawable/ic_check_circle"
-                                    app:tint="@color/status_success_ink" />
-
-                                <TextView
-                                    android:id="@+id/tvUpcomingStatus"
-                                    style="@style/TextAppearance.PetCare.Caption"
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:layout_marginStart="5dp"
-                                    android:includeFontPadding="false"
-                                    android:text="Đã xác nhận"
-                                    android:textColor="@color/status_success_ink" />
-                            </LinearLayout>
-                        </LinearLayout>
-
-                        <!-- Hàng giữa: Ảnh bé tròn + CardTitle (15sp SemiBold) + Body (13sp Regular) -->
-                        <LinearLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_marginTop="14dp"
-                            android:gravity="center_vertical"
-                            android:orientation="horizontal">
-
-                            <com.google.android.material.imageview.ShapeableImageView
-                                android:id="@+id/ivUpcomingPetAvatar"
-                                android:layout_width="52dp"
-                                android:layout_height="52dp"
-                                android:background="@color/ds_home_bg"
-                                android:contentDescription="@null"
-                                android:scaleType="centerCrop"
-                                android:src="@drawable/img_pet_mochi"
-                                app:shapeAppearanceOverlay="@style/CircleImage"
-                                app:strokeWidth="0dp" />
-
-                            <LinearLayout
-                                android:layout_width="0dp"
-                                android:layout_height="wrap_content"
-                                android:layout_marginStart="14dp"
-                                android:layout_weight="1"
-                                android:orientation="vertical">
-
-                                <TextView
-                                    android:id="@+id/tvUpcomingService"
-                                    style="@style/TextAppearance.PetCare.CardTitle"
-                                    android:layout_width="match_parent"
-                                    android:layout_height="wrap_content"
-                                    android:ellipsize="end"
-                                    android:lineSpacingMultiplier="1.2"
-                                    android:maxLines="2"
-                                    tools:text="Khám sức khỏe tổng quát" />
-
-                                <TextView
-                                    android:id="@+id/tvUpcomingPetClinic"
-                                    style="@style/TextAppearance.PetCare.Body"
-                                    android:layout_width="match_parent"
-                                    android:layout_height="wrap_content"
-                                    android:layout_marginTop="3dp"
-                                    android:ellipsize="end"
-                                    android:lineSpacingMultiplier="1.2"
-                                    android:maxLines="2"
-                                    tools:text="Mochi · Phòng khám Thú y An Nhiên" />
-                            </LinearLayout>
-                        </LinearLayout>
-
-                        <!-- Dải chân thẻ không viền (#FAF8F6): Ngày giờ khám + Xem chi tiết (Medium 12sp) -->
-                        <LinearLayout
-                            android:id="@+id/btnUpcomingDetail"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_marginTop="14dp"
-                            android:background="@drawable/bg_card_subtle_footer"
-                            android:gravity="center_vertical"
-                            android:minHeight="44dp"
-                            android:orientation="horizontal"
-                            android:paddingStart="14dp"
-                            android:paddingTop="10dp"
-                            android:paddingEnd="12dp"
-                            android:paddingBottom="10dp">
-
-                            <ImageView
-                                android:layout_width="16dp"
-                                android:layout_height="16dp"
-                                android:contentDescription="@null"
-                                android:src="@drawable/ic_calendar_days"
-                                app:tint="@color/ds_primary_dark" />
+                            android:layout_marginStart="12dp"
+                            android:layout_weight="1"
+                            android:orientation="vertical">
 
                             <TextView
-                                android:id="@+id/tvUpcomingDateTime"
-                                style="@style/TextAppearance.PetCare.Caption"
-                                android:layout_width="0dp"
+                                android:id="@+id/tvUpcomingService"
+                                style="@style/TextAppearance.PetCare.CardTitle"
+                                android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
-                                android:layout_marginStart="8dp"
-                                android:layout_weight="1"
-                                android:textColor="@color/ds_text_primary"
-                                android:textSize="13sp"
-                                tools:text="Thứ 5, 19/11/2026 · 09:00" />
+                                android:ellipsize="end"
+                                android:fontFamily="@font/open_sans_bold"
+                                android:lineSpacingMultiplier="1.2"
+                                android:maxLines="2"
+                                tools:text="Cạo vôi răng &amp; vệ sinh răng miệng" />
 
                             <TextView
-                                style="@style/TextAppearance.PetCare.Caption"
-                                android:layout_width="wrap_content"
+                                android:id="@+id/tvUpcomingPetClinic"
+                                style="@style/TextAppearance.PetCare.Body"
+                                android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
-                                android:text="Xem chi tiết"
-                                android:textColor="@color/ds_primary_dark" />
-
-                            <ImageView
-                                android:layout_width="15dp"
-                                android:layout_height="15dp"
-                                android:layout_marginStart="2dp"
-                                android:contentDescription="@null"
-                                android:src="@drawable/ic_chevron_right"
-                                app:tint="@color/ds_primary_dark" />
+                                android:layout_marginTop="2dp"
+                                android:ellipsize="end"
+                                android:lineSpacingMultiplier="1.2"
+                                android:maxLines="1"
+                                tools:text="Miu Miu · PetCare Cầu Diễn" />
                         </LinearLayout>
+                    </LinearLayout>
+
+                    <!-- Đường kẻ nét đứt kiểu cuống phiếu (Ticket Dashed Divider) -->
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="2dp"
+                        android:layout_marginTop="13dp"
+                        android:layout_marginBottom="10dp"
+                        android:background="@drawable/bg_divider_dashed"
+                        android:layerType="software" />
+
+                    <!-- Cuống phiếu: Ngày giờ tabular-nums + Chi tiết > -->
+                    <LinearLayout
+                        android:id="@+id/btnUpcomingDetail"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal">
+
+                        <ImageView
+                            android:layout_width="15dp"
+                            android:layout_height="15dp"
+                            android:contentDescription="@null"
+                            android:src="@drawable/ic_calendar_days"
+                            app:tint="@color/ds_text_secondary" />
+
+                        <TextView
+                            android:id="@+id/tvUpcomingDateTime"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="7dp"
+                            android:layout_weight="1"
+                            android:fontFamily="@font/open_sans_semibold"
+                            android:fontFeatureSettings="tnum"
+                            android:textColor="@color/ds_text_primary"
+                            android:textSize="12.5sp"
+                            tools:text="CN, 22/11 · 19:30 – 20:00" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:fontFamily="@font/open_sans_semibold"
+                            android:text="Chi tiết"
+                            android:textColor="@color/ds_primary"
+                            android:textSize="12.5sp" />
+
+                        <ImageView
+                            android:layout_width="14dp"
+                            android:layout_height="14dp"
+                            android:layout_marginStart="2dp"
+                            android:contentDescription="@null"
+                            android:src="@drawable/ic_chevron_right"
+                            app:tint="@color/ds_primary" />
                     </LinearLayout>
                 </LinearLayout>
 
@@ -487,32 +689,32 @@
                     android:id="@+id/layoutUpcomingEmpty"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="10dp"
+                    android:layout_marginTop="6dp"
                     android:background="@drawable/bg_home_card_static"
-                    android:elevation="1dp"
+                    android:elevation="0dp"
                     android:gravity="center_vertical"
                     android:orientation="horizontal"
-                    android:padding="18dp"
+                    android:padding="16dp"
                     android:visibility="gone">
 
                     <FrameLayout
-                        android:layout_width="48dp"
-                        android:layout_height="48dp"
-                        android:background="@drawable/bg_pill_mint">
+                        android:layout_width="44dp"
+                        android:layout_height="44dp"
+                        android:background="@drawable/bg_shortcut_icon_cream">
 
                         <ImageView
-                            android:layout_width="22dp"
-                            android:layout_height="22dp"
+                            android:layout_width="20dp"
+                            android:layout_height="20dp"
                             android:layout_gravity="center"
                             android:contentDescription="@null"
                             android:src="@drawable/ic_calendar_days"
-                            app:tint="@color/ds_mint_ink" />
+                            app:tint="@color/ds_primary" />
                     </FrameLayout>
 
                     <LinearLayout
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:layout_marginStart="14dp"
+                        android:layout_marginStart="12dp"
                         android:layout_weight="1"
                         android:orientation="vertical">
 
@@ -526,9 +728,9 @@
                             style="@style/TextAppearance.PetCare.Body"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_marginTop="3dp"
+                            android:layout_marginTop="2dp"
                             android:lineSpacingMultiplier="1.2"
-                            android:text="Lịch hẹn mới và trạng thái duyệt sẽ hiển thị tại đây." />
+                            android:text="Phiếu hẹn mới và trạng thái duyệt sẽ hiển thị tại đây." />
                     </LinearLayout>
                 </LinearLayout>
 
@@ -537,12 +739,12 @@
                     android:id="@+id/layoutUpcomingError"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="10dp"
+                    android:layout_marginTop="6dp"
                     android:background="@drawable/bg_home_card_static"
-                    android:elevation="1dp"
+                    android:elevation="0dp"
                     android:gravity="center_vertical"
                     android:orientation="horizontal"
-                    android:padding="16dp"
+                    android:padding="14dp"
                     android:visibility="gone">
 
                     <ImageView
@@ -575,15 +777,13 @@
             </LinearLayout>
 
             <!-- ============================================================ -->
-            <!-- 4. MY PETS: Section Title SemiBold (600 · 17sp)              -->
+            <!-- 4. MY PETS: Thú cưng của tôi (Đồng bộ Corgi #F3EDE4)         -->
             <!-- ============================================================ -->
             <LinearLayout
                 android:id="@+id/sectionMyPets"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="24dp"
-                android:clipChildren="false"
-                android:clipToPadding="false"
+                android:layout_marginTop="22dp"
                 android:orientation="vertical">
 
                 <RelativeLayout
@@ -598,12 +798,13 @@
                         android:layout_height="wrap_content"
                         android:layout_alignParentStart="true"
                         android:layout_centerVertical="true"
-                        android:text="Thú cưng của tôi" />
+                        android:text="Thú cưng của tôi"
+                        android:textSize="17sp" />
 
                     <LinearLayout
                         android:id="@+id/btnAddPetHeader"
                         android:layout_width="wrap_content"
-                        android:layout_height="48dp"
+                        android:layout_height="44dp"
                         android:layout_alignParentEnd="true"
                         android:layout_centerVertical="true"
                         android:background="?attr/selectableItemBackgroundBorderless"
@@ -619,41 +820,40 @@
                             android:layout_height="14dp"
                             android:contentDescription="@null"
                             android:src="@drawable/ic_plus"
-                            app:tint="@color/ds_primary_dark" />
+                            app:tint="@color/ds_primary" />
 
                         <TextView
-                            style="@style/TextAppearance.PetCare.Caption"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginStart="4dp"
-                            android:text="Thêm thú cưng"
-                            android:textColor="@color/ds_primary_dark" />
+                            android:fontFamily="@font/open_sans_semibold"
+                            android:text="Thêm bé"
+                            android:textColor="@color/ds_primary"
+                            android:textSize="13sp" />
                     </LinearLayout>
                 </RelativeLayout>
 
-                <!-- State 4A: Compact Horizontal Pill Skeletons -->
+                <!-- State 4A: Skeletons -->
                 <LinearLayout
                     android:id="@+id/layoutPetsLoading"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="10dp"
+                    android:layout_marginTop="6dp"
                     android:orientation="horizontal"
                     android:paddingStart="20dp"
                     android:paddingEnd="20dp"
                     android:visibility="visible">
 
                     <View
-                        android:layout_width="196dp"
-                        android:layout_height="80dp"
-                        android:layout_marginEnd="12dp"
-                        android:background="@drawable/bg_home_card_static"
-                        android:elevation="1dp" />
+                        android:layout_width="180dp"
+                        android:layout_height="76dp"
+                        android:layout_marginEnd="10dp"
+                        android:background="@drawable/bg_home_card_static" />
 
                     <View
-                        android:layout_width="160dp"
-                        android:layout_height="80dp"
-                        android:background="@drawable/bg_home_card_static"
-                        android:elevation="1dp" />
+                        android:layout_width="150dp"
+                        android:layout_height="76dp"
+                        android:background="@drawable/bg_home_card_static" />
                 </LinearLayout>
 
                 <!-- State 4B: Danh sách Thẻ ngang gọn gàng -->
@@ -661,8 +861,7 @@
                     android:id="@+id/scrollHomePets"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="8dp"
-                    android:clipChildren="false"
+                    android:layout_marginTop="6dp"
                     android:clipToPadding="false"
                     android:scrollbars="none"
                     android:visibility="gone">
@@ -671,14 +870,10 @@
                         android:id="@+id/containerHomePets"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:clipChildren="false"
-                        android:clipToPadding="false"
                         android:gravity="center_vertical"
                         android:orientation="horizontal"
                         android:paddingStart="20dp"
-                        android:paddingTop="2dp"
-                        android:paddingEnd="20dp"
-                        android:paddingBottom="4dp" />
+                        android:paddingEnd="20dp" />
                 </HorizontalScrollView>
 
                 <!-- State 4C: Empty State -->
@@ -687,27 +882,29 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="20dp"
-                    android:layout_marginTop="10dp"
+                    android:layout_marginTop="6dp"
                     android:layout_marginEnd="20dp"
                     android:background="@drawable/bg_home_card_static"
-                    android:elevation="1dp"
+                    android:elevation="0dp"
                     android:gravity="center_vertical"
                     android:orientation="horizontal"
-                    android:padding="18dp"
+                    android:padding="16dp"
                     android:visibility="gone">
 
                     <ImageView
-                        android:layout_width="56dp"
-                        android:layout_height="56dp"
+                        android:layout_width="54dp"
+                        android:layout_height="54dp"
                         android:adjustViewBounds="true"
+                        android:background="@drawable/bg_shortcut_icon_cream"
                         android:contentDescription="@null"
+                        android:padding="6dp"
                         android:scaleType="fitCenter"
                         android:src="@drawable/mascot_corgi_running" />
 
                     <LinearLayout
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:layout_marginStart="14dp"
+                        android:layout_marginStart="12dp"
                         android:layout_marginEnd="8dp"
                         android:layout_weight="1"
                         android:orientation="vertical">
@@ -735,19 +932,20 @@
                         android:clickable="true"
                         android:focusable="true"
                         android:gravity="center"
-                        android:minHeight="44dp"
-                        android:paddingStart="16dp"
+                        android:minHeight="40dp"
+                        android:paddingStart="14dp"
                         android:paddingTop="8dp"
-                        android:paddingEnd="16dp"
+                        android:paddingEnd="14dp"
                         android:paddingBottom="8dp">
 
                         <TextView
-                            style="@style/TextAppearance.PetCare.Caption"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
+                            android:fontFamily="@font/open_sans_semibold"
                             android:includeFontPadding="false"
                             android:text="Thêm bé"
-                            android:textColor="@color/ds_primary_dark" />
+                            android:textColor="@color/ds_primary"
+                            android:textSize="12.5sp" />
                     </LinearLayout>
                 </LinearLayout>
 
@@ -757,13 +955,13 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="20dp"
-                    android:layout_marginTop="10dp"
+                    android:layout_marginTop="6dp"
                     android:layout_marginEnd="20dp"
                     android:background="@drawable/bg_home_card_static"
-                    android:elevation="1dp"
+                    android:elevation="0dp"
                     android:gravity="center_vertical"
                     android:orientation="horizontal"
-                    android:padding="16dp"
+                    android:padding="14dp"
                     android:visibility="gone">
 
                     <ImageView
@@ -796,15 +994,13 @@
             </LinearLayout>
 
             <!-- ============================================================ -->
-            <!-- 5. CLINICS: Section Title SemiBold (600 · 17sp)              -->
+            <!-- 5. CLINICS: Danh sách phòng khám phẳng, viền mảnh 1dp        -->
             <!-- ============================================================ -->
             <LinearLayout
                 android:id="@+id/sectionClinics"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="24dp"
-                android:clipChildren="false"
-                android:clipToPadding="false"
+                android:layout_marginTop="22dp"
                 android:orientation="vertical"
                 android:paddingStart="20dp"
                 android:paddingEnd="20dp">
@@ -819,7 +1015,8 @@
                         android:layout_height="wrap_content"
                         android:layout_alignParentStart="true"
                         android:layout_centerVertical="true"
-                        android:text="Phòng khám" />
+                        android:text="Phòng khám gợi ý"
+                        android:textSize="17sp" />
 
                     <TextView
                         android:id="@+id/tvSeeAllClinics"
@@ -830,7 +1027,8 @@
                         android:layout_centerVertical="true"
                         android:clickable="true"
                         android:focusable="true"
-                        android:text="Xem tất cả" />
+                        android:text="Xem tất cả ›"
+                        android:textSize="13sp" />
                 </RelativeLayout>
 
                 <!-- State 5A: Skeleton Loading -->
@@ -838,32 +1036,30 @@
                     android:id="@+id/layoutClinicsLoading"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="10dp"
+                    android:layout_marginTop="6dp"
                     android:orientation="vertical"
                     android:visibility="visible">
 
                     <View
                         android:layout_width="match_parent"
-                        android:layout_height="128dp"
-                        android:layout_marginBottom="12dp"
-                        android:background="@drawable/bg_home_card_static"
-                        android:elevation="1dp" />
+                        android:layout_height="104dp"
+                        android:layout_marginBottom="10dp"
+                        android:background="@drawable/bg_home_card_static" />
 
                     <View
                         android:layout_width="match_parent"
-                        android:layout_height="128dp"
-                        android:background="@drawable/bg_home_card_static"
-                        android:elevation="1dp" />
+                        android:layout_height="104dp"
+                        android:background="@drawable/bg_home_card_static" />
                 </LinearLayout>
 
-                <!-- State 5B: Danh sách phòng khám thực tế từ Backend -->
+                <!-- State 5B: Danh sách phòng khám thực tế nguyên khối có viền -->
                 <LinearLayout
                     android:id="@+id/containerHomeClinics"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="8dp"
-                    android:clipChildren="false"
-                    android:clipToPadding="false"
+                    android:layout_marginTop="6dp"
+                    android:background="@drawable/bg_home_card_static"
+                    android:clipToOutline="true"
                     android:orientation="vertical"
                     android:visibility="gone" />
 
@@ -872,12 +1068,12 @@
                     android:id="@+id/layoutClinicsEmpty"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="10dp"
+                    android:layout_marginTop="6dp"
                     android:background="@drawable/bg_home_card_static"
-                    android:elevation="1dp"
+                    android:elevation="0dp"
                     android:gravity="center"
                     android:orientation="vertical"
-                    android:padding="22dp"
+                    android:padding="20dp"
                     android:visibility="gone">
 
                     <TextView
@@ -901,12 +1097,12 @@
                     android:id="@+id/layoutClinicsError"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="10dp"
+                    android:layout_marginTop="6dp"
                     android:background="@drawable/bg_home_card_static"
-                    android:elevation="1dp"
+                    android:elevation="0dp"
                     android:gravity="center_vertical"
                     android:orientation="horizontal"
-                    android:padding="16dp"
+                    android:padding="14dp"
                     android:visibility="gone">
 
                     <ImageView
@@ -942,25 +1138,25 @@
     </androidx.core.widget.NestedScrollView>
 
     <!-- ============================================================ -->
-    <!-- 6. BOTTOM NAVIGATION: Borderless Pure White Bar              -->
+    <!-- 6. BOTTOM NAVIGATION: Crisp 1dp Top Border #EAE3D9, 0 Shadow -->
     <!-- ============================================================ -->
     <LinearLayout
         android:id="@+id/layoutBottomNavContainer"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:background="@color/ds_surface"
-        android:elevation="8dp"
+        android:background="@drawable/bg_bottom_nav_bar"
+        android:elevation="0dp"
         android:orientation="vertical">
 
         <LinearLayout
             android:id="@+id/bottomNavigation"
             android:layout_width="match_parent"
-            android:layout_height="64dp"
+            android:layout_height="62dp"
             android:gravity="center_vertical"
             android:orientation="horizontal">
 
-            <!-- Tab 1: Trang chủ (Active - SemiBold 600) -->
+            <!-- Tab 1: Trang chủ (Active - Terracotta top bar indicator) -->
             <LinearLayout
                 android:id="@+id/navHome"
                 android:layout_width="0dp"
@@ -977,23 +1173,23 @@
                     android:background="@drawable/bg_bottom_nav_active_pill">
 
                     <ImageView
-                        android:layout_width="19dp"
-                        android:layout_height="19dp"
-                        android:layout_gravity="center"
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        android:layout_gravity="center_horizontal|bottom"
+                        android:layout_marginBottom="2dp"
                         android:contentDescription="@null"
                         android:src="@drawable/ic_home"
-                        app:tint="@color/ds_primary_dark" />
+                        app:tint="@color/ds_primary" />
                 </FrameLayout>
 
                 <TextView
-                    style="@style/TextAppearance.PetCare.Caption"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="3dp"
-                    android:fontFamily="@font/open_sans_semibold"
+                    android:layout_marginTop="2dp"
+                    android:fontFamily="@font/open_sans_bold"
                     android:text="Trang chủ"
-                    android:textColor="@color/ds_primary_dark"
-                    android:textSize="11.5sp" />
+                    android:textColor="@color/ds_primary"
+                    android:textSize="11sp" />
             </LinearLayout>
 
             <!-- Tab 2: Phòng khám -->
@@ -1012,21 +1208,23 @@
                     android:layout_height="30dp">
 
                     <ImageView
-                        android:layout_width="19dp"
-                        android:layout_height="19dp"
-                        android:layout_gravity="center"
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        android:layout_gravity="center_horizontal|bottom"
+                        android:layout_marginBottom="2dp"
                         android:contentDescription="@null"
                         android:src="@drawable/ic_stethoscope"
                         app:tint="@color/ds_text_secondary" />
                 </FrameLayout>
 
                 <TextView
-                    style="@style/TextAppearance.PetCare.Caption"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="3dp"
+                    android:layout_marginTop="2dp"
+                    android:fontFamily="@font/open_sans_medium"
                     android:text="Phòng khám"
-                    android:textSize="11.5sp" />
+                    android:textColor="@color/ds_text_secondary"
+                    android:textSize="11sp" />
             </LinearLayout>
 
             <!-- Tab 3: Lịch hẹn -->
@@ -1045,21 +1243,23 @@
                     android:layout_height="30dp">
 
                     <ImageView
-                        android:layout_width="19dp"
-                        android:layout_height="19dp"
-                        android:layout_gravity="center"
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        android:layout_gravity="center_horizontal|bottom"
+                        android:layout_marginBottom="2dp"
                         android:contentDescription="@null"
                         android:src="@drawable/ic_calendar_days"
                         app:tint="@color/ds_text_secondary" />
                 </FrameLayout>
 
                 <TextView
-                    style="@style/TextAppearance.PetCare.Caption"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="3dp"
+                    android:layout_marginTop="2dp"
+                    android:fontFamily="@font/open_sans_medium"
                     android:text="Lịch hẹn"
-                    android:textSize="11.5sp" />
+                    android:textColor="@color/ds_text_secondary"
+                    android:textSize="11sp" />
             </LinearLayout>
 
             <!-- Tab 4: Thú cưng -->
@@ -1078,21 +1278,23 @@
                     android:layout_height="30dp">
 
                     <ImageView
-                        android:layout_width="19dp"
-                        android:layout_height="19dp"
-                        android:layout_gravity="center"
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        android:layout_gravity="center_horizontal|bottom"
+                        android:layout_marginBottom="2dp"
                         android:contentDescription="@null"
                         android:src="@drawable/ic_paw"
                         app:tint="@color/ds_text_secondary" />
                 </FrameLayout>
 
                 <TextView
-                    style="@style/TextAppearance.PetCare.Caption"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="3dp"
+                    android:layout_marginTop="2dp"
+                    android:fontFamily="@font/open_sans_medium"
                     android:text="Thú cưng"
-                    android:textSize="11.5sp" />
+                    android:textColor="@color/ds_text_secondary"
+                    android:textSize="11sp" />
             </LinearLayout>
         </LinearLayout>
     </LinearLayout>

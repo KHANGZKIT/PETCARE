@@ -25,7 +25,7 @@
             android:layout_height="42dp"
             android:background="@drawable/bg_btn_outline"
             android:clickable="true"
-            android:elevation="2dp"
+            android:elevation="0dp"
             android:focusable="true">
 
             <ImageView
@@ -188,7 +188,7 @@
             android:layout_width="match_parent"
             android:layout_height="48dp"
             android:background="@drawable/bg_input_field"
-            android:elevation="2dp"
+            android:elevation="0dp"
             android:gravity="center_vertical"
             android:orientation="horizontal"
             android:paddingStart="16dp"
@@ -373,7 +373,7 @@
                     android:layout_height="48dp"
                     android:layout_marginTop="6dp"
                     android:background="@drawable/bg_btn_outline"
-                    android:elevation="1dp"
+                    android:elevation="0dp"
                     android:letterSpacing="-0.01"
                     android:stateListAnimator="@null"
                     android:text="Tải lịch hẹn cũ hơn"
@@ -579,7 +579,7 @@
         android:layout_height="64dp"
         android:layout_alignParentBottom="true"
         android:background="@color/surface_card"
-        android:elevation="12dp"
+        android:elevation="0dp"
         android:gravity="center_vertical"
         android:orientation="horizontal">
 

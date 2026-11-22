@@ -26,7 +26,7 @@
             android:layout_height="42dp"
             android:background="@drawable/bg_btn_outline"
             android:clickable="true"
-            android:elevation="2dp"
+            android:elevation="0dp"
             android:focusable="true">
 
             <ImageView
@@ -71,7 +71,7 @@
             android:layout_height="42dp"
             android:background="@drawable/bg_btn_outline"
             android:clickable="true"
-            android:elevation="2dp"
+            android:elevation="0dp"
             android:focusable="true">
 
             <ImageView
@@ -454,7 +454,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
                 android:background="@drawable/bg_card_clinic"
-                android:elevation="2dp"
+                android:elevation="0dp"
                 android:orientation="vertical"
                 android:padding="16dp">
 
@@ -549,7 +549,7 @@
                         android:layout_height="42dp"
                         android:background="@drawable/bg_btn_outline"
                         android:clickable="true"
-                        android:elevation="2dp"
+                        android:elevation="0dp"
                         android:focusable="true">
 
                         <ImageView
@@ -569,7 +569,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="14dp"
                 android:background="@drawable/bg_card_clinic"
-                android:elevation="2dp"
+                android:elevation="0dp"
                 android:orientation="vertical"
                 android:padding="16dp">
 
@@ -652,7 +652,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="14dp"
                 android:background="@drawable/bg_card_clinic"
-                android:elevation="2dp"
+                android:elevation="0dp"
                 android:orientation="vertical"
                 android:padding="16dp">
 
@@ -834,7 +834,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="14dp"
                 android:background="@drawable/bg_card_clinic"
-                android:elevation="2dp"
+                android:elevation="0dp"
                 android:orientation="vertical"
                 android:padding="16dp">
 
@@ -880,7 +880,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="14dp"
                 android:background="@drawable/bg_card_clinic"
-                android:elevation="2dp"
+                android:elevation="0dp"
                 android:orientation="vertical"
                 android:padding="16dp">
 

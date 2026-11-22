@@ -323,7 +323,7 @@
             android:layout_marginTop="28dp"
             android:background="@drawable/bg_btn_primary"
             android:clickable="true"
-            android:elevation="4dp"
+            android:elevation="0dp"
             android:focusable="true">
 
             <LinearLayout

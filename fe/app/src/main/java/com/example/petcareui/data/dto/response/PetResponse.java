@@ -38,31 +38,25 @@ public class PetResponse implements Serializable {
         } else if (lower.contains("shiba") || lowerName.contains("kiki")) {
             cleanSpecies = "Chó";
             breed = "Shiba Inu";
-            avatar = R.drawable.ic_avatar_shiba;
+            avatar = R.drawable.mascot_corgi_running;
         } else if (lower.contains("golden") || lowerName.contains("lucky")) {
             cleanSpecies = "Chó";
             breed = "Golden Retriever";
-            avatar = R.drawable.ic_avatar_golden;
+            avatar = R.drawable.mascot_corgi_wave;
         } else if (lower.contains("beagle") || lowerName.contains("max")) {
             cleanSpecies = "Chó";
             breed = "Beagle";
-            avatar = R.drawable.ic_avatar_corgi;
+            avatar = R.drawable.mascot_corgi_running;
         } else if (lower.contains("corgi") || lowerName.contains("lựu")) {
             cleanSpecies = "Chó";
             breed = "Pembroke Corgi";
-            avatar = R.drawable.ic_avatar_corgi;
+            avatar = R.drawable.mascot_corgi_running;
         } else {
             cleanSpecies = "Chó";
             String[] defaultBreeds = new String[]{"Pomeranian", "Poodle Tiny", "Corgi", "Shiba Inu"};
-            int[] defaultAvatars = new int[]{
-                    R.drawable.img_pet_mochi,
-                    R.drawable.ic_avatar_shiba,
-                    R.drawable.ic_avatar_golden,
-                    R.drawable.ic_avatar_corgi
-            };
             int idx = (int) (Math.abs(id != null ? id : 0L) % defaultBreeds.length);
             breed = (!raw.equalsIgnoreCase("Chó") && !raw.equalsIgnoreCase("Cho")) ? raw : defaultBreeds[idx];
-            avatar = defaultAvatars[idx];
+            avatar = R.drawable.mascot_corgi_running;
         }
 
         String[] sampleAges = new String[]{"2 tuổi", "1,5 tuổi", "8 tháng", "3 tuổi", "1 tuổi"};

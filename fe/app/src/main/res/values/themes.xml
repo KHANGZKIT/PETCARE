@@ -73,20 +73,22 @@
         <item name="android:textFontWeight" tools:targetApi="p">700</item>
         <item name="android:textStyle">normal</item>
         <item name="android:textSize">23sp</item>
+        <item name="lineHeight">28sp</item>
         <item name="android:letterSpacing">-0.02</item>
-        <item name="android:lineSpacingMultiplier">1.18</item>
+        <item name="android:lineSpacingMultiplier">1.15</item>
         <item name="android:textColor">@color/ds_text_primary</item>
     </style>
 
-    <!-- Headline (Hero Banner Main Title): Bold (700) · 20sp · lineHeight 1.2x -->
+    <!-- Headline (Hero Banner Main Title): Bold (700) · 20sp · lineHeight 24sp -->
     <style name="TextAppearance.PetCare.Headline" parent="TextAppearance.Material3.HeadlineMedium">
         <item name="fontFamily">@font/open_sans_bold</item>
         <item name="android:fontFamily">@font/open_sans_bold</item>
         <item name="android:textFontWeight" tools:targetApi="p">700</item>
         <item name="android:textStyle">normal</item>
         <item name="android:textSize">20sp</item>
+        <item name="lineHeight">24sp</item>
         <item name="android:letterSpacing">-0.015</item>
-        <item name="android:lineSpacingMultiplier">1.2</item>
+        <item name="android:lineSpacingMultiplier">1.15</item>
         <item name="android:textColor">@color/ds_text_primary</item>
     </style>
 
@@ -97,8 +99,9 @@
         <item name="android:textFontWeight" tools:targetApi="p">700</item>
         <item name="android:textStyle">normal</item>
         <item name="android:textSize">18sp</item>
+        <item name="lineHeight">22sp</item>
         <item name="android:letterSpacing">-0.01</item>
-        <item name="android:lineSpacingMultiplier">1.2</item>
+        <item name="android:lineSpacingMultiplier">1.15</item>
         <item name="android:textColor">@color/ds_text_primary</item>
     </style>
 
@@ -162,21 +165,25 @@
         <item name="android:background">?attr/selectableItemBackgroundBorderless</item>
     </style>
 
-    <!-- Shape Styles -->
+    <!-- Shape Styles (Warm Tactile: crisp 10dp images, 14dp cards) -->
+    <style name="RoundedCorner10">
+        <item name="cornerSize">10dp</item>
+    </style>
+
     <style name="RoundedCorner12">
-        <item name="cornerSize">12dp</item>
+        <item name="cornerSize">10dp</item>
     </style>
 
     <style name="RoundedCorner16">
-        <item name="cornerSize">16dp</item>
+        <item name="cornerSize">10dp</item>
     </style>
 
     <style name="RoundedCorner18">
-        <item name="cornerSize">18dp</item>
+        <item name="cornerSize">14dp</item>
     </style>
 
     <style name="RoundedCorner20">
-        <item name="cornerSize">20dp</item>
+        <item name="cornerSize">14dp</item>
     </style>
 
     <style name="CircleImage">

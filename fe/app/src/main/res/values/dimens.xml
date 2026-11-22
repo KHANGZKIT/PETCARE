@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <!-- ============================================================ -->
-    <!-- PETCARE DESIGN SYSTEM 1.0 (DIMENSIONS & SPACING SCALE)       -->
+    <!-- PETCARE DESIGN SYSTEM 2.0 (WARM TACTILE SPACING & RADII)     -->
     <!-- ============================================================ -->
 
     <!-- Base Spacing Scale (4dp base) -->
@@ -16,31 +16,32 @@
     <dimen name="spacing_4xl">48dp</dimen>
 
     <!-- Screen Layout Margins & Paddings -->
-    <dimen name="screen_padding_horizontal">24dp</dimen>
-    <dimen name="screen_padding_horizontal_compact">20dp</dimen>
-    <dimen name="screen_padding_vertical">24dp</dimen>
+    <dimen name="screen_padding_horizontal">20dp</dimen>
+    <dimen name="screen_padding_horizontal_compact">16dp</dimen>
+    <dimen name="screen_padding_vertical">20dp</dimen>
 
-    <!-- Corner Radii Standard -->
+    <!-- Corner Radii Standard (Warm Tactile: Card 14dp, Image 10dp, Button/Input 12dp) -->
     <dimen name="radius_sm">8dp</dimen>
+    <dimen name="radius_img">10dp</dimen>
     <dimen name="radius_md">12dp</dimen>
-    <dimen name="radius_input">16dp</dimen>
-    <dimen name="radius_card">24dp</dimen>
-    <dimen name="radius_card_lg">28dp</dimen>
-    <dimen name="radius_button_pill">28dp</dimen>
+    <dimen name="radius_input">12dp</dimen>
+    <dimen name="radius_card">14dp</dimen>
+    <dimen name="radius_card_lg">14dp</dimen>
+    <dimen name="radius_button_pill">12dp</dimen>
     <dimen name="radius_full">999dp</dimen>
 
     <!-- Legacy radius aliases -->
-    <dimen name="radius_lg">16dp</dimen>
-    <dimen name="radius_xl">24dp</dimen>
-    <dimen name="radius_2xl">28dp</dimen>
+    <dimen name="radius_lg">12dp</dimen>
+    <dimen name="radius_xl">14dp</dimen>
+    <dimen name="radius_2xl">16dp</dimen>
 
     <!-- Component Heights & Touch Targets -->
     <dimen name="touch_target_min">48dp</dimen>
-    <dimen name="button_height_primary">54dp</dimen>
-    <dimen name="button_height_lg">54dp</dimen>
+    <dimen name="button_height_primary">50dp</dimen>
+    <dimen name="button_height_lg">50dp</dimen>
     <dimen name="button_height_md">44dp</dimen>
     <dimen name="button_height_sm">36dp</dimen>
-    <dimen name="input_height">52dp</dimen>
+    <dimen name="input_height">48dp</dimen>
 
     <!-- Top & Bottom Bars -->
     <dimen name="status_bar_height">44dp</dimen>
@@ -48,10 +49,10 @@
     <dimen name="bottom_nav_height">64dp</dimen>
 
     <!-- Typography Scale (SP) -->
-    <dimen name="text_size_display">26sp</dimen>
-    <dimen name="text_size_heading">20sp</dimen>
-    <dimen name="text_size_body">16sp</dimen>
-    <dimen name="text_size_desc">14sp</dimen>
-    <dimen name="text_size_button">16sp</dimen>
+    <dimen name="text_size_display">24sp</dimen>
+    <dimen name="text_size_heading">19sp</dimen>
+    <dimen name="text_size_body">15sp</dimen>
+    <dimen name="text_size_desc">13.5sp</dimen>
+    <dimen name="text_size_button">15sp</dimen>
     <dimen name="text_size_caption">12sp</dimen>
 </resources>

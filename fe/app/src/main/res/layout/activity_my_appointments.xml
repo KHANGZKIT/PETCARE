@@ -288,7 +288,7 @@
         android:layout_height="64dp"
         android:layout_alignParentBottom="true"
         android:background="@color/ds_surface"
-        android:elevation="8dp"
+        android:elevation="0dp"
         android:gravity="center_vertical"
         android:orientation="horizontal">
 
@@ -310,7 +310,8 @@
                 <ImageView
                     android:layout_width="19dp"
                     android:layout_height="19dp"
-                    android:layout_gravity="center"
+                    android:layout_gravity="center_horizontal|bottom"
+                        android:layout_marginBottom="2dp"
                     android:contentDescription="@null"
                     android:src="@drawable/ic_home"
                     app:tint="@color/ds_text_secondary" />
@@ -345,7 +346,8 @@
                 <ImageView
                     android:layout_width="19dp"
                     android:layout_height="19dp"
-                    android:layout_gravity="center"
+                    android:layout_gravity="center_horizontal|bottom"
+                        android:layout_marginBottom="2dp"
                     android:contentDescription="@null"
                     android:src="@drawable/ic_stethoscope"
                     app:tint="@color/ds_text_secondary" />
@@ -381,7 +383,8 @@
                 <ImageView
                     android:layout_width="19dp"
                     android:layout_height="19dp"
-                    android:layout_gravity="center"
+                    android:layout_gravity="center_horizontal|bottom"
+                        android:layout_marginBottom="2dp"
                     android:contentDescription="@null"
                     android:src="@drawable/ic_calendar_days"
                     app:tint="@color/ds_primary_dark" />
@@ -416,7 +419,8 @@
                 <ImageView
                     android:layout_width="19dp"
                     android:layout_height="19dp"
-                    android:layout_gravity="center"
+                    android:layout_gravity="center_horizontal|bottom"
+                        android:layout_marginBottom="2dp"
                     android:contentDescription="@null"
                     android:src="@drawable/ic_paw"
                     app:tint="@color/ds_text_secondary" />

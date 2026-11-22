@@ -109,6 +109,7 @@ public class MainActivity extends AppCompatActivity {
         UiMotionUtils.animateEntranceSections(
                 binding.sectionHeader,
                 binding.bannerBooking,
+                binding.layoutQuickShortcuts,
                 binding.sectionUpcoming,
                 binding.sectionMyPets,
                 binding.sectionClinics
@@ -119,6 +120,10 @@ public class MainActivity extends AppCompatActivity {
                 binding.btnAvatar,
                 binding.bannerBooking,
                 binding.btnBookNow,
+                binding.btnShortcutExam,
+                binding.btnShortcutVaccine,
+                binding.btnShortcutEmergency,
+                binding.btnShortcutSpa,
                 binding.cardUpcomingAppointment
         );
     }
@@ -126,11 +131,11 @@ public class MainActivity extends AppCompatActivity {
     private void displayUserInfo() {
         int hour = LocalTime.now().getHour();
         if (hour < 12) {
-            binding.tvGreeting.setText("Chào buổi sáng,");
+            binding.tvGreeting.setText("Chào buổi sáng, ");
         } else if (hour < 18) {
-            binding.tvGreeting.setText("Chào buổi chiều,");
+            binding.tvGreeting.setText("Chào buổi chiều, ");
         } else {
-            binding.tvGreeting.setText("Chào buổi tối,");
+            binding.tvGreeting.setText("Chào buổi tối, ");
         }
 
         String name = tokenManager.getUserName();
@@ -154,6 +159,8 @@ public class MainActivity extends AppCompatActivity {
 
     private void setupListeners() {
         // Header actions
+        binding.btnHomeLocation.setOnClickListener(v -> showHomeLocationPicker());
+
         binding.btnNotification.setOnClickListener(v ->
                 startActivity(new Intent(this, NotificationsActivity.class)));
 
@@ -167,6 +174,17 @@ public class MainActivity extends AppCompatActivity {
         };
         binding.bannerBooking.setOnClickListener(openBookingFlow);
         binding.btnBookNow.setOnClickListener(openBookingFlow);
+
+        // 4 Quick Shortcuts (Khám · Tiêm · Cấp cứu · Spa)
+        binding.btnShortcutExam.setOnClickListener(openBookingFlow);
+        binding.btnShortcutVaccine.setOnClickListener(openBookingFlow);
+        binding.btnShortcutSpa.setOnClickListener(openBookingFlow);
+        binding.btnShortcutEmergency.setOnClickListener(v -> {
+            Intent intent = new Intent(this, ClinicListActivity.class);
+            intent.putExtra(ClinicListActivity.EXTRA_TAB_MODE, false);
+            intent.putExtra(ClinicListActivity.EXTRA_INITIAL_FILTER, "emergency");
+            startActivity(intent);
+        });
 
         // Section links & retry actions
         binding.tvSeeAllAppointments.setOnClickListener(v ->
@@ -323,10 +341,33 @@ public class MainActivity extends AppCompatActivity {
         return active.get(0);
     }
 
+    private void showHomeLocationPicker() {
+        String[] locations = new String[]{
+                "ĐH Công nghiệp Hà Nội",
+                "Cầu Giấy, Hà Nội",
+                "Đống Đa, Hà Nội",
+                "Bắc Từ Liêm, Hà Nội"
+        };
+        new AlertDialog.Builder(this)
+                .setTitle("Chọn khu vực của bạn")
+                .setItems(locations, (dialog, which) -> binding.tvHomeLocation.setText(locations[which]))
+                .show();
+    }
+
     private void bindUpcomingCard(AppointmentResponse res) {
         AppointmentItem item = res.toAppointmentItem();
 
-        binding.ivUpcomingPetAvatar.setImageResource(item.getPetImgRes());
+        int avatarRes = item.getPetImgRes();
+        binding.ivUpcomingPetAvatar.setImageResource(avatarRes);
+        if (avatarRes == R.drawable.img_pet_bong) {
+            binding.ivUpcomingPetAvatar.setPadding(0, 0, 0, 0);
+            binding.ivUpcomingPetAvatar.setScaleType(ImageView.ScaleType.CENTER_CROP);
+        } else {
+            int pad = Math.round(4 * getResources().getDisplayMetrics().density);
+            binding.ivUpcomingPetAvatar.setPadding(pad, pad, pad, pad);
+            binding.ivUpcomingPetAvatar.setScaleType(ImageView.ScaleType.FIT_CENTER);
+        }
+
         binding.tvUpcomingService.setText(res.getServiceName() != null ? res.getServiceName() : item.getService());
 
         String petPart = res.getPetName() != null && !res.getPetName().isEmpty() ? res.getPetName() : item.getPet();
@@ -336,19 +377,11 @@ public class MainActivity extends AppCompatActivity {
         binding.tvUpcomingDateTime.setText(formatReadableDateTime(res.getSlotDate(), res.getStartTime(), res.getEndTime()));
 
         if ("CONFIRMED".equalsIgnoreCase(res.getStatus())) {
-            binding.viewUpcomingAccent.setBackgroundColor(ContextCompat.getColor(this, R.color.ds_success));
-            binding.badgeUpcomingStatus.setBackgroundResource(R.drawable.bg_badge_status_success_flat);
-            binding.ivUpcomingStatusIcon.setImageResource(R.drawable.ic_check_circle);
-            binding.ivUpcomingStatusIcon.setColorFilter(ContextCompat.getColor(this, R.color.status_success_ink));
-            binding.tvUpcomingStatus.setText("Đã xác nhận");
-            binding.tvUpcomingStatus.setTextColor(ContextCompat.getColor(this, R.color.status_success_ink));
+            binding.tvUpcomingStatus.setText("● Đã xác nhận");
+            binding.tvUpcomingStatus.setTextColor(ContextCompat.getColor(this, R.color.ds_success));
         } else {
-            binding.viewUpcomingAccent.setBackgroundColor(ContextCompat.getColor(this, R.color.ds_warning));
-            binding.badgeUpcomingStatus.setBackgroundResource(R.drawable.bg_badge_status_warning_flat);
-            binding.ivUpcomingStatusIcon.setImageResource(R.drawable.ic_clock);
-            binding.ivUpcomingStatusIcon.setColorFilter(ContextCompat.getColor(this, R.color.status_warning_ink));
-            binding.tvUpcomingStatus.setText("Chờ xác nhận");
-            binding.tvUpcomingStatus.setTextColor(ContextCompat.getColor(this, R.color.status_warning_ink));
+            binding.tvUpcomingStatus.setText("● Chờ xác nhận");
+            binding.tvUpcomingStatus.setTextColor(ContextCompat.getColor(this, R.color.ds_warning));
         }
 
         View.OnClickListener detailClick = v -> {
@@ -368,16 +401,16 @@ public class MainActivity extends AppCompatActivity {
                 LocalDate parsed = LocalDate.parse(slotDate.substring(0, 10));
                 String dow;
                 switch (parsed.getDayOfWeek()) {
-                    case MONDAY: dow = "Thứ 2"; break;
-                    case TUESDAY: dow = "Thứ 3"; break;
-                    case WEDNESDAY: dow = "Thứ 4"; break;
-                    case THURSDAY: dow = "Thứ 5"; break;
-                    case FRIDAY: dow = "Thứ 6"; break;
-                    case SATURDAY: dow = "Thứ 7"; break;
+                    case MONDAY: dow = "T2"; break;
+                    case TUESDAY: dow = "T3"; break;
+                    case WEDNESDAY: dow = "T4"; break;
+                    case THURSDAY: dow = "T5"; break;
+                    case FRIDAY: dow = "T6"; break;
+                    case SATURDAY: dow = "T7"; break;
                     default: dow = "CN"; break;
                 }
-                dateDisplay = String.format(Locale.US, "%s, %02d/%02d/%d",
-                        dow, parsed.getDayOfMonth(), parsed.getMonthValue(), parsed.getYear());
+                dateDisplay = String.format(Locale.US, "%s, %02d/%02d",
+                        dow, parsed.getDayOfMonth(), parsed.getMonthValue());
             }
         } catch (Exception ignored) {
         }
@@ -437,20 +470,21 @@ public class MainActivity extends AppCompatActivity {
             PetItem mapped = res.toPetItem();
             ItemHomePetCardBinding card = ItemHomePetCardBinding.inflate(inflater, binding.containerHomePets, false);
 
-            card.ivHomePetAvatar.setImageResource(mapped.getImageResId());
+            int avatarRes = mapped.getImageResId();
+            card.ivHomePetAvatar.setImageResource(avatarRes);
+            if (avatarRes == R.drawable.img_pet_bong) {
+                card.ivHomePetAvatar.setPadding(0, 0, 0, 0);
+                card.ivHomePetAvatar.setScaleType(ImageView.ScaleType.CENTER_CROP);
+            } else {
+                int pad = Math.round(4 * getResources().getDisplayMetrics().density);
+                card.ivHomePetAvatar.setPadding(pad, pad, pad, pad);
+                card.ivHomePetAvatar.setScaleType(ImageView.ScaleType.FIT_CENTER);
+            }
+
             card.tvHomePetName.setText(res.getName() != null && !res.getName().trim().isEmpty() ? res.getName().trim() : "Bé cưng");
 
             String rawSpecies = res.getSpecies() != null && !res.getSpecies().trim().isEmpty() ? res.getSpecies().trim() : "Thú cưng";
             card.tvHomePetSpecies.setText(rawSpecies);
-
-            String lowerSpec = rawSpecies.toLowerCase(Locale.ROOT);
-            if (lowerSpec.contains("mèo") || lowerSpec.contains("meo") || lowerSpec.contains("cat")) {
-                card.tvHomePetSpecies.setBackgroundResource(R.drawable.bg_pill_mint);
-                card.tvHomePetSpecies.setTextColor(ContextCompat.getColor(this, R.color.ds_mint_ink));
-            } else {
-                card.tvHomePetSpecies.setBackgroundResource(R.drawable.bg_pill_peach);
-                card.tvHomePetSpecies.setTextColor(ContextCompat.getColor(this, R.color.ds_peach_ink));
-            }
 
             UiMotionUtils.attachSpringTouch(card.getRoot());
             card.getRoot().setOnClickListener(v -> {
@@ -566,7 +600,7 @@ public class MainActivity extends AppCompatActivity {
 
             ItemHomeClinicCardBinding card = ItemHomeClinicCardBinding.inflate(inflater, binding.containerHomeClinics, false);
             card.ivHomeClinicImage.setImageResource(clinicItem.getImageResId());
-            card.tvHomeClinicName.setText(res.getName() != null ? res.getName() : "Phòng khám thú y");
+            card.tvHomeClinicName.setText(formatShortClinicName(res.getName()));
 
             String addr = res.getAddress();
             if (addr == null || addr.trim().isEmpty()) {
@@ -575,21 +609,21 @@ public class MainActivity extends AppCompatActivity {
             card.tvHomeClinicAddress.setText(addr);
 
             if (res.isActive()) {
-                card.tvHomeClinicStatus.setText("● Đang hoạt động");
-                card.tvHomeClinicStatus.setBackgroundResource(R.drawable.bg_badge_status_success_flat);
-                card.tvHomeClinicStatus.setTextColor(ContextCompat.getColor(this, R.color.status_success_ink));
+                card.tvHomeClinicStatus.setText("● Đang mở cửa");
+                card.tvHomeClinicStatus.setTextColor(ContextCompat.getColor(this, R.color.ds_success));
             } else {
-                card.tvHomeClinicStatus.setText("● Tạm ngưng");
-                card.tvHomeClinicStatus.setBackgroundResource(R.drawable.bg_badge_status_neutral_flat);
-                card.tvHomeClinicStatus.setTextColor(ContextCompat.getColor(this, R.color.status_neutral_ink));
+                card.tvHomeClinicStatus.setText("● Đã đóng cửa");
+                card.tvHomeClinicStatus.setTextColor(ContextCompat.getColor(this, R.color.ds_text_secondary));
             }
 
             if (res.getWorkingHourNote() != null && !res.getWorkingHourNote().trim().isEmpty()) {
-                card.tvHomeClinicHours.setText(res.getWorkingHourNote().trim());
-                card.layoutHomeClinicHours.setVisibility(View.VISIBLE);
+                card.tvHomeClinicHours.setText("· " + formatShortHours(res.getWorkingHourNote()));
+                card.tvHomeClinicHours.setVisibility(View.VISIBLE);
             } else {
-                card.layoutHomeClinicHours.setVisibility(View.GONE);
+                card.tvHomeClinicHours.setVisibility(View.GONE);
             }
+
+            card.dividerHomeClinic.setVisibility(i == count - 1 ? View.GONE : View.VISIBLE);
 
             UiMotionUtils.attachSpringTouch(card.getRoot());
             card.getRoot().setOnClickListener(v -> {
@@ -600,6 +634,32 @@ public class MainActivity extends AppCompatActivity {
 
             binding.containerHomeClinics.addView(card.getRoot());
         }
+    }
+
+    private String formatShortClinicName(String raw) {
+        if (raw == null || raw.trim().isEmpty()) return "Phòng khám thú y";
+        String s = raw.trim();
+        if (s.toLowerCase(Locale.ROOT).startsWith("phòng khám thú y ")) {
+            return "Thú y " + s.substring("Phòng khám Thú y ".length()).trim();
+        }
+        return s;
+    }
+
+    private String formatShortHours(String raw) {
+        if (raw == null || raw.trim().isEmpty()) return "08:00 - 20:00";
+        String s = raw.trim();
+        if (s.contains("24/7")) {
+            return "24/7 Cấp cứu";
+        }
+        int parenIdx = s.indexOf('(');
+        if (parenIdx > 0) {
+            s = s.substring(0, parenIdx).trim();
+        }
+        int ampIdx = s.indexOf('&');
+        if (ampIdx > 0) {
+            s = s.substring(0, ampIdx).trim();
+        }
+        return s;
     }
 
     private void handleUnauthorizedOnce() {
