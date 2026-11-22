@@ -224,12 +224,12 @@ public class MyAppointmentsActivity extends AppCompatActivity {
     private void updateChipStyle(TextView chip, boolean active) {
         if (active) {
             chip.setBackgroundResource(R.drawable.bg_chip_active);
-            chip.setTextColor(ContextCompat.getColor(this, R.color.white));
+            chip.setTextColor(ContextCompat.getColor(this, R.color.ds_primary));
             UiMotionUtils.applyFont(chip, R.font.open_sans_semibold);
         } else {
             chip.setBackgroundResource(R.drawable.bg_chip_inactive);
-            chip.setTextColor(ContextCompat.getColor(this, R.color.text_muted));
-            UiMotionUtils.applyFont(chip, R.font.open_sans_regular);
+            chip.setTextColor(ContextCompat.getColor(this, R.color.ds_text_secondary));
+            UiMotionUtils.applyFont(chip, R.font.open_sans_medium);
         }
     }
 
@@ -237,11 +237,21 @@ public class MyAppointmentsActivity extends AppCompatActivity {
         ItemAppointmentCardBinding cardBinding = ItemAppointmentCardBinding.inflate(getLayoutInflater());
 
         applyBadgeStatus(cardBinding.tvApptStatus, cardBinding.viewStatusAccent, item.getStatus());
-        cardBinding.ivPetImage.setImageResource(item.getPetImgRes());
+
+        int avatarRes = item.getPetImgRes();
+        cardBinding.ivPetImage.setImageResource(avatarRes);
+        if (avatarRes == R.drawable.img_pet_bong) {
+            cardBinding.ivPetImage.setPadding(0, 0, 0, 0);
+            cardBinding.ivPetImage.setScaleType(android.widget.ImageView.ScaleType.CENTER_CROP);
+        } else {
+            int pad = Math.round(4 * getResources().getDisplayMetrics().density);
+            cardBinding.ivPetImage.setPadding(pad, pad, pad, pad);
+            cardBinding.ivPetImage.setScaleType(android.widget.ImageView.ScaleType.FIT_CENTER);
+        }
+
         cardBinding.tvServiceTitle.setText(item.getService());
-        cardBinding.tvPetAndClinic.setText(item.getPet() + " · " + item.getClinic());
-        cardBinding.tvApptDate.setText(item.getDate());
-        cardBinding.tvApptTime.setText(item.getTime());
+        cardBinding.tvPetAndClinic.setText(item.getPet() + " · " + formatShortClinicName(item.getClinic()));
+        cardBinding.tvApptDate.setText(formatNaturalDateTime(item.getDate(), item.getTime()));
 
         UiMotionUtils.attachSpringTouch(cardBinding.getRoot());
 
@@ -255,37 +265,66 @@ public class MyAppointmentsActivity extends AppCompatActivity {
         return cardBinding.getRoot();
     }
 
+    private String formatShortClinicName(String raw) {
+        if (raw == null || raw.trim().isEmpty()) return "Phòng khám thú y";
+        String s = raw.trim();
+        if (s.toLowerCase(java.util.Locale.ROOT).startsWith("phòng khám thú y ")) {
+            return "Thú y " + s.substring("Phòng khám Thú y ".length()).trim();
+        }
+        return s;
+    }
+
+    private String formatNaturalDateTime(String rawDate, String rawTime) {
+        String datePart = rawDate != null ? rawDate.trim() : "";
+        try {
+            if (datePart.length() >= 10 && datePart.charAt(4) == '-' && datePart.charAt(7) == '-') {
+                java.time.LocalDate parsed = java.time.LocalDate.parse(datePart.substring(0, 10));
+                String dow;
+                switch (parsed.getDayOfWeek()) {
+                    case MONDAY: dow = "T2"; break;
+                    case TUESDAY: dow = "T3"; break;
+                    case WEDNESDAY: dow = "T4"; break;
+                    case THURSDAY: dow = "T5"; break;
+                    case FRIDAY: dow = "T6"; break;
+                    case SATURDAY: dow = "T7"; break;
+                    default: dow = "CN"; break;
+                }
+                datePart = String.format(java.util.Locale.US, "%s, %02d/%02d",
+                        dow, parsed.getDayOfMonth(), parsed.getMonthValue());
+            }
+        } catch (Exception ignored) {
+        }
+
+        String timePart = rawTime != null ? rawTime.trim() : "";
+        if (timePart.length() > 5 && timePart.charAt(2) == ':') {
+            timePart = timePart.substring(0, 5);
+        }
+
+        if (!datePart.isEmpty() && !timePart.isEmpty()) {
+            return datePart + " · " + timePart;
+        }
+        return !datePart.isEmpty() ? datePart : timePart;
+    }
+
     private void applyBadgeStatus(TextView tvBadge, View viewAccent, String status) {
         if ("CONFIRMED".equalsIgnoreCase(status)) {
-            tvBadge.setText("• Đã xác nhận");
-            tvBadge.setBackgroundResource(R.drawable.bg_badge_confirmed);
-            tvBadge.setTextColor(ContextCompat.getColor(this, R.color.status_success_ink));
-            viewAccent.setBackgroundColor(ContextCompat.getColor(this, R.color.status_success));
+            tvBadge.setText("● Đã xác nhận");
+            tvBadge.setTextColor(ContextCompat.getColor(this, R.color.ds_success));
         } else if ("COMPLETED".equalsIgnoreCase(status)) {
-            tvBadge.setText("• Đã hoàn thành");
-            tvBadge.setBackgroundResource(R.drawable.bg_badge_confirmed);
-            tvBadge.setTextColor(ContextCompat.getColor(this, R.color.status_success_ink));
-            viewAccent.setBackgroundColor(ContextCompat.getColor(this, R.color.brand_primary));
+            tvBadge.setText("● Đã hoàn thành");
+            tvBadge.setTextColor(ContextCompat.getColor(this, R.color.ds_success));
         } else if ("NO_SHOW".equalsIgnoreCase(status)) {
-            tvBadge.setText("• Không đến");
-            tvBadge.setBackgroundResource(R.drawable.bg_badge_no_show);
-            tvBadge.setTextColor(ContextCompat.getColor(this, R.color.status_info_ink));
-            viewAccent.setBackgroundColor(ContextCompat.getColor(this, R.color.status_info));
+            tvBadge.setText("● Không đến");
+            tvBadge.setTextColor(ContextCompat.getColor(this, R.color.status_info));
         } else if ("CANCELLED".equalsIgnoreCase(status)) {
-            tvBadge.setText("• Đã hủy");
-            tvBadge.setBackgroundResource(R.drawable.bg_badge_cancelled);
-            tvBadge.setTextColor(ContextCompat.getColor(this, R.color.status_neutral_ink));
-            viewAccent.setBackgroundColor(ContextCompat.getColor(this, R.color.status_neutral));
+            tvBadge.setText("● Đã hủy");
+            tvBadge.setTextColor(ContextCompat.getColor(this, R.color.ds_text_secondary));
         } else if ("REJECTED".equalsIgnoreCase(status)) {
-            tvBadge.setText("• Đã từ chối");
-            tvBadge.setBackgroundResource(R.drawable.bg_badge_rejected);
-            tvBadge.setTextColor(ContextCompat.getColor(this, R.color.status_destructive_ink));
-            viewAccent.setBackgroundColor(ContextCompat.getColor(this, R.color.status_destructive));
+            tvBadge.setText("● Đã từ chối");
+            tvBadge.setTextColor(ContextCompat.getColor(this, R.color.ds_error));
         } else {
-            tvBadge.setText("• Chờ xác nhận");
-            tvBadge.setBackgroundResource(R.drawable.bg_badge_pending);
-            tvBadge.setTextColor(ContextCompat.getColor(this, R.color.status_warning_ink));
-            viewAccent.setBackgroundColor(ContextCompat.getColor(this, R.color.status_warning));
+            tvBadge.setText("● Chờ xác nhận");
+            tvBadge.setTextColor(ContextCompat.getColor(this, R.color.ds_warning));
         }
     }
 

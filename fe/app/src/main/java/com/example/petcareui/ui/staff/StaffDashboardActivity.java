@@ -207,7 +207,7 @@ public class StaffDashboardActivity extends AppCompatActivity {
     private void updateToggleChip(TextView chip, boolean active) {
         if (active) {
             chip.setBackgroundResource(R.drawable.bg_chip_active);
-            chip.setTextColor(ContextCompat.getColor(this, R.color.white));
+            chip.setTextColor(ContextCompat.getColor(this, R.color.ds_primary));
         } else {
             chip.setBackgroundResource(R.drawable.bg_chip_inactive);
             chip.setTextColor(ContextCompat.getColor(this, R.color.text_muted));

@@ -297,7 +297,7 @@ public class AppointmentDetailsActivity extends AppCompatActivity {
     private void updateTabChip(TextView tab, boolean active) {
         if (active) {
             tab.setBackgroundResource(R.drawable.bg_chip_active);
-            tab.setTextColor(ContextCompat.getColor(this, R.color.white));
+            tab.setTextColor(ContextCompat.getColor(this, R.color.ds_primary));
         } else {
             tab.setBackgroundResource(R.drawable.bg_chip_inactive);
             tab.setTextColor(ContextCompat.getColor(this, R.color.text_muted));

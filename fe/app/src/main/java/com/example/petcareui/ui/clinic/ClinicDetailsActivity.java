@@ -124,19 +124,32 @@ public class ClinicDetailsActivity extends AppCompatActivity {
         binding.tvClinicAbout.setText(clinicItem.getAbout());
 
         if (clinicItem.isOpen()) {
-            binding.tvCoverStatusBadge.setText("● ĐANG MỞ CỬA · ĐẾN 20:00");
-            binding.tvCoverStatusBadge.setTextColor(ContextCompat.getColor(this, R.color.status_success_ink));
+            String hours = clinicItem.getHours() != null ? clinicItem.getHours().trim() : "";
+            if (hours.contains("24/7")) {
+                binding.tvCoverStatusBadge.setText("● ĐANG MỞ CỬA · 24/7");
+            } else {
+                String shortHours = formatShortHours(hours);
+                binding.tvCoverStatusBadge.setText(shortHours.isEmpty() ? "● ĐANG MỞ CỬA" : "● ĐANG MỞ CỬA · " + shortHours);
+            }
+            binding.tvCoverStatusBadge.setTextColor(ContextCompat.getColor(this, R.color.ds_success));
         } else {
-            binding.tvCoverStatusBadge.setText("ĐÃ ĐÓNG CỬA");
-            binding.tvCoverStatusBadge.setTextColor(ContextCompat.getColor(this, R.color.text_muted));
+            binding.tvCoverStatusBadge.setText("● ĐÃ ĐÓNG CỬA");
+            binding.tvCoverStatusBadge.setTextColor(ContextCompat.getColor(this, R.color.ds_text_secondary));
         }
 
-        binding.tvInfoHours.setText(clinicItem.getHours());
-        binding.tvInfoEmergency.setText(clinicItem.getEmergencyHours());
-        binding.tvInfoLanguages.setText(clinicItem.getLanguages());
+        String hoursText = clinicItem.getHours() != null ? clinicItem.getHours().trim() : "";
+        binding.tvInfoHours.setText(hoursText);
+        if (hoursText.contains("24/7")) {
+            binding.layoutEmergencyRow.setVisibility(View.GONE);
+            binding.dividerEmergency.setVisibility(View.GONE);
+        } else {
+            binding.layoutEmergencyRow.setVisibility(View.VISIBLE);
+            binding.dividerEmergency.setVisibility(View.VISIBLE);
+            binding.tvInfoEmergency.setText(clinicItem.getEmergencyHours());
+        }
         binding.tvInfoPhone.setText(clinicItem.getPhone());
 
-        binding.tvMapLocationDesc.setText(clinicItem.getAddress() + " · đi ô tô 6 phút");
+        binding.tvMapLocationDesc.setText(clinicItem.getAddress());
 
         // Khung giờ trống gần nhất
         java.time.LocalDate today = java.time.LocalDate.now();
@@ -232,7 +245,7 @@ public class ClinicDetailsActivity extends AppCompatActivity {
                         services.add(new ServiceItem(
                                 String.valueOf(res.getId()),
                                 res.getName(),
-                                "Chăm sóc chuyên sâu bởi bác sĩ thú y giàu kinh nghiệm.",
+                                resolveShortServiceDesc(res.getName()),
                                 durationText,
                                 priceText,
                                 icon
@@ -274,9 +287,15 @@ public class ClinicDetailsActivity extends AppCompatActivity {
 
             itemBinding.ivServiceIcon.setImageResource(item.getIconResId());
             itemBinding.tvServiceName.setText(item.getName());
-            itemBinding.tvServiceDesc.setText(item.getDesc());
+            if (item.getDesc() != null && !item.getDesc().trim().isEmpty()) {
+                itemBinding.tvServiceDesc.setText(item.getDesc());
+                itemBinding.tvServiceDesc.setVisibility(View.VISIBLE);
+            } else {
+                itemBinding.tvServiceDesc.setVisibility(View.GONE);
+            }
             itemBinding.tvServiceDuration.setText(item.getDuration());
             itemBinding.tvServicePrice.setText(item.getPrice());
+            itemBinding.dividerServiceRow.setVisibility(i == services.size() - 1 ? View.GONE : View.VISIBLE);
 
             UiMotionUtils.attachSpringTouch(itemBinding.getRoot());
             itemBinding.getRoot().setOnClickListener(v -> toggleServiceSelection(index));
@@ -306,17 +325,51 @@ public class ClinicDetailsActivity extends AppCompatActivity {
             boolean isCurrentSelected = (i == selectedServiceIndex);
 
             if (isCurrentSelected) {
-                b.layoutServiceCard.setBackgroundResource(R.drawable.bg_service_card_selected);
+                b.layoutServiceCard.setBackgroundColor(ContextCompat.getColor(this, R.color.ds_soft_peach));
                 b.layoutServiceIconBox.setBackgroundResource(R.drawable.bg_service_icon_selected);
                 b.ivServiceIcon.setColorFilter(ContextCompat.getColor(this, R.color.white));
                 b.ivServiceCheck.setImageResource(R.drawable.bg_radio_selected);
             } else {
-                b.layoutServiceCard.setBackgroundResource(R.drawable.bg_service_card_default);
-                b.layoutServiceIconBox.setBackgroundResource(R.drawable.bg_service_icon);
-                b.ivServiceIcon.setColorFilter(ContextCompat.getColor(this, R.color.brand_ink));
+                b.layoutServiceCard.setBackgroundResource(R.drawable.bg_clinic_row_flat);
+                b.layoutServiceIconBox.setBackgroundResource(R.drawable.bg_shortcut_icon_cream);
+                b.ivServiceIcon.setColorFilter(ContextCompat.getColor(this, R.color.ds_primary));
                 b.ivServiceCheck.setImageResource(R.drawable.bg_radio_unselected);
             }
         }
+    }
+
+    private String formatShortHours(String raw) {
+        if (raw == null) return "";
+        String s = raw.trim();
+        int parenIdx = s.indexOf('(');
+        if (parenIdx > 0) s = s.substring(0, parenIdx).trim();
+        int ampIdx = s.indexOf('&');
+        if (ampIdx > 0) s = s.substring(0, ampIdx).trim();
+        return s;
+    }
+
+    private String resolveShortServiceDesc(String name) {
+        if (name == null) return "";
+        String lower = name.toLowerCase(java.util.Locale.ROOT);
+        if (lower.contains("tổng quát") || lower.contains("khám")) {
+            return "Kiểm tra lâm sàng, cân nặng và các chỉ số sinh tồn.";
+        }
+        if (lower.contains("tiêm") || lower.contains("vaccine")) {
+            return "Khám sàng lọc trước tiêm và cấp sổ theo dõi mũi tiêm.";
+        }
+        if (lower.contains("cấp cứu") || lower.contains("24/7")) {
+            return "Tiếp nhận xử lý khẩn cấp và theo dõi liên tục.";
+        }
+        if (lower.contains("răng") || lower.contains("vôi")) {
+            return "Cạo vôi siêu âm, đánh bóng và kiểm tra khoang miệng.";
+        }
+        if (lower.contains("tắm") || lower.contains("spa") || lower.contains("cắt tỉa")) {
+            return "Tắm gội, sấy khô, cắt móng và vệ sinh tai.";
+        }
+        if (lower.contains("siêu âm") || lower.contains("xét nghiệm") || lower.contains("máu")) {
+            return "Chẩn đoán nhanh tại chỗ, trả kết quả trực tiếp.";
+        }
+        return "";
     }
 
     private void setupBookingCTA() {

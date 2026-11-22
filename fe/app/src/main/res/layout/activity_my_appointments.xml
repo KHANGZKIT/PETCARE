@@ -33,13 +33,16 @@
                 android:orientation="vertical">
 
                 <TextView
+                    style="@style/TextAppearance.PetCare.Title"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:fontFamily="@font/open_sans_bold"
                     android:letterSpacing="-0.01"
                     android:text="Lịch hẹn của tôi"
-                    android:textColor="@color/text_foreground"
-                    android:fontFamily="@font/open_sans_bold"
-                    android:textSize="21sp" />
+                    android:textColor="@color/ds_text_primary"
+                    android:textSize="21sp"
+                    android:textStyle="bold"
+                    app:fontFamily="@font/open_sans_bold" />
 
                 <TextView
                     android:id="@+id/tvHeaderSubtitle"
@@ -94,47 +97,48 @@
             <TextView
                 android:id="@+id/chipUpcoming"
                 android:layout_width="wrap_content"
-                android:layout_height="36dp"
+                android:layout_height="34dp"
                 android:background="@drawable/bg_chip_active"
                 android:clickable="true"
                 android:focusable="true"
                 android:gravity="center"
-                android:paddingStart="14dp"
-                android:paddingEnd="14dp"
+                android:paddingStart="13dp"
+                android:paddingEnd="13dp"
                 android:text="Sắp tới · 3"
-                android:textColor="@color/white"
-                android:fontFamily="@font/open_sans_medium"
-                android:textSize="12.5sp" />
+                android:textColor="@color/ds_primary"
+                android:fontFamily="@font/open_sans_semibold"
+                android:textSize="12.5sp"
+                app:fontFamily="@font/open_sans_semibold" />
 
             <TextView
                 android:id="@+id/chipPast"
                 android:layout_width="wrap_content"
-                android:layout_height="36dp"
+                android:layout_height="34dp"
                 android:layout_marginStart="8dp"
                 android:background="@drawable/bg_chip_inactive"
                 android:clickable="true"
                 android:focusable="true"
                 android:gravity="center"
-                android:paddingStart="14dp"
-                android:paddingEnd="14dp"
+                android:paddingStart="13dp"
+                android:paddingEnd="13dp"
                 android:text="Đã qua · 4"
-                android:textColor="@color/text_muted"
+                android:textColor="@color/ds_text_secondary"
                 android:fontFamily="@font/open_sans_medium"
                 android:textSize="12.5sp" />
 
             <TextView
                 android:id="@+id/chipAll"
                 android:layout_width="wrap_content"
-                android:layout_height="36dp"
+                android:layout_height="34dp"
                 android:layout_marginStart="8dp"
                 android:background="@drawable/bg_chip_inactive"
                 android:clickable="true"
                 android:focusable="true"
                 android:gravity="center"
-                android:paddingStart="14dp"
-                android:paddingEnd="14dp"
+                android:paddingStart="13dp"
+                android:paddingEnd="13dp"
                 android:text="Tất cả"
-                android:textColor="@color/text_muted"
+                android:textColor="@color/ds_text_secondary"
                 android:fontFamily="@font/open_sans_medium"
                 android:textSize="12.5sp" />
         </LinearLayout>
@@ -180,13 +184,16 @@
                     android:layout_marginBottom="12dp">
 
                     <TextView
+                        style="@style/TextAppearance.PetCare.Title"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_alignParentStart="true"
-                        android:text="Lịch khám đã qua"
-                        android:textColor="@color/text_foreground"
                         android:fontFamily="@font/open_sans_bold"
-                        android:textSize="17sp" />
+                        android:text="Lịch khám đã qua"
+                        android:textColor="@color/ds_text_primary"
+                        android:textSize="17sp"
+                        android:textStyle="bold"
+                        app:fontFamily="@font/open_sans_bold" />
 
                     <TextView
                         android:id="@+id/tvSeeAllPastAppts"
@@ -285,9 +292,9 @@
     <LinearLayout
         android:id="@+id/layoutBottomNav"
         android:layout_width="match_parent"
-        android:layout_height="64dp"
+        android:layout_height="62dp"
         android:layout_alignParentBottom="true"
-        android:background="@color/ds_surface"
+        android:background="@drawable/bg_bottom_nav_bar"
         android:elevation="0dp"
         android:gravity="center_vertical"
         android:orientation="horizontal">

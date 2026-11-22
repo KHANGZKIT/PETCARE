@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -123,111 +124,100 @@
                 <!-- Tên phòng khám -->
                 <TextView
                     android:id="@+id/tvClinicName"
+                    style="@style/TextAppearance.PetCare.Display"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:fontFamily="@font/open_sans_bold"
                     android:letterSpacing="-0.02"
                     android:lineSpacingExtra="2dp"
-                    android:text="Phòng khám Thú y An Nhiên"
-                    android:textColor="@color/text_foreground"
-                    android:fontFamily="@font/open_sans_bold"
-                    android:textSize="22sp" />
+                    android:text="Thú y PetCare Cầu Diễn"
+                    android:textColor="@color/ds_text_primary"
+                    android:textSize="21sp"
+                    android:textStyle="bold"
+                    app:fontFamily="@font/open_sans_bold" />
 
                 <!-- Địa chỉ -->
                 <LinearLayout
                     android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="6dp"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
+
+                    <ImageView
+                        android:layout_width="14dp"
+                        android:layout_height="14dp"
+                        android:contentDescription="@null"
+                        android:src="@drawable/ic_map_pin"
+                        android:tint="@color/ds_text_secondary" />
+
+                    <TextView
+                        android:id="@+id/tvClinicAddress"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="5dp"
+                        android:fontFamily="@font/open_sans_regular"
+                        android:text="Số 12 Chùa Hà, Cầu Giấy, Hà Nội"
+                        android:textColor="@color/ds_text_secondary"
+                        android:textSize="13sp" />
+                </LinearLayout>
+
+                <!-- 1 dòng phẳng: ★ 4.9 (158 đánh giá) · < 200m (Bỏ khung pill) -->
+                <LinearLayout
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="8dp"
                     android:gravity="center_vertical"
                     android:orientation="horizontal">
 
                     <ImageView
-                        android:layout_width="15dp"
-                        android:layout_height="15dp"
+                        android:layout_width="14dp"
+                        android:layout_height="14dp"
                         android:contentDescription="@null"
-                        android:src="@drawable/ic_map_pin"
-                        android:tint="@color/text_muted" />
+                        android:src="@drawable/ic_star_filled"
+                        android:tint="@color/ds_star_amber" />
 
                     <TextView
-                        android:id="@+id/tvClinicAddress"
+                        android:id="@+id/tvClinicRating"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="4dp"
+                        android:fontFamily="@font/open_sans_bold"
+                        android:fontFeatureSettings="tnum"
+                        android:text="4.9"
+                        android:textColor="@color/ds_text_primary"
+                        android:textSize="13sp"
+                        app:fontFamily="@font/open_sans_bold" />
+
+                    <TextView
+                        android:id="@+id/tvClinicReviews"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="4dp"
+                        android:fontFamily="@font/open_sans_regular"
+                        android:fontFeatureSettings="tnum"
+                        android:text="(158 đánh giá)"
+                        android:textColor="@color/ds_text_secondary"
+                        android:textSize="13sp" />
+
+                    <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="6dp"
-                        android:text="Số 12 Chùa Hà, Cầu Giấy, Hà Nội"
-                        android:textColor="@color/text_muted"
-                        android:fontFamily="@font/open_sans_regular"
+                        android:layout_marginEnd="6dp"
+                        android:text="·"
+                        android:textColor="@color/ds_text_secondary"
                         android:textSize="13sp" />
-                </LinearLayout>
 
-                <!-- Pill Đánh giá & Khoảng cách -->
-                <LinearLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="14dp"
-                    android:gravity="center_vertical"
-                    android:orientation="horizontal">
-
-                    <!-- Pill Đánh giá -->
-                    <LinearLayout
+                    <TextView
+                        android:id="@+id/tvClinicDistance"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:background="@drawable/bg_badge_pill_white"
-                        android:gravity="center_vertical"
-                        android:orientation="horizontal">
-
-                        <ImageView
-                            android:layout_width="14dp"
-                            android:layout_height="14dp"
-                            android:contentDescription="@null"
-                            android:src="@drawable/ic_star_filled"
-                            android:tint="@color/status_warning" />
-
-                        <TextView
-                            android:id="@+id/tvClinicRating"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginStart="5dp"
-                            android:text="4.8"
-                            android:textColor="@color/text_foreground"
-                            android:fontFamily="@font/open_sans_medium"
-                            android:textSize="12sp" />
-
-                        <TextView
-                            android:id="@+id/tvClinicReviews"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginStart="4dp"
-                            android:text="(214 đánh giá)"
-                            android:textColor="@color/text_muted"
-                            android:fontFamily="@font/open_sans_regular"
-                            android:textSize="12sp" />
-                    </LinearLayout>
-
-                    <!-- Pill Khoảng cách -->
-                    <LinearLayout
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="8dp"
-                        android:background="@drawable/bg_badge_pill_white"
-                        android:gravity="center_vertical"
-                        android:orientation="horizontal">
-
-                        <ImageView
-                            android:layout_width="13dp"
-                            android:layout_height="13dp"
-                            android:contentDescription="@null"
-                            android:src="@drawable/ic_navigation"
-                            android:tint="@color/text_muted" />
-
-                        <TextView
-                            android:id="@+id/tvClinicDistance"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginStart="5dp"
-                            android:text="1,2 km"
-                            android:textColor="@color/text_muted"
-                            android:fontFamily="@font/open_sans_medium"
-                            android:textSize="12sp" />
-                    </LinearLayout>
+                        android:fontFamily="@font/open_sans_medium"
+                        android:fontFeatureSettings="tnum"
+                        android:text="&lt; 200m"
+                        android:textColor="@color/ds_text_secondary"
+                        android:textSize="13sp" />
                 </LinearLayout>
 
                 <!-- 2 Nút thao tác nhanh (Gọi phòng khám & Chỉ đường) -->
@@ -359,14 +349,16 @@
                     </LinearLayout>
 
                     <View
+                        android:id="@+id/dividerEmergency"
                         android:layout_width="match_parent"
                         android:layout_height="1dp"
                         android:layout_marginTop="10dp"
                         android:layout_marginBottom="10dp"
-                        android:background="#F2F1EE" />
+                        android:background="@color/ds_divider_hairline" />
 
-                    <!-- Hàng 2: Tiếp nhận cấp cứu -->
+                    <!-- Hàng 2: Tiếp nhận cấp cứu (Ẩn tự động nếu Giờ mở cửa đã ghi 24/7) -->
                     <LinearLayout
+                        android:id="@+id/layoutEmergencyRow"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:gravity="center_vertical"
@@ -377,7 +369,7 @@
                             android:layout_height="wrap_content"
                             android:layout_marginStart="23dp"
                             android:text="Tiếp nhận cấp cứu"
-                            android:textColor="@color/text_muted"
+                            android:textColor="@color/ds_text_secondary"
                             android:fontFamily="@font/open_sans_regular"
                             android:textSize="13sp" />
 
@@ -388,9 +380,10 @@
                             android:layout_weight="1"
                             android:gravity="end"
                             android:text="Đến 22:00"
-                            android:textColor="@color/text_foreground"
+                            android:textColor="@color/ds_text_primary"
                             android:fontFamily="@font/open_sans_semibold"
-                            android:textSize="13.5sp" />
+                            android:textSize="13.5sp"
+                            app:fontFamily="@font/open_sans_semibold" />
                     </LinearLayout>
 
                     <View
@@ -398,44 +391,9 @@
                         android:layout_height="1dp"
                         android:layout_marginTop="10dp"
                         android:layout_marginBottom="10dp"
-                        android:background="#F2F1EE" />
+                        android:background="@color/ds_divider_hairline" />
 
-                    <!-- Hàng 3: Ngôn ngữ -->
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:gravity="center_vertical"
-                        android:orientation="horizontal">
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginStart="23dp"
-                            android:text="Ngôn ngữ"
-                            android:textColor="@color/text_muted"
-                            android:fontFamily="@font/open_sans_regular"
-                            android:textSize="13sp" />
-
-                        <TextView
-                            android:id="@+id/tvInfoLanguages"
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:gravity="end"
-                            android:text="Tiếng Việt, tiếng Anh"
-                            android:textColor="@color/text_foreground"
-                            android:fontFamily="@font/open_sans_semibold"
-                            android:textSize="13.5sp" />
-                    </LinearLayout>
-
-                    <View
-                        android:layout_width="match_parent"
-                        android:layout_height="1dp"
-                        android:layout_marginTop="10dp"
-                        android:layout_marginBottom="10dp"
-                        android:background="#F2F1EE" />
-
-                    <!-- Hàng 4: Điện thoại -->
+                    <!-- Hàng 3: Điện thoại -->
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -482,16 +440,19 @@
                 <RelativeLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="24dp">
+                    android:layout_marginTop="22dp">
 
                     <TextView
+                        style="@style/TextAppearance.PetCare.Title"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_alignParentStart="true"
-                        android:text="Dịch vụ"
-                        android:textColor="@color/text_foreground"
                         android:fontFamily="@font/open_sans_bold"
-                        android:textSize="17sp" />
+                        android:text="Dịch vụ"
+                        android:textColor="@color/ds_text_primary"
+                        android:textSize="17sp"
+                        android:textStyle="bold"
+                        app:fontFamily="@font/open_sans_bold" />
 
                     <TextView
                         android:id="@+id/tvSeeAllServices"
@@ -500,120 +461,39 @@
                         android:layout_alignParentEnd="true"
                         android:clickable="true"
                         android:focusable="true"
-                        android:text="Xem tất cả"
-                        android:textColor="@color/brand_primary"
-                        android:fontFamily="@font/open_sans_medium"
-                        android:textSize="12.5sp" />
+                        android:text="Xem tất cả ›"
+                        android:textColor="@color/ds_primary"
+                        android:fontFamily="@font/open_sans_semibold"
+                        android:textSize="12.5sp"
+                        app:fontFamily="@font/open_sans_semibold" />
                 </RelativeLayout>
 
-                <!-- Danh sách Dịch vụ có thể chọn -->
+                <!-- Danh sách Dịch vụ phẳng nguyên khối có đường kẻ ngăn -->
                 <LinearLayout
                     android:id="@+id/containerServicesList"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="12dp"
+                    android:layout_marginTop="10dp"
+                    android:background="@drawable/bg_home_card_static"
+                    android:clipToOutline="true"
                     android:orientation="vertical" />
 
-                <!-- 4. Bản đồ vị trí phòng khám -->
+                <!-- 4. Địa chỉ & Nút Chỉ đường gọn 1 hàng (Bỏ khung lưới bản đồ giả) -->
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="16dp"
                     android:background="@drawable/bg_card_clinic"
-                    android:clipToOutline="true"
-                    android:orientation="vertical">
-
-                    <!-- Khung mô phỏng bản đồ Grid với Pin tọa độ chính giữa -->
-                    <FrameLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="132dp"
-                        android:background="@drawable/bg_map_grid">
-
-                        <FrameLayout
-                            android:layout_width="44dp"
-                            android:layout_height="44dp"
-                            android:layout_gravity="center"
-                            android:background="@drawable/bg_pin_circle"
-                            android:elevation="0dp">
-
-                            <ImageView
-                                android:layout_width="20dp"
-                                android:layout_height="20dp"
-                                android:layout_gravity="center"
-                                android:contentDescription="@null"
-                                android:src="@drawable/ic_map_pin"
-                                android:tint="@color/white" />
-                        </FrameLayout>
-                    </FrameLayout>
-
-                    <!-- Thông tin vị trí & Nút chỉ đường dưới bản đồ -->
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:gravity="center_vertical"
-                        android:orientation="horizontal"
-                        android:padding="16dp">
-
-                        <LinearLayout
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:orientation="vertical">
-
-                            <TextView
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:text="Vị trí phòng khám"
-                                android:textColor="@color/text_foreground"
-                                android:fontFamily="@font/open_sans_semibold"
-                                android:textSize="13.5sp" />
-
-                            <TextView
-                                android:id="@+id/tvMapLocationDesc"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:layout_marginTop="2dp"
-                                android:text="Số 12 Chùa Hà, Cầu Giấy, Hà Nội · đi xe 6 phút"
-                                android:textColor="@color/text_muted"
-                                android:fontFamily="@font/open_sans_regular"
-                                android:textSize="12sp" />
-                        </LinearLayout>
-
-                        <TextView
-                            android:id="@+id/btnMapDirections"
-                            android:layout_width="wrap_content"
-                            android:layout_height="36dp"
-                            android:layout_marginStart="8dp"
-                            android:background="@drawable/bg_action_chip_teal"
-                            android:clickable="true"
-                            android:focusable="true"
-                            android:gravity="center"
-                            android:paddingStart="16dp"
-                            android:paddingEnd="16dp"
-                            android:text="Chỉ đường"
-                            android:textColor="@color/brand_ink"
-                            android:fontFamily="@font/open_sans_semibold"
-                            android:textSize="12.5sp" />
-                    </LinearLayout>
-                </LinearLayout>
-
-                <!-- 5. Banner thông báo Hủy lịch miễn phí -->
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="16dp"
-                    android:background="@drawable/bg_notice_brand"
-                    android:gravity="top"
+                    android:gravity="center_vertical"
                     android:orientation="horizontal"
                     android:padding="14dp">
 
                     <ImageView
                         android:layout_width="18dp"
                         android:layout_height="18dp"
-                        android:layout_marginTop="2dp"
                         android:contentDescription="@null"
-                        android:src="@drawable/ic_info"
-                        android:tint="@color/brand_ink" />
+                        android:src="@drawable/ic_map_pin"
+                        android:tint="@color/ds_primary" />
 
                     <LinearLayout
                         android:layout_width="0dp"
@@ -625,44 +505,87 @@
                         <TextView
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:text="Hủy lịch miễn phí"
-                            android:textColor="@color/brand_ink"
                             android:fontFamily="@font/open_sans_semibold"
-                            android:textSize="13sp" />
+                            android:text="Vị trí phòng khám"
+                            android:textColor="@color/ds_text_primary"
+                            android:textSize="13.5sp"
+                            app:fontFamily="@font/open_sans_semibold" />
 
                         <TextView
+                            android:id="@+id/tvMapLocationDesc"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_marginTop="2dp"
-                            android:lineSpacingExtra="1dp"
-                            android:text="Hủy miễn phí trước giờ khám 4 tiếng. Phòng khám sẽ mở lại khung giờ của bạn ngay lập tức."
-                            android:textColor="@color/brand_ink"
                             android:fontFamily="@font/open_sans_regular"
+                            android:text="Số 12 Chùa Hà, Cầu Giấy, Hà Nội"
+                            android:textColor="@color/ds_text_secondary"
                             android:textSize="12.5sp" />
                     </LinearLayout>
+
+                    <TextView
+                        android:id="@+id/btnMapDirections"
+                        android:layout_width="wrap_content"
+                        android:layout_height="34dp"
+                        android:layout_marginStart="10dp"
+                        android:background="@drawable/bg_action_chip_teal"
+                        android:clickable="true"
+                        android:focusable="true"
+                        android:gravity="center"
+                        android:paddingStart="14dp"
+                        android:paddingEnd="14dp"
+                        android:text="Chỉ đường"
+                        android:textColor="@color/ds_primary"
+                        android:fontFamily="@font/open_sans_semibold"
+                        android:textSize="12.5sp"
+                        app:fontFamily="@font/open_sans_semibold" />
                 </LinearLayout>
             </LinearLayout>
         </LinearLayout>
     </androidx.core.widget.NestedScrollView>
 
-    <!-- 6. Sticky Bottom Bar cố định phía dưới -->
+    <!-- 6. Sticky Bottom Bar cố định phía dưới (1dp viền trên sắc nét, 0 bóng đổ) -->
     <LinearLayout
         android:id="@+id/layoutStickyBottom"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom"
-        android:background="@color/surface_card"
-        android:elevation="12dp"
+        android:background="@drawable/bg_bottom_nav_bar"
+        android:elevation="0dp"
         android:orientation="vertical"
         android:paddingStart="16dp"
-        android:paddingTop="12dp"
+        android:paddingTop="10dp"
         android:paddingEnd="16dp"
-        android:paddingBottom="16dp">
+        android:paddingBottom="14dp">
+
+        <!-- 1 dòng nhỏ gọn thay hộp hồng pastel Hủy lịch miễn phí -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
+            android:gravity="center"
+            android:orientation="horizontal">
+
+            <ImageView
+                android:layout_width="13dp"
+                android:layout_height="13dp"
+                android:contentDescription="@null"
+                android:src="@drawable/ic_info"
+                android:tint="@color/ds_text_secondary" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="5dp"
+                android:fontFamily="@font/open_sans_regular"
+                android:text="Hủy lịch miễn phí trước giờ khám 4 tiếng"
+                android:textColor="@color/ds_text_secondary"
+                android:textSize="11.5sp" />
+        </LinearLayout>
 
         <android.widget.Button
             android:id="@+id/btnBookAppointment"
             android:layout_width="match_parent"
-            android:layout_height="52dp"
+            android:layout_height="50dp"
             android:background="@drawable/bg_btn_primary"
             android:stateListAnimator="@null"
             android:text="Đặt lịch khám"
@@ -679,8 +602,9 @@
             android:layout_marginTop="6dp"
             android:gravity="center"
             tools:text="Khung giờ trống gần nhất · Hôm nay · 08:30"
-            android:textColor="@color/text_muted"
+            android:textColor="@color/ds_text_secondary"
             android:fontFamily="@font/open_sans_regular"
+            android:fontFeatureSettings="tnum"
             android:textSize="11.5sp" />
     </LinearLayout>
 </FrameLayout>

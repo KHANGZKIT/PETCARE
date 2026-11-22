@@ -1,121 +1,131 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/layoutServiceCard"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginBottom="10dp"
-    android:background="@drawable/bg_service_card_default"
+    android:background="@drawable/bg_clinic_row_flat"
     android:clickable="true"
     android:focusable="true"
-    android:gravity="center_vertical"
-    android:orientation="horizontal"
-    android:padding="14dp">
+    android:orientation="vertical">
 
-    <!-- Icon dịch vụ trong rounded-2xl container -->
-    <FrameLayout
-        android:id="@+id/layoutServiceIconBox"
-        android:layout_width="48dp"
-        android:layout_height="48dp"
-        android:background="@drawable/bg_service_icon">
-
-        <ImageView
-            android:id="@+id/ivServiceIcon"
-            android:layout_width="22dp"
-            android:layout_height="22dp"
-            android:layout_gravity="center"
-            android:contentDescription="@null"
-            android:src="@drawable/ic_stethoscope"
-            android:tint="@color/brand_ink" />
-    </FrameLayout>
-
-    <!-- Thông tin dịch vụ -->
     <LinearLayout
-        android:layout_width="0dp"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="14dp"
-        android:layout_marginEnd="12dp"
-        android:layout_weight="1"
-        android:orientation="vertical">
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:paddingStart="14dp"
+        android:paddingTop="13dp"
+        android:paddingEnd="14dp"
+        android:paddingBottom="13dp">
 
-        <TextView
-            android:id="@+id/tvServiceName"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:ellipsize="end"
-            android:maxLines="1"
-            android:textColor="@color/text_foreground"
-            android:fontFamily="@font/open_sans_medium"
-            android:textSize="14sp"
-            tools:text="Khám tổng quát" />
+        <!-- Icon dịch vụ gọn 40dp trên nền kem ấm #F3EDE4 -->
+        <FrameLayout
+            android:id="@+id/layoutServiceIconBox"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:background="@drawable/bg_shortcut_icon_cream">
 
-        <TextView
-            android:id="@+id/tvServiceDesc"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="2dp"
-            android:ellipsize="end"
-            android:lineSpacingExtra="1dp"
-            android:maxLines="2"
-            android:textColor="@color/text_muted"
-            android:fontFamily="@font/open_sans_regular"
-            android:textSize="12sp"
-            tools:text="Khám lâm sàng, cân nặng, nhiệt độ và các chỉ số sinh tồn." />
+            <ImageView
+                android:id="@+id/ivServiceIcon"
+                android:layout_width="19dp"
+                android:layout_height="19dp"
+                android:layout_gravity="center"
+                android:contentDescription="@null"
+                android:src="@drawable/ic_stethoscope"
+                android:tint="@color/ds_primary" />
+        </FrameLayout>
 
-        <!-- Meta hàng ngang: Thời gian + Giá -->
+        <!-- Thông tin dịch vụ -->
         <LinearLayout
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:gravity="center_vertical"
-            android:orientation="horizontal">
+            android:layout_marginStart="12dp"
+            android:layout_marginEnd="10dp"
+            android:layout_weight="1"
+            android:orientation="vertical">
 
+            <TextView
+                android:id="@+id/tvServiceName"
+                style="@style/TextAppearance.PetCare.CardTitle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:ellipsize="end"
+                android:fontFamily="@font/open_sans_semibold"
+                android:maxLines="1"
+                android:textColor="@color/ds_text_primary"
+                android:textSize="14.5sp"
+                app:fontFamily="@font/open_sans_semibold"
+                tools:text="Khám tổng quát" />
+
+            <TextView
+                android:id="@+id/tvServiceDesc"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="2dp"
+                android:ellipsize="end"
+                android:fontFamily="@font/open_sans_regular"
+                android:maxLines="2"
+                android:textColor="@color/ds_text_secondary"
+                android:textSize="12sp"
+                tools:text="Kiểm tra lâm sàng, cân nặng và chỉ số sinh tồn." />
+
+            <!-- Dòng phẳng: 30 phút · 180.000 ₫ (Bỏ pill xám) -->
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:background="@drawable/bg_pill_gray"
+                android:layout_marginTop="4dp"
                 android:gravity="center_vertical"
-                android:orientation="horizontal"
-                android:paddingStart="8dp"
-                android:paddingTop="3dp"
-                android:paddingEnd="8dp"
-                android:paddingBottom="3dp">
-
-                <ImageView
-                    android:layout_width="12dp"
-                    android:layout_height="12dp"
-                    android:contentDescription="@null"
-                    android:src="@drawable/ic_clock"
-                    android:tint="@color/text_muted" />
+                android:orientation="horizontal">
 
                 <TextView
                     android:id="@+id/tvServiceDuration"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="4dp"
-                    android:textColor="@color/text_muted"
                     android:fontFamily="@font/open_sans_medium"
-                    android:textSize="11.5sp"
+                    android:fontFeatureSettings="tnum"
+                    android:textColor="@color/ds_text_secondary"
+                    android:textSize="12sp"
                     tools:text="30 phút" />
-            </LinearLayout>
 
-            <TextView
-                android:id="@+id/tvServicePrice"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="10dp"
-                android:textColor="@color/brand_ink"
-                android:fontFamily="@font/open_sans_bold"
-                android:textSize="13sp"
-                tools:text="180.000 ₫" />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="5dp"
+                    android:layout_marginEnd="5dp"
+                    android:text="·"
+                    android:textColor="@color/ds_text_secondary"
+                    android:textSize="12sp" />
+
+                <TextView
+                    android:id="@+id/tvServicePrice"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/open_sans_bold"
+                    android:fontFeatureSettings="tnum"
+                    android:textColor="@color/ds_primary"
+                    android:textSize="12.5sp"
+                    app:fontFamily="@font/open_sans_bold"
+                    tools:text="180.000 ₫" />
+            </LinearLayout>
         </LinearLayout>
+
+        <!-- Nút radio chọn hình tròn -->
+        <ImageView
+            android:id="@+id/ivServiceCheck"
+            android:layout_width="22dp"
+            android:layout_height="22dp"
+            android:contentDescription="@null"
+            android:src="@drawable/bg_radio_unselected" />
     </LinearLayout>
 
-    <!-- Nút radio chọn hình tròn -->
-    <ImageView
-        android:id="@+id/ivServiceCheck"
-        android:layout_width="24dp"
-        android:layout_height="24dp"
-        android:contentDescription="@null"
-        android:src="@drawable/bg_radio_unselected" />
+    <!-- Đường kẻ ngăn cách mảnh 1dp #ECE6DD (ẩn ở dịch vụ cuối) -->
+    <View
+        android:id="@+id/dividerServiceRow"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginStart="14dp"
+        android:layout_marginEnd="14dp"
+        android:background="@color/ds_divider_hairline" />
 </LinearLayout>

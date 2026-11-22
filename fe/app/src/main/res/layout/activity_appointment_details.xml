@@ -96,7 +96,7 @@
                 android:paddingStart="14dp"
                 android:paddingEnd="14dp"
                 android:text="Chờ xác nhận"
-                android:textColor="@color/white"
+                android:textColor="@color/ds_primary"
                 android:fontFamily="@font/open_sans_medium"
                 android:textSize="12sp" />
 
