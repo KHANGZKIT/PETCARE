@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/layoutDateCard"
-    android:layout_width="54dp"
+    android:layout_width="52dp"
     android:layout_height="wrap_content"
     android:layout_marginEnd="8dp"
     android:background="@drawable/bg_date_card_default"
@@ -17,31 +18,29 @@
         android:id="@+id/tvDateDay"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:letterSpacing="0.05"
-        android:textAllCaps="true"
-        android:textColor="@color/text_muted"
         android:fontFamily="@font/open_sans_medium"
-        android:textSize="10.5sp"
-        tools:text="T2" />
+        android:letterSpacing="0.04"
+        android:textAllCaps="true"
+        android:textColor="@color/ds_text_secondary"
+        android:textSize="11sp"
+        tools:text="CN" />
 
     <TextView
         android:id="@+id/tvDateNum"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="2dp"
-        android:includeFontPadding="false"
-        android:textColor="@color/text_foreground"
+        android:layout_marginTop="4dp"
         android:fontFamily="@font/open_sans_bold"
-        android:textSize="17sp"
-        tools:text="27" />
+        android:fontFeatureSettings="tnum"
+        android:includeFontPadding="false"
+        android:textColor="@color/ds_text_primary"
+        android:textSize="16.5sp"
+        app:fontFamily="@font/open_sans_bold"
+        tools:text="22" />
 
     <TextView
         android:id="@+id/tvDateSlotCount"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="3dp"
-        android:textColor="@color/text_muted"
-        android:fontFamily="@font/open_sans_medium"
-        android:textSize="9.5sp"
-        tools:text="6 chỗ" />
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:visibility="gone" />
 </LinearLayout>

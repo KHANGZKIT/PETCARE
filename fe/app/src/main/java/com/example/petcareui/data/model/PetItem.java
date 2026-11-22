@@ -14,6 +14,8 @@ public class PetItem implements Serializable {
     private int imageResId;
     private boolean selected;
     private String rawSpecies;
+    private Double weightValue;
+    private String notes;
 
     public PetItem(String id, String name, String species, String breed, String age, String dob, String sex, String weight, int imageResId) {
         this.id = id;
@@ -86,5 +88,21 @@ public class PetItem implements Serializable {
 
     public void setRawSpecies(String rawSpecies) {
         this.rawSpecies = rawSpecies;
+    }
+
+    public Double getWeightValue() {
+        return weightValue;
+    }
+
+    public void setWeightValue(Double weightValue) {
+        this.weightValue = weightValue;
+    }
+
+    public String getNotes() {
+        return notes != null ? notes : "";
+    }
+
+    public void setNotes(String notes) {
+        this.notes = notes;
     }
 }

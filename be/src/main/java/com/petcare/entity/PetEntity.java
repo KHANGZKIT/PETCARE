@@ -10,6 +10,8 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 
+import java.math.BigDecimal;
+
 /** Maps public.pets. */
 @Entity
 @Table(name = "pets", schema = "public")
@@ -28,6 +30,21 @@ public class PetEntity {
 
     @Column(name = "species", nullable = false, length = 50)
     private String species;
+
+    @Column(name = "breed", length = 100)
+    private String breed;
+
+    @Column(name = "gender", length = 20)
+    private String gender;
+
+    @Column(name = "age", length = 50)
+    private String age;
+
+    @Column(name = "weight", precision = 5, scale = 2)
+    private BigDecimal weight;
+
+    @Column(name = "notes", columnDefinition = "TEXT")
+    private String notes;
 
     public PetEntity() {
     }
@@ -48,6 +65,21 @@ public class PetEntity {
 
     public String getSpecies() { return species; }
     public void setSpecies(String species) { this.species = species; }
+
+    public String getBreed() { return breed; }
+    public void setBreed(String breed) { this.breed = breed; }
+
+    public String getGender() { return gender; }
+    public void setGender(String gender) { this.gender = gender; }
+
+    public String getAge() { return age; }
+    public void setAge(String age) { this.age = age; }
+
+    public BigDecimal getWeight() { return weight; }
+    public void setWeight(BigDecimal weight) { this.weight = weight; }
+
+    public String getNotes() { return notes; }
+    public void setNotes(String notes) { this.notes = notes; }
 
     @Override
     public boolean equals(Object o) {

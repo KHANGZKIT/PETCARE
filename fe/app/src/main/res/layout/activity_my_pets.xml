@@ -127,7 +127,7 @@
                     android:clipToPadding="false"
                     android:orientation="vertical" />
 
-                <!-- Thẻ phụ thêm thú cưng khác (Gọn nhẹ, không viền đứt thô) -->
+                <!-- Ẩn khi đã có thú cưng (tránh trùng nút + Thêm mới góc trên phải) -->
                 <LinearLayout
                     android:id="@+id/cardAddOtherPet"
                     android:layout_width="match_parent"
@@ -138,7 +138,8 @@
                     android:focusable="true"
                     android:gravity="center_vertical"
                     android:orientation="horizontal"
-                    android:padding="16dp">
+                    android:padding="16dp"
+                    android:visibility="gone">
 
                     <FrameLayout
                         android:layout_width="42dp"

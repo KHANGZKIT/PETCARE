@@ -48,6 +48,11 @@ CREATE TABLE public.pets (
     owner_user_id   BIGINT NOT NULL,
     name            VARCHAR(100) NOT NULL,
     species         VARCHAR(50) NOT NULL,
+    breed           VARCHAR(100),
+    gender          VARCHAR(20),
+    age             VARCHAR(50),
+    weight          NUMERIC(5,2),
+    notes           TEXT,
     CONSTRAINT fk_pets_owner
         FOREIGN KEY (owner_user_id) REFERENCES public.users(id)
         ON UPDATE RESTRICT ON DELETE RESTRICT,

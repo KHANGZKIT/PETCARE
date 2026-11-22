@@ -47,7 +47,7 @@ public class BookingSuccessActivity extends AppCompatActivity {
         binding = ActivityBookingSuccessBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
-        UiMotionUtils.applyWindowInsets(binding.getRoot(), null, null);
+        UiMotionUtils.applyWindowInsets(binding.getRoot(), binding.scrollContentSuccess, binding.layoutStickyBottom);
         UiMotionUtils.attachSpringTouch(binding.btnViewAppointmentDetails, binding.btnBackToHome);
 
         extractIntentData();
@@ -151,10 +151,6 @@ public class BookingSuccessActivity extends AppCompatActivity {
         // Thẻ tóm tắt: Thú cưng
         binding.tvPetNameBreed.setText(petItem.getName() + " · " + petItem.getBreed());
         binding.tvPetAgeSex.setText(petItem.getAge() + " · " + petItem.getSex());
-
-        // Banner thông báo (định dạng HTML in đậm "chờ xác nhận")
-        String warningHtml = "Lịch hẹn đang <b>chờ xác nhận</b>. Chúng tôi sẽ thông báo ngay khi phòng khám phản hồi.";
-        binding.tvNoticeWarning.setText(Html.fromHtml(warningHtml, Html.FROM_HTML_MODE_LEGACY));
     }
 
     private void setupActions() {

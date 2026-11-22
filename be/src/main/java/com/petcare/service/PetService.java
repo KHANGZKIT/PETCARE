@@ -43,10 +43,25 @@ public class PetService {
                 .toList();
     }
 
+    private String trimToNull(String value) {
+        if (value == null) return null;
+        String t = value.trim();
+        return t.isEmpty() ? null : t;
+    }
+
+    private void applyOptionalFields(PetEntity pet, PetRequest request) {
+        pet.setBreed(trimToNull(request.getBreed()));
+        pet.setGender(trimToNull(request.getGender()));
+        pet.setAge(trimToNull(request.getAge()));
+        pet.setWeight(request.getWeight());
+        pet.setNotes(trimToNull(request.getNotes()));
+    }
+
     @Transactional
     public PetResponse addPet(PetRequest request, String customerEmail) {
         UserEntity customer = getCustomerByEmail(customerEmail);
         PetEntity pet = new PetEntity(customer, request.getName().trim(), request.getSpecies().trim());
+        applyOptionalFields(pet, request);
         PetEntity savedPet = petRepository.save(pet);
         return PetResponse.fromEntity(savedPet);
     }
@@ -58,6 +73,7 @@ public class PetService {
                 .orElseThrow(() -> new ResourceNotFoundException("Không tìm thấy thú cưng hoặc bạn không có quyền"));
         pet.setName(request.getName().trim());
         pet.setSpecies(request.getSpecies().trim());
+        applyOptionalFields(pet, request);
         PetEntity updated = petRepository.save(pet);
         return PetResponse.fromEntity(updated);
     }

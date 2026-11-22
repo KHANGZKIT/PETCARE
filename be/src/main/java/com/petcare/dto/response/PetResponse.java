@@ -7,6 +7,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.math.BigDecimal;
+
 /**
  * Response DTO trả về thông tin thú cưng cho client Android.
  * Không để lộ thông tin nhạy cảm của người dùng hay quan hệ JPA.
@@ -21,6 +23,17 @@ public class PetResponse {
     private Long id;
     private String name;
     private String species;
+    private String breed;
+    private String gender;
+    private String age;
+    private BigDecimal weight;
+    private String notes;
+
+    public PetResponse(Long id, String name, String species) {
+        this.id = id;
+        this.name = name;
+        this.species = species;
+    }
 
     public static PetResponse fromEntity(PetEntity entity) {
         if (entity == null) {
@@ -30,6 +43,11 @@ public class PetResponse {
                 .id(entity.getId())
                 .name(entity.getName())
                 .species(entity.getSpecies())
+                .breed(entity.getBreed())
+                .gender(entity.getGender())
+                .age(entity.getAge())
+                .weight(entity.getWeight())
+                .notes(entity.getNotes())
                 .build();
     }
 }

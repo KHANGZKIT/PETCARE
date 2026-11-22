@@ -45,12 +45,15 @@
             android:orientation="vertical">
 
             <TextView
+                style="@style/TextAppearance.PetCare.Title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Chi tiết lịch hẹn"
-                android:textColor="@color/text_foreground"
                 android:fontFamily="@font/open_sans_bold"
-                android:textSize="18sp" />
+                android:text="Chi tiết lịch hẹn"
+                android:textColor="@color/ds_text_primary"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                app:fontFamily="@font/open_sans_bold" />
 
             <TextView
                 android:id="@+id/tvClinicNameTop"
@@ -185,44 +188,19 @@
             android:paddingEnd="16dp"
             android:paddingBottom="24dp">
 
-            <!-- Hàng 1: Huy hiệu trạng thái & Thời gian gửi -->
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:gravity="center_vertical"
-                android:orientation="horizontal">
+            <!-- Legacy duplicate status pill kept hidden so status is shown once cleanly in layoutNoticeBox -->
+            <TextView
+                android:id="@+id/tvStatusBadge"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:visibility="gone" />
 
-                <TextView
-                    android:id="@+id/tvStatusBadge"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:background="@drawable/bg_badge_pending"
-                    android:text="• Chờ xác nhận"
-                    android:textColor="@color/status_warning_ink"
-                    android:fontFamily="@font/open_sans_medium"
-                    android:textSize="11.5sp" />
-
-                <View
-                    android:layout_width="0dp"
-                    android:layout_height="0dp"
-                    android:layout_weight="1" />
-
-                <TextView
-                    android:id="@+id/tvRequestedTime"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Gửi cách đây 2 giờ"
-                    android:textColor="@color/text_muted"
-                    android:fontFamily="@font/open_sans_medium"
-                    android:textSize="12sp" />
-            </LinearLayout>
-
-            <!-- Hàng 2: Banner Thông báo trạng thái (Notice) -->
+            <!-- Hàng 1: Banner Thông báo trạng thái duy nhất (không lặp pill) -->
             <LinearLayout
                 android:id="@+id/layoutNoticeBox"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="12dp"
+                android:layout_marginTop="4dp"
                 android:background="@drawable/bg_notice_warning"
                 android:gravity="top"
                 android:orientation="horizontal"
@@ -244,14 +222,33 @@
                     android:layout_weight="1"
                     android:orientation="vertical">
 
-                    <TextView
-                        android:id="@+id/tvNoticeTitle"
+                    <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="Đang chờ phòng khám xác nhận"
-                        android:textColor="@color/status_warning_ink"
-                        android:fontFamily="@font/open_sans_semibold"
-                        android:textSize="13sp" />
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:id="@+id/tvNoticeTitle"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="Đang chờ phòng khám xác nhận"
+                            android:textColor="@color/status_warning_ink"
+                            android:fontFamily="@font/open_sans_semibold"
+                            android:textSize="13sp"
+                            app:fontFamily="@font/open_sans_semibold" />
+
+                        <TextView
+                            android:id="@+id/tvRequestedTime"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="8dp"
+                            android:text="Gửi cách đây 2 giờ"
+                            android:textColor="@color/ds_text_secondary"
+                            android:fontFamily="@font/open_sans_regular"
+                            android:textSize="11.5sp" />
+                    </LinearLayout>
 
                     <TextView
                         android:id="@+id/tvNoticeBody"
@@ -398,7 +395,7 @@
                 </LinearLayout>
             </LinearLayout>
 
-            <!-- Thẻ 2: Chi tiết Dịch vụ & Chi phí -->
+            <!-- PHIẾU HẸN HỢP NHẤT (Ticket): Dịch vụ + Ngày giờ + Thú cưng, ngăn bằng đường nét đứt -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -407,6 +404,7 @@
                 android:orientation="vertical"
                 android:padding="16dp">
 
+                <!-- Phần 1: Dịch vụ & Chi phí -->
                 <LinearLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -418,220 +416,93 @@
                         android:layout_height="14dp"
                         android:contentDescription="@null"
                         android:src="@drawable/ic_stethoscope"
-                        app:tint="@color/text_muted" />
+                        app:tint="@color/ds_text_secondary" />
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="6dp"
-                        android:letterSpacing="0.04"
+                        android:fontFamily="@font/open_sans_semibold"
                         android:text="Dịch vụ"
-                        android:textColor="@color/text_muted"
-                        android:fontFamily="@font/open_sans_medium"
-                        android:textSize="11.5sp" />
+                        android:textColor="@color/ds_text_secondary"
+                        android:textSize="12sp"
+                        app:fontFamily="@font/open_sans_semibold" />
                 </LinearLayout>
 
-                <!-- Hàng: Tên dịch vụ & Giá tiền -->
                 <RelativeLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="12dp">
+                    android:layout_marginTop="10dp">
 
                     <TextView
                         android:id="@+id/tvServiceName"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_alignParentStart="true"
+                        android:layout_toStartOf="@id/tvServicePrice"
+                        android:layout_marginEnd="8dp"
+                        android:fontFamily="@font/open_sans_semibold"
                         android:text="Tiêm phòng"
-                        android:textColor="@color/text_foreground"
-                        android:fontFamily="@font/open_sans_regular"
-                        android:textSize="13.5sp" />
+                        android:textColor="@color/ds_text_primary"
+                        android:textSize="14.5sp"
+                        app:fontFamily="@font/open_sans_semibold" />
 
                     <TextView
                         android:id="@+id/tvServicePrice"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_alignParentEnd="true"
-                        android:text="250.000 ₫"
-                        android:textColor="@color/text_foreground"
                         android:fontFamily="@font/open_sans_bold"
-                        android:textSize="15sp" />
+                        android:fontFeatureSettings="tnum"
+                        android:text="250.000 ₫"
+                        android:textColor="@color/ds_primary"
+                        android:textSize="14.5sp"
+                        app:fontFamily="@font/open_sans_bold" />
                 </RelativeLayout>
 
-                <!-- Hàng: Thời lượng -->
                 <RelativeLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="10dp">
+                    android:layout_marginTop="8dp">
 
-                    <LinearLayout
+                    <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_alignParentStart="true"
-                        android:gravity="center_vertical"
-                        android:orientation="horizontal">
-
-                        <ImageView
-                            android:layout_width="14dp"
-                            android:layout_height="14dp"
-                            android:contentDescription="@null"
-                            android:src="@drawable/ic_clock"
-                            app:tint="@color/text_muted" />
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginStart="6dp"
-                            android:text="Thời lượng"
-                            android:textColor="@color/text_muted"
-                            android:fontFamily="@font/open_sans_regular"
-                            android:textSize="13sp" />
-                    </LinearLayout>
+                        android:fontFamily="@font/open_sans_regular"
+                        android:text="Thời lượng dự kiến"
+                        android:textColor="@color/ds_text_secondary"
+                        android:textSize="13sp" />
 
                     <TextView
                         android:id="@+id/tvServiceDuration"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_alignParentEnd="true"
+                        android:fontFamily="@font/open_sans_medium"
+                        android:fontFeatureSettings="tnum"
                         android:text="45 phút"
-                        android:textColor="@color/text_foreground"
-                        android:fontFamily="@font/open_sans_medium"
+                        android:textColor="@color/ds_text_primary"
                         android:textSize="13sp" />
                 </RelativeLayout>
 
-                <!-- Hàng: Bé đi khám -->
-                <RelativeLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="10dp">
-
-                    <LinearLayout
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_alignParentStart="true"
-                        android:gravity="center_vertical"
-                        android:orientation="horizontal">
-
-                        <ImageView
-                            android:layout_width="14dp"
-                            android:layout_height="14dp"
-                            android:contentDescription="@null"
-                            android:src="@drawable/ic_paw"
-                            app:tint="@color/text_muted" />
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginStart="6dp"
-                            android:text="Bé đi khám"
-                            android:textColor="@color/text_muted"
-                            android:fontFamily="@font/open_sans_regular"
-                            android:textSize="13sp" />
-                    </LinearLayout>
-
-                    <TextView
-                        android:id="@+id/tvPetName"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_alignParentEnd="true"
-                        android:text="Mochi"
-                        android:textColor="@color/text_foreground"
-                        android:fontFamily="@font/open_sans_medium"
-                        android:textSize="13sp" />
-                </RelativeLayout>
-            </LinearLayout>
-
-            <!-- Thẻ 3: Thông tin Thú cưng -->
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="14dp"
-                android:background="@drawable/bg_card_clinic"
-                android:orientation="vertical"
-                android:padding="16dp">
-
+                <!-- Legacy duplicate tvPetName kept hidden for binding compatibility -->
                 <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:letterSpacing="0.04"
-                    android:text="Thú cưng"
-                    android:textColor="@color/text_muted"
-                    android:fontFamily="@font/open_sans_semibold"
-                    android:includeFontPadding="false"
-                    android:textSize="11.5sp" />
+                    android:id="@+id/tvPetName"
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
+                    android:visibility="gone" />
 
-                <LinearLayout
+                <!-- Đường kẻ nét đứt 1 -->
+                <View
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="12dp"
-                    android:gravity="center_vertical"
-                    android:orientation="horizontal">
+                    android:layout_height="2dp"
+                    android:layout_marginTop="14dp"
+                    android:layout_marginBottom="14dp"
+                    android:background="@drawable/bg_divider_dashed"
+                    android:layerType="software" />
 
-                    <com.google.android.material.imageview.ShapeableImageView
-                        android:id="@+id/ivPetAvatar"
-                        android:layout_width="52dp"
-                        android:layout_height="52dp"
-                        android:contentDescription="@null"
-                        android:scaleType="centerCrop"
-                        android:src="@drawable/img_pet_mochi"
-                        app:shapeAppearanceOverlay="@style/RoundedCorner16" />
-
-                    <LinearLayout
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="12dp"
-                        android:layout_weight="1"
-                        android:orientation="vertical">
-
-                        <TextView
-                            android:id="@+id/tvCardPetName"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:text="Mochi"
-                            android:textColor="@color/text_foreground"
-                            android:fontFamily="@font/open_sans_medium"
-                            android:textSize="14.5sp" />
-
-                        <TextView
-                            android:id="@+id/tvPetDetails"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_marginTop="2dp"
-                            android:text="Pomeranian · 2 tuổi · Cái"
-                            android:textColor="@color/text_muted"
-                            android:fontFamily="@font/open_sans_regular"
-                            android:textSize="12.5sp" />
-                    </LinearLayout>
-
-                    <FrameLayout
-                        android:id="@+id/btnOpenPetProfile"
-                        android:layout_width="38dp"
-                        android:layout_height="38dp"
-                        android:background="@drawable/bg_chip_inactive"
-                        android:clickable="true"
-                        android:focusable="true">
-
-                        <ImageView
-                            android:layout_width="18dp"
-                            android:layout_height="18dp"
-                            android:layout_gravity="center"
-                            android:contentDescription="@null"
-                            android:src="@drawable/ic_paw"
-                            app:tint="@color/text_muted" />
-                    </FrameLayout>
-                </LinearLayout>
-            </LinearLayout>
-
-            <!-- Thẻ 4: Ngày, Giờ & Mã lịch hẹn -->
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="14dp"
-                android:background="@drawable/bg_card_clinic"
-                android:orientation="vertical"
-                android:padding="16dp">
-
-                <!-- Ngày -->
+                <!-- Phần 2: Ngày & Giờ khám -->
                 <RelativeLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content">
@@ -648,15 +519,15 @@
                             android:layout_height="14dp"
                             android:contentDescription="@null"
                             android:src="@drawable/ic_calendar_days"
-                            app:tint="@color/text_muted" />
+                            app:tint="@color/ds_text_secondary" />
 
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginStart="6dp"
-                            android:text="Ngày"
-                            android:textColor="@color/text_muted"
                             android:fontFamily="@font/open_sans_regular"
+                            android:text="Ngày khám"
+                            android:textColor="@color/ds_text_secondary"
                             android:textSize="13sp" />
                     </LinearLayout>
 
@@ -665,17 +536,18 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_alignParentEnd="true"
-                        tools:text="Thứ 2, 27/10/2026"
-                        android:textColor="@color/text_foreground"
-                        android:fontFamily="@font/open_sans_medium"
-                        android:textSize="13sp" />
+                        android:fontFamily="@font/open_sans_semibold"
+                        android:fontFeatureSettings="tnum"
+                        android:textColor="@color/ds_text_primary"
+                        android:textSize="13sp"
+                        app:fontFamily="@font/open_sans_semibold"
+                        tools:text="T2, 23/11" />
                 </RelativeLayout>
 
-                <!-- Giờ -->
                 <RelativeLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="12dp">
+                    android:layout_marginTop="10dp">
 
                     <LinearLayout
                         android:layout_width="wrap_content"
@@ -689,15 +561,15 @@
                             android:layout_height="14dp"
                             android:contentDescription="@null"
                             android:src="@drawable/ic_clock"
-                            app:tint="@color/text_muted" />
+                            app:tint="@color/ds_text_secondary" />
 
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginStart="6dp"
-                            android:text="Giờ"
-                            android:textColor="@color/text_muted"
                             android:fontFamily="@font/open_sans_regular"
+                            android:text="Khung giờ"
+                            android:textColor="@color/ds_text_secondary"
                             android:textSize="13sp" />
                     </LinearLayout>
 
@@ -706,11 +578,86 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_alignParentEnd="true"
-                        android:text="10:00"
-                        android:textColor="@color/text_foreground"
                         android:fontFamily="@font/open_sans_semibold"
-                        android:textSize="13.5sp" />
+                        android:fontFeatureSettings="tnum"
+                        android:text="10:00"
+                        android:textColor="@color/ds_text_primary"
+                        android:textSize="13.5sp"
+                        app:fontFamily="@font/open_sans_semibold" />
                 </RelativeLayout>
+
+                <!-- Đường kẻ nét đứt 2 -->
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="2dp"
+                    android:layout_marginTop="14dp"
+                    android:layout_marginBottom="14dp"
+                    android:background="@drawable/bg_divider_dashed"
+                    android:layerType="software" />
+
+                <!-- Phần 3: Thú cưng -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
+
+                    <com.google.android.material.imageview.ShapeableImageView
+                        android:id="@+id/ivPetAvatar"
+                        android:layout_width="48dp"
+                        android:layout_height="48dp"
+                        android:background="@color/ds_cream_tile"
+                        android:contentDescription="@null"
+                        android:padding="4dp"
+                        android:scaleType="fitCenter"
+                        android:src="@drawable/mascot_corgi_running"
+                        app:shapeAppearanceOverlay="@style/RoundedCorner10" />
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="12dp"
+                        android:layout_weight="1"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:id="@+id/tvCardPetName"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:fontFamily="@font/open_sans_semibold"
+                            android:text="Mochi"
+                            android:textColor="@color/ds_text_primary"
+                            android:textSize="14.5sp"
+                            app:fontFamily="@font/open_sans_semibold" />
+
+                        <TextView
+                            android:id="@+id/tvPetDetails"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="2dp"
+                            android:fontFamily="@font/open_sans_regular"
+                            android:text="Pomeranian · 2 tuổi · Cái"
+                            android:textColor="@color/ds_text_secondary"
+                            android:textSize="12.5sp" />
+                    </LinearLayout>
+
+                    <FrameLayout
+                        android:id="@+id/btnOpenPetProfile"
+                        android:layout_width="36dp"
+                        android:layout_height="36dp"
+                        android:background="@drawable/bg_chip_inactive"
+                        android:clickable="true"
+                        android:focusable="true">
+
+                        <ImageView
+                            android:layout_width="16dp"
+                            android:layout_height="16dp"
+                            android:layout_gravity="center"
+                            android:contentDescription="@null"
+                            android:src="@drawable/ic_chevron_right"
+                            app:tint="@color/ds_text_secondary" />
+                    </FrameLayout>
+                </LinearLayout>
             </LinearLayout>
 
             <!-- Thẻ 5: Lịch sử trạng thái (Timeline) -->

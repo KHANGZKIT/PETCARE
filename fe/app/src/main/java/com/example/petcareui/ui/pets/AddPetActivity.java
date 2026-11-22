@@ -33,6 +33,7 @@ public class AddPetActivity extends AppCompatActivity {
 
     private ActivityAddPetBinding binding;
     private String selectedSpecies = "Chó";
+    private String selectedGender = "Đực";
     private PetItem editingPet = null;
 
     private final ActivityResultLauncher<String> pickImageLauncher =
@@ -50,6 +51,7 @@ public class AddPetActivity extends AppCompatActivity {
         extractEditIntent();
         setupNavigationAndAvatar();
         setupSpeciesPills();
+        setupGenderPills();
         populateEditStateIfNeeded();
         setupSaveButton();
 
@@ -60,6 +62,8 @@ public class AddPetActivity extends AppCompatActivity {
                 binding.chipDog,
                 binding.chipCat,
                 binding.chipOther,
+                binding.chipMale,
+                binding.chipFemale,
                 binding.btnSavePet
         );
     }
@@ -105,6 +109,18 @@ public class AddPetActivity extends AppCompatActivity {
         });
     }
 
+    private void setupGenderPills() {
+        binding.chipMale.setOnClickListener(v -> {
+            selectedGender = "Đực";
+            applyActiveGenderPill(binding.chipMale);
+        });
+
+        binding.chipFemale.setOnClickListener(v -> {
+            selectedGender = "Cái";
+            applyActiveGenderPill(binding.chipFemale);
+        });
+    }
+
     private void applyActiveSpeciesPill(LinearLayout activePill) {
         UiMotionUtils.animateSelectionPop(activePill);
 
@@ -113,17 +129,24 @@ public class AddPetActivity extends AppCompatActivity {
         stylePill(binding.chipOther, binding.ivChipOther, binding.tvChipOther, activePill == binding.chipOther);
     }
 
+    private void applyActiveGenderPill(LinearLayout activePill) {
+        UiMotionUtils.animateSelectionPop(activePill);
+
+        stylePill(binding.chipMale, null, binding.tvChipMale, activePill == binding.chipMale);
+        stylePill(binding.chipFemale, null, binding.tvChipFemale, activePill == binding.chipFemale);
+    }
+
     private void stylePill(LinearLayout pill, ImageView icon, TextView label, boolean isSelected) {
         if (isSelected) {
             pill.setBackgroundResource(R.drawable.bg_species_pill_selected);
-            int activeColor = ContextCompat.getColor(this, R.color.ds_primary_dark);
-            icon.setColorFilter(activeColor);
+            int activeColor = ContextCompat.getColor(this, R.color.ds_primary);
+            if (icon != null) icon.setColorFilter(activeColor);
             label.setTextColor(activeColor);
             label.setTypeface(ResourcesCompat.getFont(this, R.font.open_sans_semibold));
         } else {
             pill.setBackgroundResource(R.drawable.bg_species_pill_unselected);
             int inactiveColor = ContextCompat.getColor(this, R.color.ds_text_secondary);
-            icon.setColorFilter(inactiveColor);
+            if (icon != null) icon.setColorFilter(inactiveColor);
             label.setTextColor(inactiveColor);
             label.setTypeface(ResourcesCompat.getFont(this, R.font.open_sans_medium));
         }
@@ -146,24 +169,63 @@ public class AddPetActivity extends AppCompatActivity {
             binding.etPetName.setSelection(binding.etPetName.getText().length());
         }
 
+        // Loài & Giống
         String raw = editingPet.getRawSpecies() != null ? editingPet.getRawSpecies().trim() : "";
         String lower = raw.toLowerCase(Locale.ROOT);
+        String breedVal = editingPet.getBreed() != null ? editingPet.getBreed().trim() : "";
+
         if (lower.startsWith("mèo") || lower.startsWith("meo")) {
             selectedSpecies = "Mèo";
             applyActiveSpeciesPill(binding.chipCat);
-            String rest = raw.length() > 3 ? raw.substring(3).replaceFirst("^[\\s·\\-,:]+", "").trim() : "";
-            binding.etPetBreed.setText(rest);
+            if (breedVal.isEmpty() || breedVal.equalsIgnoreCase("Mèo cưng")) {
+                String rest = raw.length() > 3 ? raw.substring(3).replaceFirst("^[\\s·\\-,:]+", "").trim() : "";
+                breedVal = rest;
+            }
         } else if (lower.startsWith("chó") || lower.startsWith("cho")) {
             selectedSpecies = "Chó";
             applyActiveSpeciesPill(binding.chipDog);
-            String rest = raw.length() > 3 ? raw.substring(3).replaceFirst("^[\\s·\\-,:]+", "").trim() : "";
-            binding.etPetBreed.setText(rest);
+            if (breedVal.isEmpty() || breedVal.equalsIgnoreCase("Chó cưng")) {
+                String rest = raw.length() > 3 ? raw.substring(3).replaceFirst("^[\\s·\\-,:]+", "").trim() : "";
+                breedVal = rest;
+            }
         } else {
             selectedSpecies = "Khác";
             applyActiveSpeciesPill(binding.chipOther);
-            if (!raw.equalsIgnoreCase("Khác")) {
-                binding.etPetBreed.setText(raw);
+            if (breedVal.isEmpty() && !raw.equalsIgnoreCase("Khác")) {
+                breedVal = raw;
             }
+        }
+        binding.etPetBreed.setText(breedVal);
+
+        // Giới tính
+        String sex = editingPet.getSex() != null ? editingPet.getSex().replace("♂", "").replace("♀", "").trim() : "";
+        if (sex.equalsIgnoreCase("Cái")) {
+            selectedGender = "Cái";
+            applyActiveGenderPill(binding.chipFemale);
+        } else {
+            selectedGender = "Đực";
+            applyActiveGenderPill(binding.chipMale);
+        }
+
+        // Tuổi
+        if (editingPet.getAge() != null && !editingPet.getAge().trim().isEmpty()) {
+            binding.etPetAge.setText(editingPet.getAge().trim());
+        }
+
+        // Cân nặng (kg)
+        if (editingPet.getWeightValue() != null && editingPet.getWeightValue() > 0) {
+            double w = editingPet.getWeightValue();
+            binding.etPetWeight.setText(w == Math.floor(w)
+                    ? String.format(Locale.US, "%.0f", w)
+                    : String.format(Locale.US, "%.1f", w));
+        } else if (editingPet.getWeight() != null && !editingPet.getWeight().trim().isEmpty()) {
+            String numeric = editingPet.getWeight().replace("kg", "").replace(",", ".").trim();
+            binding.etPetWeight.setText(numeric);
+        }
+
+        // Ghi chú
+        if (editingPet.getNotes() != null && !editingPet.getNotes().trim().isEmpty()) {
+            binding.etPetNotes.setText(editingPet.getNotes().trim());
         }
     }
 
@@ -177,24 +239,43 @@ public class AddPetActivity extends AppCompatActivity {
                 return;
             }
 
-            String breedOrNote = binding.etPetBreed.getText() != null
+            String breed = binding.etPetBreed.getText() != null
                     ? binding.etPetBreed.getText().toString().replaceAll("\\s+", " ").trim() : "";
+            String age = binding.etPetAge.getText() != null
+                    ? binding.etPetAge.getText().toString().trim() : "";
+            String weightStr = binding.etPetWeight.getText() != null
+                    ? binding.etPetWeight.getText().toString().replace(",", ".").trim() : "";
+            String notes = binding.etPetNotes.getText() != null
+                    ? binding.etPetNotes.getText().toString().trim() : "";
 
-            String combinedSpecies;
-            if ("Khác".equals(selectedSpecies)) {
-                combinedSpecies = breedOrNote.isEmpty() ? "Khác" : breedOrNote;
-            } else {
-                combinedSpecies = breedOrNote.isEmpty() ? selectedSpecies : (selectedSpecies + " " + breedOrNote);
-            }
-
-            if (combinedSpecies.length() > 50) {
-                combinedSpecies = combinedSpecies.substring(0, 50).trim();
+            Double weight = null;
+            if (!weightStr.isEmpty()) {
+                try {
+                    weight = Double.parseDouble(weightStr);
+                    if (weight <= 0 || weight > 200) {
+                        showError("Cân nặng phải nằm trong khoảng 0.1 – 200 kg.");
+                        binding.etPetWeight.requestFocus();
+                        return;
+                    }
+                } catch (NumberFormatException e) {
+                    showError("Cân nặng không hợp lệ. Vui lòng nhập số (VD: 4.2).");
+                    binding.etPetWeight.requestFocus();
+                    return;
+                }
             }
 
             hideError();
             setLoading(true);
 
-            PetRequest request = new PetRequest(name, combinedSpecies);
+            PetRequest request = new PetRequest(
+                    name,
+                    selectedSpecies,
+                    breed.isEmpty() ? null : breed,
+                    selectedGender,
+                    age.isEmpty() ? null : age,
+                    weight,
+                    notes.isEmpty() ? null : notes
+            );
             Long editId = editingPet != null ? editingPet.getNumericId() : null;
 
             Call<PetResponse> apiCall = (editId != null)

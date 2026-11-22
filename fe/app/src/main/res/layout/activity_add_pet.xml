@@ -32,13 +32,16 @@
 
         <TextView
             android:id="@+id/tvAddPetScreenTitle"
+            style="@style/TextAppearance.PetCare.Title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:fontFamily="@font/open_sans_bold"
             android:text="Thêm thú cưng mới"
             android:textColor="@color/ds_text_primary"
-            android:textSize="18sp" />
+            android:textSize="18sp"
+            android:textStyle="bold"
+            app:fontFamily="@font/open_sans_bold" />
     </FrameLayout>
 
     <androidx.core.widget.NestedScrollView
@@ -302,7 +305,7 @@
                         android:layout_width="16dp"
                         android:layout_height="16dp"
                         android:contentDescription="@null"
-                        android:src="@drawable/ic_sparkles"
+                        android:src="@drawable/ic_paw"
                         app:tint="@color/ds_text_secondary" />
 
                     <TextView
@@ -318,36 +321,200 @@
                 </LinearLayout>
             </LinearLayout>
 
-            <!-- Trường 3: Giống / Ghi chú (minHeight=96dp, gravity=top, bo góc 14dp) -->
+            <!-- Trường 3: Giống (1 dòng riêng) -->
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="18dp"
                 android:fontFamily="@font/open_sans_medium"
-                android:text="Giống / Ghi chú"
+                android:text="Giống"
                 android:textColor="@color/ds_text_primary"
                 android:textSize="14sp" />
 
             <EditText
                 android:id="@+id/etPetBreed"
                 android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:layout_marginTop="8dp"
+                android:background="@drawable/bg_input_field_14"
+                android:fontFamily="@font/open_sans_regular"
+                android:hint="VD: Pomeranian, Mèo Anh lông ngắn..."
+                android:inputType="textCapWords"
+                android:maxLength="100"
+                android:singleLine="true"
+                android:paddingStart="14dp"
+                android:paddingEnd="14dp"
+                android:textColor="@color/ds_text_primary"
+                android:textColorHint="@color/ds_text_secondary"
+                android:textSize="14sp" />
+
+            <!-- Trường 4: Giới tính (2 chip chọn ngang: Đực / Cái) -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="18dp"
+                android:fontFamily="@font/open_sans_medium"
+                android:text="Giới tính"
+                android:textColor="@color/ds_text_primary"
+                android:textSize="14sp" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:orientation="horizontal">
+
+                <LinearLayout
+                    android:id="@+id/chipMale"
+                    android:layout_width="0dp"
+                    android:layout_height="44dp"
+                    android:layout_marginEnd="8dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/bg_species_pill_selected"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:gravity="center"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:id="@+id/tvChipMale"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/open_sans_semibold"
+                        android:includeFontPadding="false"
+                        android:text="Đực"
+                        android:textColor="@color/ds_primary"
+                        android:textSize="13.5sp"
+                        app:fontFamily="@font/open_sans_semibold" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/chipFemale"
+                    android:layout_width="0dp"
+                    android:layout_height="44dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/bg_species_pill_unselected"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:gravity="center"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:id="@+id/tvChipFemale"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/open_sans_medium"
+                        android:includeFontPadding="false"
+                        android:text="Cái"
+                        android:textColor="@color/ds_text_secondary"
+                        android:textSize="13.5sp" />
+                </LinearLayout>
+            </LinearLayout>
+
+            <!-- Trường 5: Hàng 2 cột đều nhau — Tuổi (trái) & Cân nặng kg (phải) -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="18dp"
+                android:orientation="horizontal">
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="8dp"
+                    android:layout_weight="1"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/open_sans_medium"
+                        android:text="Tuổi"
+                        android:textColor="@color/ds_text_primary"
+                        android:textSize="14sp" />
+
+                    <EditText
+                        android:id="@+id/etPetAge"
+                        android:layout_width="match_parent"
+                        android:layout_height="48dp"
+                        android:layout_marginTop="8dp"
+                        android:background="@drawable/bg_input_field_14"
+                        android:fontFamily="@font/open_sans_regular"
+                        android:hint="VD: 8 tháng, 2 tuổi"
+                        android:inputType="text"
+                        android:maxLength="50"
+                        android:singleLine="true"
+                        android:paddingStart="14dp"
+                        android:paddingEnd="14dp"
+                        android:textColor="@color/ds_text_primary"
+                        android:textColorHint="@color/ds_text_secondary"
+                        android:textSize="14sp" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/open_sans_medium"
+                        android:text="Cân nặng (kg)"
+                        android:textColor="@color/ds_text_primary"
+                        android:textSize="14sp" />
+
+                    <EditText
+                        android:id="@+id/etPetWeight"
+                        android:layout_width="match_parent"
+                        android:layout_height="48dp"
+                        android:layout_marginTop="8dp"
+                        android:background="@drawable/bg_input_field_14"
+                        android:fontFamily="@font/open_sans_regular"
+                        android:fontFeatureSettings="tnum"
+                        android:hint="VD: 4.2"
+                        android:inputType="numberDecimal"
+                        android:maxLength="6"
+                        android:singleLine="true"
+                        android:paddingStart="14dp"
+                        android:paddingEnd="14dp"
+                        android:textColor="@color/ds_text_primary"
+                        android:textColorHint="@color/ds_text_secondary"
+                        android:textSize="14sp" />
+                </LinearLayout>
+            </LinearLayout>
+
+            <!-- Trường 6: Ghi chú sức khỏe (tùy chọn, multiline) -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="18dp"
+                android:fontFamily="@font/open_sans_medium"
+                android:text="Ghi chú (tùy chọn)"
+                android:textColor="@color/ds_text_primary"
+                android:textSize="14sp" />
+
+            <EditText
+                android:id="@+id/etPetNotes"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
                 android:background="@drawable/bg_input_field_14"
                 android:fontFamily="@font/open_sans_regular"
                 android:gravity="top|start"
-                android:hint="Giống loài hoặc ghi chú thêm..."
+                android:hint="Dị ứng, tiền sử bệnh hoặc lưu ý khi khám..."
                 android:inputType="textMultiLine|textCapSentences"
                 android:lineSpacingMultiplier="1.2"
-                android:maxLength="42"
-                android:minHeight="96dp"
-                android:paddingStart="16dp"
-                android:paddingTop="14dp"
-                android:paddingEnd="16dp"
-                android:paddingBottom="14dp"
+                android:maxLength="500"
+                android:minHeight="84dp"
+                android:paddingStart="14dp"
+                android:paddingTop="12dp"
+                android:paddingEnd="14dp"
+                android:paddingBottom="12dp"
                 android:textColor="@color/ds_text_primary"
                 android:textColorHint="@color/ds_text_secondary"
-                android:textSize="14.5sp" />
+                android:textSize="14sp" />
         </LinearLayout>
 
         <!-- 4. Nút hành động: 'Lưu thú cưng' (52dp, Pill, #B95740) & 'Hủy' (14sp Medium #6F6662) -->
@@ -362,7 +529,7 @@
                 android:id="@+id/btnSavePet"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:background="@drawable/bg_btn_pill_coral"
+                android:background="@drawable/bg_btn_primary"
                 android:fontFamily="@font/open_sans_semibold"
                 android:stateListAnimator="@null"
                 android:text="Lưu thú cưng"

@@ -145,19 +145,28 @@ public class AppointmentDetailsActivity extends AppCompatActivity {
         binding.tvServiceDuration.setText("45 phút");
         binding.tvPetName.setText(appt.getPet());
 
-        // Thẻ Thú cưng
-        binding.ivPetAvatar.setImageResource(appt.getPetImgRes());
+        // Thẻ Thú cưng (đồng nhất nguồn avatar với màn Thú cưng của tôi)
+        int avatarRes = resolveUnifiedPetAvatar(appt.getPet(), appt.getPetImgRes());
+        binding.ivPetAvatar.setImageResource(avatarRes);
+        if (avatarRes == R.drawable.img_pet_bong) {
+            binding.ivPetAvatar.setPadding(0, 0, 0, 0);
+            binding.ivPetAvatar.setScaleType(android.widget.ImageView.ScaleType.CENTER_CROP);
+        } else {
+            int pad = Math.round(4 * getResources().getDisplayMetrics().density);
+            binding.ivPetAvatar.setPadding(pad, pad, pad, pad);
+            binding.ivPetAvatar.setScaleType(android.widget.ImageView.ScaleType.FIT_CENTER);
+        }
         binding.tvCardPetName.setText(appt.getPet());
         if ("Mochi".equalsIgnoreCase(appt.getPet())) {
             binding.tvPetDetails.setText("Pomeranian · 2 tuổi · Cái");
-        } else if ("Bông".equalsIgnoreCase(appt.getPet())) {
-            binding.tvPetDetails.setText("Mèo Anh lông ngắn · 3 tuổi · Đực");
+        } else if ("Bông".equalsIgnoreCase(appt.getPet()) || (appt.getPet() != null && appt.getPet().toLowerCase().contains("miu"))) {
+            binding.tvPetDetails.setText("Mèo Anh lông ngắn · 2 tuổi · Cái");
         } else {
-            binding.tvPetDetails.setText("Golden Retriever · 1 tuổi · Đực");
+            binding.tvPetDetails.setText("Thú cưng · Hồ sơ đã lưu");
         }
 
-        // Thẻ Ngày & Giờ
-        binding.tvDate.setText(appt.getDate());
+        // Thẻ Ngày & Giờ (định dạng tự nhiên)
+        binding.tvDate.setText(formatNaturalDate(appt.getDate()));
         binding.tvTime.setText(appt.getTime());
 
         // Thẻ Timeline Step 1
@@ -165,6 +174,40 @@ public class AppointmentDetailsActivity extends AppCompatActivity {
 
         // Thân hộp thoại hủy
         binding.tvDialogBody.setText(appt.getClinic() + " sẽ được thông báo ngay và khung giờ " + appt.getTime() + " được mở lại. Hành động này không thể hoàn tác.");
+    }
+
+    private int resolveUnifiedPetAvatar(String petName, int currentRes) {
+        if (currentRes == R.drawable.img_pet_bong || currentRes == R.drawable.mascot_corgi_running || currentRes == R.drawable.mascot_corgi_wave) {
+            return currentRes;
+        }
+        String lower = petName != null ? petName.toLowerCase(java.util.Locale.ROOT) : "";
+        if (lower.contains("mèo") || lower.contains("bông") || lower.contains("mimi") || lower.contains("miu")) {
+            return R.drawable.img_pet_bong;
+        }
+        return R.drawable.mascot_corgi_running;
+    }
+
+    private String formatNaturalDate(String rawDate) {
+        if (rawDate == null) return "";
+        String s = rawDate.trim();
+        try {
+            if (s.length() >= 10 && s.charAt(4) == '-' && s.charAt(7) == '-') {
+                java.time.LocalDate d = java.time.LocalDate.parse(s.substring(0, 10));
+                String dow;
+                switch (d.getDayOfWeek()) {
+                    case MONDAY: dow = "T2"; break;
+                    case TUESDAY: dow = "T3"; break;
+                    case WEDNESDAY: dow = "T4"; break;
+                    case THURSDAY: dow = "T5"; break;
+                    case FRIDAY: dow = "T6"; break;
+                    case SATURDAY: dow = "T7"; break;
+                    default: dow = "CN"; break;
+                }
+                return String.format(java.util.Locale.US, "%s, %02d/%02d/%d", dow, d.getDayOfMonth(), d.getMonthValue(), d.getYear());
+            }
+        } catch (Exception ignored) {
+        }
+        return s;
     }
 
     private void setupStateTabs() {

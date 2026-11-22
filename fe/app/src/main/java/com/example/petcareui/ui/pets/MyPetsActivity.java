@@ -186,16 +186,38 @@ public class MyPetsActivity extends AppCompatActivity {
 
         LayoutInflater inflater = LayoutInflater.from(this);
 
+        binding.cardAddOtherPet.setVisibility(pets.isEmpty() ? View.VISIBLE : View.GONE);
+
         for (int i = 0; i < pets.size(); i++) {
             final int index = i;
             PetItem pet = pets.get(i);
             ItemPetCardBinding itemBinding = ItemPetCardBinding.inflate(inflater, binding.containerPetsList, false);
 
-            itemBinding.ivPetAvatar.setImageResource(pet.getImageResId());
+            int avatarRes = pet.getImageResId();
+            itemBinding.ivPetAvatar.setImageResource(avatarRes);
+            if (avatarRes == R.drawable.img_pet_bong) {
+                itemBinding.ivPetAvatar.setPadding(0, 0, 0, 0);
+                itemBinding.ivPetAvatar.setScaleType(android.widget.ImageView.ScaleType.CENTER_CROP);
+            } else {
+                int pad = Math.round(4 * getResources().getDisplayMetrics().density);
+                itemBinding.ivPetAvatar.setPadding(pad, pad, pad, pad);
+                itemBinding.ivPetAvatar.setScaleType(android.widget.ImageView.ScaleType.FIT_CENTER);
+            }
+
             itemBinding.tvPetName.setText(pet.getName());
 
             String realSpecies = pet.getRawSpecies();
             itemBinding.tvPetSpecies.setText(realSpecies != null && !realSpecies.isEmpty() ? realSpecies : "Thú cưng");
+
+            String age = pet.getAge() != null ? pet.getAge().trim() : "";
+            String sex = pet.getSex() != null ? pet.getSex().replace("♂", "").replace("♀", "").trim() : "";
+            if (!age.isEmpty() && !sex.isEmpty()) {
+                itemBinding.tvPetHealthBadge.setText(age + " · " + sex);
+            } else if (!age.isEmpty()) {
+                itemBinding.tvPetHealthBadge.setText(age);
+            } else {
+                itemBinding.tvPetHealthBadge.setText(sex);
+            }
 
             UiMotionUtils.attachSpringTouch(itemBinding.getRoot(), itemBinding.btnEditPet, itemBinding.btnHistoryPet);
 

@@ -15,19 +15,20 @@
     android:orientation="horizontal"
     android:padding="16dp">
 
-    <!-- Bên trái: Ảnh đại diện thú cưng 76dp x 76dp, bo góc vuông mềm 18dp -->
+    <!-- Bên trái: Ảnh đại diện thú cưng 68dp x 68dp, bo góc 10dp trên nền kem #F3EDE4 -->
     <com.google.android.material.imageview.ShapeableImageView
         android:id="@+id/ivPetAvatar"
-        android:layout_width="76dp"
-        android:layout_height="76dp"
-        android:background="@color/ds_home_bg"
+        android:layout_width="68dp"
+        android:layout_height="68dp"
+        android:background="@color/ds_cream_tile"
         android:contentDescription="@null"
-        android:scaleType="centerCrop"
-        android:src="@drawable/img_pet_mochi"
-        app:shapeAppearanceOverlay="@style/RoundedCorner18"
+        android:padding="4dp"
+        android:scaleType="fitCenter"
+        android:src="@drawable/mascot_corgi_running"
+        app:shapeAppearanceOverlay="@style/RoundedCorner10"
         app:strokeWidth="0dp" />
 
-    <!-- Ở giữa: Tên thú cưng + Loài/Giống thật từ API + Status Pill 'Khỏe mạnh' -->
+    <!-- Ở giữa: Tên thú cưng + Giống + Tuổi · Giới tính (phẳng, không pill xanh) -->
     <LinearLayout
         android:layout_width="0dp"
         android:layout_height="wrap_content"
@@ -38,6 +39,7 @@
 
         <TextView
             android:id="@+id/tvPetName"
+            style="@style/TextAppearance.PetCare.CardTitle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:ellipsize="end"
@@ -45,36 +47,32 @@
             android:lineSpacingMultiplier="1.2"
             android:maxLines="1"
             android:textColor="@color/ds_text_primary"
-            android:textSize="17sp"
+            android:textSize="16sp"
+            app:fontFamily="@font/open_sans_semibold"
             tools:text="Miu Miu" />
 
         <TextView
             android:id="@+id/tvPetSpecies"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="3dp"
+            android:layout_marginTop="2dp"
             android:fontFamily="@font/open_sans_regular"
             android:includeFontPadding="false"
             android:lineSpacingMultiplier="1.2"
             android:textColor="@color/ds_text_secondary"
-            android:textSize="14sp"
+            android:textSize="13.5sp"
             tools:text="Mèo Anh lông ngắn" />
 
         <TextView
             android:id="@+id/tvPetHealthBadge"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:background="@drawable/bg_pill_mint"
-            android:fontFamily="@font/open_sans_medium"
+            android:layout_marginTop="5dp"
+            android:fontFamily="@font/open_sans_regular"
             android:includeFontPadding="false"
-            android:paddingStart="10dp"
-            android:paddingTop="4dp"
-            android:paddingEnd="10dp"
-            android:paddingBottom="4dp"
-            android:text="Khỏe mạnh"
-            android:textColor="@color/ds_success"
-            android:textSize="12sp" />
+            android:text="2 tuổi · Cái"
+            android:textColor="@color/ds_text_secondary"
+            android:textSize="12.5sp" />
     </LinearLayout>
 
     <!-- Bên phải (Chế độ Quản lý): Xếp dọc 2 nút icon tròn 36dp x 36dp nền kem nhạt #F6F2EE -->

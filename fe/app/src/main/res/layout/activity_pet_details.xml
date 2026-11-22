@@ -32,20 +32,23 @@
             app:tint="@color/ds_text_primary" />
 
         <TextView
+            style="@style/TextAppearance.PetCare.Title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:fontFamily="@font/open_sans_bold"
             android:text="Hồ sơ thú cưng"
             android:textColor="@color/ds_text_primary"
-            android:textSize="18sp" />
+            android:textSize="18sp"
+            android:textStyle="bold"
+            app:fontFamily="@font/open_sans_bold" />
 
         <FrameLayout
             android:id="@+id/btnEditPetTop"
             android:layout_width="40dp"
             android:layout_height="40dp"
             android:layout_gravity="end|center_vertical"
-            android:background="@drawable/bg_icon_circle_cream"
+            android:background="@drawable/bg_home_icon_btn_white"
             android:clickable="true"
             android:contentDescription="Chỉnh sửa hồ sơ thú cưng"
             android:focusable="true">
@@ -85,76 +88,76 @@
             android:paddingEnd="20dp"
             android:paddingBottom="28dp">
 
-            <!-- HERO AVATAR: Ảnh tròn 110dp viền kem nhạt 3dp + Tên 24sp Bold Coral + Badge loài -->
+            <!-- HERO AVATAR: Bo vuông mềm 14dp trên nền kem #F3EDE4 + Tên Bold #1F1A17 + Mô tả phẳng -->
             <LinearLayout
                 android:id="@+id/sectionHeroAvatar"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="center_horizontal"
                 android:orientation="vertical"
-                android:paddingTop="6dp"
+                android:paddingTop="8dp"
                 android:paddingBottom="4dp">
 
                 <com.google.android.material.imageview.ShapeableImageView
                     android:id="@+id/ivPetHeroAvatar"
-                    android:layout_width="110dp"
-                    android:layout_height="110dp"
-                    android:background="@color/ds_surface"
+                    android:layout_width="96dp"
+                    android:layout_height="96dp"
+                    android:background="@color/ds_cream_tile"
                     android:contentDescription="@null"
-                    android:padding="3dp"
-                    android:scaleType="centerCrop"
-                    android:src="@drawable/img_pet_mochi"
-                    app:shapeAppearanceOverlay="@style/CircleImage"
-                    app:strokeColor="@color/ds_icon_circle_cream"
-                    app:strokeWidth="3dp" />
+                    android:padding="8dp"
+                    android:scaleType="fitCenter"
+                    android:src="@drawable/mascot_corgi_running"
+                    app:shapeAppearanceOverlay="@style/RoundedCorner18"
+                    app:strokeColor="@color/ds_border"
+                    app:strokeWidth="1dp" />
 
                 <TextView
                     android:id="@+id/tvPetHeroName"
+                    style="@style/TextAppearance.PetCare.Display"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="14dp"
+                    android:layout_marginTop="12dp"
                     android:fontFamily="@font/open_sans_bold"
                     android:gravity="center"
-                    android:lineSpacingMultiplier="1.2"
-                    android:textColor="@color/ds_primary_dark"
-                    android:textSize="24sp"
+                    android:textColor="@color/ds_text_primary"
+                    android:textSize="22sp"
+                    android:textStyle="bold"
+                    app:fontFamily="@font/open_sans_bold"
                     tools:text="Miu Miu" />
 
                 <TextView
                     android:id="@+id/tvPetHeroSpecies"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="8dp"
-                    android:background="@drawable/bg_pill_peach"
-                    android:fontFamily="@font/open_sans_medium"
+                    android:layout_marginTop="4dp"
+                    android:fontFamily="@font/open_sans_regular"
                     android:includeFontPadding="false"
-                    android:paddingStart="14dp"
-                    android:paddingTop="5dp"
-                    android:paddingEnd="14dp"
-                    android:paddingBottom="5dp"
-                    android:textColor="@color/ds_warm_brown"
-                    android:textSize="13sp"
-                    tools:text="Mèo Anh lông ngắn" />
+                    android:textColor="@color/ds_text_secondary"
+                    android:textSize="13.5sp"
+                    tools:text="Mèo Anh lông ngắn · 2 tuổi · Cái" />
             </LinearLayout>
 
-            <!-- CARD 1: Thông tin cơ bản (Trắng #FFFFFF, bo góc 20dp, không viền ngoài, padding 20dp) -->
+            <!-- CARD 1: Thông tin cơ bản (Trắng #FFFFFF, viền 1dp #E6DFD5, bo 14dp, 0 shadow) -->
             <LinearLayout
                 android:id="@+id/cardBasicInfo"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="24dp"
+                android:layout_marginTop="20dp"
                 android:background="@drawable/bg_home_card_static"
                 android:elevation="0dp"
                 android:orientation="vertical"
-                android:padding="20dp">
+                android:padding="16dp">
 
                 <TextView
+                    style="@style/TextAppearance.PetCare.Title"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:fontFamily="@font/open_sans_bold"
                     android:text="Thông tin cơ bản"
-                    android:textColor="@color/ds_primary_dark"
-                    android:textSize="16.5sp" />
+                    android:textColor="@color/ds_text_primary"
+                    android:textSize="16sp"
+                    android:textStyle="bold"
+                    app:fontFamily="@font/open_sans_bold" />
 
                 <!-- Hàng 1: Tên thú cưng -->
                 <LinearLayout
@@ -225,7 +228,7 @@
                         tools:text="Mèo" />
                 </LinearLayout>
 
-                <!-- Hàng 3: Giống / Ghi chú (Ẩn nếu API không có dữ liệu bổ sung) -->
+                <!-- Hàng 3: Giống -->
                 <View
                     android:id="@+id/dividerBasicBreedNote"
                     android:layout_width="match_parent"
@@ -248,7 +251,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:fontFamily="@font/open_sans_regular"
-                        android:text="Giống / Ghi chú"
+                        android:text="Giống"
                         android:textColor="@color/ds_text_secondary"
                         android:textSize="14sp" />
 
@@ -263,35 +266,193 @@
                         android:lineSpacingMultiplier="1.2"
                         android:textColor="@color/ds_text_primary"
                         android:textSize="14sp"
+                        app:fontFamily="@font/open_sans_semibold"
                         tools:text="Anh lông ngắn" />
+                </LinearLayout>
+
+                <!-- Hàng 4: Giới tính -->
+                <View
+                    android:id="@+id/dividerBasicGender"
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="@color/ds_divider_hairline"
+                    android:visibility="gone" />
+
+                <LinearLayout
+                    android:id="@+id/rowBasicGender"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal"
+                    android:paddingTop="12dp"
+                    android:paddingBottom="12dp"
+                    android:visibility="gone">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/open_sans_regular"
+                        android:text="Giới tính"
+                        android:textColor="@color/ds_text_secondary"
+                        android:textSize="14sp" />
+
+                    <TextView
+                        android:id="@+id/tvBasicGenderValue"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="16dp"
+                        android:layout_weight="1"
+                        android:fontFamily="@font/open_sans_semibold"
+                        android:gravity="end"
+                        android:textColor="@color/ds_text_primary"
+                        android:textSize="14sp"
+                        app:fontFamily="@font/open_sans_semibold" />
+                </LinearLayout>
+
+                <!-- Hàng 5: Tuổi -->
+                <View
+                    android:id="@+id/dividerBasicAge"
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="@color/ds_divider_hairline"
+                    android:visibility="gone" />
+
+                <LinearLayout
+                    android:id="@+id/rowBasicAge"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal"
+                    android:paddingTop="12dp"
+                    android:paddingBottom="12dp"
+                    android:visibility="gone">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/open_sans_regular"
+                        android:text="Tuổi"
+                        android:textColor="@color/ds_text_secondary"
+                        android:textSize="14sp" />
+
+                    <TextView
+                        android:id="@+id/tvBasicAgeValue"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="16dp"
+                        android:layout_weight="1"
+                        android:fontFamily="@font/open_sans_semibold"
+                        android:fontFeatureSettings="tnum"
+                        android:gravity="end"
+                        android:textColor="@color/ds_text_primary"
+                        android:textSize="14sp"
+                        app:fontFamily="@font/open_sans_semibold" />
+                </LinearLayout>
+
+                <!-- Hàng 6: Cân nặng -->
+                <View
+                    android:id="@+id/dividerBasicWeight"
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="@color/ds_divider_hairline"
+                    android:visibility="gone" />
+
+                <LinearLayout
+                    android:id="@+id/rowBasicWeight"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal"
+                    android:paddingTop="12dp"
+                    android:paddingBottom="12dp"
+                    android:visibility="gone">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/open_sans_regular"
+                        android:text="Cân nặng"
+                        android:textColor="@color/ds_text_secondary"
+                        android:textSize="14sp" />
+
+                    <TextView
+                        android:id="@+id/tvBasicWeightValue"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="16dp"
+                        android:layout_weight="1"
+                        android:fontFamily="@font/open_sans_semibold"
+                        android:fontFeatureSettings="tnum"
+                        android:gravity="end"
+                        android:textColor="@color/ds_text_primary"
+                        android:textSize="14sp"
+                        app:fontFamily="@font/open_sans_semibold" />
+                </LinearLayout>
+
+                <!-- Hàng 7: Ghi chú -->
+                <View
+                    android:id="@+id/dividerBasicNotes"
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="@color/ds_divider_hairline"
+                    android:visibility="gone" />
+
+                <LinearLayout
+                    android:id="@+id/rowBasicNotes"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:paddingTop="12dp"
+                    android:visibility="gone">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/open_sans_regular"
+                        android:text="Ghi chú sức khỏe"
+                        android:textColor="@color/ds_text_secondary"
+                        android:textSize="13.5sp" />
+
+                    <TextView
+                        android:id="@+id/tvBasicNotesValue"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="4dp"
+                        android:fontFamily="@font/open_sans_regular"
+                        android:lineSpacingMultiplier="1.25"
+                        android:textColor="@color/ds_text_primary"
+                        android:textSize="13.5sp" />
                 </LinearLayout>
             </LinearLayout>
 
-            <!-- CARD 2: Lịch sử khám & Sổ sức khỏe (Trắng #FFFFFF, bo góc 20dp, padding 20dp) -->
+            <!-- CARD 2: Lịch sử khám & Sổ sức khỏe (Trắng #FFFFFF, viền 1dp #E6DFD5, bo 14dp) -->
             <LinearLayout
                 android:id="@+id/cardHealthHistory"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="20dp"
+                android:layout_marginTop="16dp"
                 android:background="@drawable/bg_home_card_static"
                 android:elevation="0dp"
                 android:orientation="vertical"
-                android:padding="20dp">
+                android:padding="16dp">
 
                 <RelativeLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content">
 
                     <TextView
+                        style="@style/TextAppearance.PetCare.Title"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_alignParentStart="true"
                         android:layout_centerVertical="true"
                         android:layout_toStartOf="@id/btnSeeAllHistory"
                         android:fontFamily="@font/open_sans_bold"
-                        android:text="Lịch sử khám &amp; Sổ sức khỏe"
+                        android:text="Lịch sử khám"
                         android:textColor="@color/ds_text_primary"
-                        android:textSize="16.5sp" />
+                        android:textSize="16sp"
+                        android:textStyle="bold"
+                        app:fontFamily="@font/open_sans_bold" />
 
                     <TextView
                         android:id="@+id/btnSeeAllHistory"
@@ -302,14 +463,15 @@
                         android:background="?attr/selectableItemBackgroundBorderless"
                         android:clickable="true"
                         android:focusable="true"
-                        android:fontFamily="@font/open_sans_medium"
+                        android:fontFamily="@font/open_sans_semibold"
                         android:minHeight="36dp"
                         android:gravity="center_vertical"
                         android:paddingStart="8dp"
                         android:paddingEnd="4dp"
-                        android:text="Xem tất cả"
-                        android:textColor="@color/ds_text_secondary"
-                        android:textSize="13sp" />
+                        android:text="Xem tất cả ›"
+                        android:textColor="@color/ds_primary"
+                        android:textSize="13sp"
+                        app:fontFamily="@font/open_sans_semibold" />
                 </RelativeLayout>
 
                 <ProgressBar
@@ -345,30 +507,31 @@
         </LinearLayout>
     </androidx.core.widget.NestedScrollView>
 
-    <!-- Bottom CTA cố định dưới đáy: cao 54dp, bo góc viên thuốc, nền Coral #B95740 + icon ống nghe -->
+    <!-- Bottom CTA cố định dưới đáy: viền trên 1dp #EAE3D9, nút bo 12dp #C85428 -->
     <LinearLayout
         android:id="@+id/layoutBottomCta"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:background="@color/ds_home_bg"
-        android:paddingStart="20dp"
+        android:background="@drawable/bg_bottom_nav_bar"
+        android:elevation="0dp"
+        android:paddingStart="16dp"
         android:paddingTop="12dp"
-        android:paddingEnd="20dp"
+        android:paddingEnd="16dp"
         android:paddingBottom="16dp">
 
         <LinearLayout
             android:id="@+id/btnBookForPet"
             android:layout_width="match_parent"
-            android:layout_height="54dp"
-            android:background="@drawable/bg_btn_pill_coral"
+            android:layout_height="50dp"
+            android:background="@drawable/bg_btn_primary"
             android:clickable="true"
             android:elevation="0dp"
             android:focusable="true"
             android:gravity="center"
             android:orientation="horizontal"
-            android:paddingStart="24dp"
-            android:paddingEnd="24dp">
+            android:paddingStart="20dp"
+            android:paddingEnd="20dp">
 
             <ImageView
                 android:layout_width="19dp"

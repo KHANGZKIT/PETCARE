@@ -53,7 +53,7 @@
                 android:layout_height="wrap_content"
                 android:ellipsize="end"
                 android:fontFamily="@font/open_sans_semibold"
-                android:maxLines="1"
+                android:maxLines="2"
                 android:textColor="@color/ds_text_primary"
                 android:textSize="14.5sp"
                 app:fontFamily="@font/open_sans_semibold"

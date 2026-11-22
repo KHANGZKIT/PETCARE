@@ -56,7 +56,7 @@ public class SelectServiceActivity extends AppCompatActivity {
         binding = ActivitySelectServiceBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
-        UiMotionUtils.applyWindowInsets(binding.getRoot(), null, binding.layoutStickyBottom);
+        UiMotionUtils.applyWindowInsets(binding.getRoot(), binding.layoutTopHeader, binding.layoutStickyBottom);
 
         extractIntentData();
         setupClinicContextCard();
@@ -119,13 +119,13 @@ public class SelectServiceActivity extends AppCompatActivity {
                     String[] samplePrices = new String[]{"180.000 ₫", "250.000 ₫", "600.000 ₫", "320.000 ₫", "420.000 ₫", "780.000 ₫"};
                     for (int i = 0; i < body.size(); i++) {
                         ServiceResponse res = body.get(i);
-                        int icon = SERVICE_ICONS[i % SERVICE_ICONS.length];
+                        int icon = resolveServiceIcon(res.getName());
                         String durationText = res.getDuration() != null ? res.getDuration() + " phút" : "30 phút";
                         String priceText = samplePrices[i % samplePrices.length];
                         services.add(new ServiceItem(
                                 String.valueOf(res.getId()),
                                 res.getName(),
-                                "Dịch vụ chăm sóc thú y tiêu chuẩn, tận tâm",
+                                "",
                                 durationText,
                                 priceText,
                                 icon
@@ -145,15 +145,33 @@ public class SelectServiceActivity extends AppCompatActivity {
         });
     }
 
+    private int resolveServiceIcon(String name) {
+        if (name == null) return R.drawable.ic_stethoscope;
+        String lower = name.toLowerCase(java.util.Locale.ROOT);
+        if (lower.contains("cấp cứu")) {
+            return R.drawable.ic_heart_pulse;
+        }
+        if (lower.contains("tiêm") || lower.contains("vắc") || lower.contains("vaccine")) {
+            return R.drawable.ic_syringe;
+        }
+        if (lower.contains("tắm") || lower.contains("spa") || lower.contains("cắt") || lower.contains("lông")) {
+            return R.drawable.ic_scissors;
+        }
+        if (lower.contains("khách sạn") || lower.contains("lưu chuồng")) {
+            return R.drawable.ic_home;
+        }
+        return R.drawable.ic_stethoscope;
+    }
+
     private void setupDefaultServices() {
         if (services.isEmpty()) {
             services.add(new ServiceItem("1", "Khám tổng quát", "Khám lâm sàng, cân nặng, nhiệt độ và các chỉ số sinh tồn.", "30 phút", "180.000 ₫", R.drawable.ic_stethoscope));
             services.add(new ServiceItem("2", "Tiêm phòng", "Vaccine thiết yếu cho chó và mèo, khám sức khỏe trước khi tiêm.", "20 phút", "250.000 ₫", R.drawable.ic_syringe));
-            services.add(new ServiceItem("3", "Cạo vôi & chăm sóc răng", "Cạo vôi bằng siêu âm, đánh bóng và kiểm tra khoang miệng.", "45 phút", "600.000 ₫", R.drawable.ic_sparkles));
+            services.add(new ServiceItem("3", "Cạo vôi & chăm sóc răng", "Cạo vôi bằng siêu âm, đánh bóng và kiểm tra khoang miệng.", "45 phút", "600.000 ₫", R.drawable.ic_stethoscope));
             services.add(new ServiceItem("4", "Tắm & cắt tỉa", "Tắm, sấy khô, cắt móng và vệ sinh tai.", "60 phút", "320.000 ₫", R.drawable.ic_scissors));
-            services.add(new ServiceItem("5", "Tư vấn da & dị ứng", "Khám chuyên khoa da liễu kèm phác đồ điều trị.", "40 phút", "420.000 ₫", R.drawable.ic_shield_check));
-            services.add(new ServiceItem("6", "Khám định kỳ cho bé lớn tuổi", "Xét nghiệm máu, khám tim và đánh giá vận động.", "50 phút", "780.000 ₫", R.drawable.ic_heart_pulse));
-            selectedServiceIndex = 1;
+            services.add(new ServiceItem("5", "Cấp cứu 24/7", "Tiếp nhận xử lý khẩn cấp và theo dõi liên tục.", "40 phút", "420.000 ₫", R.drawable.ic_heart_pulse));
+            services.add(new ServiceItem("6", "Khách sạn & lưu chuồng", "Chăm sóc nội trú sạch sẽ, thoáng mát theo ngày.", "24 giờ", "200.000 ₫", R.drawable.ic_home));
+            selectedServiceIndex = 0;
         }
         renderServices();
     }
@@ -170,11 +188,20 @@ public class SelectServiceActivity extends AppCompatActivity {
             ServiceItem item = services.get(i);
             ItemServiceSelectableBinding itemBinding = ItemServiceSelectableBinding.inflate(inflater, binding.containerServicesList, false);
 
-            itemBinding.ivServiceIcon.setImageResource(item.getIconResId());
+            itemBinding.ivServiceIcon.setImageResource(resolveServiceIcon(item.getName()));
             itemBinding.tvServiceName.setText(item.getName());
-            itemBinding.tvServiceDesc.setText(item.getDesc());
+
+            String desc = item.getDesc() != null ? item.getDesc().trim() : "";
+            if (desc.isEmpty() || desc.equalsIgnoreCase("Dịch vụ chăm sóc thú y tiêu chuẩn, tận tâm")) {
+                itemBinding.tvServiceDesc.setVisibility(View.GONE);
+            } else {
+                itemBinding.tvServiceDesc.setText(desc);
+                itemBinding.tvServiceDesc.setVisibility(View.VISIBLE);
+            }
+
             itemBinding.tvServiceDuration.setText(item.getDuration());
             itemBinding.tvServicePrice.setText(item.getPrice());
+            itemBinding.dividerServiceRow.setVisibility(i == services.size() - 1 ? View.GONE : View.VISIBLE);
 
             UiMotionUtils.attachSpringTouch(itemBinding.getRoot());
             itemBinding.getRoot().setOnClickListener(v -> selectService(index));
@@ -201,14 +228,14 @@ public class SelectServiceActivity extends AppCompatActivity {
             boolean isCurrentSelected = (i == selectedServiceIndex);
 
             if (isCurrentSelected) {
-                b.layoutServiceCard.setBackgroundResource(R.drawable.bg_service_card_selected);
+                b.layoutServiceCard.setBackgroundColor(ContextCompat.getColor(this, R.color.ds_soft_peach));
                 b.layoutServiceIconBox.setBackgroundResource(R.drawable.bg_service_icon_selected);
                 b.ivServiceIcon.setColorFilter(ContextCompat.getColor(this, R.color.white));
                 b.ivServiceCheck.setImageResource(R.drawable.bg_radio_selected);
             } else {
-                b.layoutServiceCard.setBackgroundResource(R.drawable.bg_service_card_default);
-                b.layoutServiceIconBox.setBackgroundResource(R.drawable.bg_service_icon);
-                b.ivServiceIcon.setColorFilter(ContextCompat.getColor(this, R.color.brand_ink));
+                b.layoutServiceCard.setBackgroundResource(R.drawable.bg_clinic_row_flat);
+                b.layoutServiceIconBox.setBackgroundResource(R.drawable.bg_shortcut_icon_cream);
+                b.ivServiceIcon.setColorFilter(ContextCompat.getColor(this, R.color.ds_primary));
                 b.ivServiceCheck.setImageResource(R.drawable.bg_radio_unselected);
             }
         }

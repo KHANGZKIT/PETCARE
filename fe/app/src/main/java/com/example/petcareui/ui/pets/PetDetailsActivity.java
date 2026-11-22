@@ -115,26 +115,83 @@ public class PetDetailsActivity extends AppCompatActivity {
         String rawSpecies = pet.getRawSpecies() != null && !pet.getRawSpecies().trim().isEmpty()
                 ? pet.getRawSpecies().trim() : "Thú cưng";
 
-        binding.ivPetHeroAvatar.setImageResource(pet.getImageResId());
+        int avatarRes = pet.getImageResId();
+        binding.ivPetHeroAvatar.setImageResource(avatarRes);
+        if (avatarRes == R.drawable.img_pet_bong) {
+            binding.ivPetHeroAvatar.setPadding(0, 0, 0, 0);
+            binding.ivPetHeroAvatar.setScaleType(android.widget.ImageView.ScaleType.CENTER_CROP);
+        } else {
+            int pad = Math.round(8 * getResources().getDisplayMetrics().density);
+            binding.ivPetHeroAvatar.setPadding(pad, pad, pad, pad);
+            binding.ivPetHeroAvatar.setScaleType(android.widget.ImageView.ScaleType.FIT_CENTER);
+        }
+
         binding.tvPetHeroName.setText(petName);
-        binding.tvPetHeroSpecies.setText(rawSpecies);
+
+        String age = pet.getAge() != null ? pet.getAge().trim() : "";
+        String sex = pet.getSex() != null ? pet.getSex().replace("♂", "").replace("♀", "").trim() : "";
+        StringBuilder heroSub = new StringBuilder(rawSpecies);
+        if (!age.isEmpty()) heroSub.append(" · ").append(age);
+        if (!sex.isEmpty()) heroSub.append(" · ").append(sex);
+        binding.tvPetHeroSpecies.setText(heroSub.toString());
+
         binding.tvBookForPetText.setText("Đặt lịch khám cho " + petName);
 
         // Card 1: Thông tin cơ bản (chỉ hiển thị dữ liệu thật từ API, ẩn dòng nếu rỗng/null)
         binding.tvBasicNameValue.setText(petName);
 
         String baseSpecies = extractBaseSpecies(rawSpecies);
-        String breedOrNote = extractBreedOrNote(rawSpecies, baseSpecies);
+        String breedVal = pet.getBreed() != null && !pet.getBreed().trim().isEmpty()
+                ? pet.getBreed().trim()
+                : extractBreedOrNote(rawSpecies, baseSpecies);
 
         binding.tvBasicSpeciesValue.setText(baseSpecies);
 
-        if (breedOrNote != null && !breedOrNote.isEmpty()) {
-            binding.tvBasicBreedNoteValue.setText(breedOrNote);
+        if (breedVal != null && !breedVal.isEmpty()) {
+            binding.tvBasicBreedNoteValue.setText(breedVal);
             binding.dividerBasicBreedNote.setVisibility(View.VISIBLE);
             binding.rowBasicBreedNote.setVisibility(View.VISIBLE);
         } else {
             binding.dividerBasicBreedNote.setVisibility(View.GONE);
             binding.rowBasicBreedNote.setVisibility(View.GONE);
+        }
+
+        if (!sex.isEmpty()) {
+            binding.tvBasicGenderValue.setText(sex);
+            binding.dividerBasicGender.setVisibility(View.VISIBLE);
+            binding.rowBasicGender.setVisibility(View.VISIBLE);
+        } else {
+            binding.dividerBasicGender.setVisibility(View.GONE);
+            binding.rowBasicGender.setVisibility(View.GONE);
+        }
+
+        if (!age.isEmpty()) {
+            binding.tvBasicAgeValue.setText(age);
+            binding.dividerBasicAge.setVisibility(View.VISIBLE);
+            binding.rowBasicAge.setVisibility(View.VISIBLE);
+        } else {
+            binding.dividerBasicAge.setVisibility(View.GONE);
+            binding.rowBasicAge.setVisibility(View.GONE);
+        }
+
+        String weightText = pet.getWeight() != null ? pet.getWeight().trim() : "";
+        if (!weightText.isEmpty()) {
+            binding.tvBasicWeightValue.setText(weightText);
+            binding.dividerBasicWeight.setVisibility(View.VISIBLE);
+            binding.rowBasicWeight.setVisibility(View.VISIBLE);
+        } else {
+            binding.dividerBasicWeight.setVisibility(View.GONE);
+            binding.rowBasicWeight.setVisibility(View.GONE);
+        }
+
+        String notesText = pet.getNotes() != null ? pet.getNotes().trim() : "";
+        if (!notesText.isEmpty()) {
+            binding.tvBasicNotesValue.setText(notesText);
+            binding.dividerBasicNotes.setVisibility(View.VISIBLE);
+            binding.rowBasicNotes.setVisibility(View.VISIBLE);
+        } else {
+            binding.dividerBasicNotes.setVisibility(View.GONE);
+            binding.rowBasicNotes.setVisibility(View.GONE);
         }
     }
 
@@ -287,27 +344,27 @@ public class PetDetailsActivity extends AppCompatActivity {
             sb.append(" · ").append(timePart);
         }
         if (clinicName != null && !clinicName.trim().isEmpty()) {
-            sb.append(" · ").append(clinicName.trim());
+            String shortClinic = clinicName.trim();
+            if (shortClinic.toLowerCase(Locale.ROOT).startsWith("phòng khám thú y ")) {
+                shortClinic = "Thú y " + shortClinic.substring("Phòng khám Thú y ".length()).trim();
+            }
+            sb.append(" · ").append(shortClinic);
         }
         return sb.toString();
     }
 
     private void applyHistoryStatusChip(ItemPetHistoryRowBinding row, String status) {
         if ("COMPLETED".equalsIgnoreCase(status)) {
-            row.tvHistoryStatusChip.setText("Hoàn thành");
-            row.tvHistoryStatusChip.setBackgroundResource(R.drawable.bg_pill_mint);
+            row.tvHistoryStatusChip.setText("● Hoàn thành");
             row.tvHistoryStatusChip.setTextColor(ContextCompat.getColor(this, R.color.ds_success));
         } else if ("CONFIRMED".equalsIgnoreCase(status)) {
-            row.tvHistoryStatusChip.setText("Đã xác nhận");
-            row.tvHistoryStatusChip.setBackgroundResource(R.drawable.bg_pill_mint);
+            row.tvHistoryStatusChip.setText("● Đã xác nhận");
             row.tvHistoryStatusChip.setTextColor(ContextCompat.getColor(this, R.color.ds_success));
         } else if ("PENDING".equalsIgnoreCase(status)) {
-            row.tvHistoryStatusChip.setText("Chờ duyệt");
-            row.tvHistoryStatusChip.setBackgroundResource(R.drawable.bg_badge_status_warning_flat);
-            row.tvHistoryStatusChip.setTextColor(ContextCompat.getColor(this, R.color.status_warning_ink));
+            row.tvHistoryStatusChip.setText("● Chờ duyệt");
+            row.tvHistoryStatusChip.setTextColor(ContextCompat.getColor(this, R.color.ds_warning));
         } else {
-            row.tvHistoryStatusChip.setText("Đã hủy");
-            row.tvHistoryStatusChip.setBackgroundResource(R.drawable.bg_badge_status_neutral_flat);
+            row.tvHistoryStatusChip.setText("● Đã hủy");
             row.tvHistoryStatusChip.setTextColor(ContextCompat.getColor(this, R.color.ds_text_secondary));
         }
     }
