@@ -4,6 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/surface_background"
+    android:clipToPadding="false"
     android:fillViewport="true"
     android:scrollbars="none">
 
@@ -53,8 +54,8 @@
                 android:letterSpacing="-0.02"
                 android:text="Đặt lịch thành công"
                 android:textColor="@color/text_foreground"
-                android:textSize="23sp"
-                android:textStyle="bold" />
+                android:fontFamily="@font/open_sans_bold"
+                android:textSize="23sp" />
 
             <TextView
                 android:id="@+id/tvSuccessSubtitle"
@@ -66,6 +67,7 @@
                 android:maxWidth="280dp"
                 android:text="An Nhiên đã nhận yêu cầu của bạn. Lịch hẹn đang chờ phòng khám xác nhận."
                 android:textColor="@color/text_muted"
+                android:fontFamily="@font/open_sans_regular"
                 android:textSize="13sp" />
 
             <!-- Huy hiệu trạng thái -->
@@ -83,8 +85,8 @@
                     android:background="@drawable/bg_badge_pending"
                     android:text="• Chờ xác nhận"
                     android:textColor="@color/status_warning_ink"
-                    android:textSize="11.5sp"
-                    android:textStyle="bold" />
+                    android:fontFamily="@font/open_sans_medium"
+                    android:textSize="11.5sp" />
             </LinearLayout>
         </LinearLayout>
 
@@ -132,8 +134,8 @@
                         android:layout_height="wrap_content"
                         android:text="Tiêm phòng"
                         android:textColor="@color/text_foreground"
-                        android:textSize="14.5sp"
-                        android:textStyle="bold" />
+                        android:fontFamily="@font/open_sans_semibold"
+                        android:textSize="14.5sp" />
 
                     <TextView
                         android:id="@+id/tvServiceDurationPrice"
@@ -142,6 +144,7 @@
                         android:layout_marginTop="2dp"
                         android:text="20 phút · 250.000 ₫"
                         android:textColor="@color/text_muted"
+                        android:fontFamily="@font/open_sans_regular"
                         android:textSize="12.5sp" />
                 </LinearLayout>
             </LinearLayout>
@@ -187,8 +190,8 @@
                             android:layout_height="wrap_content"
                             android:text="Phòng khám Thú y An Nhiên"
                             android:textColor="@color/text_foreground"
-                            android:textSize="13sp"
-                            android:textStyle="bold" />
+                            android:fontFamily="@font/open_sans_semibold"
+                            android:textSize="13sp" />
 
                         <TextView
                             android:id="@+id/tvClinicArea"
@@ -197,6 +200,7 @@
                             android:layout_marginTop="1dp"
                             android:text="Cầu Giấy · Hà Nội"
                             android:textColor="@color/text_muted"
+                            android:fontFamily="@font/open_sans_regular"
                             android:textSize="11.5sp" />
                     </LinearLayout>
                 </LinearLayout>
@@ -230,8 +234,8 @@
                             android:layout_height="wrap_content"
                             tools:text="Thứ 2, 27/10/2026 · 10:00"
                             android:textColor="@color/text_foreground"
-                            android:textSize="13sp"
-                            android:textStyle="bold" />
+                            android:fontFamily="@font/open_sans_semibold"
+                            android:textSize="13sp" />
 
                         <TextView
                             android:layout_width="match_parent"
@@ -239,6 +243,7 @@
                             android:layout_marginTop="1dp"
                             android:text="Đến sớm 10 phút"
                             android:textColor="@color/text_muted"
+                            android:fontFamily="@font/open_sans_regular"
                             android:textSize="11.5sp" />
                     </LinearLayout>
                 </LinearLayout>
@@ -272,8 +277,8 @@
                             android:layout_height="wrap_content"
                             android:text="Mochi · Pomeranian"
                             android:textColor="@color/text_foreground"
-                            android:textSize="13sp"
-                            android:textStyle="bold" />
+                            android:fontFamily="@font/open_sans_semibold"
+                            android:textSize="13sp" />
 
                         <TextView
                             android:id="@+id/tvPetAgeSex"
@@ -282,6 +287,7 @@
                             android:layout_marginTop="1dp"
                             android:text="2 tuổi · Cái"
                             android:textColor="@color/text_muted"
+                            android:fontFamily="@font/open_sans_regular"
                             android:textSize="11.5sp" />
                     </LinearLayout>
                 </LinearLayout>
@@ -303,8 +309,8 @@
                 android:letterSpacing="0.06"
                 android:text="CÁC BƯỚC TIẾP THEO"
                 android:textColor="@color/text_muted"
-                android:textSize="11sp"
-                android:textStyle="bold" />
+                android:fontFamily="@font/open_sans_medium"
+                android:textSize="11sp" />
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -348,8 +354,8 @@
                             android:layout_height="wrap_content"
                             android:text="Đã gửi yêu cầu"
                             android:textColor="@color/text_foreground"
-                            android:textSize="13sp"
-                            android:textStyle="bold" />
+                            android:fontFamily="@font/open_sans_medium"
+                            android:textSize="13sp" />
 
                         <TextView
                             android:layout_width="match_parent"
@@ -357,6 +363,7 @@
                             android:layout_marginTop="1dp"
                             android:text="Phòng khám đã nhận được thông tin."
                             android:textColor="@color/text_muted"
+                            android:fontFamily="@font/open_sans_regular"
                             android:textSize="11.5sp" />
                     </LinearLayout>
                 </LinearLayout>
@@ -397,8 +404,8 @@
                             android:layout_height="wrap_content"
                             android:text="Phòng khám duyệt"
                             android:textColor="@color/text_foreground"
-                            android:textSize="13sp"
-                            android:textStyle="bold" />
+                            android:fontFamily="@font/open_sans_medium"
+                            android:textSize="13sp" />
 
                         <TextView
                             android:layout_width="match_parent"
@@ -406,6 +413,7 @@
                             android:layout_marginTop="1dp"
                             android:text="Thường trong vài giờ."
                             android:textColor="@color/text_muted"
+                            android:fontFamily="@font/open_sans_regular"
                             android:textSize="11.5sp" />
                     </LinearLayout>
                 </LinearLayout>
@@ -433,8 +441,8 @@
                             android:layout_height="wrap_content"
                             android:text="Bạn nhận thông báo"
                             android:textColor="@color/text_foreground"
-                            android:textSize="13sp"
-                            android:textStyle="bold" />
+                            android:fontFamily="@font/open_sans_medium"
+                            android:textSize="13sp" />
 
                         <TextView
                             android:layout_width="match_parent"
@@ -442,6 +450,7 @@
                             android:layout_marginTop="1dp"
                             android:text="Xác nhận, từ chối hoặc giờ mới."
                             android:textColor="@color/text_muted"
+                            android:fontFamily="@font/open_sans_regular"
                             android:textSize="11.5sp" />
                     </LinearLayout>
                 </LinearLayout>
@@ -474,6 +483,7 @@
                 android:lineSpacingExtra="2dp"
                 android:text="Lịch hẹn đang chờ xác nhận. Chúng tôi sẽ thông báo ngay khi phòng khám phản hồi."
                 android:textColor="@color/status_warning_ink"
+                android:fontFamily="@font/open_sans_regular"
                 android:textSize="12sp" />
         </LinearLayout>
 
@@ -508,8 +518,8 @@
                     android:layout_marginStart="8dp"
                     android:text="Xem chi tiết lịch hẹn"
                     android:textColor="@color/white"
-                    android:textSize="15sp"
-                    android:textStyle="bold" />
+                    android:fontFamily="@font/open_sans_semibold"
+                    android:textSize="15sp" />
             </LinearLayout>
 
             <!-- Nút Về trang chủ -->
@@ -537,8 +547,8 @@
                     android:layout_marginStart="8dp"
                     android:text="Về trang chủ"
                     android:textColor="@color/text_foreground"
-                    android:textSize="14sp"
-                    android:textStyle="bold" />
+                    android:fontFamily="@font/open_sans_semibold"
+                    android:textSize="14sp" />
             </LinearLayout>
         </LinearLayout>
     </LinearLayout>

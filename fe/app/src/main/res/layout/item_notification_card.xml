@@ -53,8 +53,8 @@
                 android:letterSpacing="-0.01"
                 android:text="Lịch hẹn đã được xác nhận"
                 android:textColor="@color/text_foreground"
-                android:textSize="13.5sp"
-                android:textStyle="bold" />
+                android:fontFamily="@font/open_sans_medium"
+                android:textSize="13.5sp" />
 
             <View
                 android:id="@+id/viewUnreadDot"
@@ -73,6 +73,7 @@
             android:lineSpacingExtra="2dp"
             android:text="Bệnh viện Thú y Gia Định đã xác nhận lịch cạo vôi răng cho Bông vào Thứ 4, 29/10 lúc 14:00."
             android:textColor="@color/text_muted"
+            android:fontFamily="@font/open_sans_regular"
             android:textSize="12sp" />
 
         <!-- Thời gian nhận -->
@@ -83,8 +84,8 @@
             android:layout_marginTop="6dp"
             android:text="Hôm nay · 08:12"
             android:textColor="@color/text_muted"
-            android:textSize="11sp"
-            android:textStyle="bold" />
+            android:fontFamily="@font/open_sans_medium"
+            android:textSize="11sp" />
     </LinearLayout>
 
 </LinearLayout>

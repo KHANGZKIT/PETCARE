@@ -55,8 +55,8 @@
                         android:letterSpacing="-0.02"
                         android:text="Chọn ngày &amp; giờ khám"
                         android:textColor="@color/text_foreground"
-                        android:textSize="17sp"
-                        android:textStyle="bold" />
+                        android:fontFamily="@font/open_sans_bold"
+                        android:textSize="18sp" />
 
                     <TextView
                         android:layout_width="wrap_content"
@@ -64,8 +64,8 @@
                         android:layout_marginTop="1dp"
                         android:text="Bước 2/4"
                         android:textColor="@color/text_muted"
-                        android:textSize="12.5sp"
-                        android:textStyle="bold" />
+                        android:fontFamily="@font/open_sans_medium"
+                        android:textSize="12.5sp" />
                 </LinearLayout>
             </LinearLayout>
 
@@ -104,8 +104,8 @@
                         android:layout_height="wrap_content"
                         android:text="Tháng 10 · 2026"
                         android:textColor="@color/text_foreground"
-                        android:textSize="15sp"
-                        android:textStyle="bold" />
+                        android:fontFamily="@font/open_sans_bold"
+                        android:textSize="16sp" />
 
                     <TextView
                         android:id="@+id/tvSelectedDateSubtitle"
@@ -114,8 +114,8 @@
                         android:layout_marginTop="1dp"
                         android:text="Thứ 2 · 27/10 đã chọn"
                         android:textColor="@color/text_muted"
-                        android:textSize="11.5sp"
-                        android:textStyle="bold" />
+                        android:fontFamily="@font/open_sans_medium"
+                        android:textSize="11.5sp" />
                 </LinearLayout>
 
                 <ImageButton
@@ -176,8 +176,8 @@
                         android:layout_marginStart="6dp"
                         android:text="Còn chỗ"
                         android:textColor="@color/text_muted"
-                        android:textSize="11.5sp"
-                        android:textStyle="bold" />
+                        android:fontFamily="@font/open_sans_medium"
+                        android:textSize="11.5sp" />
                 </LinearLayout>
 
                 <!-- Đang chọn -->
@@ -199,8 +199,8 @@
                         android:layout_marginStart="6dp"
                         android:text="Đang chọn"
                         android:textColor="@color/text_muted"
-                        android:textSize="11.5sp"
-                        android:textStyle="bold" />
+                        android:fontFamily="@font/open_sans_medium"
+                        android:textSize="11.5sp" />
                 </LinearLayout>
 
                 <!-- Đã đặt -->
@@ -222,8 +222,8 @@
                         android:layout_marginStart="6dp"
                         android:text="Đã đặt"
                         android:textColor="@color/text_muted"
-                        android:textSize="11.5sp"
-                        android:textStyle="bold" />
+                        android:fontFamily="@font/open_sans_medium"
+                        android:textSize="11.5sp" />
                 </LinearLayout>
             </LinearLayout>
 
@@ -249,8 +249,8 @@
                         android:layout_alignParentStart="true"
                         android:text="Buổi sáng · 6 chỗ trống"
                         android:textColor="@color/text_foreground"
-                        android:textSize="13.5sp"
-                        android:textStyle="bold" />
+                        android:fontFamily="@font/open_sans_semibold"
+                        android:textSize="13.5sp" />
 
                     <TextView
                         android:id="@+id/tvLunchBreak"
@@ -259,8 +259,8 @@
                         android:layout_alignParentEnd="true"
                         android:text="12:00 – 13:30 nghỉ trưa"
                         android:textColor="@color/brand_primary"
-                        android:textSize="12sp"
-                        android:textStyle="bold" />
+                        android:fontFamily="@font/open_sans_medium"
+                        android:textSize="12sp" />
                 </RelativeLayout>
 
                 <!-- Lưới 3 cột 9 khung giờ (3 rows x 3 columns) -->
@@ -289,8 +289,8 @@
                             android:gravity="center"
                             android:text="09:00"
                             android:textColor="@color/text_muted"
-                            android:textSize="13.5sp"
-                            android:textStyle="bold" />
+                            android:fontFamily="@font/open_sans_semibold"
+                            android:textSize="13.5sp" />
 
                         <TextView
                             android:id="@+id/slot1"
@@ -304,8 +304,8 @@
                             android:gravity="center"
                             android:text="09:30"
                             android:textColor="@color/text_foreground"
-                            android:textSize="13.5sp"
-                            android:textStyle="bold" />
+                            android:fontFamily="@font/open_sans_semibold"
+                            android:textSize="13.5sp" />
 
                         <TextView
                             android:id="@+id/slot2"
@@ -319,8 +319,8 @@
                             android:gravity="center"
                             android:text="10:00"
                             android:textColor="@color/white"
-                            android:textSize="13.5sp"
-                            android:textStyle="bold" />
+                            android:fontFamily="@font/open_sans_semibold"
+                            android:textSize="13.5sp" />
                     </LinearLayout>
 
                     <!-- Hàng 2: 10:30, 11:00, 11:30 -->
@@ -341,8 +341,8 @@
                             android:gravity="center"
                             android:text="10:30"
                             android:textColor="@color/text_foreground"
-                            android:textSize="13.5sp"
-                            android:textStyle="bold" />
+                            android:fontFamily="@font/open_sans_semibold"
+                            android:textSize="13.5sp" />
 
                         <TextView
                             android:id="@+id/slot4"
@@ -356,8 +356,8 @@
                             android:gravity="center"
                             android:text="11:00"
                             android:textColor="@color/text_foreground"
-                            android:textSize="13.5sp"
-                            android:textStyle="bold" />
+                            android:fontFamily="@font/open_sans_semibold"
+                            android:textSize="13.5sp" />
 
                         <TextView
                             android:id="@+id/slot5"
@@ -370,8 +370,8 @@
                             android:gravity="center"
                             android:text="11:30"
                             android:textColor="@color/text_muted"
-                            android:textSize="13.5sp"
-                            android:textStyle="bold" />
+                            android:fontFamily="@font/open_sans_semibold"
+                            android:textSize="13.5sp" />
                     </LinearLayout>
 
                     <!-- Hàng 3: 13:30, 14:00, 14:30 -->
@@ -392,8 +392,8 @@
                             android:gravity="center"
                             android:text="13:30"
                             android:textColor="@color/text_foreground"
-                            android:textSize="13.5sp"
-                            android:textStyle="bold" />
+                            android:fontFamily="@font/open_sans_semibold"
+                            android:textSize="13.5sp" />
 
                         <TextView
                             android:id="@+id/slot7"
@@ -407,8 +407,8 @@
                             android:gravity="center"
                             android:text="14:00"
                             android:textColor="@color/text_foreground"
-                            android:textSize="13.5sp"
-                            android:textStyle="bold" />
+                            android:fontFamily="@font/open_sans_semibold"
+                            android:textSize="13.5sp" />
 
                         <TextView
                             android:id="@+id/slot8"
@@ -422,8 +422,8 @@
                             android:gravity="center"
                             android:text="14:30"
                             android:textColor="@color/text_foreground"
-                            android:textSize="13.5sp"
-                            android:textStyle="bold" />
+                            android:fontFamily="@font/open_sans_semibold"
+                            android:textSize="13.5sp" />
                     </LinearLayout>
                 </LinearLayout>
 
@@ -454,6 +454,7 @@
                         android:lineSpacingExtra="2dp"
                         android:text="Giờ hiển thị theo giờ Việt Nam (GMT+7). Khung giờ của bạn được giữ đến khi phòng khám xác nhận."
                         android:textColor="@color/brand_ink"
+                        android:fontFamily="@font/open_sans_regular"
                         android:textSize="12sp" />
                 </LinearLayout>
             </LinearLayout>
@@ -494,8 +495,8 @@
                     android:gravity="center"
                     android:text="Hết giờ khám ngày Thứ 6 31/10"
                     android:textColor="@color/text_foreground"
-                    android:textSize="16.5sp"
-                    android:textStyle="bold" />
+                    android:fontFamily="@font/open_sans_bold"
+                    android:textSize="16.5sp" />
 
                 <TextView
                     android:id="@+id/tvNoSlotsBody"
@@ -506,6 +507,7 @@
                     android:lineSpacingExtra="2dp"
                     android:text="Các khung giờ trong ngày này đã được đặt hết. Chọn ngày khác hoặc nhận thông báo khi có lịch hủy."
                     android:textColor="@color/text_muted"
+                    android:fontFamily="@font/open_sans_regular"
                     android:textSize="13sp" />
 
                 <android.widget.Button
@@ -520,8 +522,9 @@
                     android:text="Xem ngày còn chỗ trống"
                     android:textAllCaps="false"
                     android:textColor="@color/white"
-                    android:textSize="13.5sp"
-                    android:textStyle="bold" />
+                    android:fontFamily="@font/open_sans_semibold"
+                    android:includeFontPadding="false"
+                    android:textSize="13.5sp" />
 
                 <TextView
                     android:id="@+id/btnNotifyWhenAvailable"
@@ -533,8 +536,8 @@
                     android:padding="8dp"
                     android:text="Nhận thông báo khi có chỗ"
                     android:textColor="@color/brand_primary"
-                    android:textSize="13sp"
-                    android:textStyle="bold" />
+                    android:fontFamily="@font/open_sans_medium"
+                    android:textSize="13sp" />
             </LinearLayout>
         </LinearLayout>
     </androidx.core.widget.NestedScrollView>
@@ -566,8 +569,8 @@
                 android:layout_height="wrap_content"
                 android:text="Lựa chọn của bạn"
                 android:textColor="@color/text_muted"
-                android:textSize="12.5sp"
-                android:textStyle="bold" />
+                android:fontFamily="@font/open_sans_medium"
+                android:textSize="12.5sp" />
 
             <TextView
                 android:id="@+id/tvSelectedDateTimeSummary"
@@ -578,8 +581,8 @@
                 android:gravity="end"
                 android:text="Thứ 2 · 27/10 · 10:00"
                 android:textColor="@color/text_foreground"
-                android:textSize="13.5sp"
-                android:textStyle="bold" />
+                android:fontFamily="@font/open_sans_semibold"
+                android:textSize="13.5sp" />
         </LinearLayout>
 
         <!-- Nút Tiếp tục chính 52dp -->
@@ -592,7 +595,8 @@
             android:text="Tiếp tục"
             android:textAllCaps="false"
             android:textColor="@color/white"
-            android:textSize="15sp"
-            android:textStyle="bold" />
+            android:fontFamily="@font/open_sans_semibold"
+            android:includeFontPadding="false"
+            android:textSize="15sp" />
     </LinearLayout>
 </FrameLayout>

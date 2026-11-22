@@ -225,9 +225,11 @@ public class MyAppointmentsActivity extends AppCompatActivity {
         if (active) {
             chip.setBackgroundResource(R.drawable.bg_chip_active);
             chip.setTextColor(ContextCompat.getColor(this, R.color.white));
+            UiMotionUtils.applyFont(chip, R.font.open_sans_semibold);
         } else {
             chip.setBackgroundResource(R.drawable.bg_chip_inactive);
             chip.setTextColor(ContextCompat.getColor(this, R.color.text_muted));
+            UiMotionUtils.applyFont(chip, R.font.open_sans_regular);
         }
     }
 

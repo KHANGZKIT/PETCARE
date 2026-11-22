@@ -9,6 +9,6 @@
     android:focusable="true"
     android:gravity="center"
     android:textColor="@color/text_foreground"
+    android:fontFamily="@font/open_sans_semibold"
     android:textSize="13.5sp"
-    android:textStyle="bold"
     tools:text="10:00" />

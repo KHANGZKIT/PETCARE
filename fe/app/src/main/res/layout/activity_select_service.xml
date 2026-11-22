@@ -48,8 +48,8 @@
                     android:letterSpacing="-0.02"
                     android:text="Chọn dịch vụ"
                     android:textColor="@color/text_foreground"
-                    android:textSize="17sp"
-                    android:textStyle="bold" />
+                    android:fontFamily="@font/open_sans_bold"
+                    android:textSize="18sp" />
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -57,8 +57,8 @@
                     android:layout_marginTop="1dp"
                     android:text="Bước 1/4"
                     android:textColor="@color/text_muted"
-                    android:textSize="12.5sp"
-                    android:textStyle="bold" />
+                    android:fontFamily="@font/open_sans_medium"
+                    android:textSize="12.5sp" />
             </LinearLayout>
         </LinearLayout>
 
@@ -105,8 +105,8 @@
                         android:maxLines="1"
                         android:text="Phòng khám Thú y An Nhiên"
                         android:textColor="@color/text_foreground"
-                        android:textSize="13.5sp"
-                        android:textStyle="bold" />
+                        android:fontFamily="@font/open_sans_semibold"
+                        android:textSize="13.5sp" />
 
                     <LinearLayout
                         android:layout_width="match_parent"
@@ -131,6 +131,7 @@
                             android:maxLines="1"
                             android:text="Cầu Giấy · Hà Nội"
                             android:textColor="@color/text_muted"
+                            android:fontFamily="@font/open_sans_regular"
                             android:textSize="11.5sp" />
                     </LinearLayout>
                 </LinearLayout>
@@ -148,8 +149,8 @@
                     android:paddingBottom="6dp"
                     android:text="Đổi"
                     android:textColor="@color/brand_primary"
-                    android:textSize="12sp"
-                    android:textStyle="bold" />
+                    android:fontFamily="@font/open_sans_medium"
+                    android:textSize="12sp" />
             </LinearLayout>
         </LinearLayout>
 
@@ -193,8 +194,8 @@
                         android:layout_marginStart="6dp"
                         android:text="6 dịch vụ đang nhận đặt lịch"
                         android:textColor="@color/text_muted"
-                        android:textSize="12.5sp"
-                        android:textStyle="bold" />
+                        android:fontFamily="@font/open_sans_medium"
+                        android:textSize="12.5sp" />
                 </LinearLayout>
 
                 <!-- Container danh sách dịch vụ động -->
@@ -234,8 +235,8 @@
                 android:layout_height="wrap_content"
                 android:text="Đã chọn"
                 android:textColor="@color/text_muted"
-                android:textSize="12.5sp"
-                android:textStyle="bold" />
+                android:fontFamily="@font/open_sans_medium"
+                android:textSize="12.5sp" />
 
             <TextView
                 android:id="@+id/tvSelectedServiceSummary"
@@ -246,8 +247,8 @@
                 android:gravity="end"
                 android:text="Tiêm phòng · 250.000 ₫"
                 android:textColor="@color/text_foreground"
-                android:textSize="13.5sp"
-                android:textStyle="bold" />
+                android:fontFamily="@font/open_sans_semibold"
+                android:textSize="13.5sp" />
         </LinearLayout>
 
         <!-- Nút Tiếp tục chính 52dp -->
@@ -260,7 +261,8 @@
             android:text="Tiếp tục"
             android:textAllCaps="false"
             android:textColor="@color/white"
-            android:textSize="15sp"
-            android:textStyle="bold" />
+            android:fontFamily="@font/open_sans_semibold"
+            android:includeFontPadding="false"
+            android:textSize="15sp" />
     </LinearLayout>
 </FrameLayout>

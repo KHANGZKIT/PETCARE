@@ -43,8 +43,8 @@
                 android:ellipsize="end"
                 android:maxLines="1"
                 android:textColor="@color/text_foreground"
+                android:fontFamily="@font/open_sans_bold"
                 android:textSize="17sp"
-                android:textStyle="bold"
                 tools:text="Bé Miu Miu" />
 
             <TextView
@@ -55,6 +55,7 @@
                 android:ellipsize="end"
                 android:maxLines="1"
                 android:textColor="@color/text_muted"
+                android:fontFamily="@font/open_sans_regular"
                 android:textSize="13sp"
                 tools:text="Mèo · Anh Lông Ngắn" />
         </LinearLayout>
@@ -97,8 +98,8 @@
                 android:layout_marginStart="8dp"
                 android:text="Đặt lịch khám cho bé"
                 android:textColor="@color/white"
-                android:textSize="14sp"
-                android:textStyle="bold" />
+                android:fontFamily="@font/open_sans_semibold"
+                android:textSize="14sp" />
         </LinearLayout>
     </FrameLayout>
 
@@ -132,8 +133,8 @@
                 android:layout_marginStart="8dp"
                 android:text="Xóa hồ sơ thú cưng"
                 android:textColor="@color/status_destructive"
-                android:textSize="13.5sp"
-                android:textStyle="bold" />
+                android:fontFamily="@font/open_sans_semibold"
+                android:textSize="13.5sp" />
         </LinearLayout>
     </FrameLayout>
 
@@ -148,6 +149,7 @@
         android:padding="6dp"
         android:text="Đóng"
         android:textColor="@color/text_muted"
+        android:fontFamily="@font/open_sans_regular"
         android:textSize="13sp" />
 
 </LinearLayout>

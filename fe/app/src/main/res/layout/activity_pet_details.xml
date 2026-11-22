@@ -7,8 +7,8 @@
     android:layout_height="match_parent"
     android:background="@color/ds_home_bg">
 
-    <!-- 1. Top App Bar: Nút quay lại <, tiêu đề căn giữa 18sp SemiBold, nút bút chì #F6F2EE bên phải -->
-    <RelativeLayout
+    <!-- 1. Top App Bar: FrameLayout tôn trọng paddingTop từ WindowInsets để không bị cắt dưới thanh trạng thái -->
+    <FrameLayout
         android:id="@+id/layoutTopBar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -22,8 +22,7 @@
             android:id="@+id/btnBack"
             android:layout_width="40dp"
             android:layout_height="40dp"
-            android:layout_alignParentStart="true"
-            android:layout_centerVertical="true"
+            android:layout_gravity="start|center_vertical"
             android:background="@drawable/bg_home_icon_btn_white"
             android:contentDescription="Quay lại"
             android:elevation="1dp"
@@ -35,8 +34,8 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_centerInParent="true"
-            android:fontFamily="@font/plus_jakarta_sans_semibold"
+            android:layout_gravity="center"
+            android:fontFamily="@font/open_sans_bold"
             android:text="Hồ sơ thú cưng"
             android:textColor="@color/ds_text_primary"
             android:textSize="18sp" />
@@ -45,8 +44,7 @@
             android:id="@+id/btnEditPetTop"
             android:layout_width="40dp"
             android:layout_height="40dp"
-            android:layout_alignParentEnd="true"
-            android:layout_centerVertical="true"
+            android:layout_gravity="end|center_vertical"
             android:background="@drawable/bg_icon_circle_cream"
             android:clickable="true"
             android:contentDescription="Chỉnh sửa hồ sơ thú cưng"
@@ -60,7 +58,7 @@
                 android:src="@drawable/ic_pencil"
                 app:tint="@color/ds_text_primary" />
         </FrameLayout>
-    </RelativeLayout>
+    </FrameLayout>
 
     <!-- Nội dung cuộn 3 phần -->
     <androidx.core.widget.NestedScrollView
@@ -115,7 +113,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="14dp"
-                    android:fontFamily="@font/plus_jakarta_sans_bold"
+                    android:fontFamily="@font/open_sans_bold"
                     android:gravity="center"
                     android:lineSpacingMultiplier="1.2"
                     android:textColor="@color/ds_primary_dark"
@@ -128,7 +126,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="8dp"
                     android:background="@drawable/bg_pill_peach"
-                    android:fontFamily="@font/plus_jakarta_sans_medium"
+                    android:fontFamily="@font/open_sans_medium"
                     android:includeFontPadding="false"
                     android:paddingStart="14dp"
                     android:paddingTop="5dp"
@@ -153,10 +151,10 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:fontFamily="@font/plus_jakarta_sans_semibold"
+                    android:fontFamily="@font/open_sans_bold"
                     android:text="Thông tin cơ bản"
                     android:textColor="@color/ds_primary_dark"
-                    android:textSize="16sp" />
+                    android:textSize="16.5sp" />
 
                 <!-- Hàng 1: Tên thú cưng -->
                 <LinearLayout
@@ -171,7 +169,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:fontFamily="@font/plus_jakarta_sans_regular"
+                        android:fontFamily="@font/open_sans_regular"
                         android:text="Tên thú cưng"
                         android:textColor="@color/ds_text_secondary"
                         android:textSize="14sp" />
@@ -182,7 +180,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginStart="16dp"
                         android:layout_weight="1"
-                        android:fontFamily="@font/plus_jakarta_sans_semibold"
+                        android:fontFamily="@font/open_sans_semibold"
                         android:gravity="end"
                         android:lineSpacingMultiplier="1.2"
                         android:textColor="@color/ds_text_primary"
@@ -208,7 +206,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:fontFamily="@font/plus_jakarta_sans_regular"
+                        android:fontFamily="@font/open_sans_regular"
                         android:text="Loài"
                         android:textColor="@color/ds_text_secondary"
                         android:textSize="14sp" />
@@ -219,7 +217,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginStart="16dp"
                         android:layout_weight="1"
-                        android:fontFamily="@font/plus_jakarta_sans_semibold"
+                        android:fontFamily="@font/open_sans_semibold"
                         android:gravity="end"
                         android:lineSpacingMultiplier="1.2"
                         android:textColor="@color/ds_text_primary"
@@ -249,7 +247,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:fontFamily="@font/plus_jakarta_sans_regular"
+                        android:fontFamily="@font/open_sans_regular"
                         android:text="Giống / Ghi chú"
                         android:textColor="@color/ds_text_secondary"
                         android:textSize="14sp" />
@@ -260,7 +258,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginStart="16dp"
                         android:layout_weight="1"
-                        android:fontFamily="@font/plus_jakarta_sans_semibold"
+                        android:fontFamily="@font/open_sans_semibold"
                         android:gravity="end"
                         android:lineSpacingMultiplier="1.2"
                         android:textColor="@color/ds_text_primary"
@@ -290,10 +288,10 @@
                         android:layout_alignParentStart="true"
                         android:layout_centerVertical="true"
                         android:layout_toStartOf="@id/btnSeeAllHistory"
-                        android:fontFamily="@font/plus_jakarta_sans_semibold"
+                        android:fontFamily="@font/open_sans_bold"
                         android:text="Lịch sử khám &amp; Sổ sức khỏe"
                         android:textColor="@color/ds_text_primary"
-                        android:textSize="16sp" />
+                        android:textSize="16.5sp" />
 
                     <TextView
                         android:id="@+id/btnSeeAllHistory"
@@ -304,7 +302,7 @@
                         android:background="?attr/selectableItemBackgroundBorderless"
                         android:clickable="true"
                         android:focusable="true"
-                        android:fontFamily="@font/plus_jakarta_sans_medium"
+                        android:fontFamily="@font/open_sans_medium"
                         android:minHeight="36dp"
                         android:gravity="center_vertical"
                         android:paddingStart="8dp"
@@ -385,7 +383,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
                 android:ellipsize="end"
-                android:fontFamily="@font/plus_jakarta_sans_semibold"
+                android:fontFamily="@font/open_sans_semibold"
                 android:includeFontPadding="false"
                 android:maxLines="1"
                 android:text="Đặt lịch khám cho bé"

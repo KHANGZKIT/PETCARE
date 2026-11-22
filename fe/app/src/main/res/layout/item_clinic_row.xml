@@ -54,8 +54,8 @@
                 android:singleLine="true"
                 android:text="Phòng khám Thú y An Nhiên"
                 android:textColor="@color/text_foreground"
-                android:textSize="15sp"
-                android:textStyle="bold" />
+                android:fontFamily="@font/open_sans_semibold"
+                android:textSize="15sp" />
 
             <ImageView
                 android:layout_width="16dp"
@@ -90,6 +90,7 @@
                 android:singleLine="true"
                 android:text="Số 12 Chùa Hà, Cầu Giấy, Hà Nội"
                 android:textColor="@color/text_muted"
+                android:fontFamily="@font/open_sans_regular"
                 android:textSize="11.5sp" />
         </LinearLayout>
 
@@ -125,8 +126,8 @@
                     android:layout_marginStart="3dp"
                     android:text="4.8"
                     android:textColor="@color/warm_amber_ink"
-                    android:textSize="11.5sp"
-                    android:textStyle="bold" />
+                    android:fontFamily="@font/open_sans_medium"
+                    android:textSize="11.5sp" />
             </LinearLayout>
 
             <TextView
@@ -136,6 +137,7 @@
                 android:layout_marginStart="4dp"
                 android:text=" · 214 đánh giá · 1,2 km"
                 android:textColor="@color/text_muted"
+                android:fontFamily="@font/open_sans_regular"
                 android:textSize="11.5sp" />
         </LinearLayout>
 
@@ -158,8 +160,8 @@
                 android:paddingBottom="3dp"
                 android:text="● ĐANG MỞ CỬA"
                 android:textColor="@color/status_success_ink"
-                android:textSize="10.5sp"
-                android:textStyle="bold" />
+                android:fontFamily="@font/open_sans_medium"
+                android:textSize="10.5sp" />
 
             <LinearLayout
                 android:id="@+id/layoutHoursPill"
@@ -187,8 +189,8 @@
                     android:layout_marginStart="4dp"
                     android:text="08:00 – 20:00"
                     android:textColor="@color/text_muted"
-                    android:textSize="11sp"
-                    android:textStyle="bold" />
+                    android:fontFamily="@font/open_sans_medium"
+                    android:textSize="11sp" />
             </LinearLayout>
         </LinearLayout>
     </LinearLayout>

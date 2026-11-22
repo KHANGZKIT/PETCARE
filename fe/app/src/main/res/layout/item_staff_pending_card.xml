@@ -41,8 +41,8 @@
                 android:paddingBottom="4dp"
                 android:text="• Chờ xác nhận"
                 android:textColor="@color/status_warning_ink"
-                android:textSize="11sp"
-                android:textStyle="bold" />
+                android:fontFamily="@font/open_sans_medium"
+                android:textSize="11sp" />
         </LinearLayout>
 
         <LinearLayout
@@ -80,8 +80,8 @@
                     android:maxLines="1"
                     android:text="Tiêm phòng"
                     android:textColor="@color/text_foreground"
-                    android:textSize="15.5sp"
-                    android:textStyle="bold" />
+                    android:fontFamily="@font/open_sans_semibold"
+                    android:textSize="15.5sp" />
 
                 <TextView
                     android:id="@+id/tvStaffCustomerPet"
@@ -92,8 +92,8 @@
                     android:maxLines="1"
                     android:text="Nguyễn Lan · Mochi"
                     android:textColor="@color/brand_primary"
-                    android:textSize="13sp"
-                    android:textStyle="bold" />
+                    android:fontFamily="@font/open_sans_semibold"
+                    android:textSize="13sp" />
             </LinearLayout>
 
             <ImageView
@@ -138,8 +138,8 @@
                     android:layout_marginStart="6dp"
                     android:text="Thứ 2, 27/10/2026"
                     android:textColor="@color/text_foreground"
-                    android:textSize="12sp"
-                    android:textStyle="bold" />
+                    android:fontFamily="@font/open_sans_medium"
+                    android:textSize="12sp" />
             </LinearLayout>
 
             <LinearLayout
@@ -163,8 +163,8 @@
                     android:layout_marginStart="6dp"
                     android:text="10:00"
                     android:textColor="@color/text_foreground"
-                    android:textSize="12sp"
-                    android:textStyle="bold" />
+                    android:fontFamily="@font/open_sans_medium"
+                    android:textSize="12sp" />
             </LinearLayout>
 
             <TextView
@@ -179,8 +179,8 @@
                 android:paddingBottom="2dp"
                 android:text="20 phút"
                 android:textColor="@color/text_muted"
-                android:textSize="11sp"
-                android:textStyle="bold" />
+                android:fontFamily="@font/open_sans_medium"
+                android:textSize="11sp" />
 
             <View
                 android:layout_width="0dp"
@@ -192,8 +192,8 @@
                 android:layout_height="wrap_content"
                 android:text="Duyệt lịch ›"
                 android:textColor="@color/brand_primary"
+                android:fontFamily="@font/open_sans_medium"
                 android:textSize="12sp"
-                android:textStyle="bold"
                 tools:ignore="HardcodedText" />
         </LinearLayout>
     </LinearLayout>

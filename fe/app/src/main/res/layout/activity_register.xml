@@ -64,12 +64,11 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="8dp"
-                    android:fontFamily="@font/font_app_primary"
+                    android:fontFamily="@font/open_sans_bold"
                     android:letterSpacing="0.06"
                     android:text="PETCARE"
                     android:textColor="@color/ds_primary"
-                    android:textSize="17sp"
-                    android:textStyle="bold" />
+                    android:textSize="17sp" />
             </LinearLayout>
 
             <!-- Compact Mascot Detail (Cute 2D) -->
@@ -96,18 +95,17 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:fontFamily="@font/font_app_primary"
+                android:fontFamily="@font/open_sans_bold"
                 android:text="Tạo tài khoản mới"
                 android:textColor="@color/ds_text_primary"
-                android:textSize="26sp"
-                android:textStyle="bold" />
+                android:textSize="26sp" />
 
             <!-- Subtitle -->
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="6dp"
-                android:fontFamily="@font/font_app_primary"
+                android:fontFamily="@font/open_sans_regular"
                 android:lineSpacingExtra="3dp"
                 android:text="Đăng ký để quản lý hồ sơ và đặt lịch khám cho thú cưng."
                 android:textColor="@color/ds_text_secondary"
@@ -125,11 +123,10 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:fontFamily="@font/font_app_primary"
+                android:fontFamily="@font/open_sans_medium"
                 android:text="Họ và tên *"
                 android:textColor="@color/ds_text_primary"
-                android:textSize="14sp"
-                android:textStyle="bold" />
+                android:textSize="14sp" />
 
             <LinearLayout
                 android:id="@+id/boxFullName"
@@ -156,7 +153,7 @@
                     android:layout_height="match_parent"
                     android:layout_marginStart="12dp"
                     android:background="@android:color/transparent"
-                    android:fontFamily="@font/font_app_primary"
+                    android:fontFamily="@font/open_sans_regular"
                     android:hint="Nguyễn Văn A"
                     android:inputType="textPersonName|textCapWords"
                     android:textColor="@color/ds_text_primary"
@@ -187,11 +184,10 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="6dp"
-                    android:fontFamily="@font/font_app_primary"
+                    android:fontFamily="@font/open_sans_medium"
                     android:text="Vui lòng nhập họ và tên của bạn"
                     android:textColor="@color/ds_error"
-                    android:textSize="12.5sp"
-                    android:textStyle="bold" />
+                    android:textSize="12.5sp" />
             </LinearLayout>
 
             <!-- Field 2: Email -->
@@ -199,11 +195,10 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
-                android:fontFamily="@font/font_app_primary"
+                android:fontFamily="@font/open_sans_medium"
                 android:text="Email *"
                 android:textColor="@color/ds_text_primary"
-                android:textSize="14sp"
-                android:textStyle="bold" />
+                android:textSize="14sp" />
 
             <LinearLayout
                 android:id="@+id/boxEmail"
@@ -230,7 +225,7 @@
                     android:layout_height="match_parent"
                     android:layout_marginStart="12dp"
                     android:background="@android:color/transparent"
-                    android:fontFamily="@font/font_app_primary"
+                    android:fontFamily="@font/open_sans_regular"
                     android:hint="ten@email.com"
                     android:inputType="textEmailAddress"
                     android:textColor="@color/ds_text_primary"
@@ -262,11 +257,10 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="6dp"
-                    android:fontFamily="@font/font_app_primary"
+                    android:fontFamily="@font/open_sans_medium"
                     android:text="Email chưa đúng định dạng (ví dụ: ten@email.com)"
                     android:textColor="@color/ds_error"
-                    android:textSize="12.5sp"
-                    android:textStyle="bold" />
+                    android:textSize="12.5sp" />
             </LinearLayout>
 
             <!-- Field 3: Số điện thoại -->
@@ -274,11 +268,10 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
-                android:fontFamily="@font/font_app_primary"
+                android:fontFamily="@font/open_sans_medium"
                 android:text="Số điện thoại *"
                 android:textColor="@color/ds_text_primary"
-                android:textSize="14sp"
-                android:textStyle="bold" />
+                android:textSize="14sp" />
 
             <LinearLayout
                 android:id="@+id/boxPhone"
@@ -305,7 +298,7 @@
                     android:layout_height="match_parent"
                     android:layout_marginStart="12dp"
                     android:background="@android:color/transparent"
-                    android:fontFamily="@font/font_app_primary"
+                    android:fontFamily="@font/open_sans_regular"
                     android:hint="0912 345 678"
                     android:inputType="phone"
                     android:textColor="@color/ds_text_primary"
@@ -336,11 +329,10 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="6dp"
-                    android:fontFamily="@font/font_app_primary"
+                    android:fontFamily="@font/open_sans_medium"
                     android:text="Vui lòng nhập số điện thoại hợp lệ (từ 9 - 11 chữ số)"
                     android:textColor="@color/ds_error"
-                    android:textSize="12.5sp"
-                    android:textStyle="bold" />
+                    android:textSize="12.5sp" />
             </LinearLayout>
 
             <!-- Field 4: Mật khẩu -->
@@ -354,11 +346,10 @@
                     android:layout_height="wrap_content"
                     android:layout_alignParentStart="true"
                     android:layout_centerVertical="true"
-                    android:fontFamily="@font/font_app_primary"
+                    android:fontFamily="@font/open_sans_medium"
                     android:text="Mật khẩu *"
                     android:textColor="@color/ds_text_primary"
-                    android:textSize="14sp"
-                    android:textStyle="bold" />
+                    android:textSize="14sp" />
 
                 <TextView
                     android:id="@+id/tvTogglePassword"
@@ -368,15 +359,14 @@
                     android:layout_centerVertical="true"
                     android:clickable="true"
                     android:focusable="true"
-                    android:fontFamily="@font/font_app_primary"
+                    android:fontFamily="@font/open_sans_medium"
                     android:paddingStart="12dp"
                     android:paddingTop="6dp"
                     android:paddingEnd="4dp"
                     android:paddingBottom="6dp"
                     android:text="Hiện"
                     android:textColor="@color/ds_primary_dark"
-                    android:textSize="13sp"
-                    android:textStyle="bold" />
+                    android:textSize="13sp" />
             </RelativeLayout>
 
             <LinearLayout
@@ -403,7 +393,7 @@
                     android:layout_height="match_parent"
                     android:layout_marginStart="12dp"
                     android:background="@android:color/transparent"
-                    android:fontFamily="@font/font_app_primary"
+                    android:fontFamily="@font/open_sans_regular"
                     android:hint="Tối thiểu 8 ký tự, có số"
                     android:inputType="textPassword"
                     android:textColor="@color/ds_text_primary"
@@ -434,7 +424,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="4dp"
-                    android:fontFamily="@font/font_app_primary"
+                    android:fontFamily="@font/open_sans_regular"
                     android:text="Ít nhất 8 ký tự, gồm ít nhất 1 chữ số"
                     android:textColor="@color/ds_text_secondary"
                     android:textSize="12sp" />
@@ -451,11 +441,10 @@
                     android:layout_height="wrap_content"
                     android:layout_alignParentStart="true"
                     android:layout_centerVertical="true"
-                    android:fontFamily="@font/font_app_primary"
+                    android:fontFamily="@font/open_sans_medium"
                     android:text="Nhập lại mật khẩu *"
                     android:textColor="@color/ds_text_primary"
-                    android:textSize="14sp"
-                    android:textStyle="bold" />
+                    android:textSize="14sp" />
 
                 <TextView
                     android:id="@+id/tvToggleConfirmPassword"
@@ -465,15 +454,14 @@
                     android:layout_centerVertical="true"
                     android:clickable="true"
                     android:focusable="true"
-                    android:fontFamily="@font/font_app_primary"
+                    android:fontFamily="@font/open_sans_medium"
                     android:paddingStart="12dp"
                     android:paddingTop="6dp"
                     android:paddingEnd="4dp"
                     android:paddingBottom="6dp"
                     android:text="Hiện"
                     android:textColor="@color/ds_primary_dark"
-                    android:textSize="13sp"
-                    android:textStyle="bold" />
+                    android:textSize="13sp" />
             </RelativeLayout>
 
             <LinearLayout
@@ -500,7 +488,7 @@
                     android:layout_height="match_parent"
                     android:layout_marginStart="12dp"
                     android:background="@android:color/transparent"
-                    android:fontFamily="@font/font_app_primary"
+                    android:fontFamily="@font/open_sans_regular"
                     android:hint="Nhập lại mật khẩu để xác nhận"
                     android:inputType="textPassword"
                     android:textColor="@color/ds_text_primary"
@@ -531,11 +519,10 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="6dp"
-                    android:fontFamily="@font/font_app_primary"
+                    android:fontFamily="@font/open_sans_medium"
                     android:text="Mật khẩu xác nhận chưa khớp"
                     android:textColor="@color/ds_error"
-                    android:textSize="12.5sp"
-                    android:textStyle="bold" />
+                    android:textSize="12.5sp" />
             </LinearLayout>
         </LinearLayout>
 
@@ -560,7 +547,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="10dp"
-                android:fontFamily="@font/font_app_primary"
+                android:fontFamily="@font/open_sans_regular"
                 android:text="Khi tạo tài khoản, thông tin của bạn được bảo mật tuyệt đối và chỉ dùng để quản lý lịch khám thú cưng tại các cơ sở bạn lựa chọn."
                 android:textColor="@color/ds_text_secondary"
                 android:textSize="12sp"
@@ -592,11 +579,10 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="10dp"
-                android:fontFamily="@font/font_app_primary"
+                android:fontFamily="@font/open_sans_medium"
                 android:text="Có lỗi xảy ra khi tạo tài khoản."
                 android:textColor="@color/ds_error"
-                android:textSize="12.5sp"
-                android:textStyle="bold" />
+                android:textSize="12.5sp" />
         </LinearLayout>
 
         <!-- 5. Primary CTA Button: "Tạo tài khoản" -->
@@ -630,11 +616,10 @@
                     android:id="@+id/tvBtnRegisterText"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:fontFamily="@font/font_app_primary"
+                    android:fontFamily="@font/open_sans_semibold"
                     android:text="Tạo tài khoản"
                     android:textColor="@color/white"
-                    android:textSize="16sp"
-                    android:textStyle="bold" />
+                    android:textSize="16sp" />
             </LinearLayout>
         </FrameLayout>
 

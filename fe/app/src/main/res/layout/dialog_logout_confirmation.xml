@@ -34,8 +34,8 @@
         android:includeFontPadding="false"
         android:text="Đăng xuất tài khoản?"
         android:textColor="@color/text_foreground"
-        android:textSize="18sp"
-        android:textStyle="bold" />
+        android:fontFamily="@font/open_sans_bold"
+        android:textSize="18sp" />
 
     <!-- Nội dung mô tả -->
     <TextView
@@ -46,6 +46,7 @@
         android:lineSpacingExtra="3dp"
         android:text="Bạn có chắc chắn muốn đăng xuất khỏi ứng dụng PETCARE? Bạn sẽ cần đăng nhập lại để tiếp tục quản lý lịch khám và hồ sơ thú cưng."
         android:textColor="@color/text_muted"
+        android:fontFamily="@font/open_sans_regular"
         android:textSize="13.5sp" />
 
     <!-- Cặp nút hành động -->
@@ -72,8 +73,8 @@
                 android:layout_gravity="center"
                 android:text="Hủy bỏ"
                 android:textColor="@color/text_foreground"
-                android:textSize="14sp"
-                android:textStyle="bold" />
+                android:fontFamily="@font/open_sans_semibold"
+                android:textSize="14sp" />
         </FrameLayout>
 
         <!-- Nút Xác nhận Đăng xuất -->
@@ -93,8 +94,8 @@
                 android:layout_gravity="center"
                 android:text="Đăng xuất"
                 android:textColor="@color/white"
-                android:textSize="14sp"
-                android:textStyle="bold" />
+                android:fontFamily="@font/open_sans_semibold"
+                android:textSize="14sp" />
         </FrameLayout>
     </LinearLayout>
 

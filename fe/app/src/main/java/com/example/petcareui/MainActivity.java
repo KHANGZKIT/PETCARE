@@ -510,7 +510,7 @@ public class MainActivity extends AppCompatActivity {
         label.setText("Thêm bé mới");
         label.setTextSize(12.5f);
         label.setIncludeFontPadding(false);
-        label.setTypeface(androidx.core.content.res.ResourcesCompat.getFont(this, R.font.plus_jakarta_sans_medium));
+        label.setTypeface(androidx.core.content.res.ResourcesCompat.getFont(this, R.font.open_sans_medium));
         label.setTextColor(ContextCompat.getColor(this, R.color.ds_primary_dark));
 
         addCard.addView(circle);

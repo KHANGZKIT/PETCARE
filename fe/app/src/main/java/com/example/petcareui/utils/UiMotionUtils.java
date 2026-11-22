@@ -7,9 +7,13 @@ import android.view.ViewGroup;
 import android.view.animation.DecelerateInterpolator;
 import android.view.animation.OvershootInterpolator;
 
+import androidx.annotation.FontRes;
+import androidx.core.content.res.ResourcesCompat;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
+import android.graphics.Typeface;
+import android.widget.TextView;
 
 /**
  * Hệ thống Hiệu ứng Chuyển cảnh, Tương tác Lò xo (Spring Physics) & Xử lý tràn viền (Edge-to-Edge Insets).
@@ -38,7 +42,8 @@ public final class UiMotionUtils {
         }
 
         ViewCompat.setOnApplyWindowInsetsListener(rootView, (v, windowInsets) -> {
-            Insets bars = windowInsets.getInsets(WindowInsetsCompat.Type.systemBars());
+            Insets bars = windowInsets.getInsets(
+                    WindowInsetsCompat.Type.systemBars() | WindowInsetsCompat.Type.displayCutout());
 
             int baseTop = getSavedInt(topView, TAG_INITIAL_TOP, topView.getPaddingTop());
             topView.setPadding(
@@ -180,5 +185,16 @@ public final class UiMotionUtils {
                 .setDuration(260)
                 .setInterpolator(new OvershootInterpolator(2.6f))
                 .start();
+    }
+
+    /**
+     * Đồng bộ font tĩnh Plus Jakarta Sans cho TextView tạo hoặc đổi trạng thái động trong Java.
+     */
+    public static void applyFont(TextView target, @FontRes int fontRes) {
+        if (target == null) return;
+        Typeface tf = ResourcesCompat.getFont(target.getContext(), fontRes);
+        if (tf != null) {
+            target.setTypeface(tf);
+        }
     }
 }

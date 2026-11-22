@@ -2,7 +2,6 @@ package com.example.petcareui.ui.booking;
 
 import android.content.Intent;
 import android.graphics.Paint;
-import android.graphics.Typeface;
 import android.os.Bundle;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
@@ -13,6 +12,7 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
+import androidx.core.content.res.ResourcesCompat;
 
 import com.example.petcareui.R;
 import com.example.petcareui.data.api.ApiClient;
@@ -332,6 +332,8 @@ public class DateTimeActivity extends AppCompatActivity {
         int columns = 3;
         int rows = (int) Math.ceil((double) total / columns);
 
+        android.graphics.Typeface slotFont = ResourcesCompat.getFont(this, R.font.open_sans_semibold);
+
         for (int r = 0; r < rows; r++) {
             LinearLayout rowLayout = new LinearLayout(this);
             rowLayout.setOrientation(LinearLayout.HORIZONTAL);
@@ -363,7 +365,10 @@ public class DateTimeActivity extends AppCompatActivity {
                     tv.setGravity(android.view.Gravity.CENTER);
                     tv.setText(slot.getTime());
                     tv.setTextSize(TypedValue.COMPLEX_UNIT_SP, 13.5f);
-                    tv.setTypeface(null, Typeface.BOLD);
+                    tv.setIncludeFontPadding(false);
+                    if (slotFont != null) {
+                        tv.setTypeface(slotFont);
+                    }
 
                     if (slot.isAvailable()) {
                         tv.setOnClickListener(v -> selectTimeSlot(index));
@@ -413,16 +418,19 @@ public class DateTimeActivity extends AppCompatActivity {
                 tv.setTextColor(ContextCompat.getColor(this, R.color.text_muted));
                 tv.setPaintFlags(tv.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
                 tv.setAlpha(0.6f);
+                com.example.petcareui.utils.UiMotionUtils.applyFont(tv, R.font.open_sans_medium);
             } else if (isSelected) {
                 tv.setBackgroundResource(R.drawable.bg_slot_selected);
                 tv.setTextColor(ContextCompat.getColor(this, R.color.white));
                 tv.setPaintFlags(tv.getPaintFlags() & (~Paint.STRIKE_THRU_TEXT_FLAG));
                 tv.setAlpha(1.0f);
+                com.example.petcareui.utils.UiMotionUtils.applyFont(tv, R.font.open_sans_semibold);
             } else {
                 tv.setBackgroundResource(R.drawable.bg_slot_available);
                 tv.setTextColor(ContextCompat.getColor(this, R.color.text_foreground));
                 tv.setPaintFlags(tv.getPaintFlags() & (~Paint.STRIKE_THRU_TEXT_FLAG));
                 tv.setAlpha(1.0f);
+                com.example.petcareui.utils.UiMotionUtils.applyFont(tv, R.font.open_sans_medium);
             }
         }
 

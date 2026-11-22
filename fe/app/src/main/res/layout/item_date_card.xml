@@ -20,8 +20,8 @@
         android:letterSpacing="0.05"
         android:textAllCaps="true"
         android:textColor="@color/text_muted"
+        android:fontFamily="@font/open_sans_medium"
         android:textSize="10.5sp"
-        android:textStyle="bold"
         tools:text="T2" />
 
     <TextView
@@ -31,8 +31,8 @@
         android:layout_marginTop="2dp"
         android:includeFontPadding="false"
         android:textColor="@color/text_foreground"
+        android:fontFamily="@font/open_sans_bold"
         android:textSize="17sp"
-        android:textStyle="bold"
         tools:text="27" />
 
     <TextView
@@ -41,7 +41,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="3dp"
         android:textColor="@color/text_muted"
+        android:fontFamily="@font/open_sans_medium"
         android:textSize="9.5sp"
-        android:textStyle="bold"
         tools:text="6 chỗ" />
 </LinearLayout>

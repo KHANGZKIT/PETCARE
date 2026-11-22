@@ -49,8 +49,8 @@
                 android:layout_height="wrap_content"
                 android:text="Chi tiết lịch hẹn"
                 android:textColor="@color/text_foreground"
-                android:textSize="17sp"
-                android:textStyle="bold" />
+                android:fontFamily="@font/open_sans_bold"
+                android:textSize="18sp" />
 
             <TextView
                 android:id="@+id/tvClinicNameTop"
@@ -61,6 +61,7 @@
                 android:maxLines="1"
                 android:text="Phòng khám Thú y An Nhiên"
                 android:textColor="@color/text_muted"
+                android:fontFamily="@font/open_sans_semibold"
                 android:textSize="12sp" />
         </LinearLayout>
     </LinearLayout>
@@ -96,8 +97,8 @@
                 android:paddingEnd="14dp"
                 android:text="Chờ xác nhận"
                 android:textColor="@color/white"
-                android:textSize="12sp"
-                android:textStyle="bold" />
+                android:fontFamily="@font/open_sans_medium"
+                android:textSize="12sp" />
 
             <TextView
                 android:id="@+id/tabStateConfirmed"
@@ -112,8 +113,8 @@
                 android:paddingEnd="14dp"
                 android:text="Đã xác nhận"
                 android:textColor="@color/text_muted"
-                android:textSize="12sp"
-                android:textStyle="bold" />
+                android:fontFamily="@font/open_sans_medium"
+                android:textSize="12sp" />
 
             <TextView
                 android:id="@+id/tabStateCompleted"
@@ -128,8 +129,8 @@
                 android:paddingEnd="14dp"
                 android:text="Đã hoàn thành"
                 android:textColor="@color/text_muted"
-                android:textSize="12sp"
-                android:textStyle="bold" />
+                android:fontFamily="@font/open_sans_medium"
+                android:textSize="12sp" />
 
             <TextView
                 android:id="@+id/tabStateDialog"
@@ -144,8 +145,8 @@
                 android:paddingEnd="14dp"
                 android:text="Hộp thoại hủy"
                 android:textColor="@color/text_muted"
-                android:textSize="12sp"
-                android:textStyle="bold" />
+                android:fontFamily="@font/open_sans_medium"
+                android:textSize="12sp" />
 
             <TextView
                 android:id="@+id/tabStateCancelled"
@@ -160,8 +161,8 @@
                 android:paddingEnd="14dp"
                 android:text="Đã hủy"
                 android:textColor="@color/text_muted"
-                android:textSize="12sp"
-                android:textStyle="bold" />
+                android:fontFamily="@font/open_sans_medium"
+                android:textSize="12sp" />
         </LinearLayout>
     </HorizontalScrollView>
 
@@ -198,8 +199,8 @@
                     android:background="@drawable/bg_badge_pending"
                     android:text="• Chờ xác nhận"
                     android:textColor="@color/status_warning_ink"
-                    android:textSize="11.5sp"
-                    android:textStyle="bold" />
+                    android:fontFamily="@font/open_sans_medium"
+                    android:textSize="11.5sp" />
 
                 <View
                     android:layout_width="0dp"
@@ -212,8 +213,8 @@
                     android:layout_height="wrap_content"
                     android:text="Gửi cách đây 2 giờ"
                     android:textColor="@color/text_muted"
-                    android:textSize="12sp"
-                    android:textStyle="bold" />
+                    android:fontFamily="@font/open_sans_medium"
+                    android:textSize="12sp" />
             </LinearLayout>
 
             <!-- Hàng 2: Banner Thông báo trạng thái (Notice) -->
@@ -249,8 +250,8 @@
                         android:layout_height="wrap_content"
                         android:text="Đang chờ phòng khám xác nhận"
                         android:textColor="@color/status_warning_ink"
-                        android:textSize="13sp"
-                        android:textStyle="bold" />
+                        android:fontFamily="@font/open_sans_semibold"
+                        android:textSize="13sp" />
 
                     <TextView
                         android:id="@+id/tvNoticeBody"
@@ -260,6 +261,7 @@
                         android:lineSpacingExtra="2dp"
                         android:text="Yêu cầu này chưa được xác nhận. Bạn có thể hủy miễn phí trước khi phòng khám phản hồi."
                         android:textColor="@color/status_warning_ink"
+                        android:fontFamily="@font/open_sans_regular"
                         android:textSize="12sp" />
                 </LinearLayout>
             </LinearLayout>
@@ -306,8 +308,8 @@
                             android:layout_height="wrap_content"
                             android:text="Phòng khám Thú y An Nhiên"
                             android:textColor="@color/text_foreground"
-                            android:textSize="14.5sp"
-                            android:textStyle="bold" />
+                            android:fontFamily="@font/open_sans_medium"
+                            android:textSize="14.5sp" />
 
                         <TextView
                             android:id="@+id/tvClinicArea"
@@ -316,6 +318,7 @@
                             android:layout_marginTop="2dp"
                             android:text="Cầu Giấy · Hà Nội"
                             android:textColor="@color/text_muted"
+                            android:fontFamily="@font/open_sans_regular"
                             android:textSize="12.5sp" />
                     </LinearLayout>
                 </LinearLayout>
@@ -359,8 +362,8 @@
                             android:layout_marginStart="6dp"
                             android:text="Chỉ đường"
                             android:textColor="@color/brand_ink"
-                            android:textSize="13sp"
-                            android:textStyle="bold" />
+                            android:fontFamily="@font/open_sans_semibold"
+                            android:textSize="13sp" />
                     </LinearLayout>
 
                     <!-- Nút Gọi phòng khám -->
@@ -389,8 +392,8 @@
                             android:layout_marginStart="6dp"
                             android:text="Gọi phòng khám"
                             android:textColor="@color/text_foreground"
-                            android:textSize="13sp"
-                            android:textStyle="bold" />
+                            android:fontFamily="@font/open_sans_semibold"
+                            android:textSize="13sp" />
                     </LinearLayout>
                 </LinearLayout>
             </LinearLayout>
@@ -424,8 +427,8 @@
                         android:letterSpacing="0.04"
                         android:text="Dịch vụ"
                         android:textColor="@color/text_muted"
-                        android:textSize="11.5sp"
-                        android:textStyle="bold" />
+                        android:fontFamily="@font/open_sans_medium"
+                        android:textSize="11.5sp" />
                 </LinearLayout>
 
                 <!-- Hàng: Tên dịch vụ & Giá tiền -->
@@ -441,6 +444,7 @@
                         android:layout_alignParentStart="true"
                         android:text="Tiêm phòng"
                         android:textColor="@color/text_foreground"
+                        android:fontFamily="@font/open_sans_regular"
                         android:textSize="13.5sp" />
 
                     <TextView
@@ -450,8 +454,8 @@
                         android:layout_alignParentEnd="true"
                         android:text="250.000 ₫"
                         android:textColor="@color/text_foreground"
-                        android:textSize="14sp"
-                        android:textStyle="bold" />
+                        android:fontFamily="@font/open_sans_bold"
+                        android:textSize="15sp" />
                 </RelativeLayout>
 
                 <!-- Hàng: Thời lượng -->
@@ -480,6 +484,7 @@
                             android:layout_marginStart="6dp"
                             android:text="Thời lượng"
                             android:textColor="@color/text_muted"
+                            android:fontFamily="@font/open_sans_regular"
                             android:textSize="13sp" />
                     </LinearLayout>
 
@@ -490,8 +495,8 @@
                         android:layout_alignParentEnd="true"
                         android:text="45 phút"
                         android:textColor="@color/text_foreground"
-                        android:textSize="13sp"
-                        android:textStyle="bold" />
+                        android:fontFamily="@font/open_sans_medium"
+                        android:textSize="13sp" />
                 </RelativeLayout>
 
                 <!-- Hàng: Bé đi khám -->
@@ -520,6 +525,7 @@
                             android:layout_marginStart="6dp"
                             android:text="Bé đi khám"
                             android:textColor="@color/text_muted"
+                            android:fontFamily="@font/open_sans_regular"
                             android:textSize="13sp" />
                     </LinearLayout>
 
@@ -530,8 +536,8 @@
                         android:layout_alignParentEnd="true"
                         android:text="Mochi"
                         android:textColor="@color/text_foreground"
-                        android:textSize="13sp"
-                        android:textStyle="bold" />
+                        android:fontFamily="@font/open_sans_medium"
+                        android:textSize="13sp" />
                 </RelativeLayout>
             </LinearLayout>
 
@@ -550,8 +556,9 @@
                     android:letterSpacing="0.04"
                     android:text="Thú cưng"
                     android:textColor="@color/text_muted"
-                    android:textSize="11.5sp"
-                    android:textStyle="bold" />
+                    android:fontFamily="@font/open_sans_semibold"
+                    android:includeFontPadding="false"
+                    android:textSize="11.5sp" />
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -582,8 +589,8 @@
                             android:layout_height="wrap_content"
                             android:text="Mochi"
                             android:textColor="@color/text_foreground"
-                            android:textSize="14.5sp"
-                            android:textStyle="bold" />
+                            android:fontFamily="@font/open_sans_medium"
+                            android:textSize="14.5sp" />
 
                         <TextView
                             android:id="@+id/tvPetDetails"
@@ -592,6 +599,7 @@
                             android:layout_marginTop="2dp"
                             android:text="Pomeranian · 2 tuổi · Cái"
                             android:textColor="@color/text_muted"
+                            android:fontFamily="@font/open_sans_regular"
                             android:textSize="12.5sp" />
                     </LinearLayout>
 
@@ -648,6 +656,7 @@
                             android:layout_marginStart="6dp"
                             android:text="Ngày"
                             android:textColor="@color/text_muted"
+                            android:fontFamily="@font/open_sans_regular"
                             android:textSize="13sp" />
                     </LinearLayout>
 
@@ -658,8 +667,8 @@
                         android:layout_alignParentEnd="true"
                         tools:text="Thứ 2, 27/10/2026"
                         android:textColor="@color/text_foreground"
-                        android:textSize="13sp"
-                        android:textStyle="bold" />
+                        android:fontFamily="@font/open_sans_medium"
+                        android:textSize="13sp" />
                 </RelativeLayout>
 
                 <!-- Giờ -->
@@ -688,6 +697,7 @@
                             android:layout_marginStart="6dp"
                             android:text="Giờ"
                             android:textColor="@color/text_muted"
+                            android:fontFamily="@font/open_sans_regular"
                             android:textSize="13sp" />
                     </LinearLayout>
 
@@ -698,8 +708,8 @@
                         android:layout_alignParentEnd="true"
                         android:text="10:00"
                         android:textColor="@color/text_foreground"
-                        android:textSize="13.5sp"
-                        android:textStyle="bold" />
+                        android:fontFamily="@font/open_sans_semibold"
+                        android:textSize="13.5sp" />
                 </RelativeLayout>
             </LinearLayout>
 
@@ -718,8 +728,8 @@
                     android:letterSpacing="0.04"
                     android:text="Lịch sử trạng thái"
                     android:textColor="@color/text_muted"
-                    android:textSize="11.5sp"
-                    android:textStyle="bold" />
+                    android:fontFamily="@font/open_sans_medium"
+                    android:textSize="11.5sp" />
 
                 <!-- Step 1 -->
                 <LinearLayout
@@ -759,8 +769,8 @@
                             android:layout_height="wrap_content"
                             android:text="Gửi yêu cầu đặt lịch"
                             android:textColor="@color/text_foreground"
-                            android:textSize="13sp"
-                            android:textStyle="bold" />
+                            android:fontFamily="@font/open_sans_medium"
+                            android:textSize="13sp" />
 
                         <TextView
                             android:id="@+id/tvTimelineStep1Time"
@@ -769,6 +779,7 @@
                             android:layout_marginTop="1dp"
                             android:text="Thứ 2, 27/10/2026 · 07:40"
                             android:textColor="@color/text_muted"
+                            android:fontFamily="@font/open_sans_regular"
                             android:textSize="11.5sp" />
                     </LinearLayout>
                 </LinearLayout>
@@ -799,8 +810,8 @@
                             android:layout_height="wrap_content"
                             android:text="Chờ phòng khám phản hồi"
                             android:textColor="@color/text_foreground"
-                            android:textSize="13sp"
-                            android:textStyle="bold" />
+                            android:fontFamily="@font/open_sans_medium"
+                            android:textSize="13sp" />
 
                         <TextView
                             android:id="@+id/tvTimelineStep2Time"
@@ -809,6 +820,7 @@
                             android:layout_marginTop="1dp"
                             android:text="Đang chờ"
                             android:textColor="@color/text_muted"
+                            android:fontFamily="@font/open_sans_regular"
                             android:textSize="11.5sp" />
                     </LinearLayout>
                 </LinearLayout>
@@ -829,8 +841,8 @@
                     android:layout_height="wrap_content"
                     android:text="Cần đổi lịch?"
                     android:textColor="@color/status_destructive_ink"
-                    android:textSize="13sp"
-                    android:textStyle="bold" />
+                    android:fontFamily="@font/open_sans_semibold"
+                    android:textSize="13sp" />
 
                 <TextView
                     android:layout_width="match_parent"
@@ -839,6 +851,7 @@
                     android:lineSpacingExtra="2dp"
                     android:text="Hủy miễn phí khi lịch hẹn còn chờ xác nhận hoặc đã xác nhận. Phòng khám được thông báo ngay lập tức."
                     android:textColor="@color/status_destructive_ink"
+                    android:fontFamily="@font/open_sans_regular"
                     android:textSize="12sp" />
             </LinearLayout>
 
@@ -881,8 +894,8 @@
                 android:layout_marginStart="8dp"
                 android:text="Hủy lịch hẹn"
                 android:textColor="@color/status_destructive_ink"
-                android:textSize="14.5sp"
-                android:textStyle="bold" />
+                android:fontFamily="@font/open_sans_semibold"
+                android:textSize="14.5sp" />
         </LinearLayout>
 
         <!-- Khối 2 nút khi ĐÃ HỦY: "Đặt lịch khác" & "Về danh sách lịch hẹn" -->
@@ -907,8 +920,8 @@
                     android:layout_height="wrap_content"
                     android:text="Đặt lịch khác"
                     android:textColor="@color/white"
-                    android:textSize="14.5sp"
-                    android:textStyle="bold" />
+                    android:fontFamily="@font/open_sans_semibold"
+                    android:textSize="14.5sp" />
             </LinearLayout>
 
             <TextView
@@ -921,8 +934,8 @@
                 android:gravity="center"
                 android:text="Về danh sách lịch hẹn"
                 android:textColor="@color/text_foreground"
-                android:textSize="14sp"
-                android:textStyle="bold" />
+                android:fontFamily="@font/open_sans_semibold"
+                android:textSize="14sp" />
         </LinearLayout>
 
         <!-- Nút Về danh sách lịch hẹn (Dành cho Completed) -->
@@ -941,8 +954,8 @@
                 android:layout_height="wrap_content"
                 android:text="Về danh sách lịch hẹn"
                 android:textColor="@color/text_foreground"
-                android:textSize="14sp"
-                android:textStyle="bold" />
+                android:fontFamily="@font/open_sans_semibold"
+                android:textSize="14sp" />
         </LinearLayout>
     </LinearLayout>
 
@@ -990,8 +1003,8 @@
                 android:layout_marginTop="16dp"
                 android:text="Hủy lịch hẹn này?"
                 android:textColor="@color/text_foreground"
-                android:textSize="18sp"
-                android:textStyle="bold" />
+                android:fontFamily="@font/open_sans_bold"
+                android:textSize="18sp" />
 
             <TextView
                 android:id="@+id/tvDialogBody"
@@ -1002,6 +1015,7 @@
                 android:lineSpacingExtra="3dp"
                 android:text="Phòng khám Thú y An Nhiên sẽ được thông báo ngay và khung giờ 10:00 được mở lại. Hành động này không thể hoàn tác."
                 android:textColor="@color/text_muted"
+                android:fontFamily="@font/open_sans_regular"
                 android:textSize="13sp" />
 
             <!-- Nút Đồng ý hủy lịch -->
@@ -1020,8 +1034,8 @@
                     android:layout_height="wrap_content"
                     android:text="Đồng ý hủy lịch"
                     android:textColor="@color/white"
-                    android:textSize="14.5sp"
-                    android:textStyle="bold" />
+                    android:fontFamily="@font/open_sans_semibold"
+                    android:textSize="14.5sp" />
             </LinearLayout>
 
             <!-- Nút Giữ lịch hẹn -->
@@ -1035,8 +1049,8 @@
                 android:gravity="center"
                 android:text="Giữ lịch hẹn"
                 android:textColor="@color/brand_primary"
-                android:textSize="14sp"
-                android:textStyle="bold" />
+                android:fontFamily="@font/open_sans_semibold"
+                android:textSize="14sp" />
         </LinearLayout>
     </FrameLayout>
 

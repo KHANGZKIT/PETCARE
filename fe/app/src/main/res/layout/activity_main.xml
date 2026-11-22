@@ -990,7 +990,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="3dp"
-                    android:fontFamily="@font/plus_jakarta_sans_semibold"
+                    android:fontFamily="@font/open_sans_semibold"
                     android:text="Trang chủ"
                     android:textColor="@color/ds_primary_dark"
                     android:textSize="11.5sp" />

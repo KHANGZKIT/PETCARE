@@ -437,9 +437,14 @@ public class ClinicListActivity extends AppCompatActivity {
             c.setBackgroundResource(isActive ? R.drawable.bg_chip_active : R.drawable.bg_chip_inactive);
 
             if (c instanceof TextView) {
-                ((TextView) c).setTextColor(ContextCompat.getColor(this, isActive ? R.color.white : R.color.text_muted));
+                TextView tv = (TextView) c;
+                tv.setTextColor(ContextCompat.getColor(this, isActive ? R.color.white : R.color.text_muted));
+                com.example.petcareui.utils.UiMotionUtils.applyFont(
+                        tv, isActive ? R.font.open_sans_semibold : R.font.open_sans_regular);
             } else if (c == binding.chipNearby) {
                 binding.tvChipNearby.setTextColor(ContextCompat.getColor(this, isActive ? R.color.white : R.color.text_muted));
+                com.example.petcareui.utils.UiMotionUtils.applyFont(
+                        binding.tvChipNearby, isActive ? R.font.open_sans_semibold : R.font.open_sans_regular);
             }
         }
     }

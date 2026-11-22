@@ -119,13 +119,13 @@ public class AddPetActivity extends AppCompatActivity {
             int activeColor = ContextCompat.getColor(this, R.color.ds_primary_dark);
             icon.setColorFilter(activeColor);
             label.setTextColor(activeColor);
-            label.setTypeface(ResourcesCompat.getFont(this, R.font.plus_jakarta_sans_semibold));
+            label.setTypeface(ResourcesCompat.getFont(this, R.font.open_sans_semibold));
         } else {
             pill.setBackgroundResource(R.drawable.bg_species_pill_unselected);
             int inactiveColor = ContextCompat.getColor(this, R.color.ds_text_secondary);
             icon.setColorFilter(inactiveColor);
             label.setTextColor(inactiveColor);
-            label.setTypeface(ResourcesCompat.getFont(this, R.font.plus_jakarta_sans_medium));
+            label.setTypeface(ResourcesCompat.getFont(this, R.font.open_sans_medium));
         }
     }
 

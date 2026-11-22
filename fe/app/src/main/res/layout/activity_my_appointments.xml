@@ -38,8 +38,8 @@
                     android:letterSpacing="-0.01"
                     android:text="Lịch hẹn của tôi"
                     android:textColor="@color/text_foreground"
-                    android:textSize="20sp"
-                    android:textStyle="bold" />
+                    android:fontFamily="@font/open_sans_bold"
+                    android:textSize="21sp" />
 
                 <TextView
                     android:id="@+id/tvHeaderSubtitle"
@@ -48,6 +48,7 @@
                     android:layout_marginTop="2dp"
                     android:text="3 sắp tới · 4 đã qua"
                     android:textColor="@color/text_muted"
+                    android:fontFamily="@font/open_sans_regular"
                     android:textSize="12.5sp" />
             </LinearLayout>
 
@@ -77,8 +78,8 @@
                     android:layout_marginStart="4dp"
                     android:text="Đặt lịch"
                     android:textColor="@color/brand_ink"
-                    android:textSize="12.5sp"
-                    android:textStyle="bold" />
+                    android:fontFamily="@font/open_sans_semibold"
+                    android:textSize="12.5sp" />
             </LinearLayout>
         </LinearLayout>
 
@@ -102,8 +103,8 @@
                 android:paddingEnd="14dp"
                 android:text="Sắp tới · 3"
                 android:textColor="@color/white"
-                android:textSize="12.5sp"
-                android:textStyle="bold" />
+                android:fontFamily="@font/open_sans_medium"
+                android:textSize="12.5sp" />
 
             <TextView
                 android:id="@+id/chipPast"
@@ -118,8 +119,8 @@
                 android:paddingEnd="14dp"
                 android:text="Đã qua · 4"
                 android:textColor="@color/text_muted"
-                android:textSize="12.5sp"
-                android:textStyle="bold" />
+                android:fontFamily="@font/open_sans_medium"
+                android:textSize="12.5sp" />
 
             <TextView
                 android:id="@+id/chipAll"
@@ -134,8 +135,8 @@
                 android:paddingEnd="14dp"
                 android:text="Tất cả"
                 android:textColor="@color/text_muted"
-                android:textSize="12.5sp"
-                android:textStyle="bold" />
+                android:fontFamily="@font/open_sans_medium"
+                android:textSize="12.5sp" />
         </LinearLayout>
     </LinearLayout>
 
@@ -184,8 +185,8 @@
                         android:layout_alignParentStart="true"
                         android:text="Lịch khám đã qua"
                         android:textColor="@color/text_foreground"
-                        android:textSize="16sp"
-                        android:textStyle="bold" />
+                        android:fontFamily="@font/open_sans_bold"
+                        android:textSize="17sp" />
 
                     <TextView
                         android:id="@+id/tvSeeAllPastAppts"
@@ -196,8 +197,8 @@
                         android:focusable="true"
                         android:text="Xem tất cả"
                         android:textColor="@color/brand_primary"
-                        android:textSize="12.5sp"
-                        android:textStyle="bold" />
+                        android:fontFamily="@font/open_sans_medium"
+                        android:textSize="12.5sp" />
                 </RelativeLayout>
 
                 <!-- 2 Thẻ đã qua thu gọn -->
@@ -240,8 +241,8 @@
                     android:layout_marginTop="16dp"
                     android:text="Chưa có lịch hẹn nào"
                     android:textColor="@color/text_foreground"
-                    android:textSize="18sp"
-                    android:textStyle="bold" />
+                    android:fontFamily="@font/open_sans_bold"
+                    android:textSize="18sp" />
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -252,6 +253,7 @@
                     android:maxWidth="280dp"
                     android:text="Khi bạn đặt lịch khám, lịch hẹn và trạng thái của nó sẽ hiển thị tại đây."
                     android:textColor="@color/text_muted"
+                    android:fontFamily="@font/open_sans_regular"
                     android:textSize="13sp" />
 
                 <LinearLayout
@@ -271,8 +273,8 @@
                         android:layout_height="wrap_content"
                         android:text="Tìm phòng khám"
                         android:textColor="@color/white"
-                        android:textSize="13.5sp"
-                        android:textStyle="bold" />
+                        android:fontFamily="@font/open_sans_semibold"
+                        android:textSize="13.5sp" />
                 </LinearLayout>
             </LinearLayout>
 
@@ -320,6 +322,8 @@
                 android:layout_marginTop="2dp"
                 android:text="Trang chủ"
                 android:textColor="@color/ds_text_secondary"
+                android:fontFamily="@font/open_sans_medium"
+                android:includeFontPadding="false"
                 android:textSize="11sp" />
         </LinearLayout>
 
@@ -353,6 +357,8 @@
                 android:layout_marginTop="2dp"
                 android:text="Phòng khám"
                 android:textColor="@color/ds_text_secondary"
+                android:fontFamily="@font/open_sans_medium"
+                android:includeFontPadding="false"
                 android:textSize="11sp" />
         </LinearLayout>
 
@@ -387,8 +393,9 @@
                 android:layout_marginTop="2dp"
                 android:text="Lịch hẹn"
                 android:textColor="@color/ds_primary_dark"
-                android:textSize="11sp"
-                android:textStyle="bold" />
+                android:fontFamily="@font/open_sans_semibold"
+                android:includeFontPadding="false"
+                android:textSize="11sp" />
         </LinearLayout>
 
         <!-- Tab 4: Thú cưng -->
@@ -421,6 +428,8 @@
                 android:layout_marginTop="2dp"
                 android:text="Thú cưng"
                 android:textColor="@color/ds_text_secondary"
+                android:fontFamily="@font/open_sans_medium"
+                android:includeFontPadding="false"
                 android:textSize="11sp" />
         </LinearLayout>
     </LinearLayout>

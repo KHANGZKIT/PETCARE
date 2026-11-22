@@ -50,8 +50,8 @@
                 android:letterSpacing="-0.01"
                 android:text="Thông báo"
                 android:textColor="@color/text_foreground"
-                android:textSize="17sp"
-                android:textStyle="bold" />
+                android:fontFamily="@font/open_sans_bold"
+                android:textSize="18sp" />
 
             <TextView
                 android:id="@+id/tvSubtitle"
@@ -60,6 +60,7 @@
                 android:layout_marginTop="1dp"
                 android:text="2 thông báo chưa đọc"
                 android:textColor="@color/text_muted"
+                android:fontFamily="@font/open_sans_regular"
                 android:textSize="12sp" />
         </LinearLayout>
 
@@ -74,8 +75,8 @@
             android:padding="6dp"
             android:text="Đọc tất cả"
             android:textColor="@color/brand_primary"
-            android:textSize="12.5sp"
-            android:textStyle="bold" />
+            android:fontFamily="@font/open_sans_medium"
+            android:textSize="12.5sp" />
     </LinearLayout>
 
     <!-- 2. Vùng nội dung chính cuộn dọc -->
@@ -112,8 +113,8 @@
                     android:letterSpacing="0.14"
                     android:text="HÔM NAY"
                     android:textColor="@color/text_muted"
-                    android:textSize="11sp"
-                    android:textStyle="bold" />
+                    android:fontFamily="@font/open_sans_medium"
+                    android:textSize="11sp" />
 
                 <LinearLayout
                     android:id="@+id/layoutGroupToday"
@@ -131,8 +132,8 @@
                     android:letterSpacing="0.14"
                     android:text="TRƯỚC ĐÓ"
                     android:textColor="@color/text_muted"
-                    android:textSize="11sp"
-                    android:textStyle="bold" />
+                    android:fontFamily="@font/open_sans_medium"
+                    android:textSize="11sp" />
 
                 <LinearLayout
                     android:id="@+id/layoutGroupEarlier"
@@ -155,6 +156,7 @@
                         android:lineSpacingExtra="3dp"
                         android:text="Đây là bản demo giao diện. Thông báo đẩy và hệ thống thông báo trong ứng dụng không thuộc phạm vi bản thiết kế này."
                         android:textColor="@color/text_muted"
+                        android:fontFamily="@font/open_sans_regular"
                         android:textSize="11.5sp" />
                 </LinearLayout>
             </LinearLayout>
@@ -191,8 +193,8 @@
                     android:layout_marginTop="18dp"
                     android:text="Bạn đã đọc hết thông báo"
                     android:textColor="@color/text_foreground"
-                    android:textSize="18sp"
-                    android:textStyle="bold" />
+                    android:fontFamily="@font/open_sans_bold"
+                    android:textSize="18sp" />
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -203,6 +205,7 @@
                     android:maxWidth="280dp"
                     android:text="Thông báo xác nhận, từ chối và nhắc hẹn sẽ xuất hiện tại đây."
                     android:textColor="@color/text_muted"
+                    android:fontFamily="@font/open_sans_regular"
                     android:textSize="13sp" />
 
                 <LinearLayout
@@ -222,8 +225,8 @@
                         android:layout_height="wrap_content"
                         android:text="Về trang chủ"
                         android:textColor="@color/white"
-                        android:textSize="13.5sp"
-                        android:textStyle="bold" />
+                        android:fontFamily="@font/open_sans_semibold"
+                        android:textSize="13.5sp" />
                 </LinearLayout>
             </LinearLayout>
 

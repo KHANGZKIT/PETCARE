@@ -43,8 +43,8 @@
             android:ellipsize="end"
             android:maxLines="1"
             android:textColor="@color/text_foreground"
+            android:fontFamily="@font/open_sans_semibold"
             android:textSize="16sp"
-            android:textStyle="bold"
             tools:text="Mochi" />
 
         <TextView
@@ -55,8 +55,8 @@
             android:ellipsize="end"
             android:maxLines="1"
             android:textColor="@color/text_muted"
+            android:fontFamily="@font/open_sans_medium"
             android:textSize="12.5sp"
-            android:textStyle="bold"
             tools:text="Chó · Pomeranian" />
 
         <!-- Hàng thẻ thông tin nhỏ có màu sắc ấm áp: Tuổi, Giới tính, Cân nặng -->
@@ -78,8 +78,8 @@
                 android:paddingEnd="8dp"
                 android:paddingBottom="3dp"
                 android:textColor="@color/brand_ink"
+                android:fontFamily="@font/open_sans_medium"
                 android:textSize="11sp"
-                android:textStyle="bold"
                 tools:text="🐾 Mèo" />
 
             <TextView
@@ -93,8 +93,8 @@
                 android:paddingEnd="8dp"
                 android:paddingBottom="2dp"
                 android:textColor="@color/brand_primary"
+                android:fontFamily="@font/open_sans_medium"
                 android:textSize="11.5sp"
-                android:textStyle="bold"
                 android:text="🟢 Sẵn sàng khám" />
 
             <TextView
@@ -108,8 +108,8 @@
                 android:paddingEnd="8dp"
                 android:paddingBottom="2dp"
                 android:textColor="@color/text_muted"
+                android:fontFamily="@font/open_sans_medium"
                 android:textSize="11.5sp"
-                android:textStyle="bold"
                 android:visibility="gone"
                 tools:text="2 tuổi" />
 
@@ -124,8 +124,8 @@
                 android:paddingEnd="8dp"
                 android:paddingBottom="3dp"
                 android:textColor="@color/warm_amber_ink"
+                android:fontFamily="@font/open_sans_medium"
                 android:textSize="11sp"
-                android:textStyle="bold"
                 android:visibility="gone"
                 tools:text="♀ Cái" />
 
@@ -140,8 +140,8 @@
                 android:paddingEnd="8dp"
                 android:paddingBottom="3dp"
                 android:textColor="@color/warm_coral_ink"
+                android:fontFamily="@font/open_sans_medium"
                 android:textSize="11sp"
-                android:textStyle="bold"
                 android:visibility="gone"
                 tools:text="3,4 kg" />
         </LinearLayout>

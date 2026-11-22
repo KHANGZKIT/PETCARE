@@ -52,8 +52,8 @@
                 android:letterSpacing="-0.02"
                 android:text="Quản lý khung giờ"
                 android:textColor="@color/text_foreground"
-                android:textSize="20sp"
-                android:textStyle="bold" />
+                android:fontFamily="@font/open_sans_bold"
+                android:textSize="20sp" />
 
             <TextView
                 android:id="@+id/tvStaffClinicSubtitle"
@@ -64,8 +64,8 @@
                 android:maxLines="1"
                 android:text="Phòng khám"
                 android:textColor="@color/brand_primary"
+                android:fontFamily="@font/open_sans_medium"
                 android:textSize="12.5sp"
-                android:textStyle="bold"
                 tools:text="Phòng khám Thú y An Nhiên · Quận 1" />
         </LinearLayout>
 
@@ -108,8 +108,8 @@
             android:letterSpacing="0.06"
             android:text="CHẾ ĐỘ:"
             android:textColor="@color/text_muted"
-            android:textSize="10sp"
-            android:textStyle="bold" />
+            android:fontFamily="@font/open_sans_medium"
+            android:textSize="10sp" />
 
         <HorizontalScrollView
             android:layout_width="match_parent"
@@ -134,8 +134,8 @@
                     android:paddingBottom="5dp"
                     android:text="Mặc định"
                     android:textColor="@color/white"
-                    android:textSize="11.5sp"
-                    android:textStyle="bold" />
+                    android:fontFamily="@font/open_sans_medium"
+                    android:textSize="11.5sp" />
 
                 <TextView
                     android:id="@+id/chipStateNewSlot"
@@ -151,8 +151,8 @@
                     android:paddingBottom="5dp"
                     android:text="Tạo khung giờ"
                     android:textColor="@color/text_muted"
-                    android:textSize="11.5sp"
-                    android:textStyle="bold" />
+                    android:fontFamily="@font/open_sans_medium"
+                    android:textSize="11.5sp" />
 
                 <TextView
                     android:id="@+id/chipStateCreated"
@@ -168,8 +168,8 @@
                     android:paddingBottom="5dp"
                     android:text="Đã tạo"
                     android:textColor="@color/text_muted"
-                    android:textSize="11.5sp"
-                    android:textStyle="bold" />
+                    android:fontFamily="@font/open_sans_medium"
+                    android:textSize="11.5sp" />
 
                 <TextView
                     android:id="@+id/chipStateEmpty"
@@ -185,8 +185,8 @@
                     android:paddingBottom="5dp"
                     android:text="Không có khung giờ"
                     android:textColor="@color/text_muted"
-                    android:textSize="11.5sp"
-                    android:textStyle="bold" />
+                    android:fontFamily="@font/open_sans_medium"
+                    android:textSize="11.5sp" />
             </LinearLayout>
         </HorizontalScrollView>
     </LinearLayout>
@@ -265,8 +265,8 @@
                         android:layout_height="wrap_content"
                         android:text="Đã tạo khung giờ"
                         android:textColor="@color/status_success_ink"
-                        android:textSize="13sp"
-                        android:textStyle="bold" />
+                        android:fontFamily="@font/open_sans_semibold"
+                        android:textSize="13sp" />
 
                     <TextView
                         android:id="@+id/tvNoticeCreatedBody"
@@ -275,6 +275,7 @@
                         android:layout_marginTop="2dp"
                         android:text="14:00 – 14:30 đã mở để nhận đặt lịch."
                         android:textColor="@color/status_success_ink"
+                        android:fontFamily="@font/open_sans_regular"
                         android:textSize="12.5sp" />
                 </LinearLayout>
             </LinearLayout>
@@ -308,8 +309,8 @@
                         android:layout_height="wrap_content"
                         android:text="Ngày hôm nay"
                         android:textColor="@color/brand_ink"
+                        android:fontFamily="@font/open_sans_semibold"
                         android:textSize="13sp"
-                        android:textStyle="bold"
                         tools:text="Thứ 2, 27/10/2026" />
 
                     <TextView
@@ -318,6 +319,7 @@
                         android:layout_marginTop="2dp"
                         android:text="Mỗi khung giờ kéo dài 30 phút. Đóng khung giờ sẽ ẩn nó khỏi ứng dụng của khách."
                         android:textColor="@color/brand_ink"
+                        android:fontFamily="@font/open_sans_regular"
                         android:textSize="12.5sp" />
                 </LinearLayout>
             </LinearLayout>
@@ -337,8 +339,8 @@
                     android:letterSpacing="-0.02"
                     android:text="Khung giờ trong ngày"
                     android:textColor="@color/text_foreground"
-                    android:textSize="16sp"
-                    android:textStyle="bold" />
+                    android:fontFamily="@font/open_sans_bold"
+                    android:textSize="17sp" />
 
                 <TextView
                     android:id="@+id/tvSlotCountHeader"
@@ -346,8 +348,8 @@
                     android:layout_height="wrap_content"
                     android:text="0 khung"
                     android:textColor="@color/text_muted"
-                    android:textSize="12sp"
-                    android:textStyle="bold" />
+                    android:fontFamily="@font/open_sans_medium"
+                    android:textSize="12sp" />
             </LinearLayout>
 
             <LinearLayout
@@ -388,8 +390,8 @@
                     android:letterSpacing="-0.02"
                     android:text="Chưa có khung giờ cho ngày này"
                     android:textColor="@color/text_foreground"
-                    android:textSize="16.5sp"
-                    android:textStyle="bold" />
+                    android:fontFamily="@font/open_sans_bold"
+                    android:textSize="16.5sp" />
 
                 <TextView
                     android:layout_width="260dp"
@@ -399,6 +401,7 @@
                     android:lineSpacingExtra="3dp"
                     android:text="Phòng khám chưa mở hoặc các khung giờ đã bị xóa. Thêm khung giờ để bắt đầu nhận đặt lịch."
                     android:textColor="@color/text_muted"
+                    android:fontFamily="@font/open_sans_regular"
                     android:textSize="13sp" />
 
                 <Button
@@ -414,8 +417,9 @@
                     android:text="Tạo khung giờ"
                     android:textAllCaps="false"
                     android:textColor="@color/white"
-                    android:textSize="13.5sp"
-                    android:textStyle="bold" />
+                    android:fontFamily="@font/open_sans_semibold"
+                    android:includeFontPadding="false"
+                    android:textSize="13.5sp" />
             </LinearLayout>
 
             <Button
@@ -433,8 +437,9 @@
                 android:text="Tạo khung giờ mới"
                 android:textAllCaps="false"
                 android:textColor="@color/text_foreground"
-                android:textSize="13.5sp"
-                android:textStyle="bold" />
+                android:fontFamily="@font/open_sans_semibold"
+                android:includeFontPadding="false"
+                android:textSize="17.5sp" />
         </LinearLayout>
     </androidx.core.widget.NestedScrollView>
 
@@ -468,8 +473,8 @@
             android:letterSpacing="-0.01"
             android:text="Đã tạo khung giờ · 14:00 – 14:30"
             android:textColor="@color/white"
-            android:textSize="13sp"
-            android:textStyle="bold" />
+            android:fontFamily="@font/open_sans_medium"
+            android:textSize="13sp" />
     </LinearLayout>
 
     <LinearLayout
@@ -507,6 +512,8 @@
                 android:layout_marginTop="5dp"
                 android:text="Hôm nay"
                 android:textColor="@color/text_muted"
+                android:fontFamily="@font/open_sans_medium"
+                android:includeFontPadding="false"
                 android:textSize="11sp" />
         </LinearLayout>
 
@@ -533,6 +540,8 @@
                 android:layout_marginTop="5dp"
                 android:text="Lịch hẹn"
                 android:textColor="@color/text_muted"
+                android:fontFamily="@font/open_sans_medium"
+                android:includeFontPadding="false"
                 android:textSize="11sp" />
         </LinearLayout>
 
@@ -566,8 +575,9 @@
                 android:layout_marginTop="3dp"
                 android:text="Khung giờ"
                 android:textColor="@color/brand_primary"
-                android:textSize="11sp"
-                android:textStyle="bold" />
+                android:fontFamily="@font/open_sans_semibold"
+                android:includeFontPadding="false"
+                android:textSize="11sp" />
         </LinearLayout>
 
         <LinearLayout
@@ -593,6 +603,8 @@
                 android:layout_marginTop="5dp"
                 android:text="Tài khoản"
                 android:textColor="@color/text_muted"
+                android:fontFamily="@font/open_sans_medium"
+                android:includeFontPadding="false"
                 android:textSize="11sp" />
         </LinearLayout>
     </LinearLayout>
@@ -643,8 +655,8 @@
                 android:letterSpacing="-0.02"
                 android:text="Tạo khung giờ mới"
                 android:textColor="@color/text_foreground"
-                android:textSize="16.5sp"
-                android:textStyle="bold" />
+                android:fontFamily="@font/open_sans_bold"
+                android:textSize="17.5sp" />
 
             <TextView
                 android:id="@+id/tvSheetCreateSlotSubtitle"
@@ -653,6 +665,7 @@
                 android:layout_marginTop="4dp"
                 android:text="Thêm khung giờ trống. Khách có thể đặt ngay khi bạn lưu."
                 android:textColor="@color/text_muted"
+                android:fontFamily="@font/open_sans_regular"
                 android:textSize="12.5sp"
                 tools:text="Thêm khung giờ trống cho Thứ 2, 27/10/2026. Khách có thể đặt ngay khi bạn lưu." />
 
@@ -687,8 +700,8 @@
                         android:layout_marginStart="8dp"
                         android:text="14:00"
                         android:textColor="@color/text_foreground"
-                        android:textSize="14sp"
-                        android:textStyle="bold" />
+                        android:fontFamily="@font/open_sans_semibold"
+                        android:textSize="14sp" />
                 </LinearLayout>
 
                 <LinearLayout
@@ -716,8 +729,8 @@
                         android:layout_marginStart="8dp"
                         android:text="14:30"
                         android:textColor="@color/text_foreground"
-                        android:textSize="14sp"
-                        android:textStyle="bold" />
+                        android:fontFamily="@font/open_sans_semibold"
+                        android:textSize="14sp" />
                 </LinearLayout>
             </LinearLayout>
 
@@ -740,8 +753,8 @@
                     android:gravity="center"
                     android:text="Một khung"
                     android:textColor="@color/brand_ink"
-                    android:textSize="12.5sp"
-                    android:textStyle="bold" />
+                    android:fontFamily="@font/open_sans_medium"
+                    android:textSize="12.5sp" />
 
                 <TextView
                     android:id="@+id/chipRecurrenceDaily"
@@ -754,8 +767,8 @@
                     android:gravity="center"
                     android:text="Lặp lại mỗi ngày"
                     android:textColor="@color/text_muted"
-                    android:textSize="12.5sp"
-                    android:textStyle="bold" />
+                    android:fontFamily="@font/open_sans_medium"
+                    android:textSize="12.5sp" />
             </LinearLayout>
 
             <Button
@@ -769,8 +782,9 @@
                 android:text="Tạo khung giờ"
                 android:textAllCaps="false"
                 android:textColor="@color/white"
-                android:textSize="13.5sp"
-                android:textStyle="bold" />
+                android:fontFamily="@font/open_sans_semibold"
+                android:includeFontPadding="false"
+                android:textSize="13.5sp" />
 
             <TextView
                 android:id="@+id/btnSheetCreateSlotDismiss"
@@ -783,8 +797,8 @@
                 android:padding="8dp"
                 android:text="Đóng"
                 android:textColor="@color/text_foreground"
-                android:textSize="13.5sp"
-                android:textStyle="bold" />
+                android:fontFamily="@font/open_sans_semibold"
+                android:textSize="13.5sp" />
         </LinearLayout>
     </FrameLayout>
 

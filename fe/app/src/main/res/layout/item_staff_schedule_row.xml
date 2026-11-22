@@ -41,8 +41,8 @@
                 android:letterSpacing="-0.01"
                 android:text="14:00"
                 android:textColor="@color/brand_ink"
-                android:textSize="13sp"
-                android:textStyle="bold" />
+                android:fontFamily="@font/open_sans_semibold"
+                android:textSize="13sp" />
 
             <TextView
                 android:layout_width="wrap_content"
@@ -50,8 +50,8 @@
                 android:letterSpacing="0.04"
                 android:text="HÔM NAY"
                 android:textColor="@color/brand_primary"
-                android:textSize="9.5sp"
-                android:textStyle="bold" />
+                android:fontFamily="@font/open_sans_medium"
+                android:textSize="9.5sp" />
         </LinearLayout>
 
         <LinearLayout
@@ -70,8 +70,8 @@
                 android:maxLines="1"
                 android:text="Bông · Cạo vôi &amp; chăm sóc răng"
                 android:textColor="@color/text_foreground"
-                android:textSize="14sp"
-                android:textStyle="bold" />
+                android:fontFamily="@font/open_sans_medium"
+                android:textSize="14sp" />
 
             <TextView
                 android:id="@+id/tvScheduleCustomer"
@@ -82,6 +82,7 @@
                 android:maxLines="1"
                 android:text="Trần Minh"
                 android:textColor="@color/text_muted"
+                android:fontFamily="@font/open_sans_regular"
                 android:textSize="12sp" />
         </LinearLayout>
 
@@ -97,8 +98,8 @@
             android:paddingBottom="4dp"
             android:text="• Đã xác nhận"
             android:textColor="@color/status_success_ink"
-            android:textSize="11sp"
-            android:textStyle="bold" />
+            android:fontFamily="@font/open_sans_medium"
+            android:textSize="11sp" />
 
         <ImageView
             android:layout_width="18dp"

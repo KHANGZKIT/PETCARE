@@ -39,8 +39,8 @@
                 android:background="@drawable/bg_badge_pending"
                 android:text="• Chờ xác nhận"
                 android:textColor="@color/status_warning_ink"
-                android:textSize="11sp"
-                android:textStyle="bold" />
+                android:fontFamily="@font/open_sans_medium"
+                android:textSize="11sp" />
         </LinearLayout>
 
         <!-- Hàng giữa: Ảnh thú cưng + Tên dịch vụ & Phòng khám + Chevron -->
@@ -78,8 +78,8 @@
                     android:maxLines="1"
                     android:text="Tiêm phòng"
                     android:textColor="@color/text_foreground"
-                    android:textSize="15sp"
-                    android:textStyle="bold" />
+                    android:fontFamily="@font/open_sans_semibold"
+                    android:textSize="15sp" />
 
                 <TextView
                     android:id="@+id/tvPetAndClinic"
@@ -90,6 +90,7 @@
                     android:maxLines="1"
                     android:text="🐾 Mochi · Phòng khám Thú y An Nhiên"
                     android:textColor="@color/text_muted"
+                    android:fontFamily="@font/open_sans_regular"
                     android:textSize="12.5sp" />
             </LinearLayout>
 
@@ -139,8 +140,8 @@
                     android:layout_marginStart="5dp"
                     android:text="Thứ 2, 27/10/2026"
                     android:textColor="@color/text_foreground"
-                    android:textSize="11.5sp"
-                    android:textStyle="bold" />
+                    android:fontFamily="@font/open_sans_medium"
+                    android:textSize="11.5sp" />
             </LinearLayout>
 
             <!-- Thẻ giờ khám -->
@@ -166,8 +167,8 @@
                     android:layout_marginStart="5dp"
                     android:text="10:00"
                     android:textColor="@color/text_foreground"
-                    android:textSize="11.5sp"
-                    android:textStyle="bold" />
+                    android:fontFamily="@font/open_sans_medium"
+                    android:textSize="11.5sp" />
             </LinearLayout>
 
             <View
@@ -180,8 +181,8 @@
                 android:layout_height="wrap_content"
                 android:text="Xem vé ›"
                 android:textColor="@color/brand_primary"
-                android:textSize="12sp"
-                android:textStyle="bold" />
+                android:fontFamily="@font/open_sans_medium"
+                android:textSize="12sp" />
         </LinearLayout>
     </LinearLayout>
 </LinearLayout>

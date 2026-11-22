@@ -49,8 +49,8 @@
                 android:letterSpacing="-0.01"
                 android:text="Khám phá Phòng khám"
                 android:textColor="@color/text_foreground"
-                android:textSize="18.5sp"
-                android:textStyle="bold" />
+                android:fontFamily="@font/open_sans_bold"
+                android:textSize="19sp" />
 
             <TextView
                 android:id="@+id/tvLocationSubtitle"
@@ -59,8 +59,8 @@
                 android:layout_marginTop="1dp"
                 android:text="Hệ thống cơ sở thú y"
                 android:textColor="@color/brand_primary"
-                android:textSize="12.5sp"
-                android:textStyle="bold" />
+                android:fontFamily="@font/open_sans_medium"
+                android:textSize="12.5sp" />
         </LinearLayout>
     </LinearLayout>
 
@@ -107,6 +107,7 @@
                     android:singleLine="true"
                     android:textColor="@color/text_foreground"
                     android:textColorHint="@color/text_muted"
+                    android:fontFamily="@font/open_sans_regular"
                     android:textSize="14sp" />
             </LinearLayout>
 
@@ -153,8 +154,8 @@
                     android:paddingEnd="14dp"
                     android:text="Tất cả"
                     android:textColor="@color/text_muted"
-                    android:textSize="12.5sp"
-                    android:textStyle="bold" />
+                    android:fontFamily="@font/open_sans_medium"
+                    android:textSize="12.5sp" />
 
                 <TextView
                     android:id="@+id/chipOpen"
@@ -167,8 +168,8 @@
                     android:paddingEnd="14dp"
                     android:text="🟢 Đang mở cửa"
                     android:textColor="@color/white"
-                    android:textSize="12.5sp"
-                    android:textStyle="bold" />
+                    android:fontFamily="@font/open_sans_medium"
+                    android:textSize="12.5sp" />
 
                 <LinearLayout
                     android:id="@+id/chipNearby"
@@ -194,8 +195,8 @@
                         android:layout_height="wrap_content"
                         android:text="Gần tôi"
                         android:textColor="@color/text_muted"
-                        android:textSize="12.5sp"
-                        android:textStyle="bold" />
+                        android:fontFamily="@font/open_sans_medium"
+                        android:textSize="12.5sp" />
                 </LinearLayout>
 
                 <TextView
@@ -209,8 +210,8 @@
                     android:paddingEnd="14dp"
                     android:text="Cấp cứu 24/7"
                     android:textColor="@color/text_muted"
-                    android:textSize="12.5sp"
-                    android:textStyle="bold" />
+                    android:fontFamily="@font/open_sans_medium"
+                    android:textSize="12.5sp" />
             </LinearLayout>
         </HorizontalScrollView>
     </LinearLayout>
@@ -254,8 +255,8 @@
                         android:layout_alignParentStart="true"
                         android:text="4 phòng khám"
                         android:textColor="@color/text_muted"
-                        android:textSize="12.5sp"
-                        android:textStyle="bold" />
+                        android:fontFamily="@font/open_sans_medium"
+                        android:textSize="12.5sp" />
 
                     <TextView
                         android:id="@+id/tvSortOption"
@@ -266,8 +267,8 @@
                         android:focusable="true"
                         android:text="Sắp xếp · Gần nhất"
                         android:textColor="@color/brand_primary"
-                        android:textSize="12.5sp"
-                        android:textStyle="bold" />
+                        android:fontFamily="@font/open_sans_medium"
+                        android:textSize="12.5sp" />
                 </RelativeLayout>
 
                 <!-- Danh sách các thẻ phòng khám -->
@@ -295,8 +296,8 @@
                         android:layout_gravity="center"
                         android:text="Xem thêm phòng khám"
                         android:textColor="@color/text_foreground"
-                        android:textSize="14sp"
-                        android:textStyle="bold" />
+                        android:fontFamily="@font/open_sans_semibold"
+                        android:textSize="14sp" />
                 </FrameLayout>
             </LinearLayout>
         </ScrollView>
@@ -335,8 +336,8 @@
                         android:layout_marginStart="8dp"
                         android:text="Đang tìm phòng khám gần bạn…"
                         android:textColor="@color/brand_primary"
-                        android:textSize="12.5sp"
-                        android:textStyle="bold" />
+                        android:fontFamily="@font/open_sans_medium"
+                        android:textSize="12.5sp" />
                 </LinearLayout>
 
                 <include layout="@layout/item_clinic_row_skeleton" />
@@ -379,8 +380,8 @@
                 android:gravity="center"
                 android:text="Không tìm thấy phòng khám phù hợp"
                 android:textColor="@color/text_foreground"
-                android:textSize="16.5sp"
-                android:textStyle="bold" />
+                android:fontFamily="@font/open_sans_bold"
+                android:textSize="16.5sp" />
 
             <TextView
                 android:layout_width="260dp"
@@ -390,6 +391,7 @@
                 android:lineSpacingExtra="3dp"
                 android:text="Không tìm thấy phòng khám phù hợp với từ khóa hoặc bộ lọc này. Thử mở rộng khu vực hoặc xóa bộ lọc."
                 android:textColor="@color/text_muted"
+                android:fontFamily="@font/open_sans_regular"
                 android:textSize="13sp" />
 
             <FrameLayout
@@ -409,8 +411,8 @@
                     android:layout_gravity="center"
                     android:text="Bỏ bộ lọc"
                     android:textColor="@color/white"
-                    android:textSize="14sp"
-                    android:textStyle="bold" />
+                    android:fontFamily="@font/open_sans_semibold"
+                    android:textSize="14sp" />
             </FrameLayout>
 
             <TextView
@@ -422,8 +424,8 @@
                 android:focusable="true"
                 android:text="Đổi khu vực"
                 android:textColor="@color/brand_primary"
-                android:textSize="12.5sp"
-                android:textStyle="bold" />
+                android:fontFamily="@font/open_sans_medium"
+                android:textSize="12.5sp" />
         </LinearLayout>
 
         <!-- ==================== TRẠNG THÁI 4: LỖI MẠNG (ERROR STATE) ==================== -->
@@ -459,8 +461,8 @@
                 android:gravity="center"
                 android:text="Không tải được danh sách phòng khám"
                 android:textColor="@color/text_foreground"
-                android:textSize="16.5sp"
-                android:textStyle="bold" />
+                android:fontFamily="@font/open_sans_bold"
+                android:textSize="16.5sp" />
 
             <TextView
                 android:layout_width="270dp"
@@ -470,6 +472,7 @@
                 android:lineSpacingExtra="3dp"
                 android:text="Không kết nối được với hệ thống. Kiểm tra kết nối mạng rồi thử lại."
                 android:textColor="@color/text_muted"
+                android:fontFamily="@font/open_sans_regular"
                 android:textSize="13sp" />
 
             <LinearLayout
@@ -497,8 +500,8 @@
                     android:layout_marginStart="8dp"
                     android:text="Thử lại"
                     android:textColor="@color/text_foreground"
-                    android:textSize="14sp"
-                    android:textStyle="bold" />
+                    android:fontFamily="@font/open_sans_semibold"
+                    android:textSize="14sp" />
             </LinearLayout>
         </LinearLayout>
 
@@ -556,6 +559,8 @@
                     android:layout_marginTop="2dp"
                     android:text="Trang chủ"
                     android:textColor="@color/ds_text_secondary"
+                    android:fontFamily="@font/open_sans_medium"
+                    android:includeFontPadding="false"
                     android:textSize="11sp" />
             </LinearLayout>
 
@@ -590,8 +595,9 @@
                     android:layout_marginTop="2dp"
                     android:text="Phòng khám"
                     android:textColor="@color/ds_primary_dark"
-                    android:textSize="11sp"
-                    android:textStyle="bold" />
+                    android:fontFamily="@font/open_sans_semibold"
+                    android:includeFontPadding="false"
+                    android:textSize="11sp" />
             </LinearLayout>
 
             <!-- Tab 3: Lịch hẹn -->
@@ -624,6 +630,8 @@
                     android:layout_marginTop="2dp"
                     android:text="Lịch hẹn"
                     android:textColor="@color/ds_text_secondary"
+                    android:fontFamily="@font/open_sans_medium"
+                    android:includeFontPadding="false"
                     android:textSize="11sp" />
             </LinearLayout>
 
@@ -657,6 +665,8 @@
                     android:layout_marginTop="2dp"
                     android:text="Thú cưng"
                     android:textColor="@color/ds_text_secondary"
+                    android:fontFamily="@font/open_sans_medium"
+                    android:includeFontPadding="false"
                     android:textSize="11sp" />
             </LinearLayout>
         </LinearLayout>

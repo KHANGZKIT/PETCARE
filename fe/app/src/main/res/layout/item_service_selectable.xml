@@ -45,8 +45,8 @@
             android:ellipsize="end"
             android:maxLines="1"
             android:textColor="@color/text_foreground"
+            android:fontFamily="@font/open_sans_medium"
             android:textSize="14sp"
-            android:textStyle="bold"
             tools:text="Khám tổng quát" />
 
         <TextView
@@ -58,6 +58,7 @@
             android:lineSpacingExtra="1dp"
             android:maxLines="2"
             android:textColor="@color/text_muted"
+            android:fontFamily="@font/open_sans_regular"
             android:textSize="12sp"
             tools:text="Khám lâm sàng, cân nặng, nhiệt độ và các chỉ số sinh tồn." />
 
@@ -93,8 +94,8 @@
                     android:layout_height="wrap_content"
                     android:layout_marginStart="4dp"
                     android:textColor="@color/text_muted"
+                    android:fontFamily="@font/open_sans_medium"
                     android:textSize="11.5sp"
-                    android:textStyle="bold"
                     tools:text="30 phút" />
             </LinearLayout>
 
@@ -104,8 +105,8 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="10dp"
                 android:textColor="@color/brand_ink"
+                android:fontFamily="@font/open_sans_bold"
                 android:textSize="13sp"
-                android:textStyle="bold"
                 tools:text="180.000 ₫" />
         </LinearLayout>
     </LinearLayout>

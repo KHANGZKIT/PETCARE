@@ -104,8 +104,8 @@
                     android:letterSpacing="0.06"
                     android:text="ĐANG MỞ CỬA · ĐẾN 20:00"
                     android:textColor="@color/status_success_ink"
-                    android:textSize="10.5sp"
-                    android:textStyle="bold" />
+                    android:fontFamily="@font/open_sans_medium"
+                    android:textSize="10.5sp" />
             </FrameLayout>
 
             <!-- 2. Thẻ nội dung chính (Bo tròn 28dp phủ lấn nhẹ lên ảnh bìa) -->
@@ -129,8 +129,8 @@
                     android:lineSpacingExtra="2dp"
                     android:text="Phòng khám Thú y An Nhiên"
                     android:textColor="@color/text_foreground"
-                    android:textSize="22sp"
-                    android:textStyle="bold" />
+                    android:fontFamily="@font/open_sans_bold"
+                    android:textSize="22sp" />
 
                 <!-- Địa chỉ -->
                 <LinearLayout
@@ -154,6 +154,7 @@
                         android:layout_marginStart="6dp"
                         android:text="Số 12 Chùa Hà, Cầu Giấy, Hà Nội"
                         android:textColor="@color/text_muted"
+                        android:fontFamily="@font/open_sans_regular"
                         android:textSize="13sp" />
                 </LinearLayout>
 
@@ -187,8 +188,8 @@
                             android:layout_marginStart="5dp"
                             android:text="4.8"
                             android:textColor="@color/text_foreground"
-                            android:textSize="12sp"
-                            android:textStyle="bold" />
+                            android:fontFamily="@font/open_sans_medium"
+                            android:textSize="12sp" />
 
                         <TextView
                             android:id="@+id/tvClinicReviews"
@@ -197,6 +198,7 @@
                             android:layout_marginStart="4dp"
                             android:text="(214 đánh giá)"
                             android:textColor="@color/text_muted"
+                            android:fontFamily="@font/open_sans_regular"
                             android:textSize="12sp" />
                     </LinearLayout>
 
@@ -223,8 +225,8 @@
                             android:layout_marginStart="5dp"
                             android:text="1,2 km"
                             android:textColor="@color/text_muted"
-                            android:textSize="12sp"
-                            android:textStyle="bold" />
+                            android:fontFamily="@font/open_sans_medium"
+                            android:textSize="12sp" />
                     </LinearLayout>
                 </LinearLayout>
 
@@ -259,8 +261,8 @@
                             android:layout_marginStart="6dp"
                             android:text="Gọi phòng khám"
                             android:textColor="@color/brand_ink"
-                            android:textSize="13sp"
-                            android:textStyle="bold" />
+                            android:fontFamily="@font/open_sans_semibold"
+                            android:textSize="13sp" />
                     </LinearLayout>
 
                     <LinearLayout
@@ -288,8 +290,8 @@
                             android:layout_marginStart="6dp"
                             android:text="Chỉ đường"
                             android:textColor="@color/brand_ink"
-                            android:textSize="13sp"
-                            android:textStyle="bold" />
+                            android:fontFamily="@font/open_sans_semibold"
+                            android:textSize="13sp" />
                     </LinearLayout>
                 </LinearLayout>
 
@@ -302,6 +304,7 @@
                     android:lineSpacingExtra="3dp"
                     android:text="Phòng khám nhỏ cho chó và mèo. Khám tổng quát, tiêm phòng, nha khoa và tiểu phẫu, có phòng xét nghiệm tại chỗ và khu thăm khám yên tĩnh, ít gây căng thẳng cho thú cưng."
                     android:textColor="@color/text_muted"
+                    android:fontFamily="@font/open_sans_regular"
                     android:textSize="13sp" />
 
                 <!-- Thẻ Thông tin chi tiết (Giờ mở cửa, Cấp cứu, Ngôn ngữ, SĐT) -->
@@ -339,6 +342,7 @@
                                 android:layout_marginStart="8dp"
                                 android:text="Giờ mở cửa"
                                 android:textColor="@color/text_muted"
+                                android:fontFamily="@font/open_sans_regular"
                                 android:textSize="13sp" />
                         </LinearLayout>
 
@@ -350,8 +354,8 @@
                             android:gravity="end"
                             android:text="Thứ 2 – CN · 08:00 – 20:00"
                             android:textColor="@color/text_foreground"
-                            android:textSize="13.5sp"
-                            android:textStyle="bold" />
+                            android:fontFamily="@font/open_sans_semibold"
+                            android:textSize="13.5sp" />
                     </LinearLayout>
 
                     <View
@@ -374,6 +378,7 @@
                             android:layout_marginStart="23dp"
                             android:text="Tiếp nhận cấp cứu"
                             android:textColor="@color/text_muted"
+                            android:fontFamily="@font/open_sans_regular"
                             android:textSize="13sp" />
 
                         <TextView
@@ -384,8 +389,8 @@
                             android:gravity="end"
                             android:text="Đến 22:00"
                             android:textColor="@color/text_foreground"
-                            android:textSize="13.5sp"
-                            android:textStyle="bold" />
+                            android:fontFamily="@font/open_sans_semibold"
+                            android:textSize="13.5sp" />
                     </LinearLayout>
 
                     <View
@@ -408,6 +413,7 @@
                             android:layout_marginStart="23dp"
                             android:text="Ngôn ngữ"
                             android:textColor="@color/text_muted"
+                            android:fontFamily="@font/open_sans_regular"
                             android:textSize="13sp" />
 
                         <TextView
@@ -418,8 +424,8 @@
                             android:gravity="end"
                             android:text="Tiếng Việt, tiếng Anh"
                             android:textColor="@color/text_foreground"
-                            android:textSize="13.5sp"
-                            android:textStyle="bold" />
+                            android:fontFamily="@font/open_sans_semibold"
+                            android:textSize="13.5sp" />
                     </LinearLayout>
 
                     <View
@@ -455,6 +461,7 @@
                                 android:layout_marginStart="8dp"
                                 android:text="Điện thoại"
                                 android:textColor="@color/text_muted"
+                                android:fontFamily="@font/open_sans_regular"
                                 android:textSize="13sp" />
                         </LinearLayout>
 
@@ -466,8 +473,8 @@
                             android:gravity="end"
                             android:text="+84 28 3822 1140"
                             android:textColor="@color/text_foreground"
-                            android:textSize="13.5sp"
-                            android:textStyle="bold" />
+                            android:fontFamily="@font/open_sans_semibold"
+                            android:textSize="13.5sp" />
                     </LinearLayout>
                 </LinearLayout>
 
@@ -483,8 +490,8 @@
                         android:layout_alignParentStart="true"
                         android:text="Dịch vụ"
                         android:textColor="@color/text_foreground"
-                        android:textSize="16sp"
-                        android:textStyle="bold" />
+                        android:fontFamily="@font/open_sans_bold"
+                        android:textSize="17sp" />
 
                     <TextView
                         android:id="@+id/tvSeeAllServices"
@@ -495,8 +502,8 @@
                         android:focusable="true"
                         android:text="Xem tất cả"
                         android:textColor="@color/brand_primary"
-                        android:textSize="12.5sp"
-                        android:textStyle="bold" />
+                        android:fontFamily="@font/open_sans_medium"
+                        android:textSize="12.5sp" />
                 </RelativeLayout>
 
                 <!-- Danh sách Dịch vụ có thể chọn -->
@@ -558,8 +565,8 @@
                                 android:layout_height="wrap_content"
                                 android:text="Vị trí phòng khám"
                                 android:textColor="@color/text_foreground"
-                                android:textSize="13.5sp"
-                                android:textStyle="bold" />
+                                android:fontFamily="@font/open_sans_semibold"
+                                android:textSize="13.5sp" />
 
                             <TextView
                                 android:id="@+id/tvMapLocationDesc"
@@ -568,6 +575,7 @@
                                 android:layout_marginTop="2dp"
                                 android:text="Số 12 Chùa Hà, Cầu Giấy, Hà Nội · đi xe 6 phút"
                                 android:textColor="@color/text_muted"
+                                android:fontFamily="@font/open_sans_regular"
                                 android:textSize="12sp" />
                         </LinearLayout>
 
@@ -584,8 +592,8 @@
                             android:paddingEnd="16dp"
                             android:text="Chỉ đường"
                             android:textColor="@color/brand_ink"
-                            android:textSize="12.5sp"
-                            android:textStyle="bold" />
+                            android:fontFamily="@font/open_sans_semibold"
+                            android:textSize="12.5sp" />
                     </LinearLayout>
                 </LinearLayout>
 
@@ -619,8 +627,8 @@
                             android:layout_height="wrap_content"
                             android:text="Hủy lịch miễn phí"
                             android:textColor="@color/brand_ink"
-                            android:textSize="13sp"
-                            android:textStyle="bold" />
+                            android:fontFamily="@font/open_sans_semibold"
+                            android:textSize="13sp" />
 
                         <TextView
                             android:layout_width="match_parent"
@@ -629,6 +637,7 @@
                             android:lineSpacingExtra="1dp"
                             android:text="Hủy miễn phí trước giờ khám 4 tiếng. Phòng khám sẽ mở lại khung giờ của bạn ngay lập tức."
                             android:textColor="@color/brand_ink"
+                            android:fontFamily="@font/open_sans_regular"
                             android:textSize="12.5sp" />
                     </LinearLayout>
                 </LinearLayout>
@@ -659,8 +668,9 @@
             android:text="Đặt lịch khám"
             android:textAllCaps="false"
             android:textColor="@color/white"
-            android:textSize="15sp"
-            android:textStyle="bold" />
+            android:fontFamily="@font/open_sans_semibold"
+            android:includeFontPadding="false"
+            android:textSize="15sp" />
 
         <TextView
             android:id="@+id/tvFastestSlot"
@@ -670,6 +680,7 @@
             android:gravity="center"
             tools:text="Khung giờ trống gần nhất · Hôm nay · 08:30"
             android:textColor="@color/text_muted"
+            android:fontFamily="@font/open_sans_regular"
             android:textSize="11.5sp" />
     </LinearLayout>
 </FrameLayout>

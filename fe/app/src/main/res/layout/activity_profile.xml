@@ -43,8 +43,8 @@
                 android:includeFontPadding="false"
                 android:text="Tài khoản của tôi"
                 android:textColor="@color/text_foreground"
-                android:textSize="18sp"
-                android:textStyle="bold" />
+                android:fontFamily="@font/open_sans_bold"
+                android:textSize="19sp" />
 
             <TextView
                 android:layout_width="wrap_content"
@@ -53,6 +53,7 @@
                 android:includeFontPadding="false"
                 android:text="Hồ sơ cá nhân &amp; Cài đặt"
                 android:textColor="@color/text_muted"
+                android:fontFamily="@font/open_sans_regular"
                 android:textSize="12.5sp" />
         </LinearLayout>
     </LinearLayout>
@@ -97,8 +98,8 @@
                         android:layout_gravity="center"
                         android:text="LH"
                         android:textColor="@color/brand_primary"
-                        android:textSize="26sp"
-                        android:textStyle="bold" />
+                        android:fontFamily="@font/open_sans_bold"
+                        android:textSize="26sp" />
                 </FrameLayout>
 
                 <TextView
@@ -109,8 +110,8 @@
                     android:includeFontPadding="false"
                     android:text="Lê Thị Thu Hà"
                     android:textColor="@color/text_foreground"
-                    android:textSize="19sp"
-                    android:textStyle="bold" />
+                    android:fontFamily="@font/open_sans_bold"
+                    android:textSize="20sp" />
 
                 <TextView
                     android:id="@+id/tvProfileEmail"
@@ -120,6 +121,7 @@
                     android:includeFontPadding="false"
                     android:text="customer@petcare.com"
                     android:textColor="@color/text_muted"
+                    android:fontFamily="@font/open_sans_regular"
                     android:textSize="13.5sp" />
 
                 <TextView
@@ -134,8 +136,8 @@
                     android:paddingBottom="4dp"
                     android:text="Khách hàng"
                     android:textColor="@color/status_success_ink"
-                    android:textSize="11.5sp"
-                    android:textStyle="bold" />
+                    android:fontFamily="@font/open_sans_medium"
+                    android:textSize="11.5sp" />
             </LinearLayout>
 
             <TextView
@@ -146,8 +148,8 @@
                 android:letterSpacing="0.08"
                 android:text="THÔNG TIN CHI TIẾT"
                 android:textColor="@color/text_muted"
-                android:textSize="11.5sp"
-                android:textStyle="bold" />
+                android:fontFamily="@font/open_sans_medium"
+                android:textSize="11.5sp" />
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -183,6 +185,7 @@
                         android:layout_weight="1"
                         android:text="Họ và tên"
                         android:textColor="@color/text_muted"
+                        android:fontFamily="@font/open_sans_regular"
                         android:textSize="13.5sp" />
 
                     <TextView
@@ -191,8 +194,8 @@
                         android:layout_height="wrap_content"
                         android:text="Lê Thị Thu Hà"
                         android:textColor="@color/text_foreground"
-                        android:textSize="14sp"
-                        android:textStyle="bold" />
+                        android:fontFamily="@font/open_sans_medium"
+                        android:textSize="14sp" />
                 </LinearLayout>
 
                 <View
@@ -221,6 +224,7 @@
                         android:layout_weight="1"
                         android:text="Email"
                         android:textColor="@color/text_muted"
+                        android:fontFamily="@font/open_sans_regular"
                         android:textSize="13.5sp" />
 
                     <TextView
@@ -229,8 +233,8 @@
                         android:layout_height="wrap_content"
                         android:text="customer@petcare.com"
                         android:textColor="@color/text_foreground"
-                        android:textSize="14sp"
-                        android:textStyle="bold" />
+                        android:fontFamily="@font/open_sans_medium"
+                        android:textSize="14sp" />
                 </LinearLayout>
 
                 <View
@@ -259,6 +263,7 @@
                         android:layout_weight="1"
                         android:text="Số điện thoại"
                         android:textColor="@color/text_muted"
+                        android:fontFamily="@font/open_sans_regular"
                         android:textSize="13.5sp" />
 
                     <TextView
@@ -267,8 +272,8 @@
                         android:layout_height="wrap_content"
                         android:text="0988000001"
                         android:textColor="@color/text_foreground"
-                        android:textSize="14sp"
-                        android:textStyle="bold" />
+                        android:fontFamily="@font/open_sans_medium"
+                        android:textSize="14sp" />
                 </LinearLayout>
             </LinearLayout>
 
@@ -280,8 +285,8 @@
                 android:letterSpacing="0.08"
                 android:text="QUẢN LÝ &amp; TIỆN ÍCH"
                 android:textColor="@color/text_muted"
-                android:textSize="11.5sp"
-                android:textStyle="bold" />
+                android:fontFamily="@font/open_sans_medium"
+                android:textSize="11.5sp" />
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -324,8 +329,8 @@
                             android:layout_height="wrap_content"
                             android:text="Thú cưng của tôi"
                             android:textColor="@color/text_foreground"
-                            android:textSize="14sp"
-                            android:textStyle="bold" />
+                            android:fontFamily="@font/open_sans_medium"
+                            android:textSize="14sp" />
 
                         <TextView
                             android:layout_width="wrap_content"
@@ -333,6 +338,7 @@
                             android:layout_marginTop="1dp"
                             android:text="Quản lý hồ sơ các bé"
                             android:textColor="@color/text_muted"
+                            android:fontFamily="@font/open_sans_regular"
                             android:textSize="12sp" />
                     </LinearLayout>
 
@@ -376,8 +382,8 @@
                             android:layout_height="wrap_content"
                             android:text="Lịch hẹn đã đặt"
                             android:textColor="@color/text_foreground"
-                            android:textSize="14sp"
-                            android:textStyle="bold" />
+                            android:fontFamily="@font/open_sans_medium"
+                            android:textSize="14sp" />
 
                         <TextView
                             android:layout_width="wrap_content"
@@ -385,6 +391,7 @@
                             android:layout_marginTop="1dp"
                             android:text="Theo dõi tiến độ &amp; lịch sử khám"
                             android:textColor="@color/text_muted"
+                            android:fontFamily="@font/open_sans_regular"
                             android:textSize="12sp" />
                     </LinearLayout>
 
@@ -425,8 +432,8 @@
                             android:layout_height="wrap_content"
                             android:text="Bảng làm việc Nhân viên (S01)"
                             android:textColor="@color/brand_ink"
-                            android:textSize="14sp"
-                            android:textStyle="bold" />
+                            android:fontFamily="@font/open_sans_medium"
+                            android:textSize="14sp" />
 
                         <TextView
                             android:layout_width="wrap_content"
@@ -434,6 +441,7 @@
                             android:layout_marginTop="1dp"
                             android:text="Duyệt lịch hẹn &amp; quản lý ca trực"
                             android:textColor="@color/text_muted"
+                            android:fontFamily="@font/open_sans_regular"
                             android:textSize="12sp" />
                     </LinearLayout>
 
@@ -453,8 +461,8 @@
                 android:letterSpacing="0.08"
                 android:text="HỆ THỐNG &amp; HỖ TRỢ"
                 android:textColor="@color/text_muted"
-                android:textSize="11.5sp"
-                android:textStyle="bold" />
+                android:fontFamily="@font/open_sans_medium"
+                android:textSize="11.5sp" />
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -497,8 +505,8 @@
                             android:layout_height="wrap_content"
                             android:text="Cài đặt hệ thống"
                             android:textColor="@color/text_foreground"
-                            android:textSize="14sp"
-                            android:textStyle="bold" />
+                            android:fontFamily="@font/open_sans_medium"
+                            android:textSize="14sp" />
 
                         <TextView
                             android:layout_width="wrap_content"
@@ -506,6 +514,7 @@
                             android:layout_marginTop="1dp"
                             android:text="Thông báo, hotline CSKH, phiên bản"
                             android:textColor="@color/text_muted"
+                            android:fontFamily="@font/open_sans_regular"
                             android:textSize="12sp" />
                     </LinearLayout>
 
@@ -560,8 +569,8 @@
                                 android:layout_height="wrap_content"
                                 android:text="Thông báo nhắc lịch"
                                 android:textColor="@color/text_foreground"
-                                android:textSize="13.5sp"
-                                android:textStyle="bold" />
+                                android:fontFamily="@font/open_sans_semibold"
+                                android:textSize="13.5sp" />
 
                             <TextView
                                 android:layout_width="wrap_content"
@@ -569,6 +578,7 @@
                                 android:layout_marginTop="1dp"
                                 android:text="Nhận thông báo khi lịch hẹn thay đổi"
                                 android:textColor="@color/text_muted"
+                                android:fontFamily="@font/open_sans_regular"
                                 android:textSize="11.5sp" />
                         </LinearLayout>
 
@@ -614,8 +624,8 @@
                                 android:layout_height="wrap_content"
                                 android:text="Tổng đài CSKH"
                                 android:textColor="@color/text_foreground"
-                                android:textSize="13.5sp"
-                                android:textStyle="bold" />
+                                android:fontFamily="@font/open_sans_semibold"
+                                android:textSize="13.5sp" />
 
                             <TextView
                                 android:layout_width="wrap_content"
@@ -623,8 +633,8 @@
                                 android:layout_marginTop="1dp"
                                 android:text="1900 1234 (08:00 - 21:00)"
                                 android:textColor="@color/brand_primary"
-                                android:textSize="11.5sp"
-                                android:textStyle="bold" />
+                                android:fontFamily="@font/open_sans_medium"
+                                android:textSize="11.5sp" />
                         </LinearLayout>
 
                         <ImageView
@@ -660,6 +670,7 @@
                             android:layout_weight="1"
                             android:text="Phiên bản"
                             android:textColor="@color/text_foreground"
+                            android:fontFamily="@font/open_sans_regular"
                             android:textSize="13.5sp" />
 
                         <TextView
@@ -667,6 +678,7 @@
                             android:layout_height="wrap_content"
                             android:text="v1.0.0 (Release)"
                             android:textColor="@color/text_muted"
+                            android:fontFamily="@font/open_sans_regular"
                             android:textSize="12sp" />
                     </LinearLayout>
                 </LinearLayout>
@@ -683,8 +695,9 @@
                 android:letterSpacing="0.01"
                 android:text="Đăng xuất tài khoản"
                 android:textColor="@color/status_destructive"
+                android:fontFamily="@font/open_sans_semibold"
+                android:includeFontPadding="false"
                 android:textSize="15sp"
-                android:textStyle="bold"
                 app:backgroundTint="@null"
                 app:icon="@drawable/ic_x_circle"
                 app:iconGravity="textStart"
@@ -733,6 +746,8 @@
                 android:layout_marginTop="4dp"
                 android:text="Trang chủ"
                 android:textColor="@color/text_muted"
+                android:fontFamily="@font/open_sans_medium"
+                android:includeFontPadding="false"
                 android:textSize="11sp" />
         </LinearLayout>
 
@@ -759,6 +774,8 @@
                 android:layout_marginTop="4dp"
                 android:text="Lịch hẹn"
                 android:textColor="@color/text_muted"
+                android:fontFamily="@font/open_sans_medium"
+                android:includeFontPadding="false"
                 android:textSize="11sp" />
         </LinearLayout>
 
@@ -787,6 +804,8 @@
                 android:layout_marginTop="4dp"
                 android:text="Thú cưng"
                 android:textColor="@color/text_muted"
+                android:fontFamily="@font/open_sans_medium"
+                android:includeFontPadding="false"
                 android:textSize="11sp" />
         </LinearLayout>
 
@@ -820,8 +839,9 @@
                 android:layout_marginTop="2dp"
                 android:text="Tài khoản"
                 android:textColor="@color/brand_primary"
-                android:textSize="11sp"
-                android:textStyle="bold" />
+                android:fontFamily="@font/open_sans_semibold"
+                android:includeFontPadding="false"
+                android:textSize="11sp" />
         </LinearLayout>
     </LinearLayout>
 
