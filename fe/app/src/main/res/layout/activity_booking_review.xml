@@ -1,30 +1,31 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/surface_background">
+    android:background="@color/ds_background">
 
-    <!-- Nội dung cuộn chính -->
-    <androidx.core.widget.NestedScrollView
-        android:id="@+id/scrollViewContent"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:fillViewport="true"
-        android:scrollbars="none">
+        android:orientation="vertical">
 
+        <!-- 1. Top Bar cố định ngoài ScrollView (không cắt tiêu đề, tôn trọng WindowInsets) -->
         <LinearLayout
+            android:id="@+id/layoutTopHeader"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:paddingBottom="150dp">
+            android:background="@color/ds_background"
+            android:orientation="vertical">
 
-            <!-- 1. Thanh tiêu đề (App Bar) -->
-            <RelativeLayout
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
                 android:paddingStart="16dp"
-                android:paddingTop="36dp"
+                android:paddingTop="12dp"
                 android:paddingEnd="16dp"
                 android:paddingBottom="12dp">
 
@@ -32,61 +33,86 @@
                     android:id="@+id/btnBack"
                     android:layout_width="40dp"
                     android:layout_height="40dp"
-                    android:layout_alignParentStart="true"
-                    android:layout_centerVertical="true"
-                    android:background="@drawable/bg_floating_glass_btn_light"
+                    android:background="@drawable/bg_btn_outline"
                     android:contentDescription="Quay lại"
                     android:padding="10dp"
                     android:scaleType="fitCenter"
                     android:src="@drawable/ic_chevron_left"
-                    android:tint="@color/text_foreground" />
+                    android:tint="@color/ds_text_primary" />
 
                 <LinearLayout
-                    android:layout_width="wrap_content"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_centerVertical="true"
-                    android:layout_marginStart="14dp"
-                    android:layout_toEndOf="@id/btnBack"
+                    android:layout_marginStart="12dp"
+                    android:layout_weight="1"
                     android:orientation="vertical">
 
                     <TextView
+                        style="@style/TextAppearance.PetCare.Title"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:letterSpacing="-0.02"
-                        android:text="Xác nhận thông tin"
-                        android:textColor="@color/text_foreground"
                         android:fontFamily="@font/open_sans_bold"
-                        android:textSize="18sp" />
+                        android:letterSpacing="-0.015"
+                        android:text="Xác nhận thông tin"
+                        android:textColor="@color/ds_text_primary"
+                        android:textSize="18sp"
+                        android:textStyle="bold"
+                        app:fontFamily="@font/open_sans_bold" />
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="1dp"
-                        android:text="Bước 4/4"
-                        android:textColor="@color/text_muted"
                         android:fontFamily="@font/open_sans_medium"
-                        android:textSize="12.5sp" />
+                        android:text="Bước 4/4"
+                        android:textColor="@color/ds_text_secondary"
+                        android:textSize="12sp" />
                 </LinearLayout>
-            </RelativeLayout>
+            </LinearLayout>
 
-            <!-- 2. Thẻ Thông tin đặt lịch -->
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/ds_divider_hairline" />
+        </LinearLayout>
+
+        <!-- Nội dung cuộn chính -->
+        <androidx.core.widget.NestedScrollView
+            android:id="@+id/scrollViewContent"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:clipToPadding="false"
+            android:fillViewport="true"
+            android:scrollbars="none">
+
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="16dp"
-                android:layout_marginTop="4dp"
-                android:layout_marginEnd="16dp"
-                android:background="@drawable/bg_card_clinic"
                 android:orientation="vertical"
-                android:padding="16dp">
+                android:paddingTop="12dp"
+                android:paddingBottom="180dp">
 
-                <TextView
-                    android:layout_width="wrap_content"
+                <!-- 2. Thẻ Thông tin đặt lịch -->
+                <LinearLayout
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Thông tin đặt lịch"
-                    android:textColor="@color/text_foreground"
-                    android:fontFamily="@font/open_sans_bold"
-                    android:textSize="16sp" />
+                    android:layout_marginStart="16dp"
+                    android:layout_marginEnd="16dp"
+                    android:background="@drawable/bg_card_clinic"
+                    android:orientation="vertical"
+                    android:padding="16dp">
+
+                    <TextView
+                        style="@style/TextAppearance.PetCare.Title"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/open_sans_bold"
+                        android:text="Thông tin đặt lịch"
+                        android:textColor="@color/ds_text_primary"
+                        android:textSize="16sp"
+                        android:textStyle="bold"
+                        app:fontFamily="@font/open_sans_bold" />
 
                 <!-- Hàng 1: Phòng khám -->
                 <LinearLayout
@@ -161,19 +187,21 @@
                         android:paddingEnd="8dp">
 
                         <ImageView
-                            android:layout_width="14dp"
-                            android:layout_height="14dp"
+                            android:layout_width="13dp"
+                            android:layout_height="13dp"
                             android:contentDescription="@null"
-                            android:src="@drawable/ic_pencil" />
+                            android:src="@drawable/ic_pencil"
+                            android:tint="@color/ds_primary" />
 
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginStart="4dp"
                             android:text="Sửa"
-                            android:textColor="@color/brand_primary"
-                            android:fontFamily="@font/open_sans_medium"
-                            android:textSize="12sp" />
+                            android:textColor="@color/ds_primary"
+                            android:fontFamily="@font/open_sans_semibold"
+                            android:textSize="12sp"
+                            app:fontFamily="@font/open_sans_semibold" />
                     </LinearLayout>
                 </LinearLayout>
 
@@ -257,19 +285,21 @@
                         android:paddingEnd="8dp">
 
                         <ImageView
-                            android:layout_width="14dp"
-                            android:layout_height="14dp"
+                            android:layout_width="13dp"
+                            android:layout_height="13dp"
                             android:contentDescription="@null"
-                            android:src="@drawable/ic_pencil" />
+                            android:src="@drawable/ic_pencil"
+                            android:tint="@color/ds_primary" />
 
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginStart="4dp"
                             android:text="Sửa"
-                            android:textColor="@color/brand_primary"
-                            android:fontFamily="@font/open_sans_medium"
-                            android:textSize="12sp" />
+                            android:textColor="@color/ds_primary"
+                            android:fontFamily="@font/open_sans_semibold"
+                            android:textSize="12sp"
+                            app:fontFamily="@font/open_sans_semibold" />
                     </LinearLayout>
                 </LinearLayout>
 
@@ -333,8 +363,8 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_marginTop="2dp"
-                            android:text="Giờ Việt Nam (GMT+7)"
-                            android:textColor="@color/text_muted"
+                            android:text="Đến sớm 10 phút"
+                            android:textColor="@color/ds_text_secondary"
                             android:fontFamily="@font/open_sans_regular"
                             android:textSize="11.5sp" />
                     </LinearLayout>
@@ -352,19 +382,21 @@
                         android:paddingEnd="8dp">
 
                         <ImageView
-                            android:layout_width="14dp"
-                            android:layout_height="14dp"
+                            android:layout_width="13dp"
+                            android:layout_height="13dp"
                             android:contentDescription="@null"
-                            android:src="@drawable/ic_pencil" />
+                            android:src="@drawable/ic_pencil"
+                            android:tint="@color/ds_primary" />
 
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginStart="4dp"
                             android:text="Sửa"
-                            android:textColor="@color/brand_primary"
-                            android:fontFamily="@font/open_sans_medium"
-                            android:textSize="12sp" />
+                            android:textColor="@color/ds_primary"
+                            android:fontFamily="@font/open_sans_semibold"
+                            android:textSize="12sp"
+                            app:fontFamily="@font/open_sans_semibold" />
                     </LinearLayout>
                 </LinearLayout>
 
@@ -447,19 +479,21 @@
                         android:paddingEnd="8dp">
 
                         <ImageView
-                            android:layout_width="14dp"
-                            android:layout_height="14dp"
+                            android:layout_width="13dp"
+                            android:layout_height="13dp"
                             android:contentDescription="@null"
-                            android:src="@drawable/ic_pencil" />
+                            android:src="@drawable/ic_pencil"
+                            android:tint="@color/ds_primary" />
 
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginStart="4dp"
                             android:text="Sửa"
-                            android:textColor="@color/brand_primary"
-                            android:fontFamily="@font/open_sans_medium"
-                            android:textSize="12sp" />
+                            android:textColor="@color/ds_primary"
+                            android:fontFamily="@font/open_sans_semibold"
+                            android:textSize="12sp"
+                            app:fontFamily="@font/open_sans_semibold" />
                     </LinearLayout>
                 </LinearLayout>
             </LinearLayout>
@@ -484,9 +518,10 @@
                         android:layout_height="wrap_content"
                         android:layout_alignParentStart="true"
                         android:text="Tổng ước tính"
-                        android:textColor="@color/text_foreground"
-                        android:fontFamily="@font/open_sans_semibold"
-                        android:textSize="13.5sp" />
+                        android:textColor="@color/ds_text_primary"
+                        android:fontFamily="@font/open_sans_bold"
+                        android:textSize="14.5sp"
+                        app:fontFamily="@font/open_sans_bold" />
 
                     <TextView
                         android:id="@+id/tvEstimatedTotal"
@@ -494,9 +529,11 @@
                         android:layout_height="wrap_content"
                         android:layout_alignParentEnd="true"
                         android:text="250.000 ₫"
-                        android:textColor="@color/brand_ink"
+                        android:textColor="@color/ds_primary"
                         android:fontFamily="@font/open_sans_bold"
-                        android:textSize="17sp" />
+                        android:fontFeatureSettings="tnum"
+                        android:textSize="17sp"
+                        app:fontFamily="@font/open_sans_bold" />
                 </RelativeLayout>
 
                 <TextView
@@ -525,9 +562,10 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Ghi chú cho phòng khám"
-                    android:textColor="@color/text_foreground"
-                    android:fontFamily="@font/open_sans_medium"
-                    android:textSize="13.5sp" />
+                    android:textColor="@color/ds_text_primary"
+                    android:fontFamily="@font/open_sans_bold"
+                    android:textSize="14.5sp"
+                    app:fontFamily="@font/open_sans_bold" />
 
                 <EditText
                     android:id="@+id/etBookingNote"
@@ -536,11 +574,10 @@
                     android:layout_marginTop="10dp"
                     android:background="@drawable/bg_edit_text_multiline"
                     android:gravity="top|start"
-                    android:hint="Điều gì bác sĩ cần biết trước khi khám bé?"
+                    android:hint="VD: Mochi hơi mẩn nhẹ sau mũi tiêm lần trước."
                     android:minLines="3"
-                    android:text="Mochi hơi mẩn nhẹ sau mũi tiêm lần trước."
-                    android:textColor="@color/text_foreground"
-                    android:textColorHint="@color/text_muted"
+                    android:textColor="@color/ds_text_primary"
+                    android:textColorHint="#9E958E"
                     android:fontFamily="@font/open_sans_regular"
                     android:textSize="13sp" />
             </LinearLayout>
@@ -674,6 +711,7 @@
             </LinearLayout>
         </LinearLayout>
     </androidx.core.widget.NestedScrollView>
+    </LinearLayout>
 
     <!-- 6. Floating Status Pill (Hiển thị khi đang gửi yêu cầu) -->
     <LinearLayout

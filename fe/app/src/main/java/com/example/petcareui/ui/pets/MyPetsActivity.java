@@ -64,9 +64,13 @@ public class MyPetsActivity extends AppCompatActivity {
         setContentView(binding.getRoot());
 
         getWindow().setStatusBarColor(ContextCompat.getColor(this, R.color.ds_home_bg));
-        UiMotionUtils.applyWindowInsets(binding.getRoot(), binding.layoutTopBar, binding.bottomNavigation);
-
         extractIntentData();
+        UiMotionUtils.applyWindowInsets(
+                binding.getRoot(),
+                binding.layoutTopBar,
+                isBookingMode ? binding.layoutStickyBottom : binding.bottomNavigation
+        );
+
         setupTopBar();
         setupEmptyStateActions();
         setupStickyBottomBar();
@@ -74,11 +78,14 @@ public class MyPetsActivity extends AppCompatActivity {
 
         if (!isBookingMode) {
             binding.btnBack.setVisibility(View.GONE);
+            binding.tvPetsScreenTitle.setText("Thú cưng của tôi");
             binding.layoutStickyBottom.setVisibility(View.GONE);
             binding.tvSubtitleBooking.setVisibility(View.GONE);
             binding.bottomNavigation.setVisibility(View.VISIBLE);
         } else {
             binding.btnBack.setVisibility(View.VISIBLE);
+            binding.tvPetsScreenTitle.setText("Chọn thú cưng");
+            binding.tvSubtitleBooking.setText("Bước 3/4");
             binding.layoutStickyBottom.setVisibility(View.VISIBLE);
             binding.tvSubtitleBooking.setVisibility(View.VISIBLE);
             binding.bottomNavigation.setVisibility(View.GONE);

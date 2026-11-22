@@ -53,7 +53,7 @@ public class BookingReviewActivity extends AppCompatActivity {
         binding = ActivityBookingReviewBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
-        UiMotionUtils.applyWindowInsets(binding.getRoot(), null, binding.layoutStickyBottom);
+        UiMotionUtils.applyWindowInsets(binding.getRoot(), binding.layoutTopHeader, binding.layoutStickyBottom);
         UiMotionUtils.attachSpringTouch(binding.btnBack, binding.btnConfirmBooking, binding.btnPickOtherSlot);
 
         extractIntentData();

@@ -54,55 +54,66 @@
                 <LinearLayout
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_marginEnd="12dp"
+                    android:layout_marginEnd="8dp"
                     android:layout_weight="1"
                     android:orientation="vertical">
 
                     <TextView
-                        style="@style/TextAppearance.PetCare.Display"
-                        android:layout_width="wrap_content"
+                        android:id="@+id/tvPetsScreenTitle"
+                        style="@style/TextAppearance.PetCare.Title"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="Thú cưng của tôi" />
+                        android:ellipsize="end"
+                        android:fontFamily="@font/open_sans_bold"
+                        android:maxLines="1"
+                        android:text="Thú cưng của tôi"
+                        android:textColor="@color/ds_text_primary"
+                        android:textSize="19sp"
+                        android:textStyle="bold"
+                        app:fontFamily="@font/open_sans_bold" />
 
                     <TextView
                         android:id="@+id/tvSubtitleBooking"
-                        style="@style/TextAppearance.PetCare.Body"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="2dp"
-                        android:text="Chọn bé cho lần khám này"
+                        android:layout_marginTop="1dp"
+                        android:fontFamily="@font/open_sans_medium"
+                        android:text="Bước 3/4"
+                        android:textColor="@color/ds_text_secondary"
+                        android:textSize="12sp"
                         android:visibility="gone" />
                 </LinearLayout>
 
-                <!-- Nút hành động dạng viên thuốc (Pill button) '+ Thêm mới' nền Coral, chữ trắng -->
+                <!-- Nút chữ phẳng '+ Thêm mới' màu #C85428 (không ép chật tiêu đề, không tranh điểm nhấn với CTA đáy) -->
                 <LinearLayout
                     android:id="@+id/btnAddPetTop"
                     android:layout_width="wrap_content"
                     android:layout_height="38dp"
-                    android:background="@drawable/bg_btn_pill_coral"
+                    android:background="?attr/selectableItemBackgroundBorderless"
                     android:clickable="true"
                     android:focusable="true"
                     android:gravity="center"
                     android:orientation="horizontal"
-                    android:paddingStart="14dp"
-                    android:paddingEnd="16dp">
+                    android:paddingStart="8dp"
+                    android:paddingEnd="4dp">
 
                     <ImageView
                         android:layout_width="15dp"
                         android:layout_height="15dp"
                         android:contentDescription="@null"
                         android:src="@drawable/ic_plus"
-                        app:tint="@color/white" />
+                        app:tint="@color/ds_primary" />
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginStart="5dp"
+                        android:layout_marginStart="4dp"
                         android:fontFamily="@font/open_sans_semibold"
                         android:includeFontPadding="false"
                         android:text="Thêm mới"
-                        android:textColor="@color/white"
-                        android:textSize="13sp" />
+                        android:textColor="@color/ds_primary"
+                        android:textSize="13.5sp"
+                        app:fontFamily="@font/open_sans_semibold" />
                 </LinearLayout>
             </LinearLayout>
 
