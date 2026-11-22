@@ -200,7 +200,7 @@
                     android:adjustViewBounds="true"
                     android:contentDescription="@null"
                     android:scaleType="fitCenter"
-                    android:src="@drawable/ic_mascot_puppy_flat" />
+                    android:src="@drawable/mascot_corgi_running" />
 
                 <TextView
                     style="@style/TextAppearance.PetCare.Title"

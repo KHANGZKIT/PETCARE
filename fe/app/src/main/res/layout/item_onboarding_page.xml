@@ -35,7 +35,7 @@
                 android:contentDescription="@null"
                 android:padding="28dp"
                 android:scaleType="fitCenter"
-                tools:src="@drawable/mascot_petcare_intro" />
+                tools:src="@drawable/mascot_corgi_wave" />
 
         </com.google.android.material.card.MaterialCardView>
     </FrameLayout>

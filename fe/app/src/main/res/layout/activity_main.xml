@@ -156,7 +156,7 @@
                     android:adjustViewBounds="true"
                     android:contentDescription="Mascot PETCARE"
                     android:scaleType="fitEnd"
-                    android:src="@drawable/ic_mascot_puppy_flat"
+                    android:src="@drawable/mascot_corgi_wave"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent" />
 
@@ -702,7 +702,7 @@
                         android:adjustViewBounds="true"
                         android:contentDescription="@null"
                         android:scaleType="fitCenter"
-                        android:src="@drawable/ic_mascot_puppy_flat" />
+                        android:src="@drawable/mascot_corgi_running" />
 
                     <LinearLayout
                         android:layout_width="0dp"

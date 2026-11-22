@@ -88,12 +88,12 @@ public class OnboardingActivity extends AppCompatActivity {
     private void setupViewPager() {
         List<OnboardingItem> pages = Arrays.asList(
                 new OnboardingItem(
-                        R.drawable.mascot_petcare_intro,
+                        R.drawable.mascot_corgi_wave,
                         "Chăm sóc bé cưng nhẹ nhàng hơn mỗi ngày",
                         "Lưu giữ hồ sơ sức khỏe và theo dõi lịch trình của từng bé tại một nơi duy nhất."
                 ),
                 new OnboardingItem(
-                        R.drawable.ic_onboarding_booking_flat,
+                        R.drawable.mascot_corgi_booking,
                         "Đặt lịch khám nhanh, không lo chờ đợi",
                         "Chọn phòng khám gần bạn, xem khung giờ trống thực tế và đặt hẹn chỉ trong 30 giây."
                 )

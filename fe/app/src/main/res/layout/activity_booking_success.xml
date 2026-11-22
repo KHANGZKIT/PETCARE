@@ -24,28 +24,12 @@
             android:gravity="center"
             android:orientation="vertical">
 
-            <FrameLayout
-                android:layout_width="96dp"
-                android:layout_height="96dp"
-                android:background="@drawable/bg_success_circle_large">
-
-                <!-- Icon check circle xanh ngọc -->
-                <ImageView
-                    android:layout_width="44dp"
-                    android:layout_height="44dp"
-                    android:layout_gravity="center"
-                    android:contentDescription="@null"
-                    android:src="@drawable/ic_check_circle" />
-
-                <!-- Chấm trang trí nhỏ góc trên bên phải -->
-                <View
-                    android:layout_width="18dp"
-                    android:layout_height="18dp"
-                    android:layout_gravity="top|end"
-                    android:layout_marginTop="3dp"
-                    android:layout_marginEnd="3dp"
-                    android:background="@drawable/bg_success_pin_dot" />
-            </FrameLayout>
+            <ImageView
+                android:layout_width="168dp"
+                android:layout_height="140dp"
+                android:contentDescription="Mascot đặt lịch thành công"
+                android:scaleType="fitCenter"
+                android:src="@drawable/mascot_corgi_success" />
 
             <TextView
                 android:layout_width="wrap_content"

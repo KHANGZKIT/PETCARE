@@ -80,7 +80,7 @@
                 android:adjustViewBounds="true"
                 android:contentDescription="PETCARE Mascot"
                 android:scaleType="fitCenter"
-                android:src="@drawable/mascot_petcare_intro" />
+                android:src="@drawable/mascot_corgi_wave" />
         </LinearLayout>
 
         <!-- 2. Screen Title & Subtitle -->
