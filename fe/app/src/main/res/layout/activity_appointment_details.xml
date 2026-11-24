@@ -273,15 +273,19 @@
                 android:padding="16dp">
 
                 <LinearLayout
+                    android:id="@+id/rowClinicHeader"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:background="?attr/selectableItemBackground"
+                    android:clickable="true"
+                    android:focusable="true"
                     android:gravity="center_vertical"
                     android:orientation="horizontal">
 
                     <FrameLayout
                         android:layout_width="40dp"
                         android:layout_height="40dp"
-                        android:background="@drawable/bg_service_icon">
+                        android:background="@drawable/bg_shortcut_icon_cream">
 
                         <ImageView
                             android:layout_width="18dp"
@@ -289,7 +293,7 @@
                             android:layout_gravity="center"
                             android:contentDescription="@null"
                             android:src="@drawable/ic_map_pin"
-                            app:tint="@color/brand_ink" />
+                            app:tint="@color/ds_primary" />
                     </FrameLayout>
 
                     <LinearLayout
@@ -303,21 +307,30 @@
                             android:id="@+id/tvClinicName"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:text="Phòng khám Thú y An Nhiên"
-                            android:textColor="@color/text_foreground"
-                            android:fontFamily="@font/open_sans_medium"
-                            android:textSize="14.5sp" />
+                            android:fontFamily="@font/open_sans_bold"
+                            android:text="Phòng khám thú y"
+                            android:textColor="@color/ds_text_primary"
+                            android:textSize="14.5sp"
+                            app:fontFamily="@font/open_sans_bold" />
 
                         <TextView
                             android:id="@+id/tvClinicArea"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_marginTop="2dp"
-                            android:text="Cầu Giấy · Hà Nội"
-                            android:textColor="@color/text_muted"
                             android:fontFamily="@font/open_sans_regular"
+                            android:text="Hà Nội"
+                            android:textColor="@color/ds_text_secondary"
                             android:textSize="12.5sp" />
                     </LinearLayout>
+
+                    <ImageView
+                        android:layout_width="16dp"
+                        android:layout_height="16dp"
+                        android:layout_marginStart="6dp"
+                        android:contentDescription="@null"
+                        android:src="@drawable/ic_chevron_right"
+                        app:tint="@color/ds_text_secondary" />
                 </LinearLayout>
 
                 <View
@@ -325,7 +338,7 @@
                     android:layout_height="1dp"
                     android:layout_marginTop="14dp"
                     android:layout_marginBottom="14dp"
-                    android:background="#F2F1EE" />
+                    android:background="@color/ds_divider_hairline" />
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -340,7 +353,7 @@
                         android:layout_height="42dp"
                         android:layout_marginEnd="6dp"
                         android:layout_weight="1"
-                        android:background="@drawable/bg_action_chip_teal"
+                        android:background="@drawable/bg_btn_outline_primary"
                         android:clickable="true"
                         android:focusable="true"
                         android:gravity="center"
@@ -351,16 +364,17 @@
                             android:layout_height="15dp"
                             android:contentDescription="@null"
                             android:src="@drawable/ic_navigation"
-                            app:tint="@color/brand_ink" />
+                            app:tint="@color/ds_primary" />
 
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginStart="6dp"
-                            android:text="Chỉ đường"
-                            android:textColor="@color/brand_ink"
                             android:fontFamily="@font/open_sans_semibold"
-                            android:textSize="13sp" />
+                            android:text="Chỉ đường"
+                            android:textColor="@color/ds_primary"
+                            android:textSize="13sp"
+                            app:fontFamily="@font/open_sans_semibold" />
                     </LinearLayout>
 
                     <!-- Nút Gọi phòng khám -->
@@ -381,16 +395,17 @@
                             android:layout_height="15dp"
                             android:contentDescription="@null"
                             android:src="@drawable/ic_phone"
-                            app:tint="@color/text_foreground" />
+                            app:tint="@color/ds_text_primary" />
 
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginStart="6dp"
-                            android:text="Gọi phòng khám"
-                            android:textColor="@color/text_foreground"
                             android:fontFamily="@font/open_sans_semibold"
-                            android:textSize="13sp" />
+                            android:text="Gọi phòng khám"
+                            android:textColor="@color/ds_text_primary"
+                            android:textSize="13sp"
+                            app:fontFamily="@font/open_sans_semibold" />
                     </LinearLayout>
                 </LinearLayout>
             </LinearLayout>
@@ -597,8 +612,12 @@
 
                 <!-- Phần 3: Thú cưng -->
                 <LinearLayout
+                    android:id="@+id/rowPetProfile"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:background="?attr/selectableItemBackground"
+                    android:clickable="true"
+                    android:focusable="true"
                     android:gravity="center_vertical"
                     android:orientation="horizontal">
 

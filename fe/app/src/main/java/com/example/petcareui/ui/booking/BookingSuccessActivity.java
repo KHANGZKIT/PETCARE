@@ -31,6 +31,7 @@ public class BookingSuccessActivity extends AppCompatActivity {
     public static final String EXTRA_SELECTED_TIME = "extra_selected_time";
     public static final String EXTRA_SELECTED_PET = "extra_selected_pet";
     public static final String EXTRA_BOOKING_REF = "extra_booking_ref";
+    public static final String EXTRA_CREATED_APPT = "extra_created_appt";
 
     private ActivityBookingSuccessBinding binding;
 
@@ -39,7 +40,8 @@ public class BookingSuccessActivity extends AppCompatActivity {
     private DateItem dateItem;
     private TimeSlotItem timeSlotItem;
     private PetItem petItem;
-    private String bookingRef = "PC-48213";
+    private com.example.petcareui.data.model.AppointmentItem createdAppt;
+    private String bookingRef = "PC-0001";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -88,6 +90,12 @@ public class BookingSuccessActivity extends AppCompatActivity {
         }
         if (getIntent().hasExtra(EXTRA_BOOKING_REF)) {
             bookingRef = getIntent().getStringExtra(EXTRA_BOOKING_REF);
+        }
+        if (getIntent().hasExtra(EXTRA_CREATED_APPT)) {
+            try {
+                createdAppt = (com.example.petcareui.data.model.AppointmentItem) getIntent().getSerializableExtra(EXTRA_CREATED_APPT);
+            } catch (Exception ignored) {
+            }
         }
 
         // Dữ liệu fallback chuẩn theo data.js (STAFF_CLINIC, SERVICES[1], PETS[0], SELECTED) nếu mở độc lập
@@ -154,11 +162,13 @@ public class BookingSuccessActivity extends AppCompatActivity {
     }
 
     private void setupActions() {
-        // Nút chính: Xem chi tiết lịch hẹn -> Mở Chi tiết lịch hẹn (C13)
+        // Nút chính: Xem chi tiết lịch hẹn -> Mở Chi tiết lịch hẹn (C13) với dữ liệu thật vừa đặt
         binding.btnViewAppointmentDetails.setOnClickListener(v -> {
             Intent intent = new Intent(this, com.example.petcareui.ui.appointments.AppointmentDetailsActivity.class);
             intent.putExtra(com.example.petcareui.ui.appointments.AppointmentDetailsActivity.EXTRA_REF, bookingRef);
-            intent.putExtra(com.example.petcareui.ui.appointments.AppointmentDetailsActivity.EXTRA_STATE, "pending");
+            if (createdAppt != null) {
+                intent.putExtra(com.example.petcareui.ui.appointments.AppointmentDetailsActivity.EXTRA_APPT, createdAppt);
+            }
             startActivity(intent);
             finish();
         });

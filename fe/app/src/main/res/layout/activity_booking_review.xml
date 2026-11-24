@@ -574,7 +574,7 @@
                     android:layout_marginTop="10dp"
                     android:background="@drawable/bg_edit_text_multiline"
                     android:gravity="top|start"
-                    android:hint="VD: Mochi hơi mẩn nhẹ sau mũi tiêm lần trước."
+                    android:hint="VD: Bé hơi nhát người lạ, từng dị ứng kháng sinh..."
                     android:minLines="3"
                     android:textColor="@color/ds_text_primary"
                     android:textColorHint="#9E958E"

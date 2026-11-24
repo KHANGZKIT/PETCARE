@@ -118,6 +118,9 @@ public class StaffDashboardActivity extends AppCompatActivity {
             @Override
             public void onResponse(Call<List<AppointmentResponse>> call, Response<List<AppointmentResponse>> response) {
                 if (response.isSuccessful() && response.body() != null) {
+                    boolean hasUnread = NotificationsActivity.hasUnreadStaffNotifications(StaffDashboardActivity.this, response.body());
+                    binding.viewStaffNotificationBadge.setVisibility(hasUnread ? View.VISIBLE : View.GONE);
+
                     pendingList.clear();
                     todayScheduleList.clear();
                     for (AppointmentResponse res : response.body()) {

@@ -29,9 +29,16 @@ public class AppointmentResponse {
     private Long petId;
     private String petName;
     private String petSpecies;
+    private String petBreed;
+    private String petGender;
+    private String petAge;
     private Long clinicId;
     private String clinicName;
     private String clinicAddress;
+    private String clinicArea;
+    private String clinicPhone;
+    private Double clinicLatitude;
+    private Double clinicLongitude;
     private Long serviceId;
     private String serviceName;
     private Integer durationMinutes;
@@ -52,9 +59,16 @@ public class AppointmentResponse {
                 .petId(entity.getPet().getId())
                 .petName(entity.getPet().getName())
                 .petSpecies(entity.getPet().getSpecies())
+                .petBreed(entity.getPet().getBreed())
+                .petGender(entity.getPet().getGender())
+                .petAge(entity.getPet().getAge())
                 .clinicId(entity.getClinic().getId())
                 .clinicName(entity.getClinic().getName())
                 .clinicAddress(entity.getClinic().getAddress())
+                .clinicArea(entity.getClinic().getArea())
+                .clinicPhone(entity.getClinic().getPhone())
+                .clinicLatitude(entity.getClinic().getLatitude())
+                .clinicLongitude(entity.getClinic().getLongitude())
                 .serviceId(entity.getService().getId())
                 .serviceName(entity.getService().getName())
                 .durationMinutes(entity.getService().getDurationMinutes())

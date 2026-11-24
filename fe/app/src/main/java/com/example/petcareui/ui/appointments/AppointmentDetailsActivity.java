@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -12,28 +13,31 @@ import androidx.core.content.ContextCompat;
 
 import com.example.petcareui.R;
 import com.example.petcareui.data.api.ApiClient;
-import com.example.petcareui.data.model.AppointmentItem;
 import com.example.petcareui.data.dto.response.AppointmentResponse;
+import com.example.petcareui.data.dto.response.ClinicResponse;
+import com.example.petcareui.data.dto.response.PetResponse;
+import com.example.petcareui.data.model.AppointmentItem;
+import com.example.petcareui.data.model.ClinicItem;
+import com.example.petcareui.data.model.PetItem;
 import com.example.petcareui.databinding.ActivityAppointmentDetailsBinding;
 import com.example.petcareui.ui.clinic.ClinicDetailsActivity;
 import com.example.petcareui.ui.clinic.ClinicListActivity;
 import com.example.petcareui.ui.pets.MyPetsActivity;
+import com.example.petcareui.ui.pets.PetDetailsActivity;
 import com.example.petcareui.utils.UiMotionUtils;
+
+import java.time.LocalDate;
+import java.time.OffsetDateTime;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.List;
+import java.util.Locale;
 
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-/**
- * Màn hình C13: Chi tiết lịch hẹn (Appointment Details).
- * Bám sát nguyên mẫu React C13AppointmentDetails và Design System Spec.
- * Hỗ trợ trọn vẹn 5 phần / 5 trạng thái theo thiết kế:
- * 1. Chờ xác nhận (Pending)
- * 2. Đã xác nhận (Confirmed)
- * 3. Đã hoàn thành (Completed)
- * 4. Hộp thoại xác nhận hủy lịch (Cancel Dialog)
- * 5. Đã hủy (Cancelled kèm thanh Hoàn tác & Đặt lịch khác)
- */
 public class AppointmentDetailsActivity extends AppCompatActivity {
 
     public static final String EXTRA_REF = "extra_ref";
@@ -43,7 +47,9 @@ public class AppointmentDetailsActivity extends AppCompatActivity {
     private ActivityAppointmentDetailsBinding binding;
 
     private AppointmentItem appt;
-    private String currentState = "pending"; // pending, confirmed, completed, cancel-dialog, cancelled
+    private ClinicItem resolvedClinicItem;
+    private PetItem resolvedPetItem;
+    private String currentState = "";
     private String previousStateBeforeDialog = "pending";
 
     @Override
@@ -54,12 +60,9 @@ public class AppointmentDetailsActivity extends AppCompatActivity {
 
         UiMotionUtils.applyWindowInsets(binding.getRoot(), binding.layoutTopBar, null);
 
-        extractIntentData();
-        setupTopBar();
-        populateStaticData();
         setupStateTabs();
         setupInteractiveActions();
-        applyState(currentState);
+        extractIntentData();
     }
 
     private void extractIntentData() {
@@ -74,48 +77,75 @@ public class AppointmentDetailsActivity extends AppCompatActivity {
             currentState = getIntent().getStringExtra(EXTRA_STATE);
         }
 
-        // Dữ liệu mặc định chuẩn PC-48213 (SELECTED, STAFF_CLINIC, PETS[0], SERVICES[1])
-        if (appt == null) {
-            String ref = getIntent().getStringExtra(EXTRA_REF);
-            if (ref == null || ref.isEmpty()) {
-                ref = "PC-48213";
+        if (appt != null) {
+            resolveStateFromAppt();
+            bindAppointmentToUi();
+            enrichClinicAndPetDetails();
+            // Refresh latest status & fields from backend if id is known
+            Long apptId = appt.getId();
+            if (apptId != null && apptId > 0) {
+                fetchAppointmentFromServer(apptId, false);
             }
-            java.time.LocalDate today = java.time.LocalDate.now();
-            String dayOfWeekStr = "Thứ 2";
-            switch (today.getDayOfWeek()) {
-                case MONDAY: dayOfWeekStr = "Thứ 2"; break;
-                case TUESDAY: dayOfWeekStr = "Thứ 3"; break;
-                case WEDNESDAY: dayOfWeekStr = "Thứ 4"; break;
-                case THURSDAY: dayOfWeekStr = "Thứ 5"; break;
-                case FRIDAY: dayOfWeekStr = "Thứ 6"; break;
-                case SATURDAY: dayOfWeekStr = "Thứ 7"; break;
-                case SUNDAY: dayOfWeekStr = "Chủ nhật"; break;
+        } else {
+            Long parsedId = parseIdFromRef(getIntent().getStringExtra(EXTRA_REF));
+            if (parsedId != null && parsedId > 0) {
+                fetchAppointmentFromServer(parsedId, true);
+            } else {
+                Toast.makeText(this, "Không tìm thấy thông tin lịch hẹn", Toast.LENGTH_SHORT).show();
+                finish();
             }
-            String fallbackDate = dayOfWeekStr + ", " + String.format(java.util.Locale.US, "%02d/%02d/%d", today.getDayOfMonth(), today.getMonthValue(), today.getYear());
-
-            appt = new AppointmentItem(
-                    1L,
-                    ref,
-                    "Phòng khám Thú y An Nhiên",
-                    "Cầu Giấy",
-                    "Mochi",
-                    R.drawable.img_pet_mochi,
-                    "Tiêm phòng",
-                    fallbackDate,
-                    "10:00",
-                    "PENDING",
-                    "250.000 ₫",
-                    "Gửi cách đây 2 giờ",
-                    "Mochi hơi mẩn nhẹ sau mũi tiêm lần trước."
-            );
         }
+    }
 
+    private Long parseIdFromRef(String ref) {
+        if (ref == null || ref.trim().isEmpty()) return null;
+        try {
+            String s = ref.trim();
+            if (s.toUpperCase(Locale.ROOT).startsWith("PC-")) {
+                s = s.substring(3).trim();
+            }
+            return Long.parseLong(s);
+        } catch (Exception ignored) {
+            return null;
+        }
+    }
+
+    private void fetchAppointmentFromServer(Long apptId, boolean finishOnFail) {
+        ApiClient.getAppointmentApi().getAppointmentById(apptId).enqueue(new Callback<AppointmentResponse>() {
+            @Override
+            public void onResponse(Call<AppointmentResponse> call, Response<AppointmentResponse> response) {
+                if (isFinishing() || isDestroyed()) return;
+                if (response.isSuccessful() && response.body() != null) {
+                    appt = response.body().toAppointmentItem();
+                    currentState = "";
+                    resolveStateFromAppt();
+                    bindAppointmentToUi();
+                    enrichClinicAndPetDetails();
+                } else if (finishOnFail) {
+                    Toast.makeText(AppointmentDetailsActivity.this, "Không tải được chi tiết lịch hẹn", Toast.LENGTH_SHORT).show();
+                    finish();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<AppointmentResponse> call, Throwable t) {
+                if (isFinishing() || isDestroyed()) return;
+                if (finishOnFail) {
+                    Toast.makeText(AppointmentDetailsActivity.this, "Lỗi kết nối máy chủ khi tải lịch hẹn", Toast.LENGTH_SHORT).show();
+                    finish();
+                }
+            }
+        });
+    }
+
+    private void resolveStateFromAppt() {
+        if (appt == null) return;
         if (currentState == null || currentState.isEmpty()) {
             if ("CONFIRMED".equalsIgnoreCase(appt.getStatus())) {
                 currentState = "confirmed";
             } else if ("COMPLETED".equalsIgnoreCase(appt.getStatus())) {
                 currentState = "completed";
-            } else if ("CANCELLED".equalsIgnoreCase(appt.getStatus())) {
+            } else if ("CANCELLED".equalsIgnoreCase(appt.getStatus()) || "REJECTED".equalsIgnoreCase(appt.getStatus())) {
                 currentState = "cancelled";
             } else {
                 currentState = "pending";
@@ -123,68 +153,188 @@ public class AppointmentDetailsActivity extends AppCompatActivity {
         }
     }
 
-    private void setupTopBar() {
+    private void bindAppointmentToUi() {
+        if (appt == null) return;
+
         binding.tvClinicNameTop.setText(appt.getClinic());
         binding.btnBack.setOnClickListener(v -> finish());
-    }
 
-    private void populateStaticData() {
-        binding.tvRequestedTime.setText(appt.getRequested() != null ? appt.getRequested() : "Gửi cách đây 2 giờ");
+        String reqText = appt.getRequested();
+        binding.tvRequestedTime.setText(reqText != null && !reqText.isEmpty() ? reqText : "Đã ghi nhận");
 
-        // Thẻ phòng khám
+        // Thẻ Phòng khám
         binding.tvClinicName.setText(appt.getClinic());
-        String clinicAreaStr = appt.getClinicArea() != null ? appt.getClinicArea() : "Hà Nội";
-        if (!clinicAreaStr.contains("Hà Nội")) {
-            clinicAreaStr = clinicAreaStr + " · Hà Nội";
-        }
-        binding.tvClinicArea.setText(clinicAreaStr);
+        String addrDisplay = (appt.getClinicAddress() != null && !appt.getClinicAddress().trim().isEmpty())
+                ? appt.getClinicAddress().trim()
+                : (appt.getClinicArea() != null ? appt.getClinicArea().trim() : "Hà Nội");
+        binding.tvClinicArea.setText(addrDisplay);
 
-        // Thẻ Dịch vụ & Chi phí
+        // Dịch vụ & Thời lượng thật
         binding.tvServiceName.setText(appt.getService());
         binding.tvServicePrice.setText(appt.getPrice());
-        binding.tvServiceDuration.setText("45 phút");
+        int dur = appt.getDurationMinutes() != null && appt.getDurationMinutes() > 0 ? appt.getDurationMinutes() : 30;
+        binding.tvServiceDuration.setText(dur + " phút");
         binding.tvPetName.setText(appt.getPet());
 
-        // Thẻ Thú cưng (đồng nhất nguồn avatar với màn Thú cưng của tôi)
-        int avatarRes = resolveUnifiedPetAvatar(appt.getPet(), appt.getPetImgRes());
+        // Thú cưng
+        int avatarRes = resolveUnifiedPetAvatar(appt.getPet(), appt.getPetSpecies(), appt.getPetImgRes());
         binding.ivPetAvatar.setImageResource(avatarRes);
         if (avatarRes == R.drawable.img_pet_bong) {
             binding.ivPetAvatar.setPadding(0, 0, 0, 0);
-            binding.ivPetAvatar.setScaleType(android.widget.ImageView.ScaleType.CENTER_CROP);
+            binding.ivPetAvatar.setScaleType(ImageView.ScaleType.CENTER_CROP);
         } else {
             int pad = Math.round(4 * getResources().getDisplayMetrics().density);
             binding.ivPetAvatar.setPadding(pad, pad, pad, pad);
-            binding.ivPetAvatar.setScaleType(android.widget.ImageView.ScaleType.FIT_CENTER);
+            binding.ivPetAvatar.setScaleType(ImageView.ScaleType.FIT_CENTER);
         }
         binding.tvCardPetName.setText(appt.getPet());
-        if ("Mochi".equalsIgnoreCase(appt.getPet())) {
-            binding.tvPetDetails.setText("Pomeranian · 2 tuổi · Cái");
-        } else if ("Bông".equalsIgnoreCase(appt.getPet()) || (appt.getPet() != null && appt.getPet().toLowerCase().contains("miu"))) {
-            binding.tvPetDetails.setText("Mèo Anh lông ngắn · 2 tuổi · Cái");
-        } else {
-            binding.tvPetDetails.setText("Thú cưng · Hồ sơ đã lưu");
-        }
+        binding.tvPetDetails.setText(buildPetSubtitle(appt.getPetSpecies(), appt.getPetBreed(), appt.getPetAge(), appt.getPetGender()));
 
-        // Thẻ Ngày & Giờ (định dạng tự nhiên)
+        // Ngày & Giờ khám
         binding.tvDate.setText(formatNaturalDate(appt.getDate()));
         binding.tvTime.setText(appt.getTime());
 
-        // Thẻ Timeline Step 1
-        binding.tvTimelineStep1Time.setText(appt.getDate() + " · 07:40");
+        // Timeline Step 1 (thời gian tạo thực tế từ createdAt)
+        binding.tvTimelineStep1Time.setText(formatCreatedTimestamp(appt.getCreatedAt(), appt.getDate()));
 
-        // Thân hộp thoại hủy
-        binding.tvDialogBody.setText(appt.getClinic() + " sẽ được thông báo ngay và khung giờ " + appt.getTime() + " được mở lại. Hành động này không thể hoàn tác.");
+        // Hộp thoại hủy
+        binding.tvDialogBody.setText(appt.getClinic() + " sẽ được thông báo ngay và khung giờ " + appt.getTime() + " được mở lại.");
+
+        applyState(currentState);
     }
 
-    private int resolveUnifiedPetAvatar(String petName, int currentRes) {
+    private String buildPetSubtitle(String species, String breed, String age, String gender) {
+        StringBuilder sb = new StringBuilder();
+        if (breed != null && !breed.trim().isEmpty()) {
+            sb.append(breed.trim());
+        } else if (species != null && !species.trim().isEmpty()) {
+            sb.append(species.trim());
+        }
+        if (age != null && !age.trim().isEmpty()) {
+            if (sb.length() > 0) sb.append(" · ");
+            sb.append(age.trim());
+        }
+        if (gender != null && !gender.trim().isEmpty()) {
+            String cleanSex = gender.replace("♂", "").replace("♀", "").trim();
+            if (!cleanSex.isEmpty()) {
+                if (sb.length() > 0) sb.append(" · ");
+                sb.append(cleanSex);
+            }
+        }
+        return sb.length() > 0 ? sb.toString() : "Xem hồ sơ thú cưng";
+    }
+
+    private void enrichClinicAndPetDetails() {
+        if (appt == null) return;
+
+        // 1. Tải thông tin thật của phòng khám (SĐT, địa chỉ, tọa độ bản đồ)
+        Long clinicId = appt.getClinicId();
+        if (clinicId != null && clinicId > 0) {
+            ApiClient.getClinicApi().getClinicById(clinicId).enqueue(new Callback<ClinicResponse>() {
+                @Override
+                public void onResponse(Call<ClinicResponse> call, Response<ClinicResponse> response) {
+                    if (isFinishing() || isDestroyed()) return;
+                    if (response.isSuccessful() && response.body() != null) {
+                        ClinicResponse clinicRes = response.body();
+                        resolvedClinicItem = clinicRes.toClinicItem();
+                        appt.setClinicPhone(clinicRes.getPhone());
+                        appt.setClinicAddress(clinicRes.getAddress());
+                        appt.setClinicLatitude(clinicRes.getLatitude());
+                        appt.setClinicLongitude(clinicRes.getLongitude());
+                        if (clinicRes.getAddress() != null && !clinicRes.getAddress().trim().isEmpty()) {
+                            binding.tvClinicArea.setText(clinicRes.getAddress().trim());
+                        }
+                    }
+                }
+
+                @Override
+                public void onFailure(Call<ClinicResponse> call, Throwable t) {
+                }
+            });
+        } else {
+            // Nếu mở từ thẻ cũ chưa gắn clinicId, tra cứu theo tên phòng khám
+            ApiClient.getClinicApi().getAllClinics(null).enqueue(new Callback<List<ClinicResponse>>() {
+                @Override
+                public void onResponse(Call<List<ClinicResponse>> call, Response<List<ClinicResponse>> response) {
+                    if (isFinishing() || isDestroyed() || response.body() == null) return;
+                    String targetName = appt.getClinic() != null ? appt.getClinic().trim() : "";
+                    for (ClinicResponse c : response.body()) {
+                        if (c.getName() != null && c.getName().trim().equalsIgnoreCase(targetName)) {
+                            resolvedClinicItem = c.toClinicItem();
+                            appt.setClinicId(c.getId());
+                            appt.setClinicPhone(c.getPhone());
+                            appt.setClinicAddress(c.getAddress());
+                            appt.setClinicLatitude(c.getLatitude());
+                            appt.setClinicLongitude(c.getLongitude());
+                            if (c.getAddress() != null && !c.getAddress().trim().isEmpty()) {
+                                binding.tvClinicArea.setText(c.getAddress().trim());
+                            }
+                            break;
+                        }
+                    }
+                }
+
+                @Override
+                public void onFailure(Call<List<ClinicResponse>> call, Throwable t) {
+                }
+            });
+        }
+
+        // 2. Tải đúng hồ sơ thú cưng của lịch hẹn để hiển thị phụ đề & mở thẳng PetDetailsActivity
+        ApiClient.getPetApi().getMyPets().enqueue(new Callback<List<PetResponse>>() {
+            @Override
+            public void onResponse(Call<List<PetResponse>> call, Response<List<PetResponse>> response) {
+                if (isFinishing() || isDestroyed() || response.body() == null) return;
+                Long targetPetId = appt.getPetId();
+                String targetPetName = appt.getPet() != null ? appt.getPet().trim() : "";
+                for (PetResponse p : response.body()) {
+                    boolean idMatch = targetPetId != null && targetPetId.equals(p.getId());
+                    boolean nameMatch = targetPetId == null && p.getName() != null && p.getName().trim().equalsIgnoreCase(targetPetName);
+                    if (idMatch || nameMatch) {
+                        resolvedPetItem = p.toPetItem();
+                        appt.setPetId(p.getId());
+                        appt.setPetSpecies(p.getSpecies());
+                        appt.setPetBreed(p.getBreed());
+                        appt.setPetAge(p.getAge());
+                        appt.setPetGender(p.getGender());
+                        binding.tvPetDetails.setText(buildPetSubtitle(
+                                p.getSpecies(),
+                                resolvedPetItem.getBreed(),
+                                resolvedPetItem.getAge(),
+                                resolvedPetItem.getSex()
+                        ));
+                        break;
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(Call<List<PetResponse>> call, Throwable t) {
+            }
+        });
+    }
+
+    private int resolveUnifiedPetAvatar(String petName, String petSpecies, int currentRes) {
         if (currentRes == R.drawable.img_pet_bong || currentRes == R.drawable.mascot_corgi_running || currentRes == R.drawable.mascot_corgi_wave) {
             return currentRes;
         }
-        String lower = petName != null ? petName.toLowerCase(java.util.Locale.ROOT) : "";
-        if (lower.contains("mèo") || lower.contains("bông") || lower.contains("mimi") || lower.contains("miu")) {
+        String lowerName = petName != null ? petName.toLowerCase(Locale.ROOT) : "";
+        String lowerSpec = petSpecies != null ? petSpecies.toLowerCase(Locale.ROOT) : "";
+        if (lowerSpec.contains("mèo") || lowerName.contains("mèo") || lowerName.contains("bông") || lowerName.contains("mimi") || lowerName.contains("miu")) {
             return R.drawable.img_pet_bong;
         }
         return R.drawable.mascot_corgi_running;
+    }
+
+    private String formatCreatedTimestamp(String isoCreatedAt, String fallbackDate) {
+        if (isoCreatedAt != null && !isoCreatedAt.trim().isEmpty()) {
+            try {
+                ZonedDateTime zdt = OffsetDateTime.parse(isoCreatedAt.trim()).atZoneSameInstant(ZoneId.systemDefault());
+                return zdt.format(DateTimeFormatter.ofPattern("dd/MM/yyyy · HH:mm", Locale.US));
+            } catch (Exception ignored) {
+            }
+        }
+        return formatNaturalDate(fallbackDate);
     }
 
     private String formatNaturalDate(String rawDate) {
@@ -192,7 +342,7 @@ public class AppointmentDetailsActivity extends AppCompatActivity {
         String s = rawDate.trim();
         try {
             if (s.length() >= 10 && s.charAt(4) == '-' && s.charAt(7) == '-') {
-                java.time.LocalDate d = java.time.LocalDate.parse(s.substring(0, 10));
+                LocalDate d = LocalDate.parse(s.substring(0, 10));
                 String dow;
                 switch (d.getDayOfWeek()) {
                     case MONDAY: dow = "T2"; break;
@@ -203,7 +353,7 @@ public class AppointmentDetailsActivity extends AppCompatActivity {
                     case SATURDAY: dow = "T7"; break;
                     default: dow = "CN"; break;
                 }
-                return String.format(java.util.Locale.US, "%s, %02d/%02d/%d", dow, d.getDayOfMonth(), d.getMonthValue(), d.getYear());
+                return String.format(Locale.US, "%s, %02d/%02d/%d", dow, d.getDayOfMonth(), d.getMonthValue(), d.getYear());
             }
         } catch (Exception ignored) {
         }
@@ -228,7 +378,6 @@ public class AppointmentDetailsActivity extends AppCompatActivity {
         updateTabChip(binding.tabStateDialog, "cancel-dialog".equals(state));
         updateTabChip(binding.tabStateCancelled, "cancelled".equals(state));
 
-        // 1. Quản lý hiển thị Dialog hủy
         if ("cancel-dialog".equals(state)) {
             binding.layoutCancelDialogOverlay.setVisibility(View.VISIBLE);
             return;
@@ -236,26 +385,23 @@ public class AppointmentDetailsActivity extends AppCompatActivity {
             binding.layoutCancelDialogOverlay.setVisibility(View.GONE);
         }
 
-        // 2. Trạng thái ĐÃ HỦY (Cancelled)
         if ("cancelled".equals(state)) {
-            binding.tvStatusBadge.setText("• Đã hủy");
-            binding.tvStatusBadge.setBackgroundResource(R.drawable.bg_badge_cancelled);
-            binding.tvStatusBadge.setTextColor(ContextCompat.getColor(this, R.color.status_neutral_ink));
-
+            boolean isRejected = appt != null && "REJECTED".equalsIgnoreCase(appt.getStatus());
             binding.layoutNoticeBox.setBackgroundResource(R.drawable.bg_notice_danger);
             binding.ivNoticeIcon.setImageResource(R.drawable.ic_alert_circle);
             binding.ivNoticeIcon.setColorFilter(ContextCompat.getColor(this, R.color.status_destructive));
-            binding.tvNoticeTitle.setText("Đã hủy lịch hẹn");
+            binding.tvNoticeTitle.setText(isRejected ? "Phòng khám đã từ chối lịch hẹn" : "Đã hủy lịch hẹn");
             binding.tvNoticeTitle.setTextColor(ContextCompat.getColor(this, R.color.status_destructive_ink));
-            binding.tvNoticeBody.setText("Phòng khám đã mở lại khung giờ và các bên đã được thông báo. Bạn có thể đặt lại bất cứ lúc nào.");
+            binding.tvNoticeBody.setText(isRejected
+                    ? "Khung giờ này hiện không thể tiếp nhận. Bạn vui lòng đặt khung giờ khác nhé."
+                    : "Khung giờ đã được mở lại. Bạn có thể đặt lại bất cứ lúc nào.");
             binding.tvNoticeBody.setTextColor(ContextCompat.getColor(this, R.color.status_destructive_ink));
 
             binding.viewTimelineStep2Dot.setBackgroundResource(R.drawable.bg_pin_circle);
-            binding.tvTimelineStep2Title.setText("Bạn đã hủy lịch hẹn");
-            binding.tvTimelineStep2Time.setText("Hôm nay");
+            binding.tvTimelineStep2Title.setText(isRejected ? "Phòng khám từ chối yêu cầu" : "Đã hủy lịch hẹn");
+            binding.tvTimelineStep2Time.setText("Đã cập nhật");
 
             binding.layoutCancelPolicyNotice.setVisibility(View.GONE);
-
             binding.btnCancelBooking.setVisibility(View.GONE);
             binding.btnBackToListOutline.setVisibility(View.GONE);
             binding.layoutCancelledActions.setVisibility(View.VISIBLE);
@@ -264,67 +410,51 @@ public class AppointmentDetailsActivity extends AppCompatActivity {
 
         binding.layoutCancelledActions.setVisibility(View.GONE);
 
-        // 3. Trạng thái ĐÃ HOÀN THÀNH (Completed)
         if ("completed".equals(state)) {
-            binding.tvStatusBadge.setText("• Đã hoàn thành");
-            binding.tvStatusBadge.setBackgroundResource(R.drawable.bg_badge_confirmed);
-            binding.tvStatusBadge.setTextColor(ContextCompat.getColor(this, R.color.status_success_ink));
-
             binding.layoutNoticeBox.setBackgroundResource(R.drawable.bg_notice_success);
             binding.ivNoticeIcon.setImageResource(R.drawable.ic_check_circle);
             binding.ivNoticeIcon.setColorFilter(ContextCompat.getColor(this, R.color.status_success_ink));
             binding.tvNoticeTitle.setText("Đã hoàn thành lượt khám");
             binding.tvNoticeTitle.setTextColor(ContextCompat.getColor(this, R.color.status_success_ink));
-            binding.tvNoticeBody.setText("Cảm ơn bạn đã đến. Phòng khám đã lưu lần khám vào hồ sơ của bé.");
+            binding.tvNoticeBody.setText("Cảm ơn bạn đã đến. Lần khám đã được lưu vào hồ sơ sức khỏe của bé.");
             binding.tvNoticeBody.setTextColor(ContextCompat.getColor(this, R.color.status_success_ink));
 
             binding.viewTimelineStep2Dot.setBackgroundResource(R.drawable.bg_pin_circle);
             binding.tvTimelineStep2Title.setText("Đã hoàn thành lượt khám");
-            binding.tvTimelineStep2Time.setText("Hôm nay");
+            binding.tvTimelineStep2Time.setText("Hoàn tất");
 
             binding.layoutCancelPolicyNotice.setVisibility(View.GONE);
-
             binding.btnCancelBooking.setVisibility(View.GONE);
             binding.btnBackToListOutline.setVisibility(View.VISIBLE);
             return;
         }
 
-        // 4. Trạng thái ĐÃ XÁC NHẬN (Confirmed)
         if ("confirmed".equals(state)) {
-            binding.tvStatusBadge.setText("• Đã xác nhận");
-            binding.tvStatusBadge.setBackgroundResource(R.drawable.bg_badge_confirmed);
-            binding.tvStatusBadge.setTextColor(ContextCompat.getColor(this, R.color.status_success_ink));
-
-            binding.layoutNoticeBox.setBackgroundResource(R.drawable.bg_notice_brand);
-            binding.ivNoticeIcon.setImageResource(R.drawable.ic_info);
-            binding.ivNoticeIcon.setColorFilter(ContextCompat.getColor(this, R.color.brand_primary));
+            binding.layoutNoticeBox.setBackgroundResource(R.drawable.bg_notice_success);
+            binding.ivNoticeIcon.setImageResource(R.drawable.ic_check_circle);
+            binding.ivNoticeIcon.setColorFilter(ContextCompat.getColor(this, R.color.ds_success));
             binding.tvNoticeTitle.setText("Phòng khám đã xác nhận");
-            binding.tvNoticeTitle.setTextColor(ContextCompat.getColor(this, R.color.brand_ink));
-            binding.tvNoticeBody.setText("Đến sớm 10 phút và mang theo hồ sơ cũ (nếu có).");
-            binding.tvNoticeBody.setTextColor(ContextCompat.getColor(this, R.color.brand_ink));
+            binding.tvNoticeTitle.setTextColor(ContextCompat.getColor(this, R.color.ds_success));
+            binding.tvNoticeBody.setText("Bạn nhớ đưa bé đến sớm khoảng 10 phút trước giờ hẹn nhé.");
+            binding.tvNoticeBody.setTextColor(ContextCompat.getColor(this, R.color.ds_text_primary));
 
             binding.viewTimelineStep2Dot.setBackgroundResource(R.drawable.bg_pin_circle);
             binding.tvTimelineStep2Title.setText("Phòng khám đã xác nhận");
-            binding.tvTimelineStep2Time.setText("Hôm nay");
+            binding.tvTimelineStep2Time.setText("Đã duyệt");
 
             binding.layoutCancelPolicyNotice.setVisibility(View.VISIBLE);
-
             binding.btnCancelBooking.setVisibility(View.VISIBLE);
             binding.btnBackToListOutline.setVisibility(View.GONE);
             return;
         }
 
-        // 5. Trạng thái CHỜ XÁC NHẬN (Pending - Mặc định)
-        binding.tvStatusBadge.setText("• Chờ xác nhận");
-        binding.tvStatusBadge.setBackgroundResource(R.drawable.bg_badge_pending);
-        binding.tvStatusBadge.setTextColor(ContextCompat.getColor(this, R.color.status_warning_ink));
-
+        // Mặc định: Chờ xác nhận (Pending)
         binding.layoutNoticeBox.setBackgroundResource(R.drawable.bg_notice_warning);
         binding.ivNoticeIcon.setImageResource(R.drawable.ic_alert_triangle);
         binding.ivNoticeIcon.setColorFilter(ContextCompat.getColor(this, R.color.status_warning));
         binding.tvNoticeTitle.setText("Đang chờ phòng khám xác nhận");
         binding.tvNoticeTitle.setTextColor(ContextCompat.getColor(this, R.color.status_warning_ink));
-        binding.tvNoticeBody.setText("Yêu cầu này chưa được xác nhận. Bạn có thể hủy miễn phí trước khi phòng khám phản hồi.");
+        binding.tvNoticeBody.setText("Bạn có thể hủy miễn phí trước khi phòng khám phản hồi.");
         binding.tvNoticeBody.setTextColor(ContextCompat.getColor(this, R.color.status_warning_ink));
 
         binding.viewTimelineStep2Dot.setBackgroundResource(R.drawable.bg_step_dot_inactive);
@@ -332,7 +462,6 @@ public class AppointmentDetailsActivity extends AppCompatActivity {
         binding.tvTimelineStep2Time.setText("Đang chờ");
 
         binding.layoutCancelPolicyNotice.setVisibility(View.VISIBLE);
-
         binding.btnCancelBooking.setVisibility(View.VISIBLE);
         binding.btnBackToListOutline.setVisibility(View.GONE);
     }
@@ -348,30 +477,89 @@ public class AppointmentDetailsActivity extends AppCompatActivity {
     }
 
     private void setupInteractiveActions() {
-        binding.btnDirections.setOnClickListener(v -> {
-            Intent intent = new Intent(this, ClinicDetailsActivity.class);
-            startActivity(intent);
-        });
-
-        binding.btnCallClinic.setOnClickListener(v -> {
-            try {
-                Intent dialIntent = new Intent(Intent.ACTION_DIAL, Uri.parse("tel:02438335566"));
-                startActivity(dialIntent);
-            } catch (Exception e) {
-                Toast.makeText(this, "Hotline phòng khám: 024 3833 5566", Toast.LENGTH_SHORT).show();
+        // Bấm vào thông tin phòng khám -> Mở trang Chi tiết phòng khám thật
+        binding.rowClinicHeader.setOnClickListener(v -> {
+            if (resolvedClinicItem != null) {
+                Intent intent = new Intent(this, ClinicDetailsActivity.class);
+                intent.putExtra(ClinicDetailsActivity.EXTRA_CLINIC, resolvedClinicItem);
+                startActivity(intent);
+            } else if (appt != null) {
+                ClinicItem fallbackClinic = new ClinicItem(
+                        appt.getClinicId() != null ? String.valueOf(appt.getClinicId()) : "1",
+                        appt.getClinic(),
+                        appt.getClinicAddress() != null ? appt.getClinicAddress() : appt.getClinicArea(),
+                        4.8,
+                        150,
+                        "",
+                        true,
+                        "08:00 – 20:00",
+                        appt.getClinicPhone() != null ? appt.getClinicPhone() : "",
+                        "Phòng khám thú y tiêu chuẩn chất lượng cao tại Hà Nội.",
+                        "Hỗ trợ trong ngày",
+                        "Tiếng Việt"
+                );
+                Intent intent = new Intent(this, ClinicDetailsActivity.class);
+                intent.putExtra(ClinicDetailsActivity.EXTRA_CLINIC, fallbackClinic);
+                startActivity(intent);
             }
         });
 
-        binding.btnOpenPetProfile.setOnClickListener(v -> {
-            Intent intent = new Intent(this, MyPetsActivity.class);
-            intent.putExtra(MyPetsActivity.EXTRA_BOOKING_MODE, false);
-            startActivity(intent);
+        // 1. Chỉ đường: Mở Google Maps trực tiếp đến địa chỉ / tọa độ phòng khám thật
+        binding.btnDirections.setOnClickListener(v -> {
+            if (appt == null) return;
+            String addr = (appt.getClinicAddress() != null && !appt.getClinicAddress().trim().isEmpty())
+                    ? appt.getClinicAddress().trim()
+                    : (appt.getClinicArea() != null ? appt.getClinicArea().trim() : "Hà Nội");
+            String query = appt.getClinic() + ", " + addr;
+            Double lat = appt.getClinicLatitude();
+            Double lng = appt.getClinicLongitude();
+            Uri mapUri = (lat != null && lng != null)
+                    ? Uri.parse("geo:" + lat + "," + lng + "?q=" + Uri.encode(query))
+                    : Uri.parse("geo:0,0?q=" + Uri.encode(query));
+            try {
+                Intent mapIntent = new Intent(Intent.ACTION_VIEW, mapUri);
+                startActivity(mapIntent);
+            } catch (Exception e) {
+                Toast.makeText(this, "Địa chỉ: " + query, Toast.LENGTH_LONG).show();
+            }
         });
 
-        // Nút Hủy lịch hẹn ở Sticky Bar -> Mở hộp thoại hủy
+        // 2. Gọi phòng khám: Quay đúng số điện thoại của phòng khám trong lịch hẹn
+        binding.btnCallClinic.setOnClickListener(v -> {
+            String phone = appt != null ? appt.getClinicPhone() : null;
+            if (phone != null && !phone.trim().isEmpty()) {
+                dialPhoneNumber(phone);
+            } else if (appt != null && appt.getClinicId() != null) {
+                ApiClient.getClinicApi().getClinicById(appt.getClinicId()).enqueue(new Callback<ClinicResponse>() {
+                    @Override
+                    public void onResponse(Call<ClinicResponse> call, Response<ClinicResponse> response) {
+                        if (isFinishing() || isDestroyed()) return;
+                        if (response.isSuccessful() && response.body() != null && response.body().getPhone() != null) {
+                            appt.setClinicPhone(response.body().getPhone());
+                            dialPhoneNumber(response.body().getPhone());
+                        } else {
+                            Toast.makeText(AppointmentDetailsActivity.this, "Chưa có số điện thoại phòng khám", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<ClinicResponse> call, Throwable t) {
+                        Toast.makeText(AppointmentDetailsActivity.this, "Không tải được số điện thoại phòng khám", Toast.LENGTH_SHORT).show();
+                    }
+                });
+            } else {
+                Toast.makeText(this, "Chưa có số điện thoại phòng khám", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        // 3. Mở hồ sơ bé: Đi thẳng vào đúng hồ sơ thú cưng của lịch hẹn này
+        View.OnClickListener openPetListener = v -> openExactPetProfile();
+        binding.btnOpenPetProfile.setOnClickListener(openPetListener);
+        binding.rowPetProfile.setOnClickListener(openPetListener);
+
+        // Nút Hủy lịch hẹn
         binding.btnCancelBooking.setOnClickListener(v -> applyState("cancel-dialog"));
 
-        // Trong Hộp thoại hủy: Nút Đồng ý hủy lịch -> Gọi API Backend
         binding.btnConfirmCancelBooking.setOnClickListener(v -> {
             Long apptId = appt != null ? appt.getId() : null;
             if (apptId != null && apptId > 0) {
@@ -414,6 +602,47 @@ public class AppointmentDetailsActivity extends AppCompatActivity {
 
         binding.btnBackToListGhost.setOnClickListener(v -> finish());
         binding.btnBackToListOutline.setOnClickListener(v -> finish());
+    }
+
+    private void dialPhoneNumber(String rawPhone) {
+        String cleanPhone = rawPhone.replaceAll("\\s+", "");
+        try {
+            Intent dialIntent = new Intent(Intent.ACTION_DIAL, Uri.parse("tel:" + cleanPhone));
+            startActivity(dialIntent);
+        } catch (Exception e) {
+            Toast.makeText(this, "Hotline phòng khám: " + rawPhone, Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    private void openExactPetProfile() {
+        if (resolvedPetItem != null) {
+            Intent intent = new Intent(this, PetDetailsActivity.class);
+            intent.putExtra(PetDetailsActivity.EXTRA_PET, resolvedPetItem);
+            startActivity(intent);
+            return;
+        }
+        if (appt != null && appt.getPetId() != null) {
+            int avatarRes = resolveUnifiedPetAvatar(appt.getPet(), appt.getPetSpecies(), appt.getPetImgRes());
+            PetItem tempPet = new PetItem(
+                    String.valueOf(appt.getPetId()),
+                    appt.getPet() != null ? appt.getPet() : "Bé cưng",
+                    appt.getPetSpecies() != null ? appt.getPetSpecies() : "Thú cưng",
+                    appt.getPetBreed() != null ? appt.getPetBreed() : "",
+                    appt.getPetAge() != null ? appt.getPetAge() : "",
+                    "",
+                    appt.getPetGender() != null ? appt.getPetGender() : "",
+                    "",
+                    avatarRes
+            );
+            Intent intent = new Intent(this, PetDetailsActivity.class);
+            intent.putExtra(PetDetailsActivity.EXTRA_PET, tempPet);
+            startActivity(intent);
+            return;
+        }
+        // Fallback cuối nếu không có petId: mở danh sách thú cưng
+        Intent intent = new Intent(this, MyPetsActivity.class);
+        intent.putExtra(MyPetsActivity.EXTRA_BOOKING_MODE, false);
+        startActivity(intent);
     }
 
     @Override

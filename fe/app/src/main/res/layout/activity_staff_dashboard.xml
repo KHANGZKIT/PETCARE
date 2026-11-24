@@ -88,13 +88,15 @@
                 app:tint="@color/ds_text_primary" />
 
             <View
+                android:id="@+id/viewStaffNotificationBadge"
                 android:layout_width="7dp"
                 android:layout_height="7dp"
                 android:layout_gravity="top|end"
                 android:layout_marginTop="9dp"
                 android:layout_marginEnd="9dp"
                 android:background="@drawable/bg_halo_butter"
-                android:backgroundTint="@color/ds_primary" />
+                android:backgroundTint="@color/ds_primary"
+                android:visibility="gone" />
         </FrameLayout>
 
         <FrameLayout

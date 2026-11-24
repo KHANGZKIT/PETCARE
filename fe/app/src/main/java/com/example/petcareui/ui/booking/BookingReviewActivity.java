@@ -156,11 +156,6 @@ public class BookingReviewActivity extends AppCompatActivity {
 
         // Tổng ước tính
         binding.tvEstimatedTotal.setText(serviceItem.getPrice());
-
-        // Ghi chú ban đầu
-        if ("Mochi".equals(petItem.getName())) {
-            binding.etBookingNote.setText("Mochi hơi mẩn nhẹ sau mũi tiêm lần trước.");
-        }
     }
 
     private void setupEditActions() {
@@ -219,7 +214,33 @@ public class BookingReviewActivity extends AppCompatActivity {
                 public void onResponse(Call<AppointmentResponse> call, Response<AppointmentResponse> response) {
                     if (response.isSuccessful() && response.body() != null) {
                         AppointmentResponse created = response.body();
-                        String ref = String.format("PC-%04d", created.getId() != null ? created.getId() : 1L);
+                        com.example.petcareui.data.model.AppointmentItem apptItem = created.toAppointmentItem();
+                        if (clinicItem != null) {
+                            if (apptItem.getClinicPhone() == null || apptItem.getClinicPhone().isEmpty()) {
+                                apptItem.setClinicPhone(clinicItem.getPhone());
+                            }
+                            if (apptItem.getClinicAddress() == null || apptItem.getClinicAddress().isEmpty()) {
+                                apptItem.setClinicAddress(clinicItem.getAddress());
+                            }
+                            if (apptItem.getClinicLatitude() == null) {
+                                apptItem.setClinicLatitude(clinicItem.getLatitude());
+                            }
+                            if (apptItem.getClinicLongitude() == null) {
+                                apptItem.setClinicLongitude(clinicItem.getLongitude());
+                            }
+                        }
+                        if (petItem != null) {
+                            if (apptItem.getPetBreed() == null || apptItem.getPetBreed().isEmpty()) {
+                                apptItem.setPetBreed(petItem.getBreed());
+                            }
+                            if (apptItem.getPetAge() == null || apptItem.getPetAge().isEmpty()) {
+                                apptItem.setPetAge(petItem.getAge());
+                            }
+                            if (apptItem.getPetGender() == null || apptItem.getPetGender().isEmpty()) {
+                                apptItem.setPetGender(petItem.getSex());
+                            }
+                        }
+                        String ref = apptItem.getRef();
                         Intent intent = new Intent(BookingReviewActivity.this, BookingSuccessActivity.class);
                         intent.putExtra(BookingSuccessActivity.EXTRA_CLINIC, clinicItem);
                         intent.putExtra(BookingSuccessActivity.EXTRA_SELECTED_SERVICE, serviceItem);
@@ -227,6 +248,7 @@ public class BookingReviewActivity extends AppCompatActivity {
                         intent.putExtra(BookingSuccessActivity.EXTRA_SELECTED_TIME, timeSlotItem);
                         intent.putExtra(BookingSuccessActivity.EXTRA_SELECTED_PET, petItem);
                         intent.putExtra(BookingSuccessActivity.EXTRA_BOOKING_REF, ref);
+                        intent.putExtra(BookingSuccessActivity.EXTRA_CREATED_APPT, apptItem);
                         startActivity(intent);
                         finish();
                     } else if (response.code() == 409 || response.code() == 400) {

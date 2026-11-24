@@ -105,6 +105,36 @@ public class TokenManager {
         prefs.edit().putBoolean(Constants.KEY_ONBOARDING_COMPLETED, completed).apply();
     }
 
+    private String getReadNotifPrefKey() {
+        Long uid = getUserId();
+        String role = getUserRole();
+        return "read_notifs_" + (role != null ? role : "USER") + "_" + (uid != null ? uid : 0L);
+    }
+
+    public boolean isNotificationRead(String notifId) {
+        if (notifId == null || notifId.isEmpty()) return true;
+        java.util.Set<String> set = prefs.getStringSet(getReadNotifPrefKey(), java.util.Collections.emptySet());
+        return set != null && set.contains(notifId);
+    }
+
+    public void markNotificationRead(String notifId) {
+        if (notifId == null || notifId.isEmpty()) return;
+        String key = getReadNotifPrefKey();
+        java.util.Set<String> existing = prefs.getStringSet(key, null);
+        java.util.Set<String> copy = existing != null ? new java.util.HashSet<>(existing) : new java.util.HashSet<>();
+        copy.add(notifId);
+        prefs.edit().putStringSet(key, copy).apply();
+    }
+
+    public void markNotificationsRead(java.util.Collection<String> notifIds) {
+        if (notifIds == null || notifIds.isEmpty()) return;
+        String key = getReadNotifPrefKey();
+        java.util.Set<String> existing = prefs.getStringSet(key, null);
+        java.util.Set<String> copy = existing != null ? new java.util.HashSet<>(existing) : new java.util.HashSet<>();
+        copy.addAll(notifIds);
+        prefs.edit().putStringSet(key, copy).apply();
+    }
+
     public void clear() {
         boolean onboardingDone = isOnboardingCompleted();
         prefs.edit()

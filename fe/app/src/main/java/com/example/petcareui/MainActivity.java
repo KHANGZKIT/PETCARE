@@ -286,6 +286,9 @@ public class MainActivity extends AppCompatActivity {
                         binding.layoutUpcomingLoading.setVisibility(View.GONE);
 
                         if (response.isSuccessful() && response.body() != null) {
+                            boolean hasUnread = NotificationsActivity.hasUnreadCustomerNotifications(MainActivity.this, response.body());
+                            binding.viewNotificationBadge.setVisibility(hasUnread ? View.VISIBLE : View.GONE);
+
                             AppointmentResponse nearest = pickNearestUpcoming(response.body());
                             if (nearest != null) {
                                 bindUpcomingCard(nearest);
@@ -296,6 +299,7 @@ public class MainActivity extends AppCompatActivity {
                         } else if (response.code() == 401 || response.code() == 403) {
                             handleUnauthorizedOnce();
                         } else {
+                            binding.viewNotificationBadge.setVisibility(View.GONE);
                             binding.layoutUpcomingError.setVisibility(View.VISIBLE);
                         }
                     }
