@@ -194,6 +194,14 @@ public class AppointmentDetailsActivity extends AppCompatActivity {
         binding.tvDate.setText(formatNaturalDate(appt.getDate()));
         binding.tvTime.setText(appt.getTime());
 
+        // Ghi chú của khách hàng (nếu có)
+        if (appt.getNote() != null && !appt.getNote().trim().isEmpty()) {
+            binding.blockCustomerNote.setVisibility(View.VISIBLE);
+            binding.tvCustomerNote.setText("“" + appt.getNote().trim() + "”");
+        } else {
+            binding.blockCustomerNote.setVisibility(View.GONE);
+        }
+
         // Timeline Step 1 (thời gian tạo thực tế từ createdAt)
         binding.tvTimelineStep1Time.setText(formatCreatedTimestamp(appt.getCreatedAt(), appt.getDate()));
 

@@ -21,6 +21,7 @@ public class AppointmentResponse {
 
     private Long id;
     private AppointmentStatus status;
+    private String notes;
     private OffsetDateTime createdAt;
     private OffsetDateTime updatedAt;
     private Long customerId;
@@ -51,6 +52,7 @@ public class AppointmentResponse {
         return AppointmentResponse.builder()
                 .id(entity.getId())
                 .status(entity.getStatus())
+                .notes(entity.getNotes())
                 .createdAt(entity.getCreatedAt())
                 .updatedAt(entity.getUpdatedAt())
                 .customerId(entity.getCustomer().getId())

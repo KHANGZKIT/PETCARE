@@ -679,6 +679,38 @@
                 </LinearLayout>
             </LinearLayout>
 
+            <!-- Ghi chú đã gửi cho phòng khám (ẩn nếu khách không nhập ghi chú) -->
+            <LinearLayout
+                android:id="@+id/blockCustomerNote"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="14dp"
+                android:background="@drawable/bg_card_clinic"
+                android:orientation="vertical"
+                android:padding="16dp"
+                android:visibility="gone">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/open_sans_semibold"
+                    android:letterSpacing="0.04"
+                    android:text="Ghi chú cho phòng khám"
+                    android:textColor="@color/ds_text_secondary"
+                    android:textSize="11.5sp"
+                    app:fontFamily="@font/open_sans_semibold" />
+
+                <TextView
+                    android:id="@+id/tvCustomerNote"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="6dp"
+                    android:fontFamily="@font/open_sans_regular"
+                    android:lineSpacingExtra="2dp"
+                    android:textColor="@color/ds_text_primary"
+                    android:textSize="13sp" />
+            </LinearLayout>
+
             <!-- Thẻ 5: Lịch sử trạng thái (Timeline) -->
             <LinearLayout
                 android:layout_width="match_parent"

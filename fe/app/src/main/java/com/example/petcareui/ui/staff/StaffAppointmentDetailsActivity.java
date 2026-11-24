@@ -51,6 +51,7 @@ public class StaffAppointmentDetailsActivity extends AppCompatActivity {
         setupStickyBarActions();
 
         applyState(currentState);
+        fetchLiveStaffAppointmentDetail();
         UiMotionUtils.animateEntranceSections(
                 binding.layoutAppBar,
                 binding.cardCustomerInfo,
@@ -78,14 +79,42 @@ public class StaffAppointmentDetailsActivity extends AppCompatActivity {
         if (getIntent().hasExtra(EXTRA_STATE)) {
             currentState = getIntent().getStringExtra(EXTRA_STATE);
         } else {
-            if ("CONFIRMED".equalsIgnoreCase(currentAppt.getStatus())) {
-                currentState = "success";
-            } else if ("REJECTED".equalsIgnoreCase(currentAppt.getStatus())) {
-                currentState = "rejected";
-            } else {
-                currentState = "default";
-            }
+            currentState = resolveStateFromStatus(currentAppt.getStatus());
         }
+    }
+
+    private String resolveStateFromStatus(String status) {
+        if ("CONFIRMED".equalsIgnoreCase(status)) {
+            return "success";
+        } else if ("REJECTED".equalsIgnoreCase(status)) {
+            return "rejected";
+        }
+        return "default";
+    }
+
+    private void fetchLiveStaffAppointmentDetail() {
+        Long apptId = currentAppt != null ? currentAppt.getId() : null;
+        if (apptId == null || apptId <= 0) return;
+
+        ApiClient.getAppointmentApi().getStaffAppointmentDetail(apptId).enqueue(new Callback<AppointmentResponse>() {
+            @Override
+            public void onResponse(Call<AppointmentResponse> call, Response<AppointmentResponse> response) {
+                if (isFinishing() || isDestroyed()) return;
+                if (response.isSuccessful() && response.body() != null) {
+                    currentAppt = response.body().toStaffAppointmentItem();
+                    bindAppointmentData();
+                    if (!"confirm-dialog".equals(currentState) && !"reject-dialog".equals(currentState)
+                            && !getIntent().hasExtra(EXTRA_STATE)) {
+                        applyState(resolveStateFromStatus(currentAppt.getStatus()));
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(Call<AppointmentResponse> call, Throwable t) {
+                // Giữ dữ liệu đã truyền qua Intent nếu mạng chập chờn
+            }
+        });
     }
 
     private void bindAppointmentData() {

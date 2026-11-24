@@ -1,6 +1,7 @@
 package com.petcare.dto.request;
 
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -27,4 +28,11 @@ public class BookingRequest {
 
     @NotNull(message = "Vui lòng chọn khung giờ")
     private Long slotId;
+
+    @Size(max = 1000, message = "Ghi chú không vượt quá 1000 ký tự")
+    private String notes;
+
+    public BookingRequest(Long petId, Long clinicId, Long serviceId, Long slotId) {
+        this(petId, clinicId, serviceId, slotId, null);
+    }
 }

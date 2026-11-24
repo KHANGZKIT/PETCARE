@@ -208,13 +208,20 @@ public class BookingReviewActivity extends AppCompatActivity {
                 return;
             }
 
-            AppointmentRequest request = new AppointmentRequest(petId, clinicId, serviceId, slotId);
+            String rawNote = binding.etBookingNote.getText() != null
+                    ? binding.etBookingNote.getText().toString().trim() : "";
+            String noteToSend = rawNote.isEmpty() ? null : rawNote;
+
+            AppointmentRequest request = new AppointmentRequest(petId, clinicId, serviceId, slotId, noteToSend);
             ApiClient.getAppointmentApi().createAppointment(request).enqueue(new Callback<AppointmentResponse>() {
                 @Override
                 public void onResponse(Call<AppointmentResponse> call, Response<AppointmentResponse> response) {
                     if (response.isSuccessful() && response.body() != null) {
                         AppointmentResponse created = response.body();
                         com.example.petcareui.data.model.AppointmentItem apptItem = created.toAppointmentItem();
+                        if ((apptItem.getNote() == null || apptItem.getNote().isEmpty()) && noteToSend != null) {
+                            apptItem.setNote(noteToSend);
+                        }
                         if (clinicItem != null) {
                             if (apptItem.getClinicPhone() == null || apptItem.getClinicPhone().isEmpty()) {
                                 apptItem.setClinicPhone(clinicItem.getPhone());

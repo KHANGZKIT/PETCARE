@@ -128,6 +128,7 @@ class AppointmentServiceTest {
     @Test
     void bookAppointment_success_createsPendingAppointmentAndMarksSlotBooked() {
         stubHappyPath();
+        request.setNotes("  Bé hơi nhát người lạ, dị ứng kháng sinh  ");
 
         AppointmentResponse response = appointmentService.bookAppointment(request, EMAIL);
 
@@ -135,6 +136,7 @@ class AppointmentServiceTest {
         verify(appointmentRepository).saveAndFlush(captor.capture());
         AppointmentEntity saved = captor.getValue();
         assertThat(saved.getStatus()).isEqualTo(AppointmentStatus.PENDING);
+        assertThat(saved.getNotes()).isEqualTo("Bé hơi nhát người lạ, dị ứng kháng sinh");
         assertThat(saved.getCustomer()).isSameAs(customer);
         assertThat(saved.getPet()).isSameAs(pet);
         assertThat(saved.getClinic()).isSameAs(clinic);
@@ -147,6 +149,7 @@ class AppointmentServiceTest {
 
         assertThat(slot.getStatus()).isEqualTo(SlotStatus.BOOKED);
         assertThat(response.getStatus()).isEqualTo(AppointmentStatus.PENDING);
+        assertThat(response.getNotes()).isEqualTo("Bé hơi nhát người lạ, dị ứng kháng sinh");
         assertThat(response.getPetId()).isEqualTo(2L);
         assertThat(response.getSlotId()).isEqualTo(4L);
     }
@@ -272,17 +275,18 @@ class AppointmentServiceTest {
     }
 
     @Test
-    void bookAppointment_serviceLongerThanSlot_rejected() {
+    void bookAppointment_serviceLongerThanSlot_allowed() {
         service.setDurationMinutes(60);
         when(userRepository.findByEmailIgnoreCase(EMAIL)).thenReturn(Optional.of(customer));
         when(petRepository.findByIdAndOwnerId(2L, 10L)).thenReturn(Optional.of(pet));
         when(clinicRepository.findByIdAndActiveTrue(1L)).thenReturn(Optional.of(clinic));
         when(serviceRepository.findByIdAndClinicId(3L, 1L)).thenReturn(Optional.of(service));
         when(clinicSlotRepository.findByIdForUpdate(4L)).thenReturn(Optional.of(slot));
+        when(appointmentRepository.existsBySlotIdAndStatusIn(eq(4L), anyCollection())).thenReturn(false);
+        when(appointmentRepository.saveAndFlush(any(AppointmentEntity.class))).thenAnswer(inv -> inv.getArgument(0));
 
-        assertThatThrownBy(() -> appointmentService.bookAppointment(request, EMAIL))
-                .isInstanceOf(IllegalArgumentException.class)
-                .hasMessageContaining("Thời lượng");
+        AppointmentResponse res = appointmentService.bookAppointment(request, EMAIL);
+        assertThat(res.getDurationMinutes()).isEqualTo(60);
     }
 
     @Test

@@ -99,6 +99,9 @@ public class AppointmentService {
         appointment.setService(service);
         appointment.setSlot(slot);
         appointment.setStatus(AppointmentStatus.PENDING);
+        if (request.getNotes() != null && !request.getNotes().trim().isEmpty()) {
+            appointment.setNotes(request.getNotes().trim());
+        }
 
         // Flush ngay để insert + đọc lại created_at/updated_at do DB sinh,
         // và để vi phạm unique index (nếu còn lọt qua) nổ trong transaction này.

@@ -60,6 +60,9 @@ public class AppointmentEntity {
     @Column(name = "status", nullable = false, length = 20)
     private AppointmentStatus status = AppointmentStatus.PENDING;
 
+    @Column(name = "notes", columnDefinition = "TEXT")
+    private String notes;
+
     @Generated(event = EventType.INSERT)
     @Column(name = "created_at", nullable = false, insertable = false, updatable = false)
     private OffsetDateTime createdAt;
@@ -90,6 +93,9 @@ public class AppointmentEntity {
 
     public AppointmentStatus getStatus() { return status; }
     public void setStatus(AppointmentStatus status) { this.status = status; }
+
+    public String getNotes() { return notes; }
+    public void setNotes(String notes) { this.notes = notes; }
 
     public OffsetDateTime getCreatedAt() { return createdAt; }
 

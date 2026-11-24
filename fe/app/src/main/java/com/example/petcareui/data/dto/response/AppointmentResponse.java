@@ -16,6 +16,7 @@ import java.util.Locale;
 public class AppointmentResponse implements Serializable {
     private Long id;
     private String status;
+    private String notes;
     private String createdAt;
     private String updatedAt;
     private Long customerId;
@@ -44,6 +45,7 @@ public class AppointmentResponse implements Serializable {
 
     public Long getId() { return id; }
     public String getStatus() { return status; }
+    public String getNotes() { return notes; }
     public String getCreatedAt() { return createdAt; }
     public String getUpdatedAt() { return updatedAt; }
     public Long getCustomerId() { return customerId; }
@@ -125,7 +127,7 @@ public class AppointmentResponse implements Serializable {
                 status != null ? status : "PENDING",
                 resolvePriceByServiceName(serviceName),
                 !relRequested.isEmpty() ? relRequested : "Đã ghi nhận",
-                ""
+                notes != null ? notes.trim() : ""
         );
         item.setClinicId(clinicId);
         item.setClinicAddress(clinicAddress);
@@ -191,7 +193,7 @@ public class AppointmentResponse implements Serializable {
                 status != null ? status : "PENDING",
                 resolvePriceByServiceName(serviceName),
                 !relRequested.isEmpty() ? relRequested : "Hôm nay",
-                ""
+                notes != null ? notes.trim() : ""
         );
         item.setId(id);
         return item;

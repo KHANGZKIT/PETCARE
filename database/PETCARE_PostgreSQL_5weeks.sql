@@ -103,6 +103,7 @@ CREATE TABLE public.appointments (
     clinic_id           BIGINT NOT NULL,
     service_id          BIGINT NOT NULL,
     slot_id             BIGINT NOT NULL,
+    notes               TEXT,
     status              VARCHAR(20) NOT NULL DEFAULT 'PENDING',
     created_at          TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
     updated_at          TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
