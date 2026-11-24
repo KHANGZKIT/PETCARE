@@ -165,4 +165,39 @@ final class StaffClinicHelper {
         if (date == null) return "Hôm nay";
         return "Hôm nay · " + getDayOfWeekFullLabel(date.getDayOfWeek()) + " " + date.format(DATE_DM);
     }
+
+    static String formatShortDow(DayOfWeek dow) {
+        switch (dow) {
+            case MONDAY: return "T2";
+            case TUESDAY: return "T3";
+            case WEDNESDAY: return "T4";
+            case THURSDAY: return "T5";
+            case FRIDAY: return "T6";
+            case SATURDAY: return "T7";
+            case SUNDAY: return "CN";
+            default: return "";
+        }
+    }
+
+    static String formatNaturalDate(String rawDate) {
+        if (rawDate == null || rawDate.trim().isEmpty()) return "";
+        String trimmed = rawDate.trim();
+        try {
+            LocalDate parsed = LocalDate.parse(trimmed);
+            LocalDate now = LocalDate.now();
+            String pattern = parsed.getYear() == now.getYear() ? "dd/MM" : "dd/MM/yyyy";
+            return formatShortDow(parsed.getDayOfWeek()) + ", " + parsed.format(DateTimeFormatter.ofPattern(pattern, Locale.getDefault()));
+        } catch (Exception ignored) {
+            return trimmed;
+        }
+    }
+
+    static String formatNaturalDateTime(String rawDate, String rawTime) {
+        String d = formatNaturalDate(rawDate);
+        String t = rawTime != null ? rawTime.trim() : "";
+        if (!d.isEmpty() && !t.isEmpty()) {
+            return d + " · " + t;
+        }
+        return !d.isEmpty() ? d : t;
+    }
 }

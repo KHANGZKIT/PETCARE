@@ -371,37 +371,27 @@ public class StaffAppointmentsActivity extends AppCompatActivity {
             cardBinding.ivStaffPetAvatar.setImageResource(item.getPetImgRes());
             cardBinding.tvStaffServiceTitle.setText(item.getService());
             cardBinding.tvStaffCustomerPet.setText(item.getCustomer() + " · " + item.getPet());
-            cardBinding.tvStaffDate.setText(item.getDate());
+            cardBinding.tvStaffDate.setText(StaffClinicHelper.formatNaturalDateTime(item.getDate(), item.getTime()));
             cardBinding.tvStaffTime.setText(item.getTime());
-            cardBinding.tvStaffDuration.setText(item.getDuration());
+            cardBinding.tvStaffDuration.setText("· " + item.getDuration());
 
-            cardBinding.viewPriorityBar.setVisibility(View.VISIBLE);
-            cardBinding.cardContainer.setBackgroundResource(R.drawable.bg_card_clinic);
+            cardBinding.cardContainer.setBackgroundResource(R.drawable.bg_home_card_borderless);
+            cardBinding.tvStaffApptStatus.setBackground(null);
             if ("PENDING".equalsIgnoreCase(item.getStatus())) {
-                cardBinding.viewPriorityBar.setBackgroundColor(ContextCompat.getColor(this, R.color.status_warning));
-                cardBinding.tvStaffApptStatus.setText("• Chờ xác nhận");
-                cardBinding.tvStaffApptStatus.setBackgroundResource(R.drawable.bg_badge_pending);
-                cardBinding.tvStaffApptStatus.setTextColor(ContextCompat.getColor(this, R.color.status_warning_ink));
+                cardBinding.tvStaffApptStatus.setText("● Chờ xác nhận");
+                cardBinding.tvStaffApptStatus.setTextColor(ContextCompat.getColor(this, R.color.ds_warning));
             } else if ("CONFIRMED".equalsIgnoreCase(item.getStatus())) {
-                cardBinding.viewPriorityBar.setBackgroundColor(ContextCompat.getColor(this, R.color.status_success));
-                cardBinding.tvStaffApptStatus.setText("• Đã xác nhận");
-                cardBinding.tvStaffApptStatus.setBackgroundResource(R.drawable.bg_badge_confirmed);
-                cardBinding.tvStaffApptStatus.setTextColor(ContextCompat.getColor(this, R.color.status_success_ink));
+                cardBinding.tvStaffApptStatus.setText("● Đã xác nhận");
+                cardBinding.tvStaffApptStatus.setTextColor(ContextCompat.getColor(this, R.color.ds_success));
             } else if ("COMPLETED".equalsIgnoreCase(item.getStatus())) {
-                cardBinding.viewPriorityBar.setBackgroundColor(ContextCompat.getColor(this, R.color.brand_primary));
-                cardBinding.tvStaffApptStatus.setText("• Đã hoàn thành");
-                cardBinding.tvStaffApptStatus.setBackgroundResource(R.drawable.bg_badge_completed);
-                cardBinding.tvStaffApptStatus.setTextColor(ContextCompat.getColor(this, R.color.brand_ink));
+                cardBinding.tvStaffApptStatus.setText("● Đã hoàn thành");
+                cardBinding.tvStaffApptStatus.setTextColor(ContextCompat.getColor(this, R.color.ds_primary));
             } else if ("NO_SHOW".equalsIgnoreCase(item.getStatus())) {
-                cardBinding.viewPriorityBar.setBackgroundColor(ContextCompat.getColor(this, R.color.status_info));
-                cardBinding.tvStaffApptStatus.setText("• Không đến");
-                cardBinding.tvStaffApptStatus.setBackgroundResource(R.drawable.bg_badge_no_show);
-                cardBinding.tvStaffApptStatus.setTextColor(ContextCompat.getColor(this, R.color.status_info_ink));
+                cardBinding.tvStaffApptStatus.setText("● Không đến");
+                cardBinding.tvStaffApptStatus.setTextColor(ContextCompat.getColor(this, R.color.ds_text_secondary));
             } else {
-                cardBinding.viewPriorityBar.setBackgroundColor(ContextCompat.getColor(this, R.color.status_destructive));
-                cardBinding.tvStaffApptStatus.setText("• Đã hủy / Từ chối");
-                cardBinding.tvStaffApptStatus.setBackgroundResource(R.drawable.bg_badge_cancelled);
-                cardBinding.tvStaffApptStatus.setTextColor(ContextCompat.getColor(this, R.color.status_destructive_ink));
+                cardBinding.tvStaffApptStatus.setText("● Đã hủy / Từ chối");
+                cardBinding.tvStaffApptStatus.setTextColor(ContextCompat.getColor(this, R.color.ds_error));
             }
 
             UiMotionUtils.attachSpringTouch(cardBinding.getRoot());

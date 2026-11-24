@@ -236,9 +236,9 @@ public class StaffDashboardActivity extends AppCompatActivity {
             cardBinding.ivStaffPetAvatar.setImageResource(item.getPetImgRes());
             cardBinding.tvStaffServiceTitle.setText(item.getService());
             cardBinding.tvStaffCustomerPet.setText(item.getCustomer() + " · " + item.getPet());
-            cardBinding.tvStaffDate.setText(item.getDate());
+            cardBinding.tvStaffDate.setText(StaffClinicHelper.formatNaturalDateTime(item.getDate(), item.getTime()));
             cardBinding.tvStaffTime.setText(item.getTime());
-            cardBinding.tvStaffDuration.setText(item.getDuration());
+            cardBinding.tvStaffDuration.setText("· " + item.getDuration());
 
             UiMotionUtils.attachSpringTouch(cardBinding.getRoot());
             cardBinding.getRoot().setOnClickListener(v -> {

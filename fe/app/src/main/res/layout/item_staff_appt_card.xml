@@ -5,199 +5,162 @@
     android:id="@+id/cardContainer"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginBottom="14dp"
-    android:background="@drawable/bg_card_clinic"
+    android:layout_marginBottom="12dp"
+    android:background="@drawable/bg_home_card_borderless"
     android:clickable="true"
-    android:clipToOutline="true"
     android:elevation="0dp"
     android:focusable="true"
-    android:foreground="?attr/selectableItemBackground"
-    android:orientation="horizontal">
+    android:orientation="vertical"
+    android:paddingStart="16dp"
+    android:paddingTop="14dp"
+    android:paddingEnd="16dp"
+    android:paddingBottom="12dp">
 
+    <!-- Legacy priority stripe kept hidden for binding compatibility -->
     <View
         android:id="@+id/viewPriorityBar"
-        android:layout_width="5dp"
-        android:layout_height="match_parent"
-        android:background="@color/status_warning" />
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:visibility="gone" />
 
+    <!-- Hàng đầu phiếu: ● Trạng thái phẳng -->
+    <TextView
+        android:id="@+id/tvStaffApptStatus"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/open_sans_semibold"
+        android:includeFontPadding="false"
+        android:text="● Chờ xác nhận"
+        android:textColor="@color/ds_warning"
+        android:textSize="12.5sp"
+        app:fontFamily="@font/open_sans_semibold" />
+
+    <!-- Hàng giữa phiếu: Ảnh bé bo 10dp + Tên dịch vụ + Chủ nuôi · Bé -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:padding="16dp">
+        android:layout_marginTop="11dp"
+        android:gravity="center_vertical"
+        android:orientation="horizontal">
+
+        <com.google.android.material.imageview.ShapeableImageView
+            android:id="@+id/ivStaffPetAvatar"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:background="@color/ds_cream_tile"
+            android:contentDescription="@null"
+            android:padding="4dp"
+            android:scaleType="fitCenter"
+            android:src="@drawable/mascot_corgi_running"
+            app:shapeAppearanceOverlay="@style/RoundedCorner10"
+            app:strokeWidth="0dp" />
 
         <LinearLayout
-            android:layout_width="match_parent"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:gravity="center_vertical"
-            android:orientation="horizontal">
+            android:layout_marginStart="12dp"
+            android:layout_weight="1"
+            android:orientation="vertical">
 
             <TextView
-                android:id="@+id/tvStaffApptStatus"
-                android:layout_width="wrap_content"
+                android:id="@+id/tvStaffServiceTitle"
+                style="@style/TextAppearance.PetCare.CardTitle"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@drawable/bg_badge_pending"
-                android:paddingStart="10dp"
-                android:paddingTop="4dp"
-                android:paddingEnd="10dp"
-                android:paddingBottom="4dp"
-                android:text="• Chờ xác nhận"
-                android:textColor="@color/status_warning_ink"
-                android:fontFamily="@font/open_sans_medium"
-                android:textSize="11sp" />
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="12dp"
-            android:gravity="center_vertical"
-            android:orientation="horizontal">
-
-            <com.google.android.material.imageview.ShapeableImageView
-                android:id="@+id/ivStaffPetAvatar"
-                android:layout_width="52dp"
-                android:layout_height="52dp"
-                android:contentDescription="@null"
-                android:padding="1dp"
-                android:scaleType="centerCrop"
-                android:src="@drawable/img_pet_mochi"
-                app:shapeAppearanceOverlay="@style/RoundedCorner16"
-                app:strokeColor="@color/stroke_border"
-                app:strokeWidth="1dp" />
-
-            <LinearLayout
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="12dp"
-                android:layout_weight="1"
-                android:orientation="vertical">
-
-                <TextView
-                    android:id="@+id/tvStaffServiceTitle"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:ellipsize="end"
-                    android:letterSpacing="-0.01"
-                    android:maxLines="1"
-                    android:text="Tiêm phòng"
-                    android:textColor="@color/text_foreground"
-                    android:fontFamily="@font/open_sans_semibold"
-                    android:textSize="15.5sp" />
-
-                <TextView
-                    android:id="@+id/tvStaffCustomerPet"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="2dp"
-                    android:ellipsize="end"
-                    android:maxLines="1"
-                    android:text="Nguyễn Lan · Mochi"
-                    android:textColor="@color/brand_primary"
-                    android:fontFamily="@font/open_sans_semibold"
-                    android:textSize="13sp" />
-            </LinearLayout>
-
-            <ImageView
-                android:layout_width="20dp"
-                android:layout_height="20dp"
-                android:layout_marginStart="8dp"
-                android:contentDescription="@null"
-                android:src="@drawable/ic_chevron_right"
-                app:tint="@color/brand_primary" />
-        </LinearLayout>
-
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:layout_marginTop="12dp"
-            android:layout_marginBottom="10dp"
-            android:background="#F0EEE9" />
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="center_vertical"
-            android:orientation="horizontal">
-
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:gravity="center_vertical"
-                android:orientation="horizontal">
-
-                <ImageView
-                    android:layout_width="14dp"
-                    android:layout_height="14dp"
-                    android:contentDescription="@null"
-                    android:src="@drawable/ic_calendar_days"
-                    app:tint="@color/brand_primary" />
-
-                <TextView
-                    android:id="@+id/tvStaffDate"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="6dp"
-                    android:text="Thứ 2, 27/10/2026"
-                    android:textColor="@color/text_foreground"
-                    android:fontFamily="@font/open_sans_medium"
-                    android:textSize="12sp" />
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="14dp"
-                android:gravity="center_vertical"
-                android:orientation="horizontal">
-
-                <ImageView
-                    android:layout_width="14dp"
-                    android:layout_height="14dp"
-                    android:contentDescription="@null"
-                    android:src="@drawable/ic_clock"
-                    app:tint="@color/warm_coral" />
-
-                <TextView
-                    android:id="@+id/tvStaffTime"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="6dp"
-                    android:text="10:00"
-                    android:textColor="@color/text_foreground"
-                    android:fontFamily="@font/open_sans_medium"
-                    android:textSize="12sp" />
-            </LinearLayout>
+                android:ellipsize="end"
+                android:fontFamily="@font/open_sans_bold"
+                android:lineSpacingMultiplier="1.2"
+                android:maxLines="2"
+                android:text="Tiêm phòng"
+                android:textColor="@color/ds_text_primary"
+                android:textSize="15sp"
+                app:fontFamily="@font/open_sans_bold" />
 
             <TextView
-                android:id="@+id/tvStaffDuration"
-                android:layout_width="wrap_content"
+                android:id="@+id/tvStaffCustomerPet"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="8dp"
-                android:background="@drawable/bg_pill_gray"
-                android:paddingStart="7dp"
-                android:paddingTop="2dp"
-                android:paddingEnd="7dp"
-                android:paddingBottom="2dp"
-                android:text="20 phút"
-                android:textColor="@color/text_muted"
-                android:fontFamily="@font/open_sans_medium"
-                android:textSize="11sp" />
-
-            <View
-                android:layout_width="0dp"
-                android:layout_height="1dp"
-                android:layout_weight="1" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Chi tiết ›"
-                android:textColor="@color/brand_primary"
-                android:fontFamily="@font/open_sans_medium"
-                android:textSize="12sp"
-                tools:ignore="HardcodedText" />
+                android:layout_marginTop="2dp"
+                android:ellipsize="end"
+                android:fontFamily="@font/open_sans_regular"
+                android:maxLines="1"
+                android:text="Nguyễn Lan · Mochi"
+                android:textColor="@color/ds_text_secondary"
+                android:textSize="13sp" />
         </LinearLayout>
     </LinearLayout>
 
+    <!-- Đường kẻ nét đứt cuống phiếu -->
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="2dp"
+        android:layout_marginTop="12dp"
+        android:layout_marginBottom="10dp"
+        android:background="@drawable/bg_divider_dashed"
+        android:layerType="software" />
+
+    <!-- Cuống phiếu: Ngày giờ tự nhiên + Chi tiết › -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:orientation="horizontal">
+
+        <ImageView
+            android:layout_width="15dp"
+            android:layout_height="15dp"
+            android:contentDescription="@null"
+            android:src="@drawable/ic_calendar_days"
+            app:tint="@color/ds_text_secondary" />
+
+        <TextView
+            android:id="@+id/tvStaffDate"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="7dp"
+            android:fontFamily="@font/open_sans_semibold"
+            android:fontFeatureSettings="tnum"
+            android:textColor="@color/ds_text_primary"
+            android:textSize="12.5sp"
+            app:fontFamily="@font/open_sans_semibold"
+            tools:text="T2, 24/11 · 10:00" />
+
+        <TextView
+            android:id="@+id/tvStaffTime"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:visibility="gone" />
+
+        <TextView
+            android:id="@+id/tvStaffDuration"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="6dp"
+            android:layout_weight="1"
+            android:ellipsize="end"
+            android:fontFamily="@font/open_sans_regular"
+            android:fontFeatureSettings="tnum"
+            android:maxLines="1"
+            android:textColor="@color/ds_text_secondary"
+            android:textSize="12sp"
+            tools:text="· 30 phút" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/open_sans_semibold"
+            android:text="Chi tiết"
+            android:textColor="@color/ds_primary"
+            android:textSize="12.5sp"
+            app:fontFamily="@font/open_sans_semibold"
+            tools:ignore="HardcodedText" />
+
+        <ImageView
+            android:layout_width="14dp"
+            android:layout_height="14dp"
+            android:layout_marginStart="2dp"
+            android:contentDescription="@null"
+            android:src="@drawable/ic_chevron_right"
+            app:tint="@color/ds_primary" />
+    </LinearLayout>
 </LinearLayout>

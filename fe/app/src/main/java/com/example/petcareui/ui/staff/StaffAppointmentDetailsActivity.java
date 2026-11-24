@@ -91,7 +91,8 @@ public class StaffAppointmentDetailsActivity extends AppCompatActivity {
     private void bindAppointmentData() {
         if (currentAppt == null) return;
 
-        binding.tvApptDate.setText(currentAppt.getDate());
+        String naturalDate = StaffClinicHelper.formatNaturalDate(currentAppt.getDate());
+        binding.tvApptDate.setText(naturalDate);
 
         updateStatusBadge(currentAppt.getStatus());
         binding.tvRequestedTime.setText(currentAppt.getRequested());
@@ -118,8 +119,8 @@ public class StaffAppointmentDetailsActivity extends AppCompatActivity {
         binding.tvPetBreed.setText(currentAppt.getBreed());
 
         binding.tvServiceName.setText(currentAppt.getService());
-        binding.tvDuration.setText(currentAppt.getDuration());
-        binding.tvDate.setText(currentAppt.getDate());
+        binding.tvDuration.setText("(" + currentAppt.getDuration() + ")");
+        binding.tvDate.setText(naturalDate);
         binding.tvTime.setText(currentAppt.getTime());
         binding.tvPrice.setText(currentAppt.getPrice());
 
@@ -131,37 +132,31 @@ public class StaffAppointmentDetailsActivity extends AppCompatActivity {
         }
 
         binding.tvConfirmDialogBody.setText(currentAppt.getCustomer() + " sẽ được thông báo: "
-                + currentAppt.getPet() + " đã được xác nhận cho "
-                + currentAppt.getService() + " ngày " + currentAppt.getDate()
-                + " lúc " + currentAppt.getTime() + ".");
+                + currentAppt.getPet() + " đã được xác nhận lịch "
+                + currentAppt.getService() + " (" + naturalDate + " · " + currentAppt.getTime() + ").");
 
-        binding.tvNoticeConfirmedBody.setText(currentAppt.getCustomer() + " được thông báo: "
-                + currentAppt.getPet() + " đã xác nhận lúc " + currentAppt.getTime() + ".");
+        binding.tvNoticeConfirmedBody.setText(currentAppt.getCustomer() + " đã nhận thông báo xác nhận lịch lúc " + currentAppt.getTime() + ".");
 
         binding.tvFloatingToastMessage.setText("Đã xác nhận lịch hẹn cho " + currentAppt.getCustomer());
     }
 
     private void updateStatusBadge(String status) {
+        binding.tvStatusBadge.setBackground(null);
         if ("CONFIRMED".equalsIgnoreCase(status)) {
-            binding.tvStatusBadge.setText("• Đã xác nhận");
-            binding.tvStatusBadge.setBackgroundResource(R.drawable.bg_badge_confirmed);
-            binding.tvStatusBadge.setTextColor(ContextCompat.getColor(this, R.color.status_success_ink));
+            binding.tvStatusBadge.setText("● Đã xác nhận");
+            binding.tvStatusBadge.setTextColor(ContextCompat.getColor(this, R.color.ds_success));
         } else if ("REJECTED".equalsIgnoreCase(status)) {
-            binding.tvStatusBadge.setText("• Đã từ chối");
-            binding.tvStatusBadge.setBackgroundResource(R.drawable.bg_badge_cancelled);
-            binding.tvStatusBadge.setTextColor(ContextCompat.getColor(this, R.color.status_destructive_ink));
+            binding.tvStatusBadge.setText("● Đã từ chối");
+            binding.tvStatusBadge.setTextColor(ContextCompat.getColor(this, R.color.ds_error));
         } else if ("COMPLETED".equalsIgnoreCase(status)) {
-            binding.tvStatusBadge.setText("• Đã hoàn thành");
-            binding.tvStatusBadge.setBackgroundResource(R.drawable.bg_badge_completed);
-            binding.tvStatusBadge.setTextColor(ContextCompat.getColor(this, R.color.brand_ink));
+            binding.tvStatusBadge.setText("● Đã hoàn thành");
+            binding.tvStatusBadge.setTextColor(ContextCompat.getColor(this, R.color.ds_primary));
         } else if ("NO_SHOW".equalsIgnoreCase(status)) {
-            binding.tvStatusBadge.setText("• Không đến");
-            binding.tvStatusBadge.setBackgroundResource(R.drawable.bg_badge_no_show);
-            binding.tvStatusBadge.setTextColor(ContextCompat.getColor(this, R.color.status_info_ink));
+            binding.tvStatusBadge.setText("● Không đến");
+            binding.tvStatusBadge.setTextColor(ContextCompat.getColor(this, R.color.ds_text_secondary));
         } else {
-            binding.tvStatusBadge.setText("• Chờ xác nhận");
-            binding.tvStatusBadge.setBackgroundResource(R.drawable.bg_badge_pending);
-            binding.tvStatusBadge.setTextColor(ContextCompat.getColor(this, R.color.status_warning_ink));
+            binding.tvStatusBadge.setText("● Chờ xác nhận");
+            binding.tvStatusBadge.setTextColor(ContextCompat.getColor(this, R.color.ds_warning));
         }
     }
 

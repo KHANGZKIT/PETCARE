@@ -99,19 +99,17 @@ public class ProfileActivity extends AppCompatActivity {
         }
 
         if (isStaff) {
-            binding.tvProfileRole.setText("Nhân viên phòng khám");
+            binding.tvProfileRole.setText("● Nhân viên phòng khám");
             binding.rowStaffPortal.setVisibility(View.VISIBLE);
             binding.rowMyPets.setVisibility(View.GONE);
-            binding.dividerBottomNav.setVisibility(View.VISIBLE);
             binding.bottomNavigation.setVisibility(View.VISIBLE);
-            binding.tvNavHomeLabel.setText("Tổng quan");
+            binding.tvNavHomeLabel.setText("Hôm nay");
             binding.ivNavPetsIcon.setImageResource(R.drawable.ic_calendar_clock);
-            binding.tvNavPetsLabel.setText("Ca khám");
+            binding.tvNavPetsLabel.setText("Khung giờ");
         } else {
-            binding.tvProfileRole.setText("Khách hàng");
+            binding.tvProfileRole.setText("● Khách hàng");
             binding.rowStaffPortal.setVisibility(View.GONE);
             binding.rowMyPets.setVisibility(View.VISIBLE);
-            binding.dividerBottomNav.setVisibility(View.GONE);
             binding.bottomNavigation.setVisibility(View.GONE);
         }
     }

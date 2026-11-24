@@ -221,26 +221,22 @@ public class NotificationsActivity extends AppCompatActivity {
     }
 
     private void applyNotificationTypeStyle(ItemNotificationCardBinding cardBinding, String type) {
+        cardBinding.layoutIconBox.setBackgroundResource(R.drawable.bg_shortcut_icon_cream);
         if ("confirmed".equalsIgnoreCase(type)) {
-            cardBinding.layoutIconBox.setBackgroundResource(R.drawable.bg_badge_confirmed);
             cardBinding.ivNotifIcon.setImageResource(R.drawable.ic_calendar_days);
-            cardBinding.ivNotifIcon.setColorFilter(ContextCompat.getColor(this, R.color.status_success_ink));
+            cardBinding.ivNotifIcon.setColorFilter(ContextCompat.getColor(this, R.color.ds_success));
         } else if ("pending".equalsIgnoreCase(type)) {
-            cardBinding.layoutIconBox.setBackgroundResource(R.drawable.bg_notice_warning);
             cardBinding.ivNotifIcon.setImageResource(R.drawable.ic_clock);
-            cardBinding.ivNotifIcon.setColorFilter(ContextCompat.getColor(this, R.color.status_warning_ink));
+            cardBinding.ivNotifIcon.setColorFilter(ContextCompat.getColor(this, R.color.ds_warning));
         } else if ("reminder".equalsIgnoreCase(type)) {
-            cardBinding.layoutIconBox.setBackgroundResource(R.drawable.bg_badge_no_show);
-            cardBinding.ivNotifIcon.setImageResource(R.drawable.ic_bell_off);
-            cardBinding.ivNotifIcon.setColorFilter(ContextCompat.getColor(this, R.color.status_info_ink));
+            cardBinding.ivNotifIcon.setImageResource(R.drawable.ic_bell);
+            cardBinding.ivNotifIcon.setColorFilter(ContextCompat.getColor(this, R.color.ds_primary));
         } else if ("cancelled".equalsIgnoreCase(type)) {
-            cardBinding.layoutIconBox.setBackgroundResource(R.drawable.bg_pill_ref_code);
             cardBinding.ivNotifIcon.setImageResource(R.drawable.ic_calendar_x);
-            cardBinding.ivNotifIcon.setColorFilter(ContextCompat.getColor(this, R.color.text_muted));
+            cardBinding.ivNotifIcon.setColorFilter(ContextCompat.getColor(this, R.color.ds_text_secondary));
         } else if ("rejected".equalsIgnoreCase(type)) {
-            cardBinding.layoutIconBox.setBackgroundResource(R.drawable.bg_notice_danger);
             cardBinding.ivNotifIcon.setImageResource(R.drawable.ic_x_circle);
-            cardBinding.ivNotifIcon.setColorFilter(ContextCompat.getColor(this, R.color.status_destructive_ink));
+            cardBinding.ivNotifIcon.setColorFilter(ContextCompat.getColor(this, R.color.ds_error));
         }
     }
 }

@@ -384,37 +384,33 @@ public class StaffSlotManagementActivity extends AppCompatActivity {
             rowBinding.tvSlotTime.setText(slot.getTime());
 
             if ("booked".equals(slot.getState())) {
-                rowBinding.tvSlotTime.setBackgroundResource(R.drawable.bg_service_icon);
-                rowBinding.tvSlotTime.setTextColor(ContextCompat.getColor(this, R.color.brand_ink));
+                rowBinding.tvSlotTime.setBackgroundResource(R.drawable.bg_shortcut_icon_cream);
+                rowBinding.tvSlotTime.setTextColor(ContextCompat.getColor(this, R.color.ds_text_primary));
                 rowBinding.tvSlotPrimaryText.setText((slot.getPet() != null ? slot.getPet() : "Thú cưng") + " · " + (slot.getService() != null ? slot.getService() : "Lịch khám"));
                 rowBinding.tvSlotSecondaryText.setText(slot.getCustomer() != null ? slot.getCustomer() : "Đã có khách đặt");
                 rowBinding.tvSlotBookedBadge.setVisibility(View.VISIBLE);
                 rowBinding.btnToggleLock.setVisibility(View.GONE);
             } else if ("closed".equals(slot.getState())) {
-                rowBinding.tvSlotTime.setBackgroundResource(R.drawable.bg_pill_gray);
-                rowBinding.tvSlotTime.setTextColor(ContextCompat.getColor(this, R.color.text_muted));
+                rowBinding.tvSlotTime.setBackgroundResource(R.drawable.bg_shortcut_icon_cream);
+                rowBinding.tvSlotTime.setTextColor(ContextCompat.getColor(this, R.color.ds_text_secondary));
                 rowBinding.tvSlotPrimaryText.setText("Đã đóng");
                 rowBinding.tvSlotSecondaryText.setText("Ẩn khỏi ứng dụng của khách");
                 rowBinding.tvSlotBookedBadge.setVisibility(View.GONE);
                 rowBinding.btnToggleLock.setVisibility(View.VISIBLE);
                 rowBinding.ivLockIcon.setImageResource(R.drawable.ic_lock);
-                rowBinding.ivLockIcon.setImageTintList(ContextCompat.getColorStateList(this, R.color.status_destructive));
+                rowBinding.ivLockIcon.setImageTintList(ContextCompat.getColorStateList(this, R.color.ds_error));
             } else {
-                rowBinding.tvSlotTime.setBackgroundResource(R.drawable.bg_service_icon);
-                rowBinding.tvSlotTime.setTextColor(ContextCompat.getColor(this, R.color.brand_ink));
+                rowBinding.tvSlotTime.setBackgroundResource(R.drawable.bg_shortcut_icon_cream);
+                rowBinding.tvSlotTime.setTextColor(ContextCompat.getColor(this, R.color.ds_text_primary));
                 rowBinding.tvSlotPrimaryText.setText("Đang mở nhận đặt lịch");
                 rowBinding.tvSlotSecondaryText.setText("Khung 30 phút");
                 rowBinding.tvSlotBookedBadge.setVisibility(View.GONE);
                 rowBinding.btnToggleLock.setVisibility(View.VISIBLE);
                 rowBinding.ivLockIcon.setImageResource(R.drawable.ic_lock);
-                rowBinding.ivLockIcon.setImageTintList(ContextCompat.getColorStateList(this, R.color.brand_primary));
+                rowBinding.ivLockIcon.setImageTintList(ContextCompat.getColorStateList(this, R.color.ds_primary));
             }
 
-            if (highlightNewSlot && "14:00".equals(slot.getTime())) {
-                rowBinding.slotRowContainer.setBackgroundResource(R.drawable.bg_card_priority);
-            } else {
-                rowBinding.slotRowContainer.setBackgroundResource(R.drawable.bg_card_clinic);
-            }
+            rowBinding.slotRowContainer.setBackgroundResource(R.drawable.bg_card_clinic);
 
             UiMotionUtils.attachSpringTouch(rowBinding.getRoot(), rowBinding.btnToggleLock);
             rowBinding.btnToggleLock.setOnClickListener(v -> {
@@ -437,18 +433,22 @@ public class StaffSlotManagementActivity extends AppCompatActivity {
     private void setupSheetInteractions() {
         binding.chipRecurrenceOnce.setOnClickListener(v -> {
             isDailyRecurrence = false;
-            binding.chipRecurrenceOnce.setBackgroundResource(R.drawable.bg_service_card_default);
-            binding.chipRecurrenceOnce.setTextColor(ContextCompat.getColor(this, R.color.brand_ink));
-            binding.chipRecurrenceDaily.setBackground(null);
-            binding.chipRecurrenceDaily.setTextColor(ContextCompat.getColor(this, R.color.text_muted));
+            binding.chipRecurrenceOnce.setBackgroundResource(R.drawable.bg_chip_active);
+            binding.chipRecurrenceOnce.setTextColor(ContextCompat.getColor(this, R.color.ds_primary));
+            UiMotionUtils.applyFont(binding.chipRecurrenceOnce, R.font.open_sans_semibold);
+            binding.chipRecurrenceDaily.setBackgroundResource(R.drawable.bg_chip_inactive);
+            binding.chipRecurrenceDaily.setTextColor(ContextCompat.getColor(this, R.color.ds_text_secondary));
+            UiMotionUtils.applyFont(binding.chipRecurrenceDaily, R.font.open_sans_medium);
         });
 
         binding.chipRecurrenceDaily.setOnClickListener(v -> {
             isDailyRecurrence = true;
-            binding.chipRecurrenceDaily.setBackgroundResource(R.drawable.bg_service_card_default);
-            binding.chipRecurrenceDaily.setTextColor(ContextCompat.getColor(this, R.color.brand_ink));
-            binding.chipRecurrenceOnce.setBackground(null);
-            binding.chipRecurrenceOnce.setTextColor(ContextCompat.getColor(this, R.color.text_muted));
+            binding.chipRecurrenceDaily.setBackgroundResource(R.drawable.bg_chip_active);
+            binding.chipRecurrenceDaily.setTextColor(ContextCompat.getColor(this, R.color.ds_primary));
+            UiMotionUtils.applyFont(binding.chipRecurrenceDaily, R.font.open_sans_semibold);
+            binding.chipRecurrenceOnce.setBackgroundResource(R.drawable.bg_chip_inactive);
+            binding.chipRecurrenceOnce.setTextColor(ContextCompat.getColor(this, R.color.ds_text_secondary));
+            UiMotionUtils.applyFont(binding.chipRecurrenceOnce, R.font.open_sans_medium);
         });
 
         binding.btnStartTimePicker.setOnClickListener(v -> {

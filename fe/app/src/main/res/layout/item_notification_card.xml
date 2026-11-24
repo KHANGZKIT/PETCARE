@@ -13,12 +13,11 @@
     android:orientation="horizontal"
     android:padding="14dp">
 
-    <!-- Ô biểu tượng loại thông báo 40x40dp bo cong 16dp -->
     <FrameLayout
         android:id="@+id/layoutIconBox"
         android:layout_width="40dp"
         android:layout_height="40dp"
-        android:background="@drawable/bg_notice_brand">
+        android:background="@drawable/bg_shortcut_icon_cream">
 
         <ImageView
             android:id="@+id/ivNotifIcon"
@@ -27,10 +26,9 @@
             android:layout_gravity="center"
             android:contentDescription="@null"
             android:src="@drawable/ic_calendar_days"
-            app:tint="@color/brand_primary" />
+            app:tint="@color/ds_primary" />
     </FrameLayout>
 
-    <!-- Nội dung thông báo -->
     <LinearLayout
         android:layout_width="0dp"
         android:layout_height="wrap_content"
@@ -38,7 +36,6 @@
         android:layout_weight="1"
         android:orientation="vertical">
 
-        <!-- Tiêu đề & Chấm chưa đọc -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -50,41 +47,40 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:letterSpacing="-0.01"
+                android:fontFamily="@font/open_sans_semibold"
                 android:text="Lịch hẹn đã được xác nhận"
-                android:textColor="@color/text_foreground"
-                android:fontFamily="@font/open_sans_medium"
-                android:textSize="13.5sp" />
+                android:textColor="@color/ds_text_primary"
+                android:textSize="13.5sp"
+                app:fontFamily="@font/open_sans_semibold" />
 
             <View
                 android:id="@+id/viewUnreadDot"
                 android:layout_width="8dp"
                 android:layout_height="8dp"
-                android:layout_marginStart="6dp"
-                android:background="@drawable/bg_pin_circle" />
+                android:layout_marginStart="8dp"
+                android:background="@drawable/bg_step_dot_active" />
         </LinearLayout>
 
-        <!-- Thân nội dung -->
         <TextView
             android:id="@+id/tvNotifBody"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="4dp"
-            android:lineSpacingExtra="2dp"
-            android:text="Bệnh viện Thú y Gia Định đã xác nhận lịch cạo vôi răng cho Bông vào Thứ 4, 29/10 lúc 14:00."
-            android:textColor="@color/text_muted"
             android:fontFamily="@font/open_sans_regular"
-            android:textSize="12sp" />
+            android:lineSpacingExtra="2dp"
+            android:text="Phòng khám đã xác nhận lịch hẹn của bé."
+            android:textColor="@color/ds_text_secondary"
+            android:textSize="12.5sp" />
 
-        <!-- Thời gian nhận -->
         <TextView
             android:id="@+id/tvNotifTime"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="6dp"
-            android:text="Hôm nay · 08:12"
-            android:textColor="@color/text_muted"
             android:fontFamily="@font/open_sans_medium"
+            android:fontFeatureSettings="tnum"
+            android:text="Hôm nay · 08:12"
+            android:textColor="@color/ds_text_secondary"
             android:textSize="11sp" />
     </LinearLayout>
 

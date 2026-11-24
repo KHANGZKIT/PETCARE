@@ -7,7 +7,7 @@
     android:orientation="vertical"
     android:weightSum="100">
 
-    <!-- Nửa trên (55%): CardView Soft Peach #FCE9E2, bo góc 32dp, không đổ bóng, không viền -->
+    <!-- Warm Tactile 16dp Soft Peach Card with 1dp Border & Zero Elevation -->
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
@@ -22,9 +22,10 @@
             android:layout_marginStart="24dp"
             android:layout_marginEnd="24dp"
             app:cardBackgroundColor="@color/ds_soft_peach"
-            app:cardCornerRadius="32dp"
+            app:cardCornerRadius="16dp"
             app:cardElevation="0dp"
-            app:strokeWidth="0dp">
+            app:strokeColor="@color/ds_border"
+            app:strokeWidth="1dp">
 
             <ImageView
                 android:id="@+id/ivOnboardingIllustration"
@@ -33,14 +34,13 @@
                 android:layout_gravity="center"
                 android:adjustViewBounds="true"
                 android:contentDescription="@null"
-                android:padding="28dp"
+                android:padding="24dp"
                 android:scaleType="fitCenter"
                 tools:src="@drawable/mascot_corgi_wave" />
 
         </com.google.android.material.card.MaterialCardView>
     </FrameLayout>
 
-    <!-- Nửa dưới (45%): Tiêu đề chính (24sp Bold #292524) & Mô tả phụ (15sp Regular #6F6662) -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
@@ -53,26 +53,27 @@
 
         <TextView
             android:id="@+id/tvOnboardingTitle"
+            style="@style/TextAppearance.PetCare.Display"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:fontFamily="@font/open_sans_bold"
             android:gravity="center"
-            android:letterSpacing="-0.015"
-            android:lineSpacingMultiplier="1.2"
+            android:lineSpacingMultiplier="1.15"
             android:textColor="@color/ds_text_primary"
-            android:textSize="24sp"
+            android:textSize="22sp"
+            app:fontFamily="@font/open_sans_bold"
             tools:text="Chăm sóc bé cưng nhẹ nhàng hơn mỗi ngày" />
 
         <TextView
             android:id="@+id/tvOnboardingDescription"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="14dp"
+            android:layout_marginTop="12dp"
             android:fontFamily="@font/open_sans_regular"
             android:gravity="center"
             android:lineSpacingMultiplier="1.25"
             android:textColor="@color/ds_text_secondary"
-            android:textSize="15sp"
+            android:textSize="14.5sp"
             tools:text="Lưu giữ hồ sơ sức khỏe và theo dõi lịch trình của từng bé tại một nơi duy nhất." />
 
     </LinearLayout>

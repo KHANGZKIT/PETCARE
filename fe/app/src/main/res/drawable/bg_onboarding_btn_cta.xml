@@ -5,14 +5,14 @@
         <selector>
             <item android:state_pressed="true">
                 <shape android:shape="rectangle">
-                    <solid android:color="#9D4530" />
-                    <corners android:radius="27dp" />
+                    <solid android:color="@color/ds_primary_pressed" />
+                    <corners android:radius="12dp" />
                 </shape>
             </item>
             <item>
                 <shape android:shape="rectangle">
-                    <solid android:color="@color/ds_primary_dark" />
-                    <corners android:radius="27dp" />
+                    <solid android:color="@color/ds_primary" />
+                    <corners android:radius="12dp" />
                 </shape>
             </item>
         </selector>
