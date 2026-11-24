@@ -205,6 +205,48 @@
                 </LinearLayout>
 
                 <TextView
+                    android:id="@+id/chipExam"
+                    android:layout_width="wrap_content"
+                    android:layout_height="34dp"
+                    android:layout_marginStart="8dp"
+                    android:background="@drawable/bg_chip_inactive"
+                    android:fontFamily="@font/open_sans_medium"
+                    android:gravity="center"
+                    android:paddingStart="13dp"
+                    android:paddingEnd="13dp"
+                    android:text="Khám bệnh"
+                    android:textColor="@color/ds_text_secondary"
+                    android:textSize="12.5sp" />
+
+                <TextView
+                    android:id="@+id/chipVaccine"
+                    android:layout_width="wrap_content"
+                    android:layout_height="34dp"
+                    android:layout_marginStart="8dp"
+                    android:background="@drawable/bg_chip_inactive"
+                    android:fontFamily="@font/open_sans_medium"
+                    android:gravity="center"
+                    android:paddingStart="13dp"
+                    android:paddingEnd="13dp"
+                    android:text="Tiêm phòng"
+                    android:textColor="@color/ds_text_secondary"
+                    android:textSize="12.5sp" />
+
+                <TextView
+                    android:id="@+id/chipSpa"
+                    android:layout_width="wrap_content"
+                    android:layout_height="34dp"
+                    android:layout_marginStart="8dp"
+                    android:background="@drawable/bg_chip_inactive"
+                    android:fontFamily="@font/open_sans_medium"
+                    android:gravity="center"
+                    android:paddingStart="13dp"
+                    android:paddingEnd="13dp"
+                    android:text="Tắm &amp; Spa"
+                    android:textColor="@color/ds_text_secondary"
+                    android:textSize="12.5sp" />
+
+                <TextView
                     android:id="@+id/chipEmergency"
                     android:layout_width="wrap_content"
                     android:layout_height="34dp"

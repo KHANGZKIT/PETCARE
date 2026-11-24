@@ -5,7 +5,9 @@ import com.petcare.dto.response.PetResponse;
 import com.petcare.entity.PetEntity;
 import com.petcare.entity.UserEntity;
 import com.petcare.entity.UserRole;
+import com.petcare.exception.DuplicateResourceException;
 import com.petcare.exception.ResourceNotFoundException;
+import com.petcare.repository.AppointmentRepository;
 import com.petcare.repository.PetRepository;
 import com.petcare.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -21,6 +23,7 @@ public class PetService {
 
     private final PetRepository petRepository;
     private final UserRepository userRepository;
+    private final AppointmentRepository appointmentRepository;
 
     private UserEntity getCustomerByEmail(String email) {
         if (email == null || email.isBlank()) {
@@ -83,6 +86,10 @@ public class PetService {
         UserEntity customer = getCustomerByEmail(customerEmail);
         PetEntity pet = petRepository.findByIdAndOwnerId(id, customer.getId())
                 .orElseThrow(() -> new ResourceNotFoundException("Không tìm thấy thú cưng hoặc bạn không có quyền"));
+        if (appointmentRepository.existsByPetId(pet.getId())) {
+            throw new DuplicateResourceException(
+                    "Không thể xóa hồ sơ bé " + pet.getName() + " vì bé đã có lịch hẹn khám");
+        }
         petRepository.delete(pet);
     }
 }

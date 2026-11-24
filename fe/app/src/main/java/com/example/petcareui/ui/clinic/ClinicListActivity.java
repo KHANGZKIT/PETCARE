@@ -24,6 +24,7 @@ import com.example.petcareui.MainActivity;
 import com.example.petcareui.R;
 import com.example.petcareui.data.api.ApiClient;
 import com.example.petcareui.data.model.ClinicItem;
+import com.example.petcareui.data.model.PetItem;
 import com.example.petcareui.data.dto.response.ClinicResponse;
 import com.example.petcareui.databinding.ActivityClinicListBinding;
 import com.example.petcareui.databinding.ItemClinicRowBinding;
@@ -44,6 +45,7 @@ public class ClinicListActivity extends AppCompatActivity {
 
     public static final String EXTRA_TAB_MODE = "extra_tab_mode";
     public static final String EXTRA_INITIAL_FILTER = "extra_initial_filter";
+    public static final String EXTRA_PRESELECTED_PET = "extra_preselected_pet";
     private static final int REQ_LOCATION = 1001;
     // Tọa độ gốc mặc định: Đại học Công nghiệp Hà Nội (HaUI - Bắc Từ Liêm)
     private static final double DEFAULT_LAT = 21.0537;
@@ -51,9 +53,10 @@ public class ClinicListActivity extends AppCompatActivity {
 
     private ActivityClinicListBinding binding;
     private final List<ClinicItem> allClinics = new ArrayList<>();
-    private String currentFilterMode = "all"; // "all", "open", "emergency", "nearby"
+    private String currentFilterMode = "all"; // "all", "open", "nearby", "exam", "vaccine", "spa", "emergency"
     private String currentSortMode = "NEAREST"; // "NEAREST", "RATING"
     private String currentSearchQuery = "";
+    private PetItem preselectedPet;
 
     private double userLatitude = DEFAULT_LAT;
     private double userLongitude = DEFAULT_LNG;
@@ -83,12 +86,28 @@ public class ClinicListActivity extends AppCompatActivity {
             UiMotionUtils.applyWindowInsets(binding.getRoot(), binding.layoutTopBar, binding.layoutResultsBody);
         }
 
+        if (getIntent().hasExtra(EXTRA_PRESELECTED_PET)) {
+            try {
+                preselectedPet = (PetItem) getIntent().getSerializableExtra(EXTRA_PRESELECTED_PET);
+            } catch (Exception ignored) {
+            }
+        }
+
         requestLocationPermission();
         updateUserLocation();
         setupListeners();
 
         String initialFilter = getIntent().getStringExtra(EXTRA_INITIAL_FILTER);
-        if ("emergency".equalsIgnoreCase(initialFilter)) {
+        if ("exam".equalsIgnoreCase(initialFilter)) {
+            currentFilterMode = "exam";
+            setActiveChip(binding.chipExam);
+        } else if ("vaccine".equalsIgnoreCase(initialFilter)) {
+            currentFilterMode = "vaccine";
+            setActiveChip(binding.chipVaccine);
+        } else if ("spa".equalsIgnoreCase(initialFilter)) {
+            currentFilterMode = "spa";
+            setActiveChip(binding.chipSpa);
+        } else if ("emergency".equalsIgnoreCase(initialFilter)) {
             currentFilterMode = "emergency";
             setActiveChip(binding.chipEmergency);
         } else {
@@ -183,7 +202,7 @@ public class ClinicListActivity extends AppCompatActivity {
             }
         } catch (Exception ignored) {
         }
-        binding.tvLocationSubtitle.setText("Vị trí: " + locationLabel);
+        refreshLocationSubtitle();
     }
 
     private void applyValidLocation(Location loc) {
@@ -195,7 +214,7 @@ public class ClinicListActivity extends AppCompatActivity {
             userLatitude = lat;
             userLongitude = lng;
             locationLabel = "Vị trí GPS thực tế";
-            binding.tvLocationSubtitle.setText("Vị trí: " + locationLabel);
+            refreshLocationSubtitle();
             if (!allClinics.isEmpty()) {
                 calculateDistances(allClinics);
                 filterClinics();
@@ -311,10 +330,22 @@ public class ClinicListActivity extends AppCompatActivity {
                 binding.chipAll,
                 binding.chipOpen,
                 binding.chipNearby,
+                binding.chipExam,
+                binding.chipVaccine,
+                binding.chipSpa,
                 binding.chipEmergency
         );
 
         setupFilterChips();
+        refreshLocationSubtitle();
+    }
+
+    private void refreshLocationSubtitle() {
+        if (preselectedPet != null && preselectedPet.getName() != null && !preselectedPet.getName().trim().isEmpty()) {
+            binding.tvLocationSubtitle.setText("Đặt lịch cho " + preselectedPet.getName().trim() + " · " + locationLabel);
+        } else {
+            binding.tvLocationSubtitle.setText("Vị trí: " + locationLabel);
+        }
     }
 
     private void showChangeLocationDialog() {
@@ -342,7 +373,7 @@ public class ClinicListActivity extends AppCompatActivity {
                     } else {
                         updateUserLocation();
                     }
-                    binding.tvLocationSubtitle.setText("Vị trí: " + locationLabel);
+                    refreshLocationSubtitle();
                     calculateDistances(allClinics);
                     filterClinics();
                 })
@@ -370,6 +401,24 @@ public class ClinicListActivity extends AppCompatActivity {
             filterClinics();
         });
 
+        binding.chipExam.setOnClickListener(v -> {
+            setActiveChip(binding.chipExam);
+            currentFilterMode = "exam";
+            filterClinics();
+        });
+
+        binding.chipVaccine.setOnClickListener(v -> {
+            setActiveChip(binding.chipVaccine);
+            currentFilterMode = "vaccine";
+            filterClinics();
+        });
+
+        binding.chipSpa.setOnClickListener(v -> {
+            setActiveChip(binding.chipSpa);
+            currentFilterMode = "spa";
+            filterClinics();
+        });
+
         binding.chipEmergency.setOnClickListener(v -> {
             setActiveChip(binding.chipEmergency);
             currentFilterMode = "emergency";
@@ -384,6 +433,45 @@ public class ClinicListActivity extends AppCompatActivity {
                 .replaceAll("đ", "d")
                 .replaceAll("Đ", "D")
                 .toLowerCase();
+    }
+
+    public static boolean matchesServiceCategory(String serviceName, String category) {
+        if (serviceName == null || category == null) return false;
+        String lower = serviceName.toLowerCase(Locale.ROOT);
+        switch (category) {
+            case "exam":
+                return lower.contains("khám") || lower.contains("siêu âm") || lower.contains("xét nghiệm");
+            case "vaccine":
+                return lower.contains("tiêm") || lower.contains("vắc") || lower.contains("vaccine");
+            case "spa":
+                return lower.contains("tắm") || lower.contains("spa") || lower.contains("cắt tỉa")
+                        || lower.contains("cắt móng") || lower.contains("chăm sóc lông") || lower.contains("dưỡng ẩm lông");
+            case "emergency":
+                return lower.contains("cấp cứu") || lower.contains("24/7") || lower.contains("hồi sức");
+            default:
+                return true;
+        }
+    }
+
+    private boolean clinicMatchesCategory(ClinicItem c, String category) {
+        if ("emergency".equals(category)) {
+            String hours = c.getHours() != null ? c.getHours().toLowerCase(Locale.ROOT) : "";
+            String name = c.getName() != null ? c.getName().toLowerCase(Locale.ROOT) : "";
+            if (hours.contains("24/7") || hours.contains("cấp cứu") || name.contains("cấp cứu")) {
+                return true;
+            }
+        }
+        List<String> svcNames = c.getServiceNames();
+        if (svcNames == null || svcNames.isEmpty()) {
+            // Fallback an toàn nếu server chưa trả danh sách tên dịch vụ
+            return !"emergency".equals(category);
+        }
+        for (String svc : svcNames) {
+            if (matchesServiceCategory(svc, category)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     private void filterClinics() {
@@ -403,12 +491,23 @@ public class ClinicListActivity extends AppCompatActivity {
                     || area.toLowerCase().contains(rawQuery) || removeAccents(area).contains(unaccentedQuery)
                     || dist.toLowerCase().contains(rawQuery);
 
+            if (!matchesSearch && c.getServiceNames() != null) {
+                for (String svc : c.getServiceNames()) {
+                    if (svc != null && (svc.toLowerCase().contains(rawQuery) || removeAccents(svc).contains(unaccentedQuery))) {
+                        matchesSearch = true;
+                        break;
+                    }
+                }
+            }
+
             boolean matchesChip = true;
             if ("open".equals(currentFilterMode)) {
                 matchesChip = c.isOpen();
-            } else if ("emergency".equals(currentFilterMode)) {
-                String hours = c.getHours() != null ? c.getHours().toLowerCase() : "";
-                matchesChip = hours.contains("24/7") || hours.contains("cấp cứu") || name.toLowerCase().contains("cấp cứu");
+            } else if ("exam".equals(currentFilterMode)
+                    || "vaccine".equals(currentFilterMode)
+                    || "spa".equals(currentFilterMode)
+                    || "emergency".equals(currentFilterMode)) {
+                matchesChip = clinicMatchesCategory(c, currentFilterMode);
             }
 
             if (matchesSearch && matchesChip) {
@@ -440,6 +539,9 @@ public class ClinicListActivity extends AppCompatActivity {
                 binding.chipAll,
                 binding.chipOpen,
                 binding.chipNearby,
+                binding.chipExam,
+                binding.chipVaccine,
+                binding.chipSpa,
                 binding.chipEmergency
         };
 
@@ -460,6 +562,15 @@ public class ClinicListActivity extends AppCompatActivity {
                         binding.tvChipNearby, isActive ? R.font.open_sans_semibold : R.font.open_sans_medium);
             }
         }
+
+        activeView.post(() -> {
+            if (activeView.getParent() != null
+                    && activeView.getParent().getParent() instanceof android.widget.HorizontalScrollView) {
+                android.widget.HorizontalScrollView hsv =
+                        (android.widget.HorizontalScrollView) activeView.getParent().getParent();
+                hsv.smoothScrollTo(Math.max(0, activeView.getLeft() - 48), 0);
+            }
+        });
     }
 
     private void resetFilterChips() {
@@ -508,6 +619,13 @@ public class ClinicListActivity extends AppCompatActivity {
             rowBinding.getRoot().setOnClickListener(v -> {
                 Intent intent = new Intent(this, ClinicDetailsActivity.class);
                 intent.putExtra(ClinicDetailsActivity.EXTRA_CLINIC, clinic);
+                if (preselectedPet != null) {
+                    intent.putExtra(ClinicDetailsActivity.EXTRA_PRESELECTED_PET, preselectedPet);
+                }
+                if ("exam".equals(currentFilterMode) || "vaccine".equals(currentFilterMode)
+                        || "spa".equals(currentFilterMode) || "emergency".equals(currentFilterMode)) {
+                    intent.putExtra(ClinicDetailsActivity.EXTRA_PREFERRED_CATEGORY, currentFilterMode);
+                }
                 startActivity(intent);
             });
 

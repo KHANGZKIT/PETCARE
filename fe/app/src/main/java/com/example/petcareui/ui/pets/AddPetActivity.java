@@ -1,11 +1,16 @@
 package com.example.petcareui.ui.pets;
 
+import android.app.Dialog;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
@@ -15,10 +20,12 @@ import androidx.core.content.res.ResourcesCompat;
 
 import com.example.petcareui.R;
 import com.example.petcareui.data.api.ApiClient;
+import com.example.petcareui.data.api.ApiErrorParser;
 import com.example.petcareui.data.dto.request.PetRequest;
 import com.example.petcareui.data.dto.response.PetResponse;
 import com.example.petcareui.data.model.PetItem;
 import com.example.petcareui.databinding.ActivityAddPetBinding;
+import com.example.petcareui.databinding.DialogPetDeleteConfirmBinding;
 import com.example.petcareui.utils.UiMotionUtils;
 
 import java.util.Locale;
@@ -227,6 +234,64 @@ public class AddPetActivity extends AppCompatActivity {
         if (editingPet.getNotes() != null && !editingPet.getNotes().trim().isEmpty()) {
             binding.etPetNotes.setText(editingPet.getNotes().trim());
         }
+
+        // Hiện nút Xóa hồ sơ rõ ràng khi mở màn Chỉnh sửa
+        binding.btnDeletePet.setVisibility(View.VISIBLE);
+        UiMotionUtils.attachSpringTouch(binding.btnDeletePet);
+        binding.btnDeletePet.setOnClickListener(v -> showDeleteConfirmDialog());
+    }
+
+    private void showDeleteConfirmDialog() {
+        if (editingPet == null) return;
+        Long editId = editingPet.getNumericId();
+        if (editId == null) return;
+
+        Dialog dialog = new Dialog(this);
+        DialogPetDeleteConfirmBinding dialogBinding = DialogPetDeleteConfirmBinding.inflate(getLayoutInflater());
+        dialog.setContentView(dialogBinding.getRoot());
+
+        if (dialog.getWindow() != null) {
+            dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+            int width = (int) (getResources().getDisplayMetrics().widthPixels * 0.88);
+            dialog.getWindow().setLayout(width, ViewGroup.LayoutParams.WRAP_CONTENT);
+        }
+
+        String petName = editingPet.getName() != null && !editingPet.getName().trim().isEmpty()
+                ? editingPet.getName().trim() : "thú cưng";
+        dialogBinding.tvDeleteTitle.setText("Xóa bé " + petName + "?");
+        dialogBinding.tvDeleteMessage.setText("Bạn có chắc chắn muốn xóa bé " + petName + " khỏi danh sách hồ sơ? Thao tác này không thể hoàn tác.");
+
+        dialogBinding.btnCancelDelete.setOnClickListener(v -> dialog.dismiss());
+        dialogBinding.btnConfirmDelete.setOnClickListener(v -> {
+            dialog.dismiss();
+            hideError();
+            setLoading(true);
+            ApiClient.getPetApi().deletePet(editId).enqueue(new Callback<Void>() {
+                @Override
+                public void onResponse(Call<Void> call, Response<Void> response) {
+                    if (isFinishing() || isDestroyed()) return;
+                    setLoading(false);
+                    if (response.isSuccessful()) {
+                        Toast.makeText(AddPetActivity.this, "Đã xóa hồ sơ bé " + petName, Toast.LENGTH_SHORT).show();
+                        setResult(RESULT_OK);
+                        finish();
+                    } else {
+                        showError(ApiErrorParser.getMessage(response, "Không thể xóa hồ sơ thú cưng lúc này."));
+                        binding.layoutErrorBanner.post(() -> binding.layoutErrorBanner.getParent().requestChildFocus(
+                                binding.layoutErrorBanner, binding.layoutErrorBanner));
+                    }
+                }
+
+                @Override
+                public void onFailure(Call<Void> call, Throwable t) {
+                    if (isFinishing() || isDestroyed()) return;
+                    setLoading(false);
+                    showError("Lỗi kết nối máy chủ khi xóa hồ sơ thú cưng.");
+                }
+            });
+        });
+
+        dialog.show();
     }
 
     private void setupSaveButton() {

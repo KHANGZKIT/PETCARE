@@ -1,6 +1,8 @@
 package com.example.petcareui.data.model;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 
 public class ClinicItem implements Serializable {
     private String id;
@@ -19,6 +21,7 @@ public class ClinicItem implements Serializable {
     private Double latitude;
     private Double longitude;
     private Float distanceKm;
+    private List<String> serviceNames = new ArrayList<>();
 
     public ClinicItem(String id, String name, String address, double rating, int reviews, String distance, boolean open,
             String hours) {
@@ -148,6 +151,14 @@ public class ClinicItem implements Serializable {
 
     public void setArea(String area) {
         this.area = area;
+    }
+
+    public List<String> getServiceNames() {
+        return serviceNames;
+    }
+
+    public void setServiceNames(List<String> serviceNames) {
+        this.serviceNames = serviceNames != null ? new ArrayList<>(serviceNames) : new ArrayList<>();
     }
 
     public int getImageResId() {

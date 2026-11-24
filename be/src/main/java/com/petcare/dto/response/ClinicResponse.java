@@ -2,6 +2,8 @@ package com.petcare.dto.response;
 
 import com.petcare.entity.ClinicEntity;
 
+import java.util.List;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -23,8 +25,13 @@ public class ClinicResponse {
     private boolean active;
     private Double latitude;
     private Double longitude;
+    private List<String> serviceNames;
 
     public static ClinicResponse fromEntity(ClinicEntity entity) {
+        return fromEntity(entity, List.of());
+    }
+
+    public static ClinicResponse fromEntity(ClinicEntity entity, List<String> serviceNames) {
         return ClinicResponse.builder()
                 .id(entity.getId())
                 .name(entity.getName())
@@ -35,6 +42,7 @@ public class ClinicResponse {
                 .active(entity.isActive())
                 .latitude(entity.getLatitude())
                 .longitude(entity.getLongitude())
+                .serviceNames(serviceNames)
                 .build();
     }
 }

@@ -14,6 +14,7 @@ import androidx.core.widget.NestedScrollView;
 import com.example.petcareui.R;
 import com.example.petcareui.data.api.ApiClient;
 import com.example.petcareui.data.model.ClinicItem;
+import com.example.petcareui.data.model.PetItem;
 import com.example.petcareui.data.model.ServiceItem;
 import com.example.petcareui.data.dto.response.ServiceResponse;
 import com.example.petcareui.databinding.ActivityClinicDetailsBinding;
@@ -22,6 +23,7 @@ import com.example.petcareui.utils.UiMotionUtils;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -34,9 +36,13 @@ import retrofit2.Response;
 public class ClinicDetailsActivity extends AppCompatActivity {
 
     public static final String EXTRA_CLINIC = "extra_clinic";
+    public static final String EXTRA_PRESELECTED_PET = "extra_preselected_pet";
+    public static final String EXTRA_PREFERRED_CATEGORY = "extra_preferred_category";
 
     private ActivityClinicDetailsBinding binding;
     private ClinicItem clinicItem;
+    private PetItem preselectedPet;
+    private String preferredCategory;
     private boolean isFavorite = false;
 
     private final List<ServiceItem> services = new ArrayList<>();
@@ -95,6 +101,13 @@ public class ClinicDetailsActivity extends AppCompatActivity {
             } catch (Exception ignored) {
             }
         }
+        if (getIntent().hasExtra(EXTRA_PRESELECTED_PET)) {
+            try {
+                preselectedPet = (PetItem) getIntent().getSerializableExtra(EXTRA_PRESELECTED_PET);
+            } catch (Exception ignored) {
+            }
+        }
+        preferredCategory = getIntent().getStringExtra(EXTRA_PREFERRED_CATEGORY);
 
         // Dữ liệu mẫu mặc định (An Nhiên - Hà Nội)
         if (clinicItem == null) {
@@ -217,11 +230,22 @@ public class ClinicDetailsActivity extends AppCompatActivity {
         binding.btnDirections.setOnClickListener(mapListener);
         binding.btnMapDirections.setOnClickListener(mapListener);
 
-        binding.tvSeeAllServices.setOnClickListener(v -> {
-            Intent intent = new Intent(this, com.example.petcareui.ui.booking.SelectServiceActivity.class);
-            intent.putExtra(com.example.petcareui.ui.booking.SelectServiceActivity.EXTRA_CLINIC, clinicItem);
-            startActivity(intent);
-        });
+        binding.tvSeeAllServices.setOnClickListener(v -> openSelectServiceScreen());
+    }
+
+    private void openSelectServiceScreen() {
+        Intent intent = new Intent(this, com.example.petcareui.ui.booking.SelectServiceActivity.class);
+        intent.putExtra(com.example.petcareui.ui.booking.SelectServiceActivity.EXTRA_CLINIC, clinicItem);
+        if (preselectedPet != null) {
+            intent.putExtra(com.example.petcareui.ui.booking.SelectServiceActivity.EXTRA_PRESELECTED_PET, preselectedPet);
+        }
+        if (preferredCategory != null && !preferredCategory.isEmpty()) {
+            intent.putExtra(com.example.petcareui.ui.booking.SelectServiceActivity.EXTRA_PREFERRED_CATEGORY, preferredCategory);
+        }
+        if (selectedServiceIndex >= 0 && selectedServiceIndex < services.size()) {
+            intent.putExtra(com.example.petcareui.ui.booking.SelectServiceActivity.EXTRA_SELECTED_SERVICE, services.get(selectedServiceIndex));
+        }
+        startActivity(intent);
     }
 
     private void loadServicesFromApi() {
@@ -304,6 +328,15 @@ public class ClinicDetailsActivity extends AppCompatActivity {
             binding.containerServicesList.addView(itemBinding.getRoot());
         }
 
+        if (selectedServiceIndex == -1 && preferredCategory != null && !preferredCategory.isEmpty()) {
+            for (int i = 0; i < services.size(); i++) {
+                if (ClinicListActivity.matchesServiceCategory(services.get(i).getName(), preferredCategory)) {
+                    toggleServiceSelection(i);
+                    break;
+                }
+            }
+        }
+
         UiMotionUtils.animateStaggeredChildren(binding.containerServicesList, 60);
     }
 
@@ -373,10 +406,6 @@ public class ClinicDetailsActivity extends AppCompatActivity {
     }
 
     private void setupBookingCTA() {
-        binding.btnBookAppointment.setOnClickListener(v -> {
-            Intent intent = new Intent(this, com.example.petcareui.ui.booking.SelectServiceActivity.class);
-            intent.putExtra(com.example.petcareui.ui.booking.SelectServiceActivity.EXTRA_CLINIC, clinicItem);
-            startActivity(intent);
-        });
+        binding.btnBookAppointment.setOnClickListener(v -> openSelectServiceScreen());
     }
 }

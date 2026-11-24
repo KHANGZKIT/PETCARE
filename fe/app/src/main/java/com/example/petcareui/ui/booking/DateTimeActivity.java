@@ -20,6 +20,7 @@ import com.example.petcareui.data.api.ApiClient;
 import com.example.petcareui.data.dto.response.ClinicSlotResponse;
 import com.example.petcareui.data.model.ClinicItem;
 import com.example.petcareui.data.model.DateItem;
+import com.example.petcareui.data.model.PetItem;
 import com.example.petcareui.data.model.ServiceItem;
 import com.example.petcareui.data.model.TimeSlotItem;
 import com.example.petcareui.databinding.ActivityDateTimeBinding;
@@ -49,11 +50,20 @@ public class DateTimeActivity extends AppCompatActivity {
 
     public static final String EXTRA_CLINIC = "extra_clinic";
     public static final String EXTRA_SELECTED_SERVICE = "extra_selected_service";
+    public static final String EXTRA_SELECTED_DATE = "extra_selected_date";
+    public static final String EXTRA_SELECTED_TIME = "extra_selected_time";
+    public static final String EXTRA_PRESELECTED_PET = "extra_preselected_pet";
+    public static final String EXTRA_EDIT_FROM_REVIEW = "extra_edit_from_review";
     private static final int MAX_MONTHS_AHEAD = 3;
 
     private ActivityDateTimeBinding binding;
     private ClinicItem clinicItem;
     private ServiceItem serviceItem;
+    private DateItem preselectedDate;
+    private TimeSlotItem preselectedTime;
+    private PetItem preselectedPet;
+    private boolean isEditFromReview = false;
+    private boolean appliedPreselectedTime = false;
 
     private YearMonth minMonth;
     private YearMonth maxMonth;
@@ -102,6 +112,31 @@ public class DateTimeActivity extends AppCompatActivity {
             } catch (Exception ignored) {
             }
         }
+        if (getIntent().hasExtra(EXTRA_SELECTED_DATE)) {
+            try {
+                preselectedDate = (DateItem) getIntent().getSerializableExtra(EXTRA_SELECTED_DATE);
+                if (preselectedDate != null && preselectedDate.getIsoDate() != null) {
+                    YearMonth ym = YearMonth.from(LocalDate.parse(preselectedDate.getIsoDate().substring(0, 10)));
+                    if (!ym.isBefore(minMonth) && !ym.isAfter(maxMonth)) {
+                        currentYearMonth = ym;
+                    }
+                }
+            } catch (Exception ignored) {
+            }
+        }
+        if (getIntent().hasExtra(EXTRA_SELECTED_TIME)) {
+            try {
+                preselectedTime = (TimeSlotItem) getIntent().getSerializableExtra(EXTRA_SELECTED_TIME);
+            } catch (Exception ignored) {
+            }
+        }
+        if (getIntent().hasExtra(EXTRA_PRESELECTED_PET)) {
+            try {
+                preselectedPet = (PetItem) getIntent().getSerializableExtra(EXTRA_PRESELECTED_PET);
+            } catch (Exception ignored) {
+            }
+        }
+        isEditFromReview = getIntent().getBooleanExtra(EXTRA_EDIT_FROM_REVIEW, false);
     }
 
     private void setupTopBar() {
@@ -172,10 +207,19 @@ public class DateTimeActivity extends AppCompatActivity {
             binding.containerDates.addView(itemBinding.getRoot());
         }
 
-        binding.scrollDatesStrip.post(() -> binding.scrollDatesStrip.scrollTo(0, 0));
+        int initialDateIdx = 0;
+        if (preselectedDate != null && preselectedDate.getIsoDate() != null) {
+            for (int i = 0; i < dates.size(); i++) {
+                if (preselectedDate.getIsoDate().equals(dates.get(i).getIsoDate())) {
+                    initialDateIdx = i;
+                    break;
+                }
+            }
+            preselectedDate = null;
+        }
 
         if (!dates.isEmpty()) {
-            selectDate(0);
+            selectDate(initialDateIdx);
         }
     }
 
@@ -279,6 +323,7 @@ public class DateTimeActivity extends AppCompatActivity {
                 if (response.isSuccessful() && response.body() != null && !response.body().isEmpty()) {
                     int availableCount = 0;
                     int firstAvailableIndex = -1;
+                    int matchedPreselectedIdx = -1;
                     List<ClinicSlotResponse> body = response.body();
 
                     for (int i = 0; i < body.size(); i++) {
@@ -291,6 +336,13 @@ public class DateTimeActivity extends AppCompatActivity {
                             if (firstAvailableIndex == -1) {
                                 firstAvailableIndex = i;
                             }
+                            if (!appliedPreselectedTime && preselectedTime != null) {
+                                boolean idMatch = preselectedTime.getId() != null && preselectedTime.getId().equals(slotRes.getId());
+                                boolean timeMatch = preselectedTime.getTime() != null && preselectedTime.getTime().equals(formattedTime);
+                                if (idMatch || timeMatch) {
+                                    matchedPreselectedIdx = i;
+                                }
+                            }
                         }
                         timeSlots.add(new TimeSlotItem(
                                 slotRes.getId(),
@@ -298,12 +350,13 @@ public class DateTimeActivity extends AppCompatActivity {
                                 isAvail ? "available" : "unavailable"
                         ));
                     }
+                    appliedPreselectedTime = true;
 
                     date.setAvailable(availableCount);
                     date.setState(availableCount > 0 ? "open" : "full");
 
                     if (availableCount > 0) {
-                        selectedSlotIndex = firstAvailableIndex;
+                        selectedSlotIndex = matchedPreselectedIdx >= 0 ? matchedPreselectedIdx : firstAvailableIndex;
                         showSlotsAvailableState(date, availableCount);
                     } else {
                         selectedSlotIndex = -1;
@@ -564,19 +617,33 @@ public class DateTimeActivity extends AppCompatActivity {
     }
 
     private void setupStickyBottomBar() {
+        if (isEditFromReview) {
+            binding.btnContinue.setText("Lưu thay đổi");
+        }
         binding.btnContinue.setOnClickListener(v -> {
             if (selectedDateIndex >= 0 && selectedDateIndex < dates.size()
                     && selectedSlotIndex >= 0 && selectedSlotIndex < timeSlots.size()
                     && timeSlots.get(selectedSlotIndex).isAvailable()) {
                 DateItem d = dates.get(selectedDateIndex);
                 TimeSlotItem s = timeSlots.get(selectedSlotIndex);
-                Intent intent = new Intent(this, com.example.petcareui.ui.pets.MyPetsActivity.class);
-                intent.putExtra(com.example.petcareui.ui.pets.MyPetsActivity.EXTRA_CLINIC, clinicItem);
-                intent.putExtra(com.example.petcareui.ui.pets.MyPetsActivity.EXTRA_SELECTED_SERVICE, serviceItem);
-                intent.putExtra(com.example.petcareui.ui.pets.MyPetsActivity.EXTRA_SELECTED_DATE, d);
-                intent.putExtra(com.example.petcareui.ui.pets.MyPetsActivity.EXTRA_SELECTED_TIME, s);
-                intent.putExtra(com.example.petcareui.ui.pets.MyPetsActivity.EXTRA_BOOKING_MODE, true);
-                startActivity(intent);
+                if (isEditFromReview) {
+                    Intent result = new Intent();
+                    result.putExtra(EXTRA_SELECTED_DATE, d);
+                    result.putExtra(EXTRA_SELECTED_TIME, s);
+                    setResult(RESULT_OK, result);
+                    finish();
+                } else {
+                    Intent intent = new Intent(this, com.example.petcareui.ui.pets.MyPetsActivity.class);
+                    intent.putExtra(com.example.petcareui.ui.pets.MyPetsActivity.EXTRA_CLINIC, clinicItem);
+                    intent.putExtra(com.example.petcareui.ui.pets.MyPetsActivity.EXTRA_SELECTED_SERVICE, serviceItem);
+                    intent.putExtra(com.example.petcareui.ui.pets.MyPetsActivity.EXTRA_SELECTED_DATE, d);
+                    intent.putExtra(com.example.petcareui.ui.pets.MyPetsActivity.EXTRA_SELECTED_TIME, s);
+                    intent.putExtra(com.example.petcareui.ui.pets.MyPetsActivity.EXTRA_BOOKING_MODE, true);
+                    if (preselectedPet != null) {
+                        intent.putExtra(com.example.petcareui.ui.pets.MyPetsActivity.EXTRA_PRESELECTED_PET, preselectedPet);
+                    }
+                    startActivity(intent);
+                }
             } else {
                 Toast.makeText(this, "Vui lòng chọn khung giờ phù hợp", Toast.LENGTH_SHORT).show();
             }

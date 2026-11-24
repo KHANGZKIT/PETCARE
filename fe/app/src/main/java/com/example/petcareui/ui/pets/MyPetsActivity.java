@@ -16,6 +16,7 @@ import androidx.core.content.ContextCompat;
 import com.example.petcareui.MainActivity;
 import com.example.petcareui.R;
 import com.example.petcareui.data.api.ApiClient;
+import com.example.petcareui.data.api.ApiErrorParser;
 import com.example.petcareui.data.dto.response.PetResponse;
 import com.example.petcareui.data.model.ClinicItem;
 import com.example.petcareui.data.model.DateItem;
@@ -44,6 +45,8 @@ public class MyPetsActivity extends AppCompatActivity {
     public static final String EXTRA_SELECTED_DATE = "extra_selected_date";
     public static final String EXTRA_SELECTED_TIME = "extra_selected_time";
     public static final String EXTRA_BOOKING_MODE = "extra_booking_mode";
+    public static final String EXTRA_PRESELECTED_PET = "extra_preselected_pet";
+    public static final String EXTRA_EDIT_FROM_REVIEW = "extra_edit_from_review";
 
     private ActivityMyPetsBinding binding;
 
@@ -51,7 +54,10 @@ public class MyPetsActivity extends AppCompatActivity {
     private ServiceItem serviceItem;
     private DateItem dateItem;
     private TimeSlotItem timeSlotItem;
+    private PetItem preselectedPet;
     private boolean isBookingMode = true;
+    private boolean isEditFromReview = false;
+    private boolean appliedPreselectedPet = false;
 
     private final List<PetItem> pets = new ArrayList<>();
     private final List<ItemPetCardBinding> petBindings = new ArrayList<>();
@@ -89,6 +95,9 @@ public class MyPetsActivity extends AppCompatActivity {
             binding.layoutStickyBottom.setVisibility(View.VISIBLE);
             binding.tvSubtitleBooking.setVisibility(View.VISIBLE);
             binding.bottomNavigation.setVisibility(View.GONE);
+            if (isEditFromReview) {
+                binding.btnContinue.setText("Lưu thay đổi");
+            }
         }
 
         loadPetsFromApi();
@@ -125,7 +134,14 @@ public class MyPetsActivity extends AppCompatActivity {
             } catch (Exception ignored) {
             }
         }
+        if (getIntent().hasExtra(EXTRA_PRESELECTED_PET)) {
+            try {
+                preselectedPet = (PetItem) getIntent().getSerializableExtra(EXTRA_PRESELECTED_PET);
+            } catch (Exception ignored) {
+            }
+        }
         isBookingMode = getIntent().getBooleanExtra(EXTRA_BOOKING_MODE, true);
+        isEditFromReview = getIntent().getBooleanExtra(EXTRA_EDIT_FROM_REVIEW, false);
     }
 
     private void setupTopBar() {
@@ -165,6 +181,21 @@ public class MyPetsActivity extends AppCompatActivity {
                         showEmptyState();
                     } else {
                         showPetsList();
+                        if (!appliedPreselectedPet && preselectedPet != null) {
+                            Long preId = preselectedPet.getNumericId();
+                            String preName = preselectedPet.getName();
+                            for (int i = 0; i < pets.size(); i++) {
+                                PetItem item = pets.get(i);
+                                boolean idMatch = preId != null && preId.equals(item.getNumericId());
+                                boolean nameMatch = preId == null && preName != null
+                                        && preName.equalsIgnoreCase(item.getName());
+                                if (idMatch || nameMatch) {
+                                    selectedPetIndex = i;
+                                    break;
+                                }
+                            }
+                            appliedPreselectedPet = true;
+                        }
                         if (selectedPetIndex >= pets.size()) {
                             selectedPetIndex = 0;
                         }
@@ -303,7 +334,8 @@ public class MyPetsActivity extends AppCompatActivity {
                         if (response.isSuccessful()) {
                             loadPetsFromApi();
                         } else {
-                            Toast.makeText(MyPetsActivity.this, "Không thể xóa bé lúc này", Toast.LENGTH_SHORT).show();
+                            String msg = ApiErrorParser.getMessage(response, "Không thể xóa bé lúc này");
+                            Toast.makeText(MyPetsActivity.this, msg, Toast.LENGTH_LONG).show();
                         }
                     }
 
@@ -389,13 +421,20 @@ public class MyPetsActivity extends AppCompatActivity {
         binding.btnContinue.setOnClickListener(v -> {
             if (selectedPetIndex >= 0 && selectedPetIndex < pets.size()) {
                 PetItem chosen = pets.get(selectedPetIndex);
-                Intent intent = new Intent(this, BookingReviewActivity.class);
-                intent.putExtra(BookingReviewActivity.EXTRA_CLINIC, clinicItem);
-                intent.putExtra(BookingReviewActivity.EXTRA_SELECTED_SERVICE, serviceItem);
-                intent.putExtra(BookingReviewActivity.EXTRA_SELECTED_DATE, dateItem);
-                intent.putExtra(BookingReviewActivity.EXTRA_SELECTED_TIME, timeSlotItem);
-                intent.putExtra(BookingReviewActivity.EXTRA_SELECTED_PET, chosen);
-                startActivity(intent);
+                if (isEditFromReview) {
+                    Intent result = new Intent();
+                    result.putExtra(BookingReviewActivity.EXTRA_SELECTED_PET, chosen);
+                    setResult(RESULT_OK, result);
+                    finish();
+                } else {
+                    Intent intent = new Intent(this, BookingReviewActivity.class);
+                    intent.putExtra(BookingReviewActivity.EXTRA_CLINIC, clinicItem);
+                    intent.putExtra(BookingReviewActivity.EXTRA_SELECTED_SERVICE, serviceItem);
+                    intent.putExtra(BookingReviewActivity.EXTRA_SELECTED_DATE, dateItem);
+                    intent.putExtra(BookingReviewActivity.EXTRA_SELECTED_TIME, timeSlotItem);
+                    intent.putExtra(BookingReviewActivity.EXTRA_SELECTED_PET, chosen);
+                    startActivity(intent);
+                }
             } else {
                 Toast.makeText(this, "Vui lòng chọn một bé để tiếp tục", Toast.LENGTH_SHORT).show();
             }

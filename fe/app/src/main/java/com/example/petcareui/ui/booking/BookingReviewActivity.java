@@ -5,6 +5,8 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Toast;
 
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.petcareui.R;
@@ -17,7 +19,7 @@ import com.example.petcareui.data.model.PetItem;
 import com.example.petcareui.data.model.ServiceItem;
 import com.example.petcareui.data.model.TimeSlotItem;
 import com.example.petcareui.databinding.ActivityBookingReviewBinding;
-import com.example.petcareui.ui.clinic.ClinicDetailsActivity;
+import com.example.petcareui.ui.clinic.ClinicListActivity;
 import com.example.petcareui.ui.pets.MyPetsActivity;
 import com.example.petcareui.utils.UiMotionUtils;
 
@@ -46,6 +48,61 @@ public class BookingReviewActivity extends AppCompatActivity {
     private TimeSlotItem timeSlotItem;
     private PetItem petItem;
     private String currentState = "default";
+
+    private final ActivityResultLauncher<Intent> editServiceLauncher =
+            registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> {
+                if (result.getResultCode() == RESULT_OK && result.getData() != null
+                        && result.getData().hasExtra(SelectServiceActivity.EXTRA_SELECTED_SERVICE)) {
+                    try {
+                        ServiceItem updated = (ServiceItem) result.getData()
+                                .getSerializableExtra(SelectServiceActivity.EXTRA_SELECTED_SERVICE);
+                        if (updated != null) {
+                            serviceItem = updated;
+                            populateData();
+                        }
+                    } catch (Exception ignored) {
+                    }
+                }
+            });
+
+    private final ActivityResultLauncher<Intent> editDateTimeLauncher =
+            registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> {
+                if (result.getResultCode() == RESULT_OK && result.getData() != null) {
+                    try {
+                        if (result.getData().hasExtra(DateTimeActivity.EXTRA_SELECTED_DATE)) {
+                            DateItem updatedDate = (DateItem) result.getData()
+                                    .getSerializableExtra(DateTimeActivity.EXTRA_SELECTED_DATE);
+                            if (updatedDate != null) dateItem = updatedDate;
+                        }
+                        if (result.getData().hasExtra(DateTimeActivity.EXTRA_SELECTED_TIME)) {
+                            TimeSlotItem updatedTime = (TimeSlotItem) result.getData()
+                                    .getSerializableExtra(DateTimeActivity.EXTRA_SELECTED_TIME);
+                            if (updatedTime != null) timeSlotItem = updatedTime;
+                        }
+                        populateData();
+                        if ("conflict".equals(currentState)) {
+                            applyState("default");
+                        }
+                    } catch (Exception ignored) {
+                    }
+                }
+            });
+
+    private final ActivityResultLauncher<Intent> editPetLauncher =
+            registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> {
+                if (result.getResultCode() == RESULT_OK && result.getData() != null
+                        && result.getData().hasExtra(EXTRA_SELECTED_PET)) {
+                    try {
+                        PetItem updatedPet = (PetItem) result.getData()
+                                .getSerializableExtra(EXTRA_SELECTED_PET);
+                        if (updatedPet != null) {
+                            petItem = updatedPet;
+                            populateData();
+                        }
+                    } catch (Exception ignored) {
+                    }
+                }
+            });
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -159,37 +216,46 @@ public class BookingReviewActivity extends AppCompatActivity {
     }
 
     private void setupEditActions() {
-        // Sửa Phòng khám -> Quay lại C05
+        // Sửa Phòng khám -> Mở danh sách chọn cơ sở khác, giữ sẵn thú cưng đã chọn
         binding.btnEditClinic.setOnClickListener(v -> {
-            Intent intent = new Intent(this, ClinicDetailsActivity.class);
-            intent.putExtra(ClinicDetailsActivity.EXTRA_CLINIC, clinicItem);
+            Intent intent = new Intent(this, ClinicListActivity.class);
+            intent.putExtra(ClinicListActivity.EXTRA_TAB_MODE, false);
+            if (petItem != null) {
+                intent.putExtra(ClinicListActivity.EXTRA_PRESELECTED_PET, petItem);
+            }
             startActivity(intent);
         });
 
-        // Sửa Dịch vụ -> Quay lại C06
+        // Sửa Dịch vụ -> Sửa tại chỗ, quay thẳng về Bước 4/4 (giữ ngày giờ, thú cưng & ghi chú)
         binding.btnEditService.setOnClickListener(v -> {
             Intent intent = new Intent(this, SelectServiceActivity.class);
             intent.putExtra(SelectServiceActivity.EXTRA_CLINIC, clinicItem);
-            startActivity(intent);
+            intent.putExtra(SelectServiceActivity.EXTRA_SELECTED_SERVICE, serviceItem);
+            intent.putExtra(SelectServiceActivity.EXTRA_EDIT_FROM_REVIEW, true);
+            editServiceLauncher.launch(intent);
         });
 
-        // Sửa Ngày & giờ -> Quay lại C07
-        binding.btnEditDateTime.setOnClickListener(v -> {
-            Intent intent = new Intent(this, DateTimeActivity.class);
-            intent.putExtra(DateTimeActivity.EXTRA_CLINIC, clinicItem);
-            intent.putExtra(DateTimeActivity.EXTRA_SELECTED_SERVICE, serviceItem);
-            startActivity(intent);
-        });
+        // Sửa Ngày & giờ -> Sửa tại chỗ, quay thẳng về Bước 4/4 (giữ dịch vụ, thú cưng & ghi chú)
+        binding.btnEditDateTime.setOnClickListener(v -> launchEditDateTime());
 
-        // Sửa Thú cưng -> Quay lại C08
+        // Sửa Thú cưng -> Sửa tại chỗ, quay thẳng về Bước 4/4 (giữ dịch vụ, ngày giờ & ghi chú)
         binding.btnEditPet.setOnClickListener(v -> {
             Intent intent = new Intent(this, MyPetsActivity.class);
-            intent.putExtra(MyPetsActivity.EXTRA_CLINIC, clinicItem);
-            intent.putExtra(MyPetsActivity.EXTRA_SELECTED_SERVICE, serviceItem);
-            intent.putExtra(MyPetsActivity.EXTRA_SELECTED_DATE, dateItem);
-            intent.putExtra(MyPetsActivity.EXTRA_SELECTED_TIME, timeSlotItem);
-            startActivity(intent);
+            intent.putExtra(MyPetsActivity.EXTRA_BOOKING_MODE, true);
+            intent.putExtra(MyPetsActivity.EXTRA_PRESELECTED_PET, petItem);
+            intent.putExtra(MyPetsActivity.EXTRA_EDIT_FROM_REVIEW, true);
+            editPetLauncher.launch(intent);
         });
+    }
+
+    private void launchEditDateTime() {
+        Intent intent = new Intent(this, DateTimeActivity.class);
+        intent.putExtra(DateTimeActivity.EXTRA_CLINIC, clinicItem);
+        intent.putExtra(DateTimeActivity.EXTRA_SELECTED_SERVICE, serviceItem);
+        intent.putExtra(DateTimeActivity.EXTRA_SELECTED_DATE, dateItem);
+        intent.putExtra(DateTimeActivity.EXTRA_SELECTED_TIME, timeSlotItem);
+        intent.putExtra(DateTimeActivity.EXTRA_EDIT_FROM_REVIEW, true);
+        editDateTimeLauncher.launch(intent);
     }
 
     private void setupSubmissionActions() {
@@ -274,14 +340,8 @@ public class BookingReviewActivity extends AppCompatActivity {
             });
         });
 
-        // Nút "Chọn giờ khác" khi bị xung đột (Conflict State)
-        binding.btnPickOtherSlot.setOnClickListener(v -> {
-            Intent intent = new Intent(this, DateTimeActivity.class);
-            intent.putExtra(DateTimeActivity.EXTRA_CLINIC, clinicItem);
-            intent.putExtra(DateTimeActivity.EXTRA_SELECTED_SERVICE, serviceItem);
-            startActivity(intent);
-            finish();
-        });
+        // Nút "Chọn giờ khác" khi bị xung đột (Conflict State) -> chọn lại ngay, quay thẳng về Bước 4/4
+        binding.btnPickOtherSlot.setOnClickListener(v -> launchEditDateTime());
 
         // Nút "Xem lại sau" khi bị xung đột
         binding.btnReviewLater.setOnClickListener(v -> finish());

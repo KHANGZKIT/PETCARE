@@ -12,6 +12,7 @@ import androidx.core.content.ContextCompat;
 import com.example.petcareui.R;
 import com.example.petcareui.data.api.ApiClient;
 import com.example.petcareui.data.model.ClinicItem;
+import com.example.petcareui.data.model.PetItem;
 import com.example.petcareui.data.model.ServiceItem;
 import com.example.petcareui.data.dto.response.ServiceResponse;
 import com.example.petcareui.databinding.ActivitySelectServiceBinding;
@@ -33,9 +34,16 @@ public class SelectServiceActivity extends AppCompatActivity {
 
     public static final String EXTRA_CLINIC = "extra_clinic";
     public static final String EXTRA_SELECTED_SERVICE = "extra_selected_service";
+    public static final String EXTRA_PRESELECTED_PET = "extra_preselected_pet";
+    public static final String EXTRA_PREFERRED_CATEGORY = "extra_preferred_category";
+    public static final String EXTRA_EDIT_FROM_REVIEW = "extra_edit_from_review";
 
     private ActivitySelectServiceBinding binding;
     private ClinicItem clinicItem;
+    private ServiceItem preselectedService;
+    private PetItem preselectedPet;
+    private String preferredCategory;
+    private boolean isEditFromReview = false;
 
     private final List<ServiceItem> services = new ArrayList<>();
     private final List<ItemServiceSelectableBinding> serviceBindings = new ArrayList<>();
@@ -71,6 +79,20 @@ public class SelectServiceActivity extends AppCompatActivity {
             } catch (Exception ignored) {
             }
         }
+        if (getIntent().hasExtra(EXTRA_SELECTED_SERVICE)) {
+            try {
+                preselectedService = (ServiceItem) getIntent().getSerializableExtra(EXTRA_SELECTED_SERVICE);
+            } catch (Exception ignored) {
+            }
+        }
+        if (getIntent().hasExtra(EXTRA_PRESELECTED_PET)) {
+            try {
+                preselectedPet = (PetItem) getIntent().getSerializableExtra(EXTRA_PRESELECTED_PET);
+            } catch (Exception ignored) {
+            }
+        }
+        preferredCategory = getIntent().getStringExtra(EXTRA_PREFERRED_CATEGORY);
+        isEditFromReview = getIntent().getBooleanExtra(EXTRA_EDIT_FROM_REVIEW, false);
 
         if (clinicItem == null) {
             clinicItem = new ClinicItem(
@@ -92,14 +114,49 @@ public class SelectServiceActivity extends AppCompatActivity {
         binding.tvClinicName.setText(clinicItem.getName());
         binding.tvClinicArea.setText(clinicItem.getArea());
 
-        View.OnClickListener changeListener = v -> {
-            Intent intent = new Intent(this, ClinicListActivity.class);
-            startActivity(intent);
-        };
-        binding.tvChangeClinic.setOnClickListener(changeListener);
-        binding.cardSelectedClinic.setOnClickListener(changeListener);
+        if (isEditFromReview) {
+            binding.tvChangeClinic.setVisibility(View.GONE);
+            binding.cardSelectedClinic.setClickable(false);
+            binding.btnContinue.setText("Lưu thay đổi");
+        } else {
+            View.OnClickListener changeListener = v -> {
+                Intent intent = new Intent(this, ClinicListActivity.class);
+                intent.putExtra(ClinicListActivity.EXTRA_TAB_MODE, false);
+                if (preselectedPet != null) {
+                    intent.putExtra(ClinicListActivity.EXTRA_PRESELECTED_PET, preselectedPet);
+                }
+                startActivity(intent);
+                finish();
+            };
+            binding.tvChangeClinic.setOnClickListener(changeListener);
+            binding.cardSelectedClinic.setOnClickListener(changeListener);
+        }
 
         UiMotionUtils.attachSpringTouch(binding.btnBack, binding.cardSelectedClinic, binding.btnContinue);
+    }
+
+    private int resolveInitialServiceIndex() {
+        if (services.isEmpty()) return -1;
+        if (preselectedService != null) {
+            for (int i = 0; i < services.size(); i++) {
+                ServiceItem item = services.get(i);
+                if (preselectedService.getId() != null && preselectedService.getId().equals(item.getId())) {
+                    return i;
+                }
+                if (preselectedService.getName() != null
+                        && preselectedService.getName().equalsIgnoreCase(item.getName())) {
+                    return i;
+                }
+            }
+        }
+        if (preferredCategory != null && !preferredCategory.isEmpty()) {
+            for (int i = 0; i < services.size(); i++) {
+                if (ClinicListActivity.matchesServiceCategory(services.get(i).getName(), preferredCategory)) {
+                    return i;
+                }
+            }
+        }
+        return 0;
     }
 
     private void loadServicesFromApi() {
@@ -131,7 +188,7 @@ public class SelectServiceActivity extends AppCompatActivity {
                                 icon
                         ));
                     }
-                    selectedServiceIndex = 0;
+                    selectedServiceIndex = resolveInitialServiceIndex();
                     renderServices();
                 } else {
                     setupDefaultServices();
@@ -171,7 +228,7 @@ public class SelectServiceActivity extends AppCompatActivity {
             services.add(new ServiceItem("4", "Tắm & cắt tỉa", "Tắm, sấy khô, cắt móng và vệ sinh tai.", "60 phút", "320.000 ₫", R.drawable.ic_scissors));
             services.add(new ServiceItem("5", "Cấp cứu 24/7", "Tiếp nhận xử lý khẩn cấp và theo dõi liên tục.", "40 phút", "420.000 ₫", R.drawable.ic_heart_pulse));
             services.add(new ServiceItem("6", "Khách sạn & lưu chuồng", "Chăm sóc nội trú sạch sẽ, thoáng mát theo ngày.", "24 giờ", "200.000 ₫", R.drawable.ic_home));
-            selectedServiceIndex = 0;
+            selectedServiceIndex = resolveInitialServiceIndex();
         }
         renderServices();
     }
@@ -256,10 +313,20 @@ public class SelectServiceActivity extends AppCompatActivity {
         binding.btnContinue.setOnClickListener(v -> {
             if (selectedServiceIndex >= 0 && selectedServiceIndex < services.size()) {
                 ServiceItem chosen = services.get(selectedServiceIndex);
-                Intent intent = new Intent(this, DateTimeActivity.class);
-                intent.putExtra(DateTimeActivity.EXTRA_CLINIC, clinicItem);
-                intent.putExtra(DateTimeActivity.EXTRA_SELECTED_SERVICE, chosen);
-                startActivity(intent);
+                if (isEditFromReview) {
+                    Intent result = new Intent();
+                    result.putExtra(EXTRA_SELECTED_SERVICE, chosen);
+                    setResult(RESULT_OK, result);
+                    finish();
+                } else {
+                    Intent intent = new Intent(this, DateTimeActivity.class);
+                    intent.putExtra(DateTimeActivity.EXTRA_CLINIC, clinicItem);
+                    intent.putExtra(DateTimeActivity.EXTRA_SELECTED_SERVICE, chosen);
+                    if (preselectedPet != null) {
+                        intent.putExtra(DateTimeActivity.EXTRA_PRESELECTED_PET, preselectedPet);
+                    }
+                    startActivity(intent);
+                }
             } else {
                 Toast.makeText(this, "Vui lòng chọn một dịch vụ để tiếp tục", Toast.LENGTH_SHORT).show();
             }

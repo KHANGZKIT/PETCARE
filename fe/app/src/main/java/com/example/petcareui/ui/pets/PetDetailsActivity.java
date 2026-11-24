@@ -103,6 +103,7 @@ public class PetDetailsActivity extends AppCompatActivity {
         binding.btnBookForPet.setOnClickListener(v -> {
             Intent intent = new Intent(this, ClinicListActivity.class);
             intent.putExtra(ClinicListActivity.EXTRA_TAB_MODE, false);
+            intent.putExtra(ClinicListActivity.EXTRA_PRESELECTED_PET, pet);
             startActivity(intent);
         });
     }
@@ -222,12 +223,17 @@ public class PetDetailsActivity extends AppCompatActivity {
             public void onResponse(Call<List<PetResponse>> call, Response<List<PetResponse>> response) {
                 if (isFinishing() || isDestroyed()) return;
                 if (response.isSuccessful() && response.body() != null) {
+                    boolean found = false;
                     for (PetResponse res : response.body()) {
                         if (targetId.equals(res.getId())) {
                             pet = res.toPetItem();
                             bindPetInfo();
+                            found = true;
                             break;
                         }
+                    }
+                    if (!found) {
+                        finish();
                     }
                 }
             }

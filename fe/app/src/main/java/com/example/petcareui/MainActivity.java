@@ -175,16 +175,11 @@ public class MainActivity extends AppCompatActivity {
         binding.bannerBooking.setOnClickListener(openBookingFlow);
         binding.btnBookNow.setOnClickListener(openBookingFlow);
 
-        // 4 Quick Shortcuts (Khám · Tiêm · Cấp cứu · Spa)
-        binding.btnShortcutExam.setOnClickListener(openBookingFlow);
-        binding.btnShortcutVaccine.setOnClickListener(openBookingFlow);
-        binding.btnShortcutSpa.setOnClickListener(openBookingFlow);
-        binding.btnShortcutEmergency.setOnClickListener(v -> {
-            Intent intent = new Intent(this, ClinicListActivity.class);
-            intent.putExtra(ClinicListActivity.EXTRA_TAB_MODE, false);
-            intent.putExtra(ClinicListActivity.EXTRA_INITIAL_FILTER, "emergency");
-            startActivity(intent);
-        });
+        // 4 Quick Shortcuts (Khám · Tiêm · Cấp cứu · Spa) -> Lọc đúng nhóm dịch vụ
+        binding.btnShortcutExam.setOnClickListener(v -> openClinicShortcutFilter("exam"));
+        binding.btnShortcutVaccine.setOnClickListener(v -> openClinicShortcutFilter("vaccine"));
+        binding.btnShortcutEmergency.setOnClickListener(v -> openClinicShortcutFilter("emergency"));
+        binding.btnShortcutSpa.setOnClickListener(v -> openClinicShortcutFilter("spa"));
 
         // Section links & retry actions
         binding.tvSeeAllAppointments.setOnClickListener(v ->
@@ -223,6 +218,13 @@ public class MainActivity extends AppCompatActivity {
             startActivity(intent);
             overridePendingTransition(0, 0);
         });
+    }
+
+    private void openClinicShortcutFilter(String filterCategory) {
+        Intent intent = new Intent(this, ClinicListActivity.class);
+        intent.putExtra(ClinicListActivity.EXTRA_TAB_MODE, false);
+        intent.putExtra(ClinicListActivity.EXTRA_INITIAL_FILTER, filterCategory);
+        startActivity(intent);
     }
 
     private void refreshUserProfile(boolean showDialogAfterLoad) {

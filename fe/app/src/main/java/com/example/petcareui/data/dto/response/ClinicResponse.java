@@ -3,6 +3,7 @@ package com.example.petcareui.data.dto.response;
 import com.example.petcareui.data.model.ClinicItem;
 
 import java.io.Serializable;
+import java.util.List;
 
 public class ClinicResponse implements Serializable {
     private Long id;
@@ -14,6 +15,7 @@ public class ClinicResponse implements Serializable {
     private boolean active;
     private Double latitude;
     private Double longitude;
+    private List<String> serviceNames;
 
     public Long getId() { return id; }
     public String getName() { return name; }
@@ -24,6 +26,7 @@ public class ClinicResponse implements Serializable {
     public boolean isActive() { return active; }
     public Double getLatitude() { return latitude; }
     public Double getLongitude() { return longitude; }
+    public List<String> getServiceNames() { return serviceNames; }
 
     public ClinicItem toClinicItem() {
         double rating = 4.8;
@@ -72,6 +75,7 @@ public class ClinicResponse implements Serializable {
         }
         item.setLatitude(latitude);
         item.setLongitude(longitude);
+        item.setServiceNames(serviceNames);
         return item;
     }
 }

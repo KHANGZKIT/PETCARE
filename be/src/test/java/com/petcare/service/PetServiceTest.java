@@ -5,7 +5,9 @@ import com.petcare.dto.response.PetResponse;
 import com.petcare.entity.PetEntity;
 import com.petcare.entity.UserEntity;
 import com.petcare.entity.UserRole;
+import com.petcare.exception.DuplicateResourceException;
 import com.petcare.exception.ResourceNotFoundException;
+import com.petcare.repository.AppointmentRepository;
 import com.petcare.repository.PetRepository;
 import com.petcare.repository.UserRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -38,6 +40,9 @@ class PetServiceTest {
 
     @Mock
     private UserRepository userRepository;
+
+    @Mock
+    private AppointmentRepository appointmentRepository;
 
     @InjectMocks
     private PetService petService;
@@ -216,5 +221,39 @@ class PetServiceTest {
                 .isInstanceOf(AccessDeniedException.class);
 
         verify(petRepository, never()).save(any());
+    }
+
+    @Test
+    void deletePet_withExistingAppointments_throwsDuplicateResourceException() {
+        PetEntity pet = newEntity(PetEntity.class, 7L);
+        pet.setName("Mochi");
+        pet.setSpecies("Chó");
+        pet.setOwner(customer);
+
+        when(userRepository.findByEmailIgnoreCase(CUSTOMER_EMAIL)).thenReturn(Optional.of(customer));
+        when(petRepository.findByIdAndOwnerId(7L, 10L)).thenReturn(Optional.of(pet));
+        when(appointmentRepository.existsByPetId(7L)).thenReturn(true);
+
+        assertThatThrownBy(() -> petService.deletePet(7L, CUSTOMER_EMAIL))
+                .isInstanceOf(DuplicateResourceException.class)
+                .hasMessageContaining("Mochi");
+
+        verify(petRepository, never()).delete(any());
+    }
+
+    @Test
+    void deletePet_withoutAppointments_deletesSuccessfully() {
+        PetEntity pet = newEntity(PetEntity.class, 8L);
+        pet.setName("Bông");
+        pet.setSpecies("Mèo");
+        pet.setOwner(customer);
+
+        when(userRepository.findByEmailIgnoreCase(CUSTOMER_EMAIL)).thenReturn(Optional.of(customer));
+        when(petRepository.findByIdAndOwnerId(8L, 10L)).thenReturn(Optional.of(pet));
+        when(appointmentRepository.existsByPetId(8L)).thenReturn(false);
+
+        petService.deletePet(8L, CUSTOMER_EMAIL);
+
+        verify(petRepository).delete(pet);
     }
 }
