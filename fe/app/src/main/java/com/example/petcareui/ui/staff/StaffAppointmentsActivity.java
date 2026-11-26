@@ -10,38 +10,31 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
+import androidx.lifecycle.ViewModelProvider;
+import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.example.petcareui.R;
-import com.example.petcareui.data.api.ApiClient;
-import com.example.petcareui.data.dto.response.AppointmentResponse;
 import com.example.petcareui.data.model.StaffAppointmentItem;
 import com.example.petcareui.databinding.ActivityStaffAppointmentsBinding;
-import com.example.petcareui.databinding.ItemStaffApptCardBinding;
 import com.example.petcareui.ui.auth.LoginActivity;
 import com.example.petcareui.ui.profile.ProfileActivity;
 import com.example.petcareui.utils.TokenManager;
 import com.example.petcareui.utils.UiMotionUtils;
 
-import java.util.ArrayList;
 import java.util.List;
 
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
-
+/**
+ * Phân hệ Nhân viên S02: Danh sách lịch hẹn phòng khám — Kiến trúc MVVM + RecyclerView.
+ */
 public class StaffAppointmentsActivity extends AppCompatActivity {
 
     public static final String EXTRA_INITIAL_FILTER = "extra_filter";
     public static final String EXTRA_STATE = "extra_state";
 
     private ActivityStaffAppointmentsBinding binding;
+    private StaffAppointmentsViewModel viewModel;
+    private StaffAppointmentAdapter adapter;
     private TokenManager tokenManager;
-    private final List<StaffAppointmentItem> allStaffAppts = new ArrayList<>();
-    private final List<StaffAppointmentItem> displayedList = new ArrayList<>();
-
-    private String currentFilter = "PENDING";
-    private String currentState = "default";
-    private String searchQuery = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,22 +48,25 @@ public class StaffAppointmentsActivity extends AppCompatActivity {
             return;
         }
 
-        extractIntentData();
+        viewModel = new ViewModelProvider(this).get(StaffAppointmentsViewModel.class);
+
+        if (savedInstanceState == null && getIntent().hasExtra(EXTRA_INITIAL_FILTER)) {
+            viewModel.setInitialFilter(getIntent().getStringExtra(EXTRA_INITIAL_FILTER));
+        }
+
         UiMotionUtils.applyWindowInsets(binding.getRoot(), binding.layoutStaffAppBar, binding.bottomNavStaff);
         bindClinicHeader();
+        setupRecyclerView();
         setupAppBar();
-        setupStateToggles();
         setupSearchAndFilterChips();
         setupBottomNav();
         setupEmptyAndErrorActions();
+        observeViewModel();
 
         UiMotionUtils.animateEntranceSections(
                 binding.layoutStaffAppBar,
                 binding.layoutSearchAndFilter
         );
-
-        StaffClinicHelper.syncStaffAndClinicInfo(this, this::bindClinicHeader, this::handleUnauthorized);
-        loadAppointmentsFromApi();
     }
 
     @Override
@@ -82,16 +78,58 @@ public class StaffAppointmentsActivity extends AppCompatActivity {
         }
         bindClinicHeader();
         StaffClinicHelper.syncStaffAndClinicInfo(this, this::bindClinicHeader, this::handleUnauthorized);
-        loadAppointmentsFromApi();
+        viewModel.loadClinicAppointments();
     }
 
-    private void extractIntentData() {
-        if (getIntent().hasExtra(EXTRA_STATE)) {
-            currentState = getIntent().getStringExtra(EXTRA_STATE);
-        }
-        if (getIntent().hasExtra(EXTRA_INITIAL_FILTER)) {
-            currentFilter = getIntent().getStringExtra(EXTRA_INITIAL_FILTER);
-        }
+    private void setupRecyclerView() {
+        adapter = new StaffAppointmentAdapter(this::openStaffAppointmentDetail);
+        binding.rvApptList.setLayoutManager(new LinearLayoutManager(this));
+        binding.rvApptList.setAdapter(adapter);
+    }
+
+    private void openStaffAppointmentDetail(StaffAppointmentItem item) {
+        Intent intent = new Intent(this, StaffAppointmentDetailsActivity.class);
+        intent.putExtra(StaffAppointmentDetailsActivity.EXTRA_REF, item.getRef());
+        intent.putExtra(StaffAppointmentDetailsActivity.EXTRA_APPT, item);
+        startActivity(intent);
+        overridePendingTransition(R.anim.fade_scale_in, R.anim.fade_scale_out);
+    }
+
+    private void observeViewModel() {
+        viewModel.getFilterCounts().observe(this, counts -> {
+            if (counts == null) return;
+            binding.chipFilterAll.setText("Tất cả · " + counts.all);
+            binding.chipFilterPending.setText("Chờ xác nhận · " + counts.pending);
+            binding.chipFilterConfirmed.setText("Đã xác nhận · " + counts.confirmed);
+            binding.chipFilterCompleted.setText("Đã hoàn thành · " + counts.completed);
+            binding.chipFilterNoShow.setText("Không đến · " + counts.noShow);
+        });
+
+        viewModel.getCurrentFilter().observe(this, this::updateFilterChipStyles);
+
+        viewModel.getDisplayedAppointments().observe(this, list -> {
+            adapter.submitList(list);
+            int size = list != null ? list.size() : 0;
+            int pendingInList = 0;
+            if (list != null) {
+                for (StaffAppointmentItem item : list) {
+                    if ("PENDING".equalsIgnoreCase(item.getStatus())) pendingInList++;
+                }
+            }
+            if (pendingInList > 0) {
+                binding.tvSectionHeader.setText("Danh sách · " + pendingInList + " yêu cầu chờ duyệt");
+            } else {
+                binding.tvSectionHeader.setText("Danh sách · " + size + " lịch hẹn");
+            }
+        });
+
+        viewModel.getUiState().observe(this, this::applyState);
+
+        viewModel.getUnauthorizedEvent().observe(this, unauth -> {
+            if (Boolean.TRUE.equals(unauth)) {
+                handleUnauthorized();
+            }
+        });
     }
 
     private void bindClinicHeader() {
@@ -114,66 +152,17 @@ public class StaffAppointmentsActivity extends AppCompatActivity {
         finish();
     }
 
-    private void loadAppointmentsFromApi() {
-        applyState("loading");
-        ApiClient.getAppointmentApi().getClinicAppointments(null).enqueue(new Callback<List<AppointmentResponse>>() {
-            @Override
-            public void onResponse(Call<List<AppointmentResponse>> call, Response<List<AppointmentResponse>> response) {
-                if (response.isSuccessful() && response.body() != null) {
-                    allStaffAppts.clear();
-                    for (AppointmentResponse res : response.body()) {
-                        allStaffAppts.add(res.toStaffAppointmentItem());
-                    }
-                    updateFilterCounts();
-                    setupSearchAndFilterChips();
-                    if (allStaffAppts.isEmpty()) {
-                        applyState("empty");
-                    } else {
-                        applyState("default");
-                    }
-                } else if (response.code() == 401 || response.code() == 403) {
-                    handleUnauthorized();
-                } else {
-                    allStaffAppts.clear();
-                    updateFilterCounts();
-                    applyState("error");
-                }
-            }
-
-            @Override
-            public void onFailure(Call<List<AppointmentResponse>> call, Throwable t) {
-                allStaffAppts.clear();
-                updateFilterCounts();
-                applyState("error");
-            }
-        });
-    }
-
     private void setupAppBar() {
         UiMotionUtils.attachSpringTouch(binding.btnBack, binding.btnFilterSliders, binding.btnRetry, binding.btnEmptyShowAll);
         binding.btnBack.setOnClickListener(v -> finish());
-        binding.btnRetry.setOnClickListener(v -> loadAppointmentsFromApi());
+        binding.btnRetry.setOnClickListener(v -> viewModel.loadClinicAppointments());
         binding.btnEmptyShowAll.setOnClickListener(v -> {
             binding.etStaffSearch.setText("");
-            setFilter("ALL");
-            applyState("default");
+            viewModel.resetSearchAndFilter();
         });
     }
 
-    private void setupStateToggles() {
-        if (binding.chipStateDefault.getParent() instanceof View) {
-            ((View) binding.chipStateDefault.getParent()).setVisibility(View.GONE);
-        }
-    }
-
     private void applyState(String state) {
-        currentState = state;
-
-        updateStateChip(binding.chipStateDefault, "default".equals(state));
-        updateStateChip(binding.chipStateLoading, "loading".equals(state));
-        updateStateChip(binding.chipStateEmpty, "empty".equals(state));
-        updateStateChip(binding.chipStateError, "error".equals(state));
-
         if ("loading".equals(state)) {
             binding.layoutDefaultContent.setVisibility(View.GONE);
             binding.layoutEmptyState.setVisibility(View.GONE);
@@ -195,17 +184,6 @@ public class StaffAppointmentsActivity extends AppCompatActivity {
             binding.layoutEmptyState.setVisibility(View.GONE);
             binding.layoutErrorState.setVisibility(View.GONE);
             binding.layoutDefaultContent.setVisibility(View.VISIBLE);
-            filterAndRenderList();
-        }
-    }
-
-    private void updateStateChip(TextView chip, boolean active) {
-        if (active) {
-            chip.setBackgroundResource(R.drawable.bg_chip_active);
-            chip.setTextColor(ContextCompat.getColor(this, R.color.ds_primary));
-        } else {
-            chip.setBackgroundResource(R.drawable.bg_chip_inactive);
-            chip.setTextColor(ContextCompat.getColor(this, R.color.text_muted));
         }
     }
 
@@ -220,84 +198,44 @@ public class StaffAppointmentsActivity extends AppCompatActivity {
 
         binding.chipFilterAll.setOnClickListener(v -> {
             UiMotionUtils.animateSelectionPop(v);
-            setFilter("ALL");
+            viewModel.setFilter("ALL");
         });
         binding.chipFilterPending.setOnClickListener(v -> {
             UiMotionUtils.animateSelectionPop(v);
-            setFilter("PENDING");
+            viewModel.setFilter("PENDING");
         });
         binding.chipFilterConfirmed.setOnClickListener(v -> {
             UiMotionUtils.animateSelectionPop(v);
-            setFilter("CONFIRMED");
+            viewModel.setFilter("CONFIRMED");
         });
         binding.chipFilterCompleted.setOnClickListener(v -> {
             UiMotionUtils.animateSelectionPop(v);
-            setFilter("COMPLETED");
+            viewModel.setFilter("COMPLETED");
         });
         binding.chipFilterNoShow.setOnClickListener(v -> {
             UiMotionUtils.animateSelectionPop(v);
-            setFilter("NO_SHOW");
+            viewModel.setFilter("NO_SHOW");
         });
 
         binding.etStaffSearch.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
-
+            @Override public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                searchQuery = s.toString().trim().toLowerCase();
-                if ("default".equals(currentState)) {
-                    filterAndRenderList();
-                }
+                viewModel.setSearchQuery(s != null ? s.toString() : "");
             }
-
-            @Override
-            public void afterTextChanged(Editable s) {}
+            @Override public void afterTextChanged(Editable s) {}
         });
 
-        binding.btnFilterSliders.setOnClickListener(v -> {
-            Toast.makeText(this, "Bộ lọc nâng cao theo ngày & bác sĩ", Toast.LENGTH_SHORT).show();
-        });
-
-        updateFilterCounts();
+        binding.btnFilterSliders.setOnClickListener(v ->
+                Toast.makeText(this, "Bộ lọc nâng cao theo ngày & bác sĩ", Toast.LENGTH_SHORT).show());
     }
 
-    private void updateFilterCounts() {
-        int pendingCount = 0;
-        int confirmedCount = 0;
-        int completedCount = 0;
-        int noShowCount = 0;
-
-        for (StaffAppointmentItem item : allStaffAppts) {
-            if ("PENDING".equalsIgnoreCase(item.getStatus())) pendingCount++;
-            else if ("CONFIRMED".equalsIgnoreCase(item.getStatus())) confirmedCount++;
-            else if ("COMPLETED".equalsIgnoreCase(item.getStatus())) completedCount++;
-            else if ("NO_SHOW".equalsIgnoreCase(item.getStatus())) noShowCount++;
-        }
-
-        binding.chipFilterAll.setText("Tất cả · " + allStaffAppts.size());
-        binding.chipFilterPending.setText("Chờ xác nhận · " + pendingCount);
-        binding.chipFilterConfirmed.setText("Đã xác nhận · " + confirmedCount);
-        binding.chipFilterCompleted.setText("Đã hoàn thành · " + completedCount);
-        binding.chipFilterNoShow.setText("Không đến · " + noShowCount);
-
-        updateFilterChipStyles();
-    }
-
-    private void setFilter(String filter) {
-        currentFilter = filter;
-        updateFilterChipStyles();
-        if ("default".equals(currentState)) {
-            filterAndRenderList();
-        }
-    }
-
-    private void updateFilterChipStyles() {
-        updateFilterChip(binding.chipFilterAll, "ALL".equalsIgnoreCase(currentFilter));
-        updateFilterChip(binding.chipFilterPending, "PENDING".equalsIgnoreCase(currentFilter));
-        updateFilterChip(binding.chipFilterConfirmed, "CONFIRMED".equalsIgnoreCase(currentFilter));
-        updateFilterChip(binding.chipFilterCompleted, "COMPLETED".equalsIgnoreCase(currentFilter));
-        updateFilterChip(binding.chipFilterNoShow, "NO_SHOW".equalsIgnoreCase(currentFilter));
+    private void updateFilterChipStyles(String activeFilter) {
+        updateFilterChip(binding.chipFilterAll, "ALL".equalsIgnoreCase(activeFilter));
+        updateFilterChip(binding.chipFilterPending, "PENDING".equalsIgnoreCase(activeFilter));
+        updateFilterChip(binding.chipFilterConfirmed, "CONFIRMED".equalsIgnoreCase(activeFilter));
+        updateFilterChip(binding.chipFilterCompleted, "COMPLETED".equalsIgnoreCase(activeFilter));
+        updateFilterChip(binding.chipFilterNoShow, "NO_SHOW".equalsIgnoreCase(activeFilter));
     }
 
     private void updateFilterChip(TextView chip, boolean active) {
@@ -312,46 +250,8 @@ public class StaffAppointmentsActivity extends AppCompatActivity {
         }
     }
 
-    private void filterAndRenderList() {
-        displayedList.clear();
-
-        for (StaffAppointmentItem item : allStaffAppts) {
-            boolean matchesFilter = "ALL".equalsIgnoreCase(currentFilter) || currentFilter.equalsIgnoreCase(item.getStatus());
-            boolean matchesSearch = searchQuery.isEmpty()
-                    || item.getPet().toLowerCase().contains(searchQuery)
-                    || item.getCustomer().toLowerCase().contains(searchQuery)
-                    || item.getService().toLowerCase().contains(searchQuery);
-
-            if (matchesFilter && matchesSearch) {
-                displayedList.add(item);
-            }
-        }
-
-        int pendingInList = 0;
-        for (StaffAppointmentItem item : displayedList) {
-            if ("PENDING".equalsIgnoreCase(item.getStatus())) pendingInList++;
-        }
-
-        if (displayedList.isEmpty()) {
-            binding.layoutDefaultContent.setVisibility(View.GONE);
-            updateEmptyStateCopy();
-            binding.layoutEmptyState.setVisibility(View.VISIBLE);
-        } else {
-            binding.layoutEmptyState.setVisibility(View.GONE);
-            binding.layoutDefaultContent.setVisibility(View.VISIBLE);
-
-            if (pendingInList > 0) {
-                binding.tvSectionHeader.setText("Danh sách · " + pendingInList + " yêu cầu chờ duyệt");
-            } else {
-                binding.tvSectionHeader.setText("Danh sách · " + displayedList.size() + " lịch hẹn");
-            }
-
-            renderAppointmentCards();
-        }
-    }
-
     private void updateEmptyStateCopy() {
-        if (allStaffAppts.isEmpty()) {
+        if (viewModel.isAllListEmpty()) {
             binding.tvEmptyTitle.setText("Phòng khám chưa có lịch hẹn");
             binding.tvEmptySubtitle.setText("Lịch hẹn mới từ khách hàng sẽ hiển thị tại đây ngay khi được đặt.");
             binding.btnEmptyShowAll.setVisibility(View.GONE);
@@ -362,67 +262,15 @@ public class StaffAppointmentsActivity extends AppCompatActivity {
         }
     }
 
-    private void renderAppointmentCards() {
-        binding.layoutApptList.removeAllViews();
-
-        for (StaffAppointmentItem item : displayedList) {
-            ItemStaffApptCardBinding cardBinding = ItemStaffApptCardBinding.inflate(getLayoutInflater());
-
-            cardBinding.ivStaffPetAvatar.setImageResource(item.getPetImgRes());
-            cardBinding.tvStaffServiceTitle.setText(item.getService());
-            cardBinding.tvStaffCustomerPet.setText(item.getCustomer() + " · " + item.getPet());
-            cardBinding.tvStaffDate.setText(StaffClinicHelper.formatNaturalDateTime(item.getDate(), item.getTime()));
-            cardBinding.tvStaffTime.setText(item.getTime());
-            cardBinding.tvStaffDuration.setText("· " + item.getDuration());
-
-            cardBinding.cardContainer.setBackgroundResource(R.drawable.bg_home_card_borderless);
-            cardBinding.tvStaffApptStatus.setBackground(null);
-            if ("PENDING".equalsIgnoreCase(item.getStatus())) {
-                cardBinding.tvStaffApptStatus.setText("● Chờ xác nhận");
-                cardBinding.tvStaffApptStatus.setTextColor(ContextCompat.getColor(this, R.color.ds_warning));
-            } else if ("CONFIRMED".equalsIgnoreCase(item.getStatus())) {
-                cardBinding.tvStaffApptStatus.setText("● Đã xác nhận");
-                cardBinding.tvStaffApptStatus.setTextColor(ContextCompat.getColor(this, R.color.ds_success));
-            } else if ("COMPLETED".equalsIgnoreCase(item.getStatus())) {
-                cardBinding.tvStaffApptStatus.setText("● Đã hoàn thành");
-                cardBinding.tvStaffApptStatus.setTextColor(ContextCompat.getColor(this, R.color.ds_primary));
-            } else if ("NO_SHOW".equalsIgnoreCase(item.getStatus())) {
-                cardBinding.tvStaffApptStatus.setText("● Không đến");
-                cardBinding.tvStaffApptStatus.setTextColor(ContextCompat.getColor(this, R.color.ds_text_secondary));
-            } else {
-                cardBinding.tvStaffApptStatus.setText("● Đã hủy / Từ chối");
-                cardBinding.tvStaffApptStatus.setTextColor(ContextCompat.getColor(this, R.color.ds_error));
-            }
-
-            UiMotionUtils.attachSpringTouch(cardBinding.getRoot());
-            cardBinding.getRoot().setOnClickListener(v -> {
-                Intent intent = new Intent(this, StaffAppointmentDetailsActivity.class);
-                intent.putExtra(StaffAppointmentDetailsActivity.EXTRA_REF, item.getRef());
-                intent.putExtra(StaffAppointmentDetailsActivity.EXTRA_APPT, item);
-                startActivity(intent);
-                overridePendingTransition(R.anim.fade_scale_in, R.anim.fade_scale_out);
-            });
-
-            binding.layoutApptList.addView(cardBinding.getRoot());
-        }
-        UiMotionUtils.animateStaggeredChildren(binding.layoutApptList, 40L);
-
-        UiMotionUtils.attachSpringTouch(binding.btnLoadOlder);
-        binding.btnLoadOlder.setOnClickListener(v -> {
-            Toast.makeText(this, "Đang tải thêm lịch hẹn của các ngày trước...", Toast.LENGTH_SHORT).show();
-        });
-    }
-
     private void setupEmptyAndErrorActions() {
         binding.btnEmptyShowAll.setOnClickListener(v -> {
             binding.etStaffSearch.setText("");
-            setFilter("ALL");
-            applyState("default");
+            viewModel.resetSearchAndFilter();
         });
 
         binding.btnRetry.setOnClickListener(v -> {
             Toast.makeText(this, "Đang kết nối lại...", Toast.LENGTH_SHORT).show();
-            loadAppointmentsFromApi();
+            viewModel.loadClinicAppointments();
         });
     }
 
@@ -442,9 +290,8 @@ public class StaffAppointmentsActivity extends AppCompatActivity {
             finish();
         });
 
-        binding.navStaffAppointments.setOnClickListener(v -> {
-            binding.scrollStaffAppointmentsBody.smoothScrollTo(0, 0);
-        });
+        binding.navStaffAppointments.setOnClickListener(v ->
+                binding.scrollStaffAppointmentsBody.smoothScrollTo(0, 0));
 
         binding.navStaffSlots.setOnClickListener(v -> {
             Intent intent = new Intent(this, StaffSlotManagementActivity.class);

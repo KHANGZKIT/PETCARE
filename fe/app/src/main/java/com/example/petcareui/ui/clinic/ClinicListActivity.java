@@ -1,45 +1,34 @@
 package com.example.petcareui.ui.clinic;
 
 import android.Manifest;
-import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.location.Location;
-import android.location.LocationManager;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
+import androidx.lifecycle.ViewModelProvider;
+import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.example.petcareui.MainActivity;
 import com.example.petcareui.R;
-import com.example.petcareui.data.api.ApiClient;
 import com.example.petcareui.data.model.ClinicItem;
 import com.example.petcareui.data.model.PetItem;
-import com.example.petcareui.data.dto.response.ClinicResponse;
 import com.example.petcareui.databinding.ActivityClinicListBinding;
-import com.example.petcareui.databinding.ItemClinicRowBinding;
 import com.example.petcareui.ui.appointments.MyAppointmentsActivity;
 import com.example.petcareui.ui.pets.MyPetsActivity;
 import com.example.petcareui.utils.UiMotionUtils;
+import com.example.petcareui.utils.UserLocationManager;
 
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
-
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
 
 public class ClinicListActivity extends AppCompatActivity {
 
@@ -47,32 +36,22 @@ public class ClinicListActivity extends AppCompatActivity {
     public static final String EXTRA_INITIAL_FILTER = "extra_initial_filter";
     public static final String EXTRA_PRESELECTED_PET = "extra_preselected_pet";
     private static final int REQ_LOCATION = 1001;
-    // Tọa độ gốc mặc định: Đại học Công nghiệp Hà Nội (HaUI - Bắc Từ Liêm)
-    private static final double DEFAULT_LAT = 21.0537;
-    private static final double DEFAULT_LNG = 105.7351;
 
     private ActivityClinicListBinding binding;
-    private final List<ClinicItem> allClinics = new ArrayList<>();
-    private String currentFilterMode = "all"; // "all", "open", "nearby", "exam", "vaccine", "spa", "emergency"
-    private String currentSortMode = "NEAREST"; // "NEAREST", "RATING"
-    private String currentSearchQuery = "";
+    private ClinicListViewModel viewModel;
+    private ClinicListAdapter clinicAdapter;
     private PetItem preselectedPet;
 
-    private double userLatitude = DEFAULT_LAT;
-    private double userLongitude = DEFAULT_LNG;
-    private String locationLabel = "ĐH Công nghiệp Hà Nội (HaUI)";
-
-    private static final int[] CLINIC_THUMBNAILS = new int[]{
-            R.drawable.img_clinic_cover,
-            R.drawable.ic_clinic_illustration_hospital,
-            R.drawable.ic_clinic_illustration_spa
-    };
+    private UserLocationManager.ActiveRequest activeLocationRequest;
+    private boolean pendingUserTriggeredGps = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         binding = ActivityClinicListBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
+
+        viewModel = new ViewModelProvider(this).get(ClinicListViewModel.class);
 
         boolean isTabMode = getIntent().getBooleanExtra(EXTRA_TAB_MODE, false);
         if (isTabMode) {
@@ -93,29 +72,100 @@ public class ClinicListActivity extends AppCompatActivity {
             }
         }
 
-        requestLocationPermission();
-        updateUserLocation();
+        setupRecyclerView();
         setupListeners();
+        observeViewModel();
 
-        String initialFilter = getIntent().getStringExtra(EXTRA_INITIAL_FILTER);
-        if ("exam".equalsIgnoreCase(initialFilter)) {
-            currentFilterMode = "exam";
-            setActiveChip(binding.chipExam);
-        } else if ("vaccine".equalsIgnoreCase(initialFilter)) {
-            currentFilterMode = "vaccine";
-            setActiveChip(binding.chipVaccine);
-        } else if ("spa".equalsIgnoreCase(initialFilter)) {
-            currentFilterMode = "spa";
-            setActiveChip(binding.chipSpa);
-        } else if ("emergency".equalsIgnoreCase(initialFilter)) {
-            currentFilterMode = "emergency";
-            setActiveChip(binding.chipEmergency);
-        } else {
-            currentFilterMode = "all";
-            setActiveChip(binding.chipAll);
+        if (savedInstanceState == null) {
+            String initialFilter = getIntent().getStringExtra(EXTRA_INITIAL_FILTER);
+            if ("exam".equalsIgnoreCase(initialFilter)
+                    || "vaccine".equalsIgnoreCase(initialFilter)
+                    || "spa".equalsIgnoreCase(initialFilter)
+                    || "emergency".equalsIgnoreCase(initialFilter)) {
+                viewModel.setFilterMode(initialFilter.toLowerCase(Locale.ROOT));
+            } else {
+                viewModel.setFilterMode("all");
+            }
+            viewModel.loadClinics();
         }
 
-        loadClinicsFromApi();
+        syncLocationFromStore();
+        if (UserLocationManager.isGpsMode(this)) {
+            if (UserLocationManager.isEmulator() || UserLocationManager.hasLocationPermission(this)) {
+                updateUserLocation(false);
+            } else {
+                requestLocationPermission(false);
+            }
+        }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        syncLocationFromStore();
+    }
+
+    private void syncLocationFromStore() {
+        UserLocationManager.LocationState current = UserLocationManager.getCurrent(this);
+        viewModel.updateLocation(current.latitude, current.longitude, current.label);
+    }
+
+    private void setupRecyclerView() {
+        clinicAdapter = new ClinicListAdapter(this::openClinicDetails);
+        binding.rvClinicsList.setLayoutManager(new LinearLayoutManager(this));
+        binding.rvClinicsList.setAdapter(clinicAdapter);
+    }
+
+    private void openClinicDetails(ClinicItem clinic) {
+        Intent intent = new Intent(this, ClinicDetailsActivity.class);
+        intent.putExtra(ClinicDetailsActivity.EXTRA_CLINIC, clinic);
+        if (preselectedPet != null) {
+            intent.putExtra(ClinicDetailsActivity.EXTRA_PRESELECTED_PET, preselectedPet);
+        }
+        String mode = viewModel.getCurrentFilterMode();
+        if ("exam".equals(mode) || "vaccine".equals(mode)
+                || "spa".equals(mode) || "emergency".equals(mode)) {
+            intent.putExtra(ClinicDetailsActivity.EXTRA_PREFERRED_CATEGORY, mode);
+        }
+        startActivity(intent);
+    }
+
+    private void observeViewModel() {
+        viewModel.getLocationLabel().observe(this, label -> refreshLocationSubtitle(label));
+
+        viewModel.getFilterMode().observe(this, this::syncActiveFilterChip);
+
+        viewModel.getSortMode().observe(this, sortMode -> {
+            if ("RATING".equals(sortMode)) {
+                binding.tvSortOption.setText("Sắp xếp · Đánh giá cao");
+            } else {
+                binding.tvSortOption.setText("Sắp xếp · Gần nhất");
+            }
+        });
+
+        viewModel.getDisplayedClinics().observe(this, list -> {
+            int count = list != null ? list.size() : 0;
+            binding.tvClinicCount.setText(count + " phòng khám");
+            clinicAdapter.submitList(list);
+        });
+
+        viewModel.getUiState().observe(this, state -> {
+            if (state == null) return;
+            switch (state) {
+                case LOADING:
+                    showLoading();
+                    break;
+                case RESULTS:
+                    showResultsState();
+                    break;
+                case EMPTY:
+                    showEmpty();
+                    break;
+                case ERROR:
+                    showError();
+                    break;
+            }
+        });
     }
 
     private void setupBottomNav() {
@@ -146,123 +196,60 @@ public class ClinicListActivity extends AppCompatActivity {
         });
     }
 
-    private void requestLocationPermission() {
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+    private void requestLocationPermission(boolean userTriggered) {
+        pendingUserTriggeredGps = userTriggered;
+        if (!UserLocationManager.hasLocationPermission(this)) {
             ActivityCompat.requestPermissions(this,
                     new String[]{Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION},
                     REQ_LOCATION);
+        } else {
+            updateUserLocation(userTriggered);
         }
     }
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        if (requestCode == REQ_LOCATION && grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-            updateUserLocation();
-            calculateDistances(allClinics);
-            filterClinics();
-        }
-    }
-
-    private void updateUserLocation() {
-        try {
-            if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED
-                    || ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
-                LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-                if (locationManager != null) {
-                    // 1. Thử lấy vị trí cache gần nhất để hiển thị tức thì
-                    Location loc = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
-                    if (loc == null) {
-                        loc = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
-                    }
-                    if (loc != null) {
-                        applyValidLocation(loc);
-                    }
-
-                    // 2. Đồng thời đăng ký nhận GPS thực tế mới nhất (rất quan trọng khi cắm máy thật)
-                    android.location.LocationListener singleUpdateListener = new android.location.LocationListener() {
-                        @Override
-                        public void onLocationChanged(@NonNull Location newLoc) {
-                            applyValidLocation(newLoc);
-                            try {
-                                locationManager.removeUpdates(this);
-                            } catch (Exception ignored) {}
-                        }
-                        @Override public void onStatusChanged(String provider, int status, Bundle extras) {}
-                        @Override public void onProviderEnabled(@NonNull String provider) {}
-                        @Override public void onProviderDisabled(@NonNull String provider) {}
-                    };
-
-                    if (locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
-                        locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 1000L, 5f, singleUpdateListener, android.os.Looper.getMainLooper());
-                    } else if (locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER)) {
-                        locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 1000L, 5f, singleUpdateListener, android.os.Looper.getMainLooper());
-                    }
+        if (requestCode == REQ_LOCATION) {
+            boolean granted = false;
+            for (int r : grantResults) {
+                if (r == PackageManager.PERMISSION_GRANTED) {
+                    granted = true;
+                    break;
                 }
             }
-        } catch (Exception ignored) {
-        }
-        refreshLocationSubtitle();
-    }
-
-    private void applyValidLocation(Location loc) {
-        if (loc == null) return;
-        double lat = loc.getLatitude();
-        double lng = loc.getLongitude();
-        // Kiểm tra nếu vị trí hợp lệ trong lãnh thổ Việt Nam (tránh vị trí mặc định ở Mỹ của máy ảo)
-        if (lat >= 8.0 && lat <= 24.0 && lng >= 102.0 && lng <= 110.0) {
-            userLatitude = lat;
-            userLongitude = lng;
-            locationLabel = "Vị trí GPS thực tế";
-            refreshLocationSubtitle();
-            if (!allClinics.isEmpty()) {
-                calculateDistances(allClinics);
-                filterClinics();
+            if (granted) {
+                updateUserLocation(pendingUserTriggeredGps);
+            } else if (pendingUserTriggeredGps) {
+                Toast.makeText(this, "Chưa cấp quyền vị trí — sử dụng mặc định " + UserLocationManager.DEFAULT_LABEL, Toast.LENGTH_SHORT).show();
             }
+            pendingUserTriggeredGps = false;
         }
     }
 
-    private void calculateDistances(List<ClinicItem> clinics) {
-        float[] result = new float[1];
-        for (ClinicItem c : clinics) {
-            if (c.getLatitude() != null && c.getLongitude() != null) {
-                Location.distanceBetween(userLatitude, userLongitude, c.getLatitude(), c.getLongitude(), result);
-                float distKm = result[0] / 1000f;
-                c.setDistanceKm(distKm);
-                if (distKm < 0.2f) {
-                    c.setDistance("< 200m");
-                } else if (distKm < 1.0f) {
-                    c.setDistance(String.format(Locale.US, "%.0f m", result[0]));
-                } else {
-                    c.setDistance(String.format(Locale.US, "%.1f km", distKm));
-                }
-            } else {
-                c.setDistanceKm(999f);
-                c.setDistance("-- km");
-            }
+    private void clearLocationListener() {
+        if (activeLocationRequest != null) {
+            activeLocationRequest.cancel();
+            activeLocationRequest = null;
         }
     }
 
-    private void loadClinicsFromApi() {
-        showLoading();
-        ApiClient.getClinicApi().getAllClinics(null).enqueue(new Callback<List<ClinicResponse>>() {
-            @Override
-            public void onResponse(Call<List<ClinicResponse>> call, Response<List<ClinicResponse>> response) {
-                if (response.isSuccessful() && response.body() != null) {
-                    allClinics.clear();
-                    for (ClinicResponse res : response.body()) {
-                        allClinics.add(res.toClinicItem());
-                    }
-                    calculateDistances(allClinics);
-                    filterClinics();
-                } else {
-                    showError();
-                }
-            }
+    @Override
+    protected void onDestroy() {
+        clearLocationListener();
+        super.onDestroy();
+    }
 
-            @Override
-            public void onFailure(Call<List<ClinicResponse>> call, Throwable t) {
-                showError();
+    private void updateUserLocation(boolean userTriggered) {
+        clearLocationListener();
+        if (userTriggered && !UserLocationManager.isEmulator()) {
+            Toast.makeText(this, "Đang lấy vị trí GPS...", Toast.LENGTH_SHORT).show();
+        }
+        activeLocationRequest = UserLocationManager.fetchLiveLocation(this, userTriggered, state -> {
+            if (isFinishing() || isDestroyed()) return;
+            viewModel.updateLocation(state.latitude, state.longitude, state.label);
+            if (userTriggered) {
+                Toast.makeText(this, "Đã cập nhật vị trí: " + state.label, Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -270,61 +257,39 @@ public class ClinicListActivity extends AppCompatActivity {
     private void setupListeners() {
         binding.btnBack.setOnClickListener(v -> finish());
 
-        // Lắng nghe nhập tìm kiếm phòng khám / khu vực
         binding.etSearchLocation.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
-
+            @Override public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                currentSearchQuery = s != null ? s.toString() : "";
-                filterClinics();
+                viewModel.setSearchQuery(s != null ? s.toString() : "");
             }
-
-            @Override
-            public void afterTextChanged(Editable s) {}
+            @Override public void afterTextChanged(Editable s) {}
         });
 
-        // Nút lọc nâng cao
-        binding.btnFilter.setOnClickListener(v -> {
-            Toast.makeText(this, "Bộ lọc: Đang hiển thị các cơ sở tại Hà Nội", Toast.LENGTH_SHORT).show();
-        });
+        binding.btnFilter.setOnClickListener(v ->
+                Toast.makeText(this, "Bộ lọc: Đang hiển thị các cơ sở tại Hà Nội", Toast.LENGTH_SHORT).show());
 
         binding.tvSortOption.setOnClickListener(v -> {
-            if ("NEAREST".equals(currentSortMode)) {
-                currentSortMode = "RATING";
-                binding.tvSortOption.setText("Sắp xếp · Đánh giá cao");
-                Toast.makeText(this, "Đã sắp xếp theo đánh giá cao nhất", Toast.LENGTH_SHORT).show();
-            } else {
-                currentSortMode = "NEAREST";
-                binding.tvSortOption.setText("Sắp xếp · Gần nhất");
-                Toast.makeText(this, "Đã sắp xếp theo khoảng cách gần nhất", Toast.LENGTH_SHORT).show();
-            }
-            filterClinics();
+            viewModel.toggleSortMode();
+            String msg = "RATING".equals(viewModel.getCurrentSortMode())
+                    ? "Đã sắp xếp theo đánh giá cao nhất"
+                    : "Đã sắp xếp theo khoảng cách gần nhất";
+            Toast.makeText(this, msg, Toast.LENGTH_SHORT).show();
         });
 
-        binding.btnLoadMore.setOnClickListener(v -> {
-            Toast.makeText(this, "Đã hiển thị toàn bộ hệ thống cơ sở", Toast.LENGTH_SHORT).show();
-        });
-
-        // Thử lại trong Error State
-        binding.btnRetry.setOnClickListener(v -> loadClinicsFromApi());
+        binding.btnRetry.setOnClickListener(v -> viewModel.loadClinics());
 
         binding.btnClearFilter.setOnClickListener(v -> {
             binding.etSearchLocation.setText("");
-            currentSearchQuery = "";
-            currentFilterMode = "all";
-            resetFilterChips();
-            filterClinics();
+            viewModel.resetFilters();
         });
 
-        // Đổi vị trí tham chiếu
         binding.tvChangeLocation.setOnClickListener(v -> showChangeLocationDialog());
+        binding.tvLocationSubtitle.setOnClickListener(v -> showChangeLocationDialog());
 
         UiMotionUtils.attachSpringTouch(
                 binding.btnBack,
                 binding.btnFilter,
-                binding.btnLoadMore,
                 binding.btnClearFilter,
                 binding.btnRetry,
                 binding.chipAll,
@@ -337,102 +302,89 @@ public class ClinicListActivity extends AppCompatActivity {
         );
 
         setupFilterChips();
-        refreshLocationSubtitle();
     }
 
-    private void refreshLocationSubtitle() {
+    private void refreshLocationSubtitle(String label) {
+        String safeLabel = label != null ? label : UserLocationManager.DEFAULT_LABEL;
         if (preselectedPet != null && preselectedPet.getName() != null && !preselectedPet.getName().trim().isEmpty()) {
-            binding.tvLocationSubtitle.setText("Đặt lịch cho " + preselectedPet.getName().trim() + " · " + locationLabel);
+            binding.tvLocationSubtitle.setText("Đặt lịch cho " + preselectedPet.getName().trim() + " · " + safeLabel);
         } else {
-            binding.tvLocationSubtitle.setText("Vị trí: " + locationLabel);
+            binding.tvLocationSubtitle.setText("Vị trí: " + safeLabel + " ▾");
         }
     }
 
     private void showChangeLocationDialog() {
-        String[] locations = new String[]{
-                "ĐH Công nghiệp Hà Nội (HaUI - Bắc Từ Liêm)",
-                "Cầu Giấy (12 Chùa Hà)",
-                "Đống Đa (88 Thái Hà)",
-                "Định vị lại theo GPS"
-        };
-        new AlertDialog.Builder(this)
-                .setTitle("Chọn vị trí định vị của bạn")
-                .setItems(locations, (dialog, which) -> {
-                    if (which == 0) {
-                        userLatitude = 21.0537;
-                        userLongitude = 105.7351;
-                        locationLabel = "ĐH Công nghiệp Hà Nội (HaUI)";
-                    } else if (which == 1) {
-                        userLatitude = 21.0360;
-                        userLongitude = 105.7950;
-                        locationLabel = "Cầu Giấy, Hà Nội";
-                    } else if (which == 2) {
-                        userLatitude = 21.0125;
-                        userLongitude = 105.8190;
-                        locationLabel = "Đống Đa, Hà Nội";
-                    } else {
-                        updateUserLocation();
-                    }
-                    refreshLocationSubtitle();
-                    calculateDistances(allClinics);
-                    filterClinics();
-                })
-                .show();
+        LocationPickerBottomSheet.show(this, new LocationPickerBottomSheet.OnLocationSelectedListener() {
+            @Override
+            public void onSelectGps() {
+                UserLocationManager.setGpsMode(ClinicListActivity.this, true);
+                if (UserLocationManager.isEmulator()) {
+                    updateUserLocation(true);
+                } else {
+                    requestLocationPermission(true);
+                }
+            }
+
+            @Override
+            public void onSelectPreset(@NonNull UserLocationManager.PresetLocation preset) {
+                UserLocationManager.saveManualLocation(ClinicListActivity.this, preset.latitude, preset.longitude, preset.label);
+                viewModel.updateLocation(preset.latitude, preset.longitude, preset.label);
+            }
+        });
     }
 
     private void setupFilterChips() {
-        binding.chipAll.setOnClickListener(v -> {
-            setActiveChip(binding.chipAll);
-            currentFilterMode = "all";
-            filterClinics();
-        });
-
-        binding.chipOpen.setOnClickListener(v -> {
-            setActiveChip(binding.chipOpen);
-            currentFilterMode = "open";
-            filterClinics();
-        });
-
-        binding.chipNearby.setOnClickListener(v -> {
-            setActiveChip(binding.chipNearby);
-            currentFilterMode = "nearby";
-            currentSortMode = "NEAREST";
-            binding.tvSortOption.setText("Sắp xếp · Gần nhất");
-            filterClinics();
-        });
-
-        binding.chipExam.setOnClickListener(v -> {
-            setActiveChip(binding.chipExam);
-            currentFilterMode = "exam";
-            filterClinics();
-        });
-
-        binding.chipVaccine.setOnClickListener(v -> {
-            setActiveChip(binding.chipVaccine);
-            currentFilterMode = "vaccine";
-            filterClinics();
-        });
-
-        binding.chipSpa.setOnClickListener(v -> {
-            setActiveChip(binding.chipSpa);
-            currentFilterMode = "spa";
-            filterClinics();
-        });
-
-        binding.chipEmergency.setOnClickListener(v -> {
-            setActiveChip(binding.chipEmergency);
-            currentFilterMode = "emergency";
-            filterClinics();
-        });
+        binding.chipAll.setOnClickListener(v -> viewModel.setFilterMode("all"));
+        binding.chipOpen.setOnClickListener(v -> viewModel.setFilterMode("open"));
+        binding.chipNearby.setOnClickListener(v -> viewModel.setFilterMode("nearby"));
+        binding.chipExam.setOnClickListener(v -> viewModel.setFilterMode("exam"));
+        binding.chipVaccine.setOnClickListener(v -> viewModel.setFilterMode("vaccine"));
+        binding.chipSpa.setOnClickListener(v -> viewModel.setFilterMode("spa"));
+        binding.chipEmergency.setOnClickListener(v -> viewModel.setFilterMode("emergency"));
     }
 
-    private String removeAccents(String text) {
-        if (text == null) return "";
-        String normalized = java.text.Normalizer.normalize(text, java.text.Normalizer.Form.NFD);
-        return normalized.replaceAll("\\p{InCombiningDiacriticalMarks}+", "")
-                .replaceAll("đ", "d")
-                .replaceAll("Đ", "D")
-                .toLowerCase();
+    private void syncActiveFilterChip(String mode) {
+        if ("open".equals(mode)) {
+            setActiveChip(binding.chipOpen);
+        } else if ("nearby".equals(mode)) {
+            setActiveChip(binding.chipNearby);
+        } else if ("exam".equals(mode)) {
+            setActiveChip(binding.chipExam);
+        } else if ("vaccine".equals(mode)) {
+            setActiveChip(binding.chipVaccine);
+        } else if ("spa".equals(mode)) {
+            setActiveChip(binding.chipSpa);
+        } else if ("emergency".equals(mode)) {
+            setActiveChip(binding.chipEmergency);
+        } else {
+            setActiveChip(binding.chipAll);
+        }
+    }
+
+    private void setActiveChip(View activeView) {
+        TextView[] textChips = new TextView[]{
+                binding.chipAll,
+                binding.chipOpen,
+                binding.chipExam,
+                binding.chipVaccine,
+                binding.chipSpa,
+                binding.chipEmergency
+        };
+        int activeColor = ContextCompat.getColor(this, R.color.ds_primary);
+        int inactiveColor = ContextCompat.getColor(this, R.color.ds_text_secondary);
+
+        for (TextView chip : textChips) {
+            boolean isActive = (chip == activeView);
+            chip.setBackgroundResource(isActive ? R.drawable.bg_chip_active : R.drawable.bg_chip_inactive);
+            chip.setTextColor(isActive ? activeColor : inactiveColor);
+            UiMotionUtils.applyFont(chip, isActive ? R.font.open_sans_semibold : R.font.open_sans_medium);
+        }
+
+        boolean nearbyActive = (activeView == binding.chipNearby);
+        binding.chipNearby.setBackgroundResource(nearbyActive ? R.drawable.bg_chip_active : R.drawable.bg_chip_inactive);
+        binding.tvChipNearby.setTextColor(nearbyActive ? activeColor : inactiveColor);
+        binding.ivChipNearby.setColorFilter(nearbyActive ? activeColor : inactiveColor);
+        UiMotionUtils.applyFont(binding.tvChipNearby, nearbyActive ? R.font.open_sans_semibold : R.font.open_sans_medium);
     }
 
     public static boolean matchesServiceCategory(String serviceName, String category) {
@@ -453,213 +405,11 @@ public class ClinicListActivity extends AppCompatActivity {
         }
     }
 
-    private boolean clinicMatchesCategory(ClinicItem c, String category) {
-        if ("emergency".equals(category)) {
-            String hours = c.getHours() != null ? c.getHours().toLowerCase(Locale.ROOT) : "";
-            String name = c.getName() != null ? c.getName().toLowerCase(Locale.ROOT) : "";
-            if (hours.contains("24/7") || hours.contains("cấp cứu") || name.contains("cấp cứu")) {
-                return true;
-            }
-        }
-        List<String> svcNames = c.getServiceNames();
-        if (svcNames == null || svcNames.isEmpty()) {
-            // Fallback an toàn nếu server chưa trả danh sách tên dịch vụ
-            return !"emergency".equals(category);
-        }
-        for (String svc : svcNames) {
-            if (matchesServiceCategory(svc, category)) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    private void filterClinics() {
-        List<ClinicItem> filtered = new ArrayList<>();
-        String rawQuery = currentSearchQuery.trim().toLowerCase();
-        String unaccentedQuery = removeAccents(rawQuery);
-
-        for (ClinicItem c : allClinics) {
-            String name = c.getName() != null ? c.getName() : "";
-            String addr = c.getAddress() != null ? c.getAddress() : "";
-            String area = c.getArea() != null ? c.getArea() : "";
-            String dist = c.getDistance() != null ? c.getDistance() : "";
-
-            boolean matchesSearch = rawQuery.isEmpty()
-                    || name.toLowerCase().contains(rawQuery) || removeAccents(name).contains(unaccentedQuery)
-                    || addr.toLowerCase().contains(rawQuery) || removeAccents(addr).contains(unaccentedQuery)
-                    || area.toLowerCase().contains(rawQuery) || removeAccents(area).contains(unaccentedQuery)
-                    || dist.toLowerCase().contains(rawQuery);
-
-            if (!matchesSearch && c.getServiceNames() != null) {
-                for (String svc : c.getServiceNames()) {
-                    if (svc != null && (svc.toLowerCase().contains(rawQuery) || removeAccents(svc).contains(unaccentedQuery))) {
-                        matchesSearch = true;
-                        break;
-                    }
-                }
-            }
-
-            boolean matchesChip = true;
-            if ("open".equals(currentFilterMode)) {
-                matchesChip = c.isOpen();
-            } else if ("exam".equals(currentFilterMode)
-                    || "vaccine".equals(currentFilterMode)
-                    || "spa".equals(currentFilterMode)
-                    || "emergency".equals(currentFilterMode)) {
-                matchesChip = clinicMatchesCategory(c, currentFilterMode);
-            }
-
-            if (matchesSearch && matchesChip) {
-                filtered.add(c);
-            }
-        }
-
-        // Sắp xếp danh sách
-        if ("RATING".equals(currentSortMode)) {
-            Collections.sort(filtered, (a, b) -> Double.compare(b.getRating(), a.getRating()));
-        } else {
-            // Mặc định sắp xếp khoảng cách gần nhất
-            Collections.sort(filtered, (a, b) -> Float.compare(
-                    a.getDistanceKm() != null ? a.getDistanceKm() : 999f,
-                    b.getDistanceKm() != null ? b.getDistanceKm() : 999f
-            ));
-        }
-
-        if (filtered.isEmpty()) {
-            showEmpty();
-        } else {
-            showResults(filtered);
-        }
-    }
-
-    private void setActiveChip(View activeView) {
-        UiMotionUtils.animateSelectionPop(activeView);
-        View[] chipContainers = new View[]{
-                binding.chipAll,
-                binding.chipOpen,
-                binding.chipNearby,
-                binding.chipExam,
-                binding.chipVaccine,
-                binding.chipSpa,
-                binding.chipEmergency
-        };
-
-        for (View c : chipContainers) {
-            boolean isActive = (c == activeView);
-            c.setBackgroundResource(isActive ? R.drawable.bg_chip_active : R.drawable.bg_chip_inactive);
-
-            if (c instanceof TextView) {
-                TextView tv = (TextView) c;
-                tv.setTextColor(ContextCompat.getColor(this, isActive ? R.color.ds_primary : R.color.ds_text_secondary));
-                com.example.petcareui.utils.UiMotionUtils.applyFont(
-                        tv, isActive ? R.font.open_sans_semibold : R.font.open_sans_medium);
-            } else if (c == binding.chipNearby) {
-                int tint = ContextCompat.getColor(this, isActive ? R.color.ds_primary : R.color.ds_text_secondary);
-                binding.tvChipNearby.setTextColor(tint);
-                binding.ivChipNearby.setColorFilter(tint);
-                com.example.petcareui.utils.UiMotionUtils.applyFont(
-                        binding.tvChipNearby, isActive ? R.font.open_sans_semibold : R.font.open_sans_medium);
-            }
-        }
-
-        activeView.post(() -> {
-            if (activeView.getParent() != null
-                    && activeView.getParent().getParent() instanceof android.widget.HorizontalScrollView) {
-                android.widget.HorizontalScrollView hsv =
-                        (android.widget.HorizontalScrollView) activeView.getParent().getParent();
-                hsv.smoothScrollTo(Math.max(0, activeView.getLeft() - 48), 0);
-            }
-        });
-    }
-
-    private void resetFilterChips() {
-        setActiveChip(binding.chipAll);
-    }
-
-    private void showResults(List<ClinicItem> list) {
+    private void showResultsState() {
         binding.layoutResultsState.setVisibility(View.VISIBLE);
         binding.layoutLoadingState.setVisibility(View.GONE);
         binding.layoutEmptyState.setVisibility(View.GONE);
         binding.layoutErrorState.setVisibility(View.GONE);
-
-        binding.tvClinicCount.setText(list.size() + " phòng khám");
-
-        binding.containerClinicsList.removeAllViews();
-        LayoutInflater inflater = LayoutInflater.from(this);
-
-        for (int i = 0; i < list.size(); i++) {
-            ClinicItem clinic = list.get(i);
-            ItemClinicRowBinding rowBinding = ItemClinicRowBinding.inflate(inflater, binding.containerClinicsList, false);
-
-            // Gán ảnh đại diện phòng khám đa dạng (Ảnh thật + Minh họa bệnh viện/spa)
-            int thumbRes = CLINIC_THUMBNAILS[i % CLINIC_THUMBNAILS.length];
-            rowBinding.ivClinicImage.setImageResource(thumbRes);
-
-            rowBinding.tvClinicName.setText(formatShortClinicName(clinic.getName()));
-            rowBinding.tvClinicAddress.setText(clinic.getAddress());
-            rowBinding.tvClinicRating.setText(String.valueOf(clinic.getRating()));
-            rowBinding.tvClinicMeta.setText("(" + clinic.getReviews() + ") · " + clinic.getDistance());
-            rowBinding.ivClinicImage.setImageResource(clinic.getImageResId());
-            rowBinding.ivClinicImage.setColorFilter(null);
-
-            if (clinic.isOpen()) {
-                rowBinding.tvClinicStatusBadge.setText("● Đang mở cửa");
-                rowBinding.tvClinicStatusBadge.setTextColor(ContextCompat.getColor(this, R.color.ds_success));
-            } else {
-                rowBinding.tvClinicStatusBadge.setText("● Đã đóng cửa");
-                rowBinding.tvClinicStatusBadge.setTextColor(ContextCompat.getColor(this, R.color.ds_text_secondary));
-            }
-
-            rowBinding.tvClinicHours.setText("· " + formatShortHours(clinic.getHours()));
-            rowBinding.dividerClinicRow.setVisibility(i == list.size() - 1 ? View.GONE : View.VISIBLE);
-
-            UiMotionUtils.attachSpringTouch(rowBinding.getRoot());
-
-            rowBinding.getRoot().setOnClickListener(v -> {
-                Intent intent = new Intent(this, ClinicDetailsActivity.class);
-                intent.putExtra(ClinicDetailsActivity.EXTRA_CLINIC, clinic);
-                if (preselectedPet != null) {
-                    intent.putExtra(ClinicDetailsActivity.EXTRA_PRESELECTED_PET, preselectedPet);
-                }
-                if ("exam".equals(currentFilterMode) || "vaccine".equals(currentFilterMode)
-                        || "spa".equals(currentFilterMode) || "emergency".equals(currentFilterMode)) {
-                    intent.putExtra(ClinicDetailsActivity.EXTRA_PREFERRED_CATEGORY, currentFilterMode);
-                }
-                startActivity(intent);
-            });
-
-            binding.containerClinicsList.addView(rowBinding.getRoot());
-        }
-
-        // Hiệu ứng đổ danh sách tuần tự (Staggered Animation)
-        UiMotionUtils.animateStaggeredChildren(binding.containerClinicsList, 30);
-    }
-
-    private String formatShortClinicName(String raw) {
-        if (raw == null) return "Phòng khám thú y";
-        String s = raw.trim();
-        if (s.toLowerCase(Locale.ROOT).startsWith("phòng khám thú y ")) {
-            return "Thú y " + s.substring("Phòng khám Thú y ".length()).trim();
-        }
-        return s;
-    }
-
-    private String formatShortHours(String raw) {
-        if (raw == null || raw.trim().isEmpty()) return "08:00 - 20:00";
-        String s = raw.trim();
-        if (s.contains("24/7")) {
-            return "24/7 Cấp cứu";
-        }
-        int parenIdx = s.indexOf('(');
-        if (parenIdx > 0) {
-            s = s.substring(0, parenIdx).trim();
-        }
-        int ampIdx = s.indexOf('&');
-        if (ampIdx > 0) {
-            s = s.substring(0, ampIdx).trim();
-        }
-        return s;
     }
 
     public void showLoading() {

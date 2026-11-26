@@ -10,14 +10,12 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
+import androidx.lifecycle.ViewModelProvider;
+import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.example.petcareui.R;
-import com.example.petcareui.data.api.ApiClient;
-import com.example.petcareui.data.dto.request.CreateSlotRequest;
-import com.example.petcareui.data.dto.response.ClinicSlotResponse;
 import com.example.petcareui.data.model.StaffSlotItem;
 import com.example.petcareui.databinding.ActivityStaffSlotManagementBinding;
-import com.example.petcareui.databinding.ItemStaffSlotRowBinding;
 import com.example.petcareui.ui.auth.LoginActivity;
 import com.example.petcareui.ui.profile.ProfileActivity;
 import com.example.petcareui.utils.TokenManager;
@@ -29,15 +27,16 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
-
+/**
+ * Phân hệ Nhân viên S04: Quản lý khung giờ phòng khám — Kiến trúc MVVM + RecyclerView.
+ */
 public class StaffSlotManagementActivity extends AppCompatActivity {
 
     public static final String EXTRA_STATE = "extra_state";
 
     private ActivityStaffSlotManagementBinding binding;
+    private StaffSlotViewModel viewModel;
+    private StaffSlotAdapter slotAdapter;
     private TokenManager tokenManager;
 
     private static class StaffDateItem {
@@ -57,10 +56,7 @@ public class StaffSlotManagementActivity extends AppCompatActivity {
     }
 
     private final List<StaffDateItem> dateList = new ArrayList<>();
-    private final List<StaffSlotItem> slotList = new ArrayList<>();
-
     private String currentState = "default";
-    private boolean isDailyRecurrence = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -74,14 +70,17 @@ public class StaffSlotManagementActivity extends AppCompatActivity {
             return;
         }
 
+        viewModel = new ViewModelProvider(this).get(StaffSlotViewModel.class);
+
         extractIntentData();
         UiMotionUtils.applyWindowInsets(binding.getRoot(), binding.layoutAppBar, binding.bottomNavStaff);
         bindClinicHeader();
+        setupRecyclerView();
         setupDates();
         setupAppBar();
-        setupStateToggles();
         setupSheetInteractions();
         setupBottomNav();
+        observeViewModel();
 
         UiMotionUtils.animateEntranceSections(
                 binding.layoutAppBar,
@@ -89,8 +88,6 @@ public class StaffSlotManagementActivity extends AppCompatActivity {
                 binding.noticeInfo
         );
 
-        StaffClinicHelper.syncStaffAndClinicInfo(this, this::bindClinicHeader, this::handleUnauthorized);
-        loadSlotsForSelectedDate();
         applyState(currentState);
     }
 
@@ -104,6 +101,75 @@ public class StaffSlotManagementActivity extends AppCompatActivity {
         bindClinicHeader();
         StaffClinicHelper.syncStaffAndClinicInfo(this, this::bindClinicHeader, this::handleUnauthorized);
         loadSlotsForSelectedDate();
+    }
+
+    private void setupRecyclerView() {
+        slotAdapter = new StaffSlotAdapter((slot, actionView) -> {
+            actionView.setEnabled(false);
+            actionView.setAlpha(0.5f);
+            viewModel.toggleSlotStatus(slot, () -> {
+                if (!isFinishing() && !isDestroyed()) {
+                    actionView.setEnabled(true);
+                    actionView.setAlpha(1.0f);
+                }
+            });
+        });
+        binding.rvSlotsList.setLayoutManager(new LinearLayoutManager(this));
+        binding.rvSlotsList.setAdapter(slotAdapter);
+    }
+
+    private void observeViewModel() {
+        viewModel.getOpenSlotCount().observe(this, openCount -> {
+            StaffDateItem selectedDate = getSelectedDateItem();
+            if (selectedDate != null) {
+                selectedDate.openCount = openCount != null ? openCount : 0;
+                renderDateStrip();
+            }
+        });
+
+        viewModel.getSlots().observe(this, slots -> {
+            int count = slots != null ? slots.size() : 0;
+            binding.tvSlotCountHeader.setText(count + " khung");
+            slotAdapter.submitList(slots);
+
+            if (count == 0) {
+                if ("new-slot".equals(currentState)) {
+                    binding.noticeCreated.setVisibility(View.GONE);
+                    binding.noticeInfo.setVisibility(View.VISIBLE);
+                    binding.layoutFloatingToast.setVisibility(View.GONE);
+                    binding.rvSlotsList.setVisibility(View.GONE);
+                    binding.layoutEmptySlots.setVisibility(View.VISIBLE);
+                } else {
+                    applyState("empty");
+                }
+            } else if (!"new-slot".equals(currentState) && !"created".equals(currentState)) {
+                applyState("default");
+            } else {
+                binding.layoutEmptySlots.setVisibility(View.GONE);
+                binding.rvSlotsList.setVisibility(View.VISIBLE);
+            }
+        });
+
+        viewModel.getSlotCreatedEvent().observe(this, created -> {
+            if (created == null) return;
+            binding.tvFloatingToastText.setText("Đã tạo khung giờ · " + created.formattedStart + " – " + created.formattedEnd);
+            binding.tvNoticeCreatedBody.setText(created.formattedStart + " – " + created.formattedEnd + " đã mở để nhận đặt lịch.");
+            applyState("created");
+            viewModel.clearSlotCreatedEvent();
+        });
+
+        viewModel.getToastMessage().observe(this, msg -> {
+            if (msg != null && !msg.isEmpty()) {
+                Toast.makeText(this, msg, Toast.LENGTH_SHORT).show();
+                viewModel.clearToast();
+            }
+        });
+
+        viewModel.getUnauthorizedEvent().observe(this, unauth -> {
+            if (Boolean.TRUE.equals(unauth)) {
+                handleUnauthorized();
+            }
+        });
     }
 
     private void bindClinicHeader() {
@@ -139,8 +205,7 @@ public class StaffSlotManagementActivity extends AppCompatActivity {
             LocalDate d = today.plusDays(i);
             String dayLabel = getDayOfWeekLabel(d.getDayOfWeek());
             String num = String.valueOf(d.getDayOfMonth());
-            String isoDate = d.toString();
-            dateList.add(new StaffDateItem(dayLabel, num, 0, i == 0, isoDate));
+            dateList.add(new StaffDateItem(dayLabel, num, 0, i == 0, d.toString()));
         }
         renderDateStrip();
         updateSelectedDateNotices();
@@ -178,77 +243,7 @@ public class StaffSlotManagementActivity extends AppCompatActivity {
         StaffDateItem selectedDate = getSelectedDateItem();
         String isoDate = selectedDate != null ? selectedDate.isoDate : LocalDate.now().toString();
         updateSelectedDateNotices();
-
-        ApiClient.getStaffSlotApi().getStaffSlots(isoDate).enqueue(new Callback<List<ClinicSlotResponse>>() {
-            @Override
-            public void onResponse(Call<List<ClinicSlotResponse>> call, Response<List<ClinicSlotResponse>> response) {
-                if (response.isSuccessful() && response.body() != null) {
-                    List<ClinicSlotResponse> body = response.body();
-                    slotList.clear();
-                    int openCount = 0;
-                    for (ClinicSlotResponse res : body) {
-                        StaffSlotItem item = res.toStaffSlotItem();
-                        if ("open".equals(item.getState())) {
-                            openCount++;
-                        }
-                        slotList.add(item);
-                    }
-
-                    if (selectedDate != null) {
-                        selectedDate.openCount = openCount;
-                    }
-                    renderDateStrip();
-
-                    if (slotList.isEmpty()) {
-                        if ("new-slot".equals(currentState)) {
-                            binding.noticeCreated.setVisibility(View.GONE);
-                            binding.noticeInfo.setVisibility(View.VISIBLE);
-                            binding.layoutFloatingToast.setVisibility(View.GONE);
-                            binding.layoutSlotsList.setVisibility(View.GONE);
-                            binding.layoutEmptySlots.setVisibility(View.VISIBLE);
-                            binding.tvSlotCountHeader.setText("0 khung");
-                        } else {
-                            applyState("empty");
-                        }
-                    } else {
-                        if (!"new-slot".equals(currentState) && !"created".equals(currentState)) {
-                            applyState("default");
-                        } else {
-                            renderSlotsList("created".equals(currentState));
-                        }
-                    }
-                } else if (response.code() == 401 || response.code() == 403) {
-                    handleUnauthorized();
-                } else {
-                    slotList.clear();
-                    if (selectedDate != null) {
-                        selectedDate.openCount = 0;
-                    }
-                    renderDateStrip();
-                    if (!"new-slot".equals(currentState)) {
-                        applyState("empty");
-                    }
-                    Toast.makeText(StaffSlotManagementActivity.this,
-                            "Không tải được khung giờ",
-                            Toast.LENGTH_SHORT).show();
-                }
-            }
-
-            @Override
-            public void onFailure(Call<List<ClinicSlotResponse>> call, Throwable t) {
-                slotList.clear();
-                if (selectedDate != null) {
-                    selectedDate.openCount = 0;
-                }
-                renderDateStrip();
-                if (!"new-slot".equals(currentState)) {
-                    applyState("empty");
-                }
-                Toast.makeText(StaffSlotManagementActivity.this,
-                        "Lỗi kết nối máy chủ khi tải khung giờ",
-                        Toast.LENGTH_SHORT).show();
-            }
-        });
+        viewModel.loadSlots(isoDate);
     }
 
     private void setupAppBar() {
@@ -259,9 +254,7 @@ public class StaffSlotManagementActivity extends AppCompatActivity {
                 binding.btnEmptyCreateSlot,
                 binding.btnStartTimePicker,
                 binding.btnEndTimePicker,
-                binding.btnSheetCreateSlotAction,
-                binding.chipRecurrenceOnce,
-                binding.chipRecurrenceDaily
+                binding.btnSheetCreateSlotAction
         );
         binding.btnBack.setOnClickListener(v -> finish());
         binding.btnTopAddSlot.setOnClickListener(v -> applyState("new-slot"));
@@ -269,31 +262,16 @@ public class StaffSlotManagementActivity extends AppCompatActivity {
         binding.btnEmptyCreateSlot.setOnClickListener(v -> applyState("new-slot"));
     }
 
-    private void setupStateToggles() {
-        if (binding.chipStateDefault.getParent() instanceof View) {
-            ((View) binding.chipStateDefault.getParent()).setVisibility(View.GONE);
-        }
-    }
-
     private void applyState(String state) {
         currentState = state;
 
-        updateToggleChip(binding.chipStateDefault, "default".equals(state));
-        updateToggleChip(binding.chipStateNewSlot, "new-slot".equals(state));
-        updateToggleChip(binding.chipStateCreated, "created".equals(state));
-        updateToggleChip(binding.chipStateEmpty, "empty".equals(state));
-
-        if ("new-slot".equals(state)) {
-            binding.layoutNewSlotSheetOverlay.setVisibility(View.VISIBLE);
-        } else {
-            binding.layoutNewSlotSheetOverlay.setVisibility(View.GONE);
-        }
+        binding.layoutNewSlotSheetOverlay.setVisibility("new-slot".equals(state) ? View.VISIBLE : View.GONE);
 
         if ("empty".equals(state)) {
             binding.noticeCreated.setVisibility(View.GONE);
             binding.noticeInfo.setVisibility(View.VISIBLE);
             binding.layoutFloatingToast.setVisibility(View.GONE);
-            binding.layoutSlotsList.setVisibility(View.GONE);
+            binding.rvSlotsList.setVisibility(View.GONE);
             binding.layoutEmptySlots.setVisibility(View.VISIBLE);
             binding.tvSlotCountHeader.setText("0 khung");
         } else if ("created".equals(state)) {
@@ -301,26 +279,13 @@ public class StaffSlotManagementActivity extends AppCompatActivity {
             binding.noticeCreated.setVisibility(View.VISIBLE);
             binding.layoutFloatingToast.setVisibility(View.VISIBLE);
             binding.layoutEmptySlots.setVisibility(View.GONE);
-            binding.layoutSlotsList.setVisibility(View.VISIBLE);
-
-            renderSlotsList(true);
+            binding.rvSlotsList.setVisibility(View.VISIBLE);
         } else {
             binding.noticeCreated.setVisibility(View.GONE);
             binding.noticeInfo.setVisibility(View.VISIBLE);
             binding.layoutFloatingToast.setVisibility(View.GONE);
             binding.layoutEmptySlots.setVisibility(View.GONE);
-            binding.layoutSlotsList.setVisibility(View.VISIBLE);
-            renderSlotsList(false);
-        }
-    }
-
-    private void updateToggleChip(TextView chip, boolean active) {
-        if (active) {
-            chip.setBackgroundResource(R.drawable.bg_chip_active);
-            chip.setTextColor(ContextCompat.getColor(this, R.color.ds_primary));
-        } else {
-            chip.setBackgroundResource(R.drawable.bg_chip_inactive);
-            chip.setTextColor(ContextCompat.getColor(this, R.color.text_muted));
+            binding.rvSlotsList.setVisibility(View.VISIBLE);
         }
     }
 
@@ -337,26 +302,20 @@ public class StaffSlotManagementActivity extends AppCompatActivity {
 
             tvDay.setText(item.day);
             tvNum.setText(item.num);
+            tvAvailable.setText(item.openCount > 0 ? item.openCount + " trống" : "0 trống");
 
             if (item.selected) {
                 card.setBackgroundResource(R.drawable.bg_date_card_selected);
                 tvDay.setTextColor(ContextCompat.getColor(this, R.color.white));
                 tvNum.setTextColor(ContextCompat.getColor(this, R.color.white));
                 tvAvailable.setTextColor(ContextCompat.getColor(this, R.color.white));
-                tvAvailable.setText(item.openCount > 0 ? item.openCount + " trống" : "0 trống");
                 card.setAlpha(1.0f);
             } else {
                 card.setBackgroundResource(R.drawable.bg_date_card_default);
                 tvDay.setTextColor(ContextCompat.getColor(this, R.color.text_muted));
                 tvNum.setTextColor(ContextCompat.getColor(this, R.color.text_foreground));
                 tvAvailable.setTextColor(ContextCompat.getColor(this, R.color.text_muted));
-                tvAvailable.setText(item.openCount > 0 ? item.openCount + " trống" : "0 trống");
-
-                if (item.openCount == 0) {
-                    card.setAlpha(0.6f);
-                } else {
-                    card.setAlpha(1.0f);
-                }
+                card.setAlpha(item.openCount == 0 ? 0.6f : 1.0f);
             }
 
             int finalIndex = i;
@@ -374,130 +333,23 @@ public class StaffSlotManagementActivity extends AppCompatActivity {
         }
     }
 
-    private void renderSlotsList(boolean highlightNewSlot) {
-        binding.layoutSlotsList.removeAllViews();
-        binding.tvSlotCountHeader.setText(slotList.size() + " khung");
-
-        for (StaffSlotItem slot : slotList) {
-            ItemStaffSlotRowBinding rowBinding = ItemStaffSlotRowBinding.inflate(getLayoutInflater());
-
-            rowBinding.tvSlotTime.setText(slot.getTime());
-
-            if ("booked".equals(slot.getState())) {
-                rowBinding.tvSlotTime.setBackgroundResource(R.drawable.bg_shortcut_icon_cream);
-                rowBinding.tvSlotTime.setTextColor(ContextCompat.getColor(this, R.color.ds_text_primary));
-                rowBinding.tvSlotPrimaryText.setText((slot.getPet() != null ? slot.getPet() : "Thú cưng") + " · " + (slot.getService() != null ? slot.getService() : "Lịch khám"));
-                rowBinding.tvSlotSecondaryText.setText(slot.getCustomer() != null ? slot.getCustomer() : "Đã có khách đặt");
-                rowBinding.tvSlotBookedBadge.setVisibility(View.VISIBLE);
-                rowBinding.btnToggleLock.setVisibility(View.GONE);
-            } else if ("closed".equals(slot.getState())) {
-                rowBinding.tvSlotTime.setBackgroundResource(R.drawable.bg_shortcut_icon_cream);
-                rowBinding.tvSlotTime.setTextColor(ContextCompat.getColor(this, R.color.ds_text_secondary));
-                rowBinding.tvSlotPrimaryText.setText("Đã đóng");
-                rowBinding.tvSlotSecondaryText.setText("Ẩn khỏi ứng dụng của khách");
-                rowBinding.tvSlotBookedBadge.setVisibility(View.GONE);
-                rowBinding.btnToggleLock.setVisibility(View.VISIBLE);
-                rowBinding.ivLockIcon.setImageResource(R.drawable.ic_lock);
-                rowBinding.ivLockIcon.setImageTintList(ContextCompat.getColorStateList(this, R.color.ds_error));
-            } else {
-                rowBinding.tvSlotTime.setBackgroundResource(R.drawable.bg_shortcut_icon_cream);
-                rowBinding.tvSlotTime.setTextColor(ContextCompat.getColor(this, R.color.ds_text_primary));
-                rowBinding.tvSlotPrimaryText.setText("Đang mở nhận đặt lịch");
-                rowBinding.tvSlotSecondaryText.setText("Khung 30 phút");
-                rowBinding.tvSlotBookedBadge.setVisibility(View.GONE);
-                rowBinding.btnToggleLock.setVisibility(View.VISIBLE);
-                rowBinding.ivLockIcon.setImageResource(R.drawable.ic_lock);
-                rowBinding.ivLockIcon.setImageTintList(ContextCompat.getColorStateList(this, R.color.ds_primary));
-            }
-
-            rowBinding.slotRowContainer.setBackgroundResource(R.drawable.bg_card_clinic);
-
-            UiMotionUtils.attachSpringTouch(rowBinding.getRoot(), rowBinding.btnToggleLock);
-            rowBinding.btnToggleLock.setOnClickListener(v -> {
-                UiMotionUtils.animateSelectionPop(v);
-                if ("open".equals(slot.getState())) {
-                    slot.setState("closed");
-                    Toast.makeText(this, "Đã đóng khung giờ " + slot.getTime(), Toast.LENGTH_SHORT).show();
-                } else if ("closed".equals(slot.getState())) {
-                    slot.setState("open");
-                    Toast.makeText(this, "Đã mở lại khung giờ " + slot.getTime(), Toast.LENGTH_SHORT).show();
-                }
-                renderSlotsList(highlightNewSlot);
-            });
-
-            binding.layoutSlotsList.addView(rowBinding.getRoot());
-        }
-        UiMotionUtils.animateStaggeredChildren(binding.layoutSlotsList, 35L);
-    }
-
     private void setupSheetInteractions() {
-        binding.chipRecurrenceOnce.setOnClickListener(v -> {
-            isDailyRecurrence = false;
-            binding.chipRecurrenceOnce.setBackgroundResource(R.drawable.bg_chip_active);
-            binding.chipRecurrenceOnce.setTextColor(ContextCompat.getColor(this, R.color.ds_primary));
-            UiMotionUtils.applyFont(binding.chipRecurrenceOnce, R.font.open_sans_semibold);
-            binding.chipRecurrenceDaily.setBackgroundResource(R.drawable.bg_chip_inactive);
-            binding.chipRecurrenceDaily.setTextColor(ContextCompat.getColor(this, R.color.ds_text_secondary));
-            UiMotionUtils.applyFont(binding.chipRecurrenceDaily, R.font.open_sans_medium);
-        });
+        binding.btnStartTimePicker.setOnClickListener(v ->
+                new TimePickerDialog(this, (view, hourOfDay, minute) ->
+                        binding.tvNewSlotStartTime.setText(String.format(Locale.US, "%02d:%02d", hourOfDay, minute)),
+                        14, 0, true).show());
 
-        binding.chipRecurrenceDaily.setOnClickListener(v -> {
-            isDailyRecurrence = true;
-            binding.chipRecurrenceDaily.setBackgroundResource(R.drawable.bg_chip_active);
-            binding.chipRecurrenceDaily.setTextColor(ContextCompat.getColor(this, R.color.ds_primary));
-            UiMotionUtils.applyFont(binding.chipRecurrenceDaily, R.font.open_sans_semibold);
-            binding.chipRecurrenceOnce.setBackgroundResource(R.drawable.bg_chip_inactive);
-            binding.chipRecurrenceOnce.setTextColor(ContextCompat.getColor(this, R.color.ds_text_secondary));
-            UiMotionUtils.applyFont(binding.chipRecurrenceOnce, R.font.open_sans_medium);
-        });
-
-        binding.btnStartTimePicker.setOnClickListener(v -> {
-            new TimePickerDialog(this, (view, hourOfDay, minute) -> {
-                String timeStr = String.format("%02d:%02d", hourOfDay, minute);
-                binding.tvNewSlotStartTime.setText(timeStr);
-            }, 14, 0, true).show();
-        });
-
-        binding.btnEndTimePicker.setOnClickListener(v -> {
-            new TimePickerDialog(this, (view, hourOfDay, minute) -> {
-                String timeStr = String.format("%02d:%02d", hourOfDay, minute);
-                binding.tvNewSlotEndTime.setText(timeStr);
-            }, 14, 30, true).show();
-        });
+        binding.btnEndTimePicker.setOnClickListener(v ->
+                new TimePickerDialog(this, (view, hourOfDay, minute) ->
+                        binding.tvNewSlotEndTime.setText(String.format(Locale.US, "%02d:%02d", hourOfDay, minute)),
+                        14, 30, true).show());
 
         binding.btnSheetCreateSlotAction.setOnClickListener(v -> {
             String start = binding.tvNewSlotStartTime.getText().toString();
             String end = binding.tvNewSlotEndTime.getText().toString();
-
             StaffDateItem selectedDate = getSelectedDateItem();
             String isoDate = selectedDate != null ? selectedDate.isoDate : LocalDate.now().toString();
-
-            CreateSlotRequest request = new CreateSlotRequest(isoDate, start, end);
-            ApiClient.getStaffSlotApi().createSlot(request).enqueue(new Callback<ClinicSlotResponse>() {
-                @Override
-                public void onResponse(Call<ClinicSlotResponse> call, Response<ClinicSlotResponse> response) {
-                    if (response.isSuccessful() && response.body() != null) {
-                        ClinicSlotResponse created = response.body();
-                        String formattedStart = created.getFormattedStartTime();
-                        String rawEnd = created.getEndTime();
-                        String formattedEnd = (rawEnd != null && rawEnd.length() >= 5) ? rawEnd.substring(0, 5) : (rawEnd != null ? rawEnd : end);
-                        binding.tvFloatingToastText.setText("Đã tạo khung giờ · " + formattedStart + " – " + formattedEnd);
-                        binding.tvNoticeCreatedBody.setText(formattedStart + " – " + formattedEnd + " đã mở để nhận đặt lịch.");
-                        loadSlotsForSelectedDate();
-                        applyState("created");
-                        Toast.makeText(StaffSlotManagementActivity.this, "Đã tạo khung giờ thành công!", Toast.LENGTH_SHORT).show();
-                    } else if (response.code() == 409) {
-                        Toast.makeText(StaffSlotManagementActivity.this, "Khung giờ này đã tồn tại hoặc bị trùng lặp!", Toast.LENGTH_LONG).show();
-                    } else {
-                        Toast.makeText(StaffSlotManagementActivity.this, "Không thể tạo khung giờ. Vui lòng kiểm tra lại thời gian.", Toast.LENGTH_SHORT).show();
-                    }
-                }
-
-                @Override
-                public void onFailure(Call<ClinicSlotResponse> call, Throwable t) {
-                    Toast.makeText(StaffSlotManagementActivity.this, "Lỗi kết nối máy chủ khi tạo khung giờ.", Toast.LENGTH_SHORT).show();
-                }
-            });
+            viewModel.createSlot(isoDate, start, end);
         });
 
         binding.btnSheetCreateSlotDismiss.setOnClickListener(v -> applyState("default"));
@@ -527,9 +379,8 @@ public class StaffSlotManagementActivity extends AppCompatActivity {
             finish();
         });
 
-        binding.navStaffSlots.setOnClickListener(v -> {
-            binding.scrollSlotsBody.smoothScrollTo(0, 0);
-        });
+        binding.navStaffSlots.setOnClickListener(v ->
+                binding.scrollSlotsBody.smoothScrollTo(0, 0));
 
         binding.navStaffProfile.setOnClickListener(v -> {
             Intent intent = new Intent(this, ProfileActivity.class);

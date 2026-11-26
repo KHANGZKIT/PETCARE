@@ -241,12 +241,13 @@
                     app:fontFamily="@font/open_sans_semibold" />
             </LinearLayout>
 
-            <LinearLayout
-                android:id="@+id/layoutSlotsList"
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rvSlotsList"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:clipToPadding="false"
-                android:orientation="vertical" />
+                android:nestedScrollingEnabled="false"
+                android:overScrollMode="never" />
 
             <LinearLayout
                 android:id="@+id/layoutEmptySlots"
@@ -581,10 +582,12 @@
             </LinearLayout>
 
             <LinearLayout
+                android:id="@+id/layoutRecurrenceRow"
                 android:layout_width="match_parent"
                 android:layout_height="40dp"
                 android:layout_marginTop="12dp"
-                android:orientation="horizontal">
+                android:orientation="horizontal"
+                android:visibility="gone">
 
                 <TextView
                     android:id="@+id/chipRecurrenceOnce"

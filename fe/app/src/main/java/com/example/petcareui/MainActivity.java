@@ -1,6 +1,8 @@
 package com.example.petcareui;
 
+import android.Manifest;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -11,8 +13,10 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
 import com.example.petcareui.data.api.ApiClient;
@@ -31,6 +35,7 @@ import com.example.petcareui.ui.appointments.MyAppointmentsActivity;
 import com.example.petcareui.ui.auth.LoginActivity;
 import com.example.petcareui.ui.clinic.ClinicDetailsActivity;
 import com.example.petcareui.ui.clinic.ClinicListActivity;
+import com.example.petcareui.ui.clinic.LocationPickerBottomSheet;
 import com.example.petcareui.ui.notifications.NotificationsActivity;
 import com.example.petcareui.ui.pets.AddPetActivity;
 import com.example.petcareui.ui.pets.MyPetsActivity;
@@ -39,6 +44,7 @@ import com.example.petcareui.ui.profile.ProfileActivity;
 import com.example.petcareui.ui.staff.StaffDashboardActivity;
 import com.example.petcareui.utils.TokenManager;
 import com.example.petcareui.utils.UiMotionUtils;
+import com.example.petcareui.utils.UserLocationManager;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -54,11 +60,15 @@ import retrofit2.Response;
 public class MainActivity extends AppCompatActivity {
 
     private static final int MAX_HOME_CLINICS = 3;
+    private static final int REQ_LOCATION = 1002;
 
     private ActivityMainBinding binding;
     private TokenManager tokenManager;
     private boolean authRedirected = false;
     private boolean isFirstResume = true;
+    private UserLocationManager.ActiveRequest activeLocationRequest;
+    private boolean pendingUserGpsRequest = false;
+    private List<ClinicResponse> cachedClinics = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -76,8 +86,17 @@ public class MainActivity extends AppCompatActivity {
         }
 
         displayUserInfo();
+        applySavedLocationToUi();
         setupListeners();
         setupMotionEffects();
+
+        if (UserLocationManager.isGpsMode(this)) {
+            if (UserLocationManager.isEmulator() || UserLocationManager.hasLocationPermission(this)) {
+                fetchLiveLocation(false);
+            } else {
+                requestLocationPermission(false);
+            }
+        }
 
         refreshUserProfile(false);
         loadAllHomeSections();
@@ -91,12 +110,22 @@ public class MainActivity extends AppCompatActivity {
             return;
         }
         displayUserInfo();
+        applySavedLocationToUi();
         if (isFirstResume) {
             isFirstResume = false;
             return;
         }
+        if (!cachedClinics.isEmpty()) {
+            renderClinicsList(cachedClinics);
+        }
         loadUpcomingAppointment();
         loadMyPets();
+    }
+
+    @Override
+    protected void onDestroy() {
+        cancelLocationRequest();
+        super.onDestroy();
     }
 
     private void loadAllHomeSections() {
@@ -288,7 +317,8 @@ public class MainActivity extends AppCompatActivity {
                         binding.layoutUpcomingLoading.setVisibility(View.GONE);
 
                         if (response.isSuccessful() && response.body() != null) {
-                            boolean hasUnread = NotificationsActivity.hasUnreadCustomerNotifications(MainActivity.this, response.body());
+                            boolean hasUnread = tokenManager.isNotificationsEnabled()
+                                    && NotificationsActivity.hasUnreadCustomerNotifications(MainActivity.this, response.body());
                             binding.viewNotificationBadge.setVisibility(hasUnread ? View.VISIBLE : View.GONE);
 
                             AppointmentResponse nearest = pickNearestUpcoming(response.body());
@@ -347,17 +377,89 @@ public class MainActivity extends AppCompatActivity {
         return active.get(0);
     }
 
+    private void applySavedLocationToUi() {
+        UserLocationManager.LocationState current = UserLocationManager.getCurrent(this);
+        binding.tvHomeLocation.setText(current.label);
+    }
+
+    private void cancelLocationRequest() {
+        if (activeLocationRequest != null) {
+            activeLocationRequest.cancel();
+            activeLocationRequest = null;
+        }
+    }
+
+    private void requestLocationPermission(boolean userTriggered) {
+        pendingUserGpsRequest = userTriggered;
+        if (!UserLocationManager.hasLocationPermission(this)) {
+            ActivityCompat.requestPermissions(this,
+                    new String[]{Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION},
+                    REQ_LOCATION);
+        } else {
+            fetchLiveLocation(userTriggered);
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (requestCode == REQ_LOCATION) {
+            boolean granted = false;
+            for (int r : grantResults) {
+                if (r == PackageManager.PERMISSION_GRANTED) {
+                    granted = true;
+                    break;
+                }
+            }
+            if (granted) {
+                fetchLiveLocation(pendingUserGpsRequest);
+            } else if (pendingUserGpsRequest) {
+                Toast.makeText(this,
+                        "Chưa cấp quyền vị trí — sử dụng mặc định " + UserLocationManager.DEFAULT_LABEL,
+                        Toast.LENGTH_SHORT).show();
+            }
+            pendingUserGpsRequest = false;
+        }
+    }
+
+    private void fetchLiveLocation(boolean userTriggered) {
+        cancelLocationRequest();
+        if (userTriggered && !UserLocationManager.isEmulator()) {
+            Toast.makeText(this, "Đang lấy vị trí GPS...", Toast.LENGTH_SHORT).show();
+        }
+        activeLocationRequest = UserLocationManager.fetchLiveLocation(this, userTriggered, state -> {
+            if (isFinishing() || isDestroyed()) return;
+            binding.tvHomeLocation.setText(state.label);
+            if (!cachedClinics.isEmpty()) {
+                renderClinicsList(cachedClinics);
+            }
+            if (userTriggered) {
+                Toast.makeText(this, "Đã cập nhật vị trí: " + state.label, Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
     private void showHomeLocationPicker() {
-        String[] locations = new String[]{
-                "ĐH Công nghiệp Hà Nội",
-                "Cầu Giấy, Hà Nội",
-                "Đống Đa, Hà Nội",
-                "Bắc Từ Liêm, Hà Nội"
-        };
-        new AlertDialog.Builder(this)
-                .setTitle("Chọn khu vực của bạn")
-                .setItems(locations, (dialog, which) -> binding.tvHomeLocation.setText(locations[which]))
-                .show();
+        LocationPickerBottomSheet.show(this, new LocationPickerBottomSheet.OnLocationSelectedListener() {
+            @Override
+            public void onSelectGps() {
+                UserLocationManager.setGpsMode(MainActivity.this, true);
+                if (UserLocationManager.isEmulator()) {
+                    fetchLiveLocation(true);
+                } else {
+                    requestLocationPermission(true);
+                }
+            }
+
+            @Override
+            public void onSelectPreset(@NonNull UserLocationManager.PresetLocation preset) {
+                UserLocationManager.saveManualLocation(MainActivity.this, preset.latitude, preset.longitude, preset.label);
+                binding.tvHomeLocation.setText(preset.label);
+                if (!cachedClinics.isEmpty()) {
+                    renderClinicsList(cachedClinics);
+                }
+            }
+        });
     }
 
     private void bindUpcomingCard(AppointmentResponse res) {
@@ -575,10 +677,11 @@ public class MainActivity extends AppCompatActivity {
 
                 if (response.isSuccessful() && response.body() != null) {
                     List<ClinicResponse> clinics = response.body();
+                    cachedClinics = new ArrayList<>(clinics);
                     if (clinics.isEmpty()) {
                         binding.layoutClinicsEmpty.setVisibility(View.VISIBLE);
                     } else {
-                        renderClinicsList(clinics);
+                        renderClinicsList(cachedClinics);
                         binding.containerHomeClinics.setVisibility(View.VISIBLE);
                     }
                 } else {
@@ -599,22 +702,30 @@ public class MainActivity extends AppCompatActivity {
         binding.containerHomeClinics.removeAllViews();
         LayoutInflater inflater = LayoutInflater.from(this);
 
-        int count = Math.min(clinics.size(), MAX_HOME_CLINICS);
+        UserLocationManager.LocationState loc = UserLocationManager.getCurrent(this);
+        List<ClinicItem> mapped = new ArrayList<>();
+        for (ClinicResponse res : clinics) {
+            ClinicItem item = res.toClinicItem();
+            UserLocationManager.applyDistance(item, loc.latitude, loc.longitude);
+            mapped.add(item);
+        }
+        mapped.sort(Comparator.comparing(c -> c.getDistanceKm() != null ? c.getDistanceKm() : 999f));
+
+        int count = Math.min(mapped.size(), MAX_HOME_CLINICS);
         for (int i = 0; i < count; i++) {
-            ClinicResponse res = clinics.get(i);
-            ClinicItem clinicItem = res.toClinicItem();
+            ClinicItem clinicItem = mapped.get(i);
 
             ItemHomeClinicCardBinding card = ItemHomeClinicCardBinding.inflate(inflater, binding.containerHomeClinics, false);
             card.ivHomeClinicImage.setImageResource(clinicItem.getImageResId());
-            card.tvHomeClinicName.setText(formatShortClinicName(res.getName()));
+            card.tvHomeClinicName.setText(formatShortClinicName(clinicItem.getName()));
 
-            String addr = res.getAddress();
+            String addr = clinicItem.getAddress();
             if (addr == null || addr.trim().isEmpty()) {
-                addr = res.getArea() != null ? res.getArea() : "Chưa cập nhật địa chỉ";
+                addr = clinicItem.getArea() != null ? clinicItem.getArea() : "Chưa cập nhật địa chỉ";
             }
             card.tvHomeClinicAddress.setText(addr);
 
-            if (res.isActive()) {
+            if (clinicItem.isOpen()) {
                 card.tvHomeClinicStatus.setText("● Đang mở cửa");
                 card.tvHomeClinicStatus.setTextColor(ContextCompat.getColor(this, R.color.ds_success));
             } else {
@@ -622,8 +733,8 @@ public class MainActivity extends AppCompatActivity {
                 card.tvHomeClinicStatus.setTextColor(ContextCompat.getColor(this, R.color.ds_text_secondary));
             }
 
-            if (res.getWorkingHourNote() != null && !res.getWorkingHourNote().trim().isEmpty()) {
-                card.tvHomeClinicHours.setText("· " + formatShortHours(res.getWorkingHourNote()));
+            if (clinicItem.getHours() != null && !clinicItem.getHours().trim().isEmpty()) {
+                card.tvHomeClinicHours.setText("· " + formatShortHours(clinicItem.getHours()));
                 card.tvHomeClinicHours.setVisibility(View.VISIBLE);
             } else {
                 card.tvHomeClinicHours.setVisibility(View.GONE);

@@ -11,6 +11,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.petcareui.R;
 import com.example.petcareui.data.api.ApiClient;
+import com.example.petcareui.data.api.ApiErrorParser;
 import com.example.petcareui.data.dto.request.AppointmentRequest;
 import com.example.petcareui.data.dto.response.AppointmentResponse;
 import com.example.petcareui.data.model.ClinicItem;
@@ -282,6 +283,7 @@ public class BookingReviewActivity extends AppCompatActivity {
             ApiClient.getAppointmentApi().createAppointment(request).enqueue(new Callback<AppointmentResponse>() {
                 @Override
                 public void onResponse(Call<AppointmentResponse> call, Response<AppointmentResponse> response) {
+                    if (isFinishing() || isDestroyed()) return;
                     if (response.isSuccessful() && response.body() != null) {
                         AppointmentResponse created = response.body();
                         com.example.petcareui.data.model.AppointmentItem apptItem = created.toAppointmentItem();
@@ -324,16 +326,18 @@ public class BookingReviewActivity extends AppCompatActivity {
                         intent.putExtra(BookingSuccessActivity.EXTRA_CREATED_APPT, apptItem);
                         startActivity(intent);
                         finish();
-                    } else if (response.code() == 409 || response.code() == 400) {
+                    } else if (response.code() == 409) {
                         applyState("conflict");
                     } else {
                         applyState("default");
-                        Toast.makeText(BookingReviewActivity.this, "Không thể đặt lịch. Vui lòng thử lại sau.", Toast.LENGTH_SHORT).show();
+                        String errMsg = ApiErrorParser.getMessage(response, "Không thể đặt lịch. Vui lòng thử lại sau.");
+                        Toast.makeText(BookingReviewActivity.this, errMsg, Toast.LENGTH_LONG).show();
                     }
                 }
 
                 @Override
                 public void onFailure(Call<AppointmentResponse> call, Throwable t) {
+                    if (isFinishing() || isDestroyed()) return;
                     applyState("default");
                     Toast.makeText(BookingReviewActivity.this, "Lỗi kết nối máy chủ khi đặt lịch.", Toast.LENGTH_SHORT).show();
                 }

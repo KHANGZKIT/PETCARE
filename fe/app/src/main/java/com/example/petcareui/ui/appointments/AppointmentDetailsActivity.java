@@ -145,6 +145,8 @@ public class AppointmentDetailsActivity extends AppCompatActivity {
                 currentState = "confirmed";
             } else if ("COMPLETED".equalsIgnoreCase(appt.getStatus())) {
                 currentState = "completed";
+            } else if ("NO_SHOW".equalsIgnoreCase(appt.getStatus())) {
+                currentState = "no_show";
             } else if ("CANCELLED".equalsIgnoreCase(appt.getStatus()) || "REJECTED".equalsIgnoreCase(appt.getStatus())) {
                 currentState = "cancelled";
             } else {
@@ -391,6 +393,26 @@ public class AppointmentDetailsActivity extends AppCompatActivity {
             return;
         } else {
             binding.layoutCancelDialogOverlay.setVisibility(View.GONE);
+        }
+
+        if ("no_show".equals(state)) {
+            binding.layoutNoticeBox.setBackgroundResource(R.drawable.bg_notice_danger);
+            binding.ivNoticeIcon.setImageResource(R.drawable.ic_alert_circle);
+            binding.ivNoticeIcon.setColorFilter(ContextCompat.getColor(this, R.color.status_destructive));
+            binding.tvNoticeTitle.setText("Không đến theo lịch hẹn");
+            binding.tvNoticeTitle.setTextColor(ContextCompat.getColor(this, R.color.status_destructive_ink));
+            binding.tvNoticeBody.setText("Phòng khám đã ghi nhận vắng mặt ở khung giờ này. Bạn có thể đặt lịch mới bất cứ lúc nào.");
+            binding.tvNoticeBody.setTextColor(ContextCompat.getColor(this, R.color.status_destructive_ink));
+
+            binding.viewTimelineStep2Dot.setBackgroundResource(R.drawable.bg_pin_circle);
+            binding.tvTimelineStep2Title.setText("Ghi nhận không đến hẹn");
+            binding.tvTimelineStep2Time.setText("Đã cập nhật");
+
+            binding.layoutCancelPolicyNotice.setVisibility(View.GONE);
+            binding.btnCancelBooking.setVisibility(View.GONE);
+            binding.btnBackToListOutline.setVisibility(View.GONE);
+            binding.layoutCancelledActions.setVisibility(View.VISIBLE);
+            return;
         }
 
         if ("cancelled".equals(state)) {

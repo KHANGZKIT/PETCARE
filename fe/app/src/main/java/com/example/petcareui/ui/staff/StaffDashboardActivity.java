@@ -25,6 +25,7 @@ import com.example.petcareui.utils.UiMotionUtils;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
 import retrofit2.Call;
@@ -117,20 +118,28 @@ public class StaffDashboardActivity extends AppCompatActivity {
         ApiClient.getAppointmentApi().getClinicAppointments(null).enqueue(new Callback<List<AppointmentResponse>>() {
             @Override
             public void onResponse(Call<List<AppointmentResponse>> call, Response<List<AppointmentResponse>> response) {
+                if (isFinishing() || isDestroyed()) return;
                 if (response.isSuccessful() && response.body() != null) {
-                    boolean hasUnread = NotificationsActivity.hasUnreadStaffNotifications(StaffDashboardActivity.this, response.body());
+                    boolean hasUnread = tokenManager.isNotificationsEnabled()
+                            && NotificationsActivity.hasUnreadStaffNotifications(StaffDashboardActivity.this, response.body());
                     binding.viewStaffNotificationBadge.setVisibility(hasUnread ? View.VISIBLE : View.GONE);
 
+                    String todayIso = LocalDate.now().toString();
                     pendingList.clear();
                     todayScheduleList.clear();
                     for (AppointmentResponse res : response.body()) {
                         StaffAppointmentItem item = res.toStaffAppointmentItem();
                         if ("PENDING".equalsIgnoreCase(item.getStatus())) {
                             pendingList.add(item);
-                        } else if ("CONFIRMED".equalsIgnoreCase(item.getStatus())) {
+                        } else if ("CONFIRMED".equalsIgnoreCase(item.getStatus())
+                                && item.getDate() != null
+                                && item.getDate().startsWith(todayIso)) {
                             todayScheduleList.add(item);
                         }
                     }
+                    todayScheduleList.sort(Comparator.comparing(
+                            item -> item.getTime() != null ? item.getTime() : "99:99"
+                    ));
                     if (pendingList.isEmpty() && todayScheduleList.isEmpty()) {
                         applyState("empty");
                     } else if ("loading".equals(currentState) || "empty".equals(currentState)) {
@@ -152,6 +161,7 @@ public class StaffDashboardActivity extends AppCompatActivity {
 
             @Override
             public void onFailure(Call<List<AppointmentResponse>> call, Throwable t) {
+                if (isFinishing() || isDestroyed()) return;
                 pendingList.clear();
                 todayScheduleList.clear();
                 applyState("empty");
@@ -257,24 +267,35 @@ public class StaffDashboardActivity extends AppCompatActivity {
         UiMotionUtils.animateStaggeredChildren(binding.layoutPendingList, 50L);
 
         binding.layoutTodaySchedule.removeAllViews();
-        for (StaffAppointmentItem item : todayScheduleList) {
-            ItemStaffScheduleRowBinding rowBinding = ItemStaffScheduleRowBinding.inflate(getLayoutInflater());
-            rowBinding.tvScheduleTime.setText(item.getTime());
-            rowBinding.tvSchedulePetService.setText(item.getPet() + " · " + item.getService());
-            rowBinding.tvScheduleCustomer.setText(item.getCustomer());
+        if (todayScheduleList.isEmpty()) {
+            TextView tvNoToday = new TextView(this);
+            tvNoToday.setText("Hôm nay chưa có lịch khám đã xác nhận.");
+            tvNoToday.setTextColor(ContextCompat.getColor(this, R.color.ds_text_secondary));
+            tvNoToday.setTextSize(13f);
+            tvNoToday.setBackgroundResource(R.drawable.bg_card_clinic);
+            int pad = Math.round(14 * getResources().getDisplayMetrics().density);
+            tvNoToday.setPadding(pad, pad, pad, pad);
+            binding.layoutTodaySchedule.addView(tvNoToday);
+        } else {
+            for (StaffAppointmentItem item : todayScheduleList) {
+                ItemStaffScheduleRowBinding rowBinding = ItemStaffScheduleRowBinding.inflate(getLayoutInflater());
+                rowBinding.tvScheduleTime.setText(item.getTime());
+                rowBinding.tvSchedulePetService.setText(item.getPet() + " · " + item.getService());
+                rowBinding.tvScheduleCustomer.setText(item.getCustomer());
 
-            UiMotionUtils.attachSpringTouch(rowBinding.getRoot());
-            rowBinding.getRoot().setOnClickListener(v -> {
-                Intent intent = new Intent(this, StaffAppointmentDetailsActivity.class);
-                intent.putExtra(StaffAppointmentDetailsActivity.EXTRA_REF, item.getRef());
-                intent.putExtra(StaffAppointmentDetailsActivity.EXTRA_APPT, item);
-                startActivity(intent);
-                overridePendingTransition(R.anim.fade_scale_in, R.anim.fade_scale_out);
-            });
+                UiMotionUtils.attachSpringTouch(rowBinding.getRoot());
+                rowBinding.getRoot().setOnClickListener(v -> {
+                    Intent intent = new Intent(this, StaffAppointmentDetailsActivity.class);
+                    intent.putExtra(StaffAppointmentDetailsActivity.EXTRA_REF, item.getRef());
+                    intent.putExtra(StaffAppointmentDetailsActivity.EXTRA_APPT, item);
+                    startActivity(intent);
+                    overridePendingTransition(R.anim.fade_scale_in, R.anim.fade_scale_out);
+                });
 
-            binding.layoutTodaySchedule.addView(rowBinding.getRoot());
+                binding.layoutTodaySchedule.addView(rowBinding.getRoot());
+            }
+            UiMotionUtils.animateStaggeredChildren(binding.layoutTodaySchedule, 120L);
         }
-        UiMotionUtils.animateStaggeredChildren(binding.layoutTodaySchedule, 120L);
     }
 
     private void setupShortcuts() {

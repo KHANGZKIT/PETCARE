@@ -1,6 +1,7 @@
 package com.example.petcareui.data.api;
 
 import com.example.petcareui.data.dto.request.CreateSlotRequest;
+import com.example.petcareui.data.dto.request.UpdateSlotStatusRequest;
 import com.example.petcareui.data.dto.response.ClinicSlotResponse;
 
 import java.util.List;
@@ -8,7 +9,9 @@ import java.util.List;
 import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.GET;
+import retrofit2.http.PATCH;
 import retrofit2.http.POST;
+import retrofit2.http.Path;
 import retrofit2.http.Query;
 
 public interface StaffSlotApi {
@@ -18,4 +21,7 @@ public interface StaffSlotApi {
 
     @POST("staff/slots")
     Call<ClinicSlotResponse> createSlot(@Body CreateSlotRequest request);
+
+    @PATCH("staff/slots/{id}/status")
+    Call<ClinicSlotResponse> updateSlotStatus(@Path("id") Long id, @Body UpdateSlotStatusRequest request);
 }

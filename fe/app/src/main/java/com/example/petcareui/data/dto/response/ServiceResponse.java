@@ -1,7 +1,7 @@
 package com.example.petcareui.data.dto.response;
 
-import com.example.petcareui.R;
 import com.example.petcareui.data.model.ServiceItem;
+import com.example.petcareui.utils.ServiceDisplayUtils;
 
 import java.io.Serializable;
 
@@ -25,8 +25,8 @@ public class ServiceResponse implements Serializable {
                 name,
                 "Dịch vụ thú y chuyên nghiệp",
                 durationText,
-                "Liên hệ",
-                R.drawable.ic_stethoscope
+                ServiceDisplayUtils.resolvePriceByName(name),
+                ServiceDisplayUtils.resolveIconByName(name)
         );
     }
 }

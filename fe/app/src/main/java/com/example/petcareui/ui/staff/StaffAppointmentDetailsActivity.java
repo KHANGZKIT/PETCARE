@@ -12,6 +12,7 @@ import androidx.core.content.ContextCompat;
 
 import com.example.petcareui.R;
 import com.example.petcareui.data.api.ApiClient;
+import com.example.petcareui.data.api.ApiErrorParser;
 import com.example.petcareui.data.dto.response.AppointmentResponse;
 import com.example.petcareui.data.model.StaffAppointmentItem;
 import com.example.petcareui.databinding.ActivityStaffAppointmentDetailsBinding;
@@ -88,6 +89,12 @@ public class StaffAppointmentDetailsActivity extends AppCompatActivity {
             return "success";
         } else if ("REJECTED".equalsIgnoreCase(status)) {
             return "rejected";
+        } else if ("COMPLETED".equalsIgnoreCase(status)) {
+            return "completed";
+        } else if ("NO_SHOW".equalsIgnoreCase(status)) {
+            return "no_show";
+        } else if ("CANCELLED".equalsIgnoreCase(status)) {
+            return "cancelled";
         }
         return "default";
     }
@@ -182,6 +189,9 @@ public class StaffAppointmentDetailsActivity extends AppCompatActivity {
             binding.tvStatusBadge.setTextColor(ContextCompat.getColor(this, R.color.ds_primary));
         } else if ("NO_SHOW".equalsIgnoreCase(status)) {
             binding.tvStatusBadge.setText("● Không đến");
+            binding.tvStatusBadge.setTextColor(ContextCompat.getColor(this, R.color.ds_text_secondary));
+        } else if ("CANCELLED".equalsIgnoreCase(status)) {
+            binding.tvStatusBadge.setText("● Khách đã hủy");
             binding.tvStatusBadge.setTextColor(ContextCompat.getColor(this, R.color.ds_text_secondary));
         } else {
             binding.tvStatusBadge.setText("● Chờ xác nhận");
@@ -278,6 +288,42 @@ public class StaffAppointmentDetailsActivity extends AppCompatActivity {
             binding.dotTimelineStep3.setBackgroundResource(R.drawable.bg_danger_circle_soft);
             binding.tvTimelineStep3Title.setText("Phòng khám đã từ chối");
             binding.tvTimelineStep3Time.setText("Vừa xong");
+        } else if ("completed".equals(state)) {
+            binding.layoutActionsPending.setVisibility(View.GONE);
+            binding.layoutActionsConfirmed.setVisibility(View.GONE);
+            binding.btnBackToList.setVisibility(View.VISIBLE);
+            updateStatusBadge("COMPLETED");
+
+            binding.dotTimelineStep2.setBackgroundResource(R.drawable.bg_step_dot_active);
+            binding.tvTimelineStep2Title.setText("Phòng khám đã xác nhận");
+            binding.tvTimelineStep2Time.setText("Đã duyệt");
+            binding.dotTimelineStep3.setBackgroundResource(R.drawable.bg_step_dot_active);
+            binding.tvTimelineStep3Title.setText("Đã hoàn thành lượt khám");
+            binding.tvTimelineStep3Time.setText("Hoàn tất");
+        } else if ("no_show".equals(state)) {
+            binding.layoutActionsPending.setVisibility(View.GONE);
+            binding.layoutActionsConfirmed.setVisibility(View.GONE);
+            binding.btnBackToList.setVisibility(View.VISIBLE);
+            updateStatusBadge("NO_SHOW");
+
+            binding.dotTimelineStep2.setBackgroundResource(R.drawable.bg_step_dot_active);
+            binding.tvTimelineStep2Title.setText("Phòng khám đã xác nhận");
+            binding.tvTimelineStep2Time.setText("Đã duyệt");
+            binding.dotTimelineStep3.setBackgroundResource(R.drawable.bg_danger_circle_soft);
+            binding.tvTimelineStep3Title.setText("Khách không đến hẹn");
+            binding.tvTimelineStep3Time.setText("Đã ghi nhận");
+        } else if ("cancelled".equals(state)) {
+            binding.layoutActionsPending.setVisibility(View.GONE);
+            binding.layoutActionsConfirmed.setVisibility(View.GONE);
+            binding.btnBackToList.setVisibility(View.VISIBLE);
+            updateStatusBadge("CANCELLED");
+
+            binding.dotTimelineStep2.setBackgroundResource(R.drawable.bg_step_dot_inactive);
+            binding.tvTimelineStep2Title.setText("Khách hàng đã hủy lịch");
+            binding.tvTimelineStep2Time.setText("Đã hủy");
+            binding.dotTimelineStep3.setBackgroundResource(R.drawable.bg_step_dot_inactive);
+            binding.tvTimelineStep3Title.setText("Khung giờ đã mở lại");
+            binding.tvTimelineStep3Time.setText("Đã cập nhật");
         } else if ("failed".equals(state)) {
             binding.noticeFailed.setVisibility(View.VISIBLE);
             binding.layoutActionsPending.setVisibility(View.VISIBLE);
@@ -325,17 +371,20 @@ public class StaffAppointmentDetailsActivity extends AppCompatActivity {
                 ApiClient.getAppointmentApi().completeAppointment(apptId).enqueue(new Callback<AppointmentResponse>() {
                     @Override
                     public void onResponse(Call<AppointmentResponse> call, Response<AppointmentResponse> response) {
+                        if (isFinishing() || isDestroyed()) return;
                         if (response.isSuccessful()) {
                             if (currentAppt != null) currentAppt.setStatus("COMPLETED");
-                            Toast.makeText(StaffAppointmentDetailsActivity.this, "Đã hoàn thành lượt khám cho " + currentAppt.getPet(), Toast.LENGTH_SHORT).show();
+                            Toast.makeText(StaffAppointmentDetailsActivity.this, "Đã hoàn thành lượt khám cho " + (currentAppt != null ? currentAppt.getPet() : "bé"), Toast.LENGTH_SHORT).show();
                             finish();
                         } else {
-                            Toast.makeText(StaffAppointmentDetailsActivity.this, "Không thể hoàn thành lịch hẹn", Toast.LENGTH_SHORT).show();
+                            String errMsg = ApiErrorParser.getMessage(response, "Không thể hoàn thành lịch hẹn");
+                            Toast.makeText(StaffAppointmentDetailsActivity.this, errMsg, Toast.LENGTH_LONG).show();
                         }
                     }
 
                     @Override
                     public void onFailure(Call<AppointmentResponse> call, Throwable t) {
+                        if (isFinishing() || isDestroyed()) return;
                         Toast.makeText(StaffAppointmentDetailsActivity.this, "Lỗi kết nối máy chủ khi hoàn thành lịch hẹn", Toast.LENGTH_SHORT).show();
                     }
                 });
@@ -350,17 +399,20 @@ public class StaffAppointmentDetailsActivity extends AppCompatActivity {
                 ApiClient.getAppointmentApi().noShowAppointment(apptId).enqueue(new Callback<AppointmentResponse>() {
                     @Override
                     public void onResponse(Call<AppointmentResponse> call, Response<AppointmentResponse> response) {
+                        if (isFinishing() || isDestroyed()) return;
                         if (response.isSuccessful()) {
                             if (currentAppt != null) currentAppt.setStatus("NO_SHOW");
                             Toast.makeText(StaffAppointmentDetailsActivity.this, "Đã ghi nhận khách không đến hẹn", Toast.LENGTH_SHORT).show();
                             finish();
                         } else {
-                            Toast.makeText(StaffAppointmentDetailsActivity.this, "Không thể cập nhật trạng thái", Toast.LENGTH_SHORT).show();
+                            String errMsg = ApiErrorParser.getMessage(response, "Không thể cập nhật trạng thái");
+                            Toast.makeText(StaffAppointmentDetailsActivity.this, errMsg, Toast.LENGTH_LONG).show();
                         }
                     }
 
                     @Override
                     public void onFailure(Call<AppointmentResponse> call, Throwable t) {
+                        if (isFinishing() || isDestroyed()) return;
                         Toast.makeText(StaffAppointmentDetailsActivity.this, "Lỗi kết nối máy chủ khi cập nhật lịch hẹn", Toast.LENGTH_SHORT).show();
                     }
                 });
@@ -379,18 +431,21 @@ public class StaffAppointmentDetailsActivity extends AppCompatActivity {
                 ApiClient.getAppointmentApi().confirmAppointment(apptId).enqueue(new Callback<AppointmentResponse>() {
                     @Override
                     public void onResponse(Call<AppointmentResponse> call, Response<AppointmentResponse> response) {
+                        if (isFinishing() || isDestroyed()) return;
                         if (response.isSuccessful()) {
                             if (currentAppt != null) currentAppt.setStatus("CONFIRMED");
                             applyState("success");
                             Toast.makeText(StaffAppointmentDetailsActivity.this, "Đã xác nhận lịch hẹn thành công!", Toast.LENGTH_SHORT).show();
                         } else {
                             applyState("failed");
-                            Toast.makeText(StaffAppointmentDetailsActivity.this, "Không thể xác nhận lịch hẹn", Toast.LENGTH_SHORT).show();
+                            String errMsg = ApiErrorParser.getMessage(response, "Không thể xác nhận lịch hẹn");
+                            Toast.makeText(StaffAppointmentDetailsActivity.this, errMsg, Toast.LENGTH_LONG).show();
                         }
                     }
 
                     @Override
                     public void onFailure(Call<AppointmentResponse> call, Throwable t) {
+                        if (isFinishing() || isDestroyed()) return;
                         applyState("failed");
                         Toast.makeText(StaffAppointmentDetailsActivity.this, "Lỗi kết nối máy chủ khi xác nhận lịch hẹn", Toast.LENGTH_SHORT).show();
                     }
@@ -420,18 +475,21 @@ public class StaffAppointmentDetailsActivity extends AppCompatActivity {
                 ApiClient.getAppointmentApi().rejectAppointment(apptId).enqueue(new Callback<AppointmentResponse>() {
                     @Override
                     public void onResponse(Call<AppointmentResponse> call, Response<AppointmentResponse> response) {
+                        if (isFinishing() || isDestroyed()) return;
                         if (response.isSuccessful()) {
                             if (currentAppt != null) currentAppt.setStatus("REJECTED");
                             Toast.makeText(StaffAppointmentDetailsActivity.this, "Đã từ chối với lý do: " + selectedRejectReason, Toast.LENGTH_SHORT).show();
                             applyState("rejected");
                         } else {
                             applyState("failed");
-                            Toast.makeText(StaffAppointmentDetailsActivity.this, "Không thể từ chối lịch hẹn", Toast.LENGTH_SHORT).show();
+                            String errMsg = ApiErrorParser.getMessage(response, "Không thể từ chối lịch hẹn");
+                            Toast.makeText(StaffAppointmentDetailsActivity.this, errMsg, Toast.LENGTH_LONG).show();
                         }
                     }
 
                     @Override
                     public void onFailure(Call<AppointmentResponse> call, Throwable t) {
+                        if (isFinishing() || isDestroyed()) return;
                         applyState("failed");
                         Toast.makeText(StaffAppointmentDetailsActivity.this, "Lỗi kết nối máy chủ khi từ chối lịch hẹn", Toast.LENGTH_SHORT).show();
                     }

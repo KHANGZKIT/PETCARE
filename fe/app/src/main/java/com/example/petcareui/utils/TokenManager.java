@@ -105,6 +105,14 @@ public class TokenManager {
         prefs.edit().putBoolean(Constants.KEY_ONBOARDING_COMPLETED, completed).apply();
     }
 
+    public boolean isNotificationsEnabled() {
+        return prefs.getBoolean(Constants.KEY_NOTIFICATIONS_ENABLED, true);
+    }
+
+    public void setNotificationsEnabled(boolean enabled) {
+        prefs.edit().putBoolean(Constants.KEY_NOTIFICATIONS_ENABLED, enabled).apply();
+    }
+
     private String getReadNotifPrefKey() {
         Long uid = getUserId();
         String role = getUserRole();
@@ -137,9 +145,11 @@ public class TokenManager {
 
     public void clear() {
         boolean onboardingDone = isOnboardingCompleted();
+        boolean notificationsEnabled = isNotificationsEnabled();
         prefs.edit()
                 .clear()
                 .putBoolean(Constants.KEY_ONBOARDING_COMPLETED, onboardingDone)
+                .putBoolean(Constants.KEY_NOTIFICATIONS_ENABLED, notificationsEnabled)
                 .apply();
     }
 }

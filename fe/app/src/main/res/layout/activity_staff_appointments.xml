@@ -279,12 +279,13 @@
                     android:textSize="12.5sp"
                     app:fontFamily="@font/open_sans_semibold" />
 
-                <LinearLayout
-                    android:id="@+id/layoutApptList"
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/rvApptList"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:clipToPadding="false"
-                    android:orientation="vertical" />
+                    android:nestedScrollingEnabled="false"
+                    android:overScrollMode="never" />
 
                 <!-- Kept hidden since all clinic appointments are fetched at once -->
                 <Button

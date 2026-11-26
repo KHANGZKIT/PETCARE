@@ -130,13 +130,14 @@
                 android:paddingEnd="20dp">
 
                 <!-- Container danh sách thú cưng -->
-                <LinearLayout
-                    android:id="@+id/containerPetsList"
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/rvPetsList"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:clipChildren="false"
                     android:clipToPadding="false"
-                    android:orientation="vertical" />
+                    android:nestedScrollingEnabled="false"
+                    android:overScrollMode="never" />
 
                 <!-- Ẩn khi đã có thú cưng (tránh trùng nút + Thêm mới góc trên phải) -->
                 <LinearLayout

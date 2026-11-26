@@ -122,6 +122,7 @@ public class ProfileActivity extends AppCompatActivity {
                 .enqueue(new Callback<UserProfileResponse>() {
                     @Override
                     public void onResponse(Call<UserProfileResponse> call, Response<UserProfileResponse> response) {
+                        if (isFinishing() || isDestroyed()) return;
                         if (response.isSuccessful() && response.body() != null) {
                             UserProfileResponse profile = response.body();
                             tokenManager.saveAuthData(
@@ -130,7 +131,7 @@ public class ProfileActivity extends AppCompatActivity {
                                     profile.getFullName(),
                                     profile.getEmail(),
                                     profile.getRole(),
-                                    tokenManager.getClinicId()
+                                    profile.getClinicId()
                             );
                             tokenManager.saveUserPhone(profile.getPhone());
                             displayCachedUserInfo();
@@ -144,6 +145,7 @@ public class ProfileActivity extends AppCompatActivity {
 
                     @Override
                     public void onFailure(Call<UserProfileResponse> call, Throwable t) {
+                        if (isFinishing() || isDestroyed()) return;
                     }
                 });
     }
@@ -177,7 +179,9 @@ public class ProfileActivity extends AppCompatActivity {
 
         binding.headerSettingsGroup.setOnClickListener(v -> toggleSettingsSection());
 
+        binding.switchNotifications.setChecked(tokenManager.isNotificationsEnabled());
         binding.switchNotifications.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            tokenManager.setNotificationsEnabled(isChecked);
             String msg = isChecked ? "Đã bật thông báo nhắc lịch khám" : "Đã tắt thông báo";
             Toast.makeText(this, msg, Toast.LENGTH_SHORT).show();
         });

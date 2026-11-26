@@ -3,6 +3,7 @@ package com.example.petcareui.data.dto.response;
 import com.example.petcareui.R;
 import com.example.petcareui.data.model.AppointmentItem;
 import com.example.petcareui.data.model.StaffAppointmentItem;
+import com.example.petcareui.utils.ServiceDisplayUtils;
 
 import java.io.Serializable;
 import java.time.Duration;
@@ -146,13 +147,7 @@ public class AppointmentResponse implements Serializable {
     }
 
     private String resolvePriceByServiceName(String name) {
-        if (name == null) return "250.000 ₫";
-        String lower = name.toLowerCase(Locale.ROOT);
-        if (lower.contains("tổng quát")) return "180.000 ₫";
-        if (lower.contains("tiêm") || lower.contains("vắc") || lower.contains("vaccine")) return "250.000 ₫";
-        if (lower.contains("răng") || lower.contains("vôi")) return "600.000 ₫";
-        if (lower.contains("tắm") || lower.contains("spa") || lower.contains("cắt")) return "320.000 ₫";
-        return "250.000 ₫";
+        return ServiceDisplayUtils.resolvePriceByName(name);
     }
 
     public StaffAppointmentItem toStaffAppointmentItem() {

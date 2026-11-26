@@ -110,19 +110,17 @@
         <!-- Màn hình Đăng ký -->
         <activity
             android:name=".ui.auth.RegisterActivity"
-            android:exported="true" />
+            android:exported="false" />
 
         <!-- Màn hình Đăng nhập -->
         <activity
             android:name=".ui.auth.LoginActivity"
-            android:exported="true" />
+            android:exported="false" />
 
         <!-- Màn hình Giới thiệu / Onboarding (Khởi động đầu tiên) -->
         <activity
             android:name=".ui.onboarding.OnboardingActivity"
-            android:exported="true"
-            android:showWhenLocked="true"
-            android:turnScreenOn="true">
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />

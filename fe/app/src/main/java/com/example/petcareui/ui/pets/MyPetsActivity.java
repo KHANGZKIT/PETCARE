@@ -5,19 +5,17 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
+import androidx.lifecycle.ViewModelProvider;
+import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.example.petcareui.MainActivity;
 import com.example.petcareui.R;
-import com.example.petcareui.data.api.ApiClient;
-import com.example.petcareui.data.api.ApiErrorParser;
-import com.example.petcareui.data.dto.response.PetResponse;
 import com.example.petcareui.data.model.ClinicItem;
 import com.example.petcareui.data.model.DateItem;
 import com.example.petcareui.data.model.PetItem;
@@ -25,19 +23,16 @@ import com.example.petcareui.data.model.ServiceItem;
 import com.example.petcareui.data.model.TimeSlotItem;
 import com.example.petcareui.databinding.ActivityMyPetsBinding;
 import com.example.petcareui.databinding.DialogPetDeleteConfirmBinding;
-import com.example.petcareui.databinding.ItemPetCardBinding;
 import com.example.petcareui.ui.appointments.MyAppointmentsActivity;
 import com.example.petcareui.ui.booking.BookingReviewActivity;
 import com.example.petcareui.ui.clinic.ClinicListActivity;
 import com.example.petcareui.utils.UiMotionUtils;
 
-import java.util.ArrayList;
 import java.util.List;
 
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
-
+/**
+ * Màn hình C08: Thú cưng của tôi & Chọn thú cưng (Bước 3/4) — Kiến trúc MVVM + RecyclerView.
+ */
 public class MyPetsActivity extends AppCompatActivity {
 
     public static final String EXTRA_CLINIC = "extra_clinic";
@@ -49,6 +44,8 @@ public class MyPetsActivity extends AppCompatActivity {
     public static final String EXTRA_EDIT_FROM_REVIEW = "extra_edit_from_review";
 
     private ActivityMyPetsBinding binding;
+    private MyPetsViewModel viewModel;
+    private PetListAdapter petAdapter;
 
     private ClinicItem clinicItem;
     private ServiceItem serviceItem;
@@ -57,17 +54,14 @@ public class MyPetsActivity extends AppCompatActivity {
     private PetItem preselectedPet;
     private boolean isBookingMode = true;
     private boolean isEditFromReview = false;
-    private boolean appliedPreselectedPet = false;
-
-    private final List<PetItem> pets = new ArrayList<>();
-    private final List<ItemPetCardBinding> petBindings = new ArrayList<>();
-    private int selectedPetIndex = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         binding = ActivityMyPetsBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
+
+        viewModel = new ViewModelProvider(this).get(MyPetsViewModel.class);
 
         getWindow().setStatusBarColor(ContextCompat.getColor(this, R.color.ds_home_bg));
         extractIntentData();
@@ -77,6 +71,7 @@ public class MyPetsActivity extends AppCompatActivity {
                 isBookingMode ? binding.layoutStickyBottom : binding.bottomNavigation
         );
 
+        setupRecyclerView();
         setupTopBar();
         setupEmptyStateActions();
         setupStickyBottomBar();
@@ -100,13 +95,96 @@ public class MyPetsActivity extends AppCompatActivity {
             }
         }
 
-        loadPetsFromApi();
+        observeViewModel();
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        loadPetsFromApi();
+        viewModel.loadMyPets(preselectedPet);
+    }
+
+    private void setupRecyclerView() {
+        petAdapter = new PetListAdapter(isBookingMode, new PetListAdapter.OnPetActionListener() {
+            @Override
+            public void onPetSelect(int position, View itemView) {
+                UiMotionUtils.animateSelectionPop(itemView);
+                viewModel.selectPet(position);
+            }
+
+            @Override
+            public void onPetOpenDetails(PetItem pet) {
+                Intent intent = new Intent(MyPetsActivity.this, PetDetailsActivity.class);
+                intent.putExtra(PetDetailsActivity.EXTRA_PET, pet);
+                startActivity(intent);
+            }
+
+            @Override
+            public void onPetEdit(PetItem pet) {
+                Intent intent = new Intent(MyPetsActivity.this, AddPetActivity.class);
+                intent.putExtra(AddPetActivity.EXTRA_EDIT_PET, pet);
+                startActivity(intent);
+            }
+
+            @Override
+            public void onPetHistory(PetItem pet) {
+                Intent intent = new Intent(MyPetsActivity.this, PetDetailsActivity.class);
+                intent.putExtra(PetDetailsActivity.EXTRA_PET, pet);
+                intent.putExtra(PetDetailsActivity.EXTRA_SCROLL_TO_HISTORY, true);
+                startActivity(intent);
+            }
+
+            @Override
+            public void onPetDeleteRequest(PetItem pet) {
+                showDeletePetDialog(pet);
+            }
+        });
+
+        binding.rvPetsList.setLayoutManager(new LinearLayoutManager(this));
+        binding.rvPetsList.setAdapter(petAdapter);
+    }
+
+    private void observeViewModel() {
+        viewModel.getPets().observe(this, petList -> {
+            if (petList == null || petList.isEmpty()) {
+                showEmptyState();
+                petAdapter.submitList(null, -1);
+                updateBookingSummary(null);
+            } else {
+                showPetsList();
+                binding.cardAddOtherPet.setVisibility(View.GONE);
+                int idx = viewModel.getSelectedIndex().getValue() != null
+                        ? viewModel.getSelectedIndex().getValue() : 0;
+                petAdapter.submitList(petList, idx);
+                updateBookingSummary(viewModel.getSelectedPet());
+            }
+        });
+
+        viewModel.getSelectedIndex().observe(this, idx -> {
+            int safeIdx = idx != null ? idx : -1;
+            petAdapter.setSelectedIndex(safeIdx);
+            updateBookingSummary(viewModel.getSelectedPet());
+        });
+
+        viewModel.getErrorMessage().observe(this, err -> {
+            if (err != null && !err.isEmpty()) {
+                Toast.makeText(this, err, Toast.LENGTH_LONG).show();
+                viewModel.clearError();
+            }
+        });
+    }
+
+    private void updateBookingSummary(PetItem selected) {
+        if (!isBookingMode) return;
+        if (selected != null) {
+            binding.tvSelectedPetName.setText(selected.getName());
+            binding.btnContinue.setEnabled(true);
+            binding.btnContinue.setAlpha(1.0f);
+        } else {
+            binding.tvSelectedPetName.setText("Chưa chọn");
+            binding.btnContinue.setEnabled(false);
+            binding.btnContinue.setAlpha(0.5f);
+        }
     }
 
     private void extractIntentData() {
@@ -147,10 +225,8 @@ public class MyPetsActivity extends AppCompatActivity {
     private void setupTopBar() {
         binding.btnBack.setOnClickListener(v -> finish());
 
-        View.OnClickListener addPetListener = v -> {
-            Intent intent = new Intent(this, AddPetActivity.class);
-            startActivity(intent);
-        };
+        View.OnClickListener addPetListener = v ->
+                startActivity(new Intent(this, AddPetActivity.class));
         binding.btnAddPetTop.setOnClickListener(addPetListener);
         binding.cardAddOtherPet.setOnClickListener(addPetListener);
         binding.btnAddFirstPet.setOnClickListener(addPetListener);
@@ -162,150 +238,6 @@ public class MyPetsActivity extends AppCompatActivity {
                 binding.btnAddFirstPet,
                 binding.btnContinue
         );
-    }
-
-    private void loadPetsFromApi() {
-        ApiClient.getPetApi().getMyPets().enqueue(new Callback<List<PetResponse>>() {
-            @Override
-            public void onResponse(Call<List<PetResponse>> call, Response<List<PetResponse>> response) {
-                if (isFinishing() || isDestroyed()) return;
-
-                if (response.isSuccessful() && response.body() != null) {
-                    List<PetResponse> body = response.body();
-                    pets.clear();
-                    for (PetResponse res : body) {
-                        pets.add(res.toPetItem());
-                    }
-
-                    if (pets.isEmpty()) {
-                        showEmptyState();
-                    } else {
-                        showPetsList();
-                        if (!appliedPreselectedPet && preselectedPet != null) {
-                            Long preId = preselectedPet.getNumericId();
-                            String preName = preselectedPet.getName();
-                            for (int i = 0; i < pets.size(); i++) {
-                                PetItem item = pets.get(i);
-                                boolean idMatch = preId != null && preId.equals(item.getNumericId());
-                                boolean nameMatch = preId == null && preName != null
-                                        && preName.equalsIgnoreCase(item.getName());
-                                if (idMatch || nameMatch) {
-                                    selectedPetIndex = i;
-                                    break;
-                                }
-                            }
-                            appliedPreselectedPet = true;
-                        }
-                        if (selectedPetIndex >= pets.size()) {
-                            selectedPetIndex = 0;
-                        }
-                        renderPets();
-                    }
-                } else {
-                    if (pets.isEmpty()) {
-                        showEmptyState();
-                    }
-                }
-            }
-
-            @Override
-            public void onFailure(Call<List<PetResponse>> call, Throwable t) {
-                if (isFinishing() || isDestroyed()) return;
-                if (pets.isEmpty()) {
-                    showEmptyState();
-                }
-            }
-        });
-    }
-
-    private void renderPets() {
-        petBindings.clear();
-        binding.containerPetsList.removeAllViews();
-
-        LayoutInflater inflater = LayoutInflater.from(this);
-
-        binding.cardAddOtherPet.setVisibility(pets.isEmpty() ? View.VISIBLE : View.GONE);
-
-        for (int i = 0; i < pets.size(); i++) {
-            final int index = i;
-            PetItem pet = pets.get(i);
-            ItemPetCardBinding itemBinding = ItemPetCardBinding.inflate(inflater, binding.containerPetsList, false);
-
-            int avatarRes = pet.getImageResId();
-            itemBinding.ivPetAvatar.setImageResource(avatarRes);
-            if (avatarRes == R.drawable.img_pet_bong) {
-                itemBinding.ivPetAvatar.setPadding(0, 0, 0, 0);
-                itemBinding.ivPetAvatar.setScaleType(android.widget.ImageView.ScaleType.CENTER_CROP);
-            } else {
-                int pad = Math.round(4 * getResources().getDisplayMetrics().density);
-                itemBinding.ivPetAvatar.setPadding(pad, pad, pad, pad);
-                itemBinding.ivPetAvatar.setScaleType(android.widget.ImageView.ScaleType.FIT_CENTER);
-            }
-
-            itemBinding.tvPetName.setText(pet.getName());
-
-            String realSpecies = pet.getRawSpecies();
-            itemBinding.tvPetSpecies.setText(realSpecies != null && !realSpecies.isEmpty() ? realSpecies : "Thú cưng");
-
-            String age = pet.getAge() != null ? pet.getAge().trim() : "";
-            String sex = pet.getSex() != null ? pet.getSex().replace("♂", "").replace("♀", "").trim() : "";
-            if (!age.isEmpty() && !sex.isEmpty()) {
-                itemBinding.tvPetHealthBadge.setText(age + " · " + sex);
-            } else if (!age.isEmpty()) {
-                itemBinding.tvPetHealthBadge.setText(age);
-            } else {
-                itemBinding.tvPetHealthBadge.setText(sex);
-            }
-
-            UiMotionUtils.attachSpringTouch(itemBinding.getRoot(), itemBinding.btnEditPet, itemBinding.btnHistoryPet);
-
-            if (isBookingMode) {
-                itemBinding.layoutPetActions.setVisibility(View.GONE);
-                itemBinding.ivPetCheck.setVisibility(View.VISIBLE);
-                itemBinding.getRoot().setOnClickListener(v -> selectPet(index));
-            } else {
-                itemBinding.layoutPetActions.setVisibility(View.VISIBLE);
-                itemBinding.ivPetCheck.setVisibility(View.GONE);
-
-                itemBinding.btnEditPet.setOnClickListener(v -> {
-                    Intent intent = new Intent(this, AddPetActivity.class);
-                    intent.putExtra(AddPetActivity.EXTRA_EDIT_PET, pet);
-                    startActivity(intent);
-                });
-
-                itemBinding.btnHistoryPet.setOnClickListener(v -> {
-                    Intent intent = new Intent(this, PetDetailsActivity.class);
-                    intent.putExtra(PetDetailsActivity.EXTRA_PET, pet);
-                    intent.putExtra(PetDetailsActivity.EXTRA_SCROLL_TO_HISTORY, true);
-                    startActivity(intent);
-                });
-
-                itemBinding.getRoot().setOnClickListener(v -> {
-                    Intent intent = new Intent(this, PetDetailsActivity.class);
-                    intent.putExtra(PetDetailsActivity.EXTRA_PET, pet);
-                    startActivity(intent);
-                });
-            }
-
-            itemBinding.getRoot().setOnLongClickListener(v -> {
-                showDeletePetDialog(pet);
-                return true;
-            });
-
-            petBindings.add(itemBinding);
-            binding.containerPetsList.addView(itemBinding.getRoot());
-        }
-
-        updatePetSelectionUI();
-        UiMotionUtils.animateStaggeredChildren(binding.containerPetsList, 25);
-    }
-
-    private void selectPet(int index) {
-        selectedPetIndex = index;
-        if (index >= 0 && index < petBindings.size()) {
-            UiMotionUtils.animateSelectionPop(petBindings.get(index).getRoot());
-        }
-        updatePetSelectionUI();
     }
 
     private void showDeletePetDialog(PetItem pet) {
@@ -325,65 +257,10 @@ public class MyPetsActivity extends AppCompatActivity {
         dialogBinding.btnCancelDelete.setOnClickListener(v -> dialog.dismiss());
         dialogBinding.btnConfirmDelete.setOnClickListener(v -> {
             dialog.dismiss();
-            Long numericId = pet.getNumericId();
-            if (numericId != null) {
-                ApiClient.getPetApi().deletePet(numericId).enqueue(new Callback<Void>() {
-                    @Override
-                    public void onResponse(Call<Void> call, Response<Void> response) {
-                        if (isFinishing() || isDestroyed()) return;
-                        if (response.isSuccessful()) {
-                            loadPetsFromApi();
-                        } else {
-                            String msg = ApiErrorParser.getMessage(response, "Không thể xóa bé lúc này");
-                            Toast.makeText(MyPetsActivity.this, msg, Toast.LENGTH_LONG).show();
-                        }
-                    }
-
-                    @Override
-                    public void onFailure(Call<Void> call, Throwable t) {
-                        if (isFinishing() || isDestroyed()) return;
-                        Toast.makeText(MyPetsActivity.this, "Lỗi kết nối khi xóa thú cưng", Toast.LENGTH_SHORT).show();
-                    }
-                });
-            }
+            viewModel.deletePet(pet.getNumericId(), preselectedPet);
         });
 
         dialog.show();
-    }
-
-    private void updatePetSelectionUI() {
-        for (int i = 0; i < petBindings.size(); i++) {
-            ItemPetCardBinding b = petBindings.get(i);
-            if (!isBookingMode) {
-                b.layoutPetCard.setBackgroundResource(R.drawable.bg_home_card_borderless);
-                b.layoutPetActions.setVisibility(View.VISIBLE);
-                b.ivPetCheck.setVisibility(View.GONE);
-            } else {
-                b.layoutPetActions.setVisibility(View.GONE);
-                b.ivPetCheck.setVisibility(View.VISIBLE);
-                boolean isSelected = (i == selectedPetIndex);
-                if (isSelected) {
-                    b.layoutPetCard.setBackgroundResource(R.drawable.bg_pet_card_selected_minimal);
-                    b.ivPetCheck.setImageResource(R.drawable.bg_radio_selected);
-                } else {
-                    b.layoutPetCard.setBackgroundResource(R.drawable.bg_home_card_borderless);
-                    b.ivPetCheck.setImageResource(R.drawable.bg_radio_unselected);
-                }
-            }
-        }
-
-        if (isBookingMode) {
-            if (selectedPetIndex >= 0 && selectedPetIndex < pets.size()) {
-                PetItem selected = pets.get(selectedPetIndex);
-                binding.tvSelectedPetName.setText(selected.getName());
-                binding.btnContinue.setEnabled(true);
-                binding.btnContinue.setAlpha(1.0f);
-            } else {
-                binding.tvSelectedPetName.setText("Chưa chọn");
-                binding.btnContinue.setEnabled(false);
-                binding.btnContinue.setAlpha(0.5f);
-            }
-        }
     }
 
     public void showEmptyState() {
@@ -419,8 +296,8 @@ public class MyPetsActivity extends AppCompatActivity {
 
     private void setupStickyBottomBar() {
         binding.btnContinue.setOnClickListener(v -> {
-            if (selectedPetIndex >= 0 && selectedPetIndex < pets.size()) {
-                PetItem chosen = pets.get(selectedPetIndex);
+            PetItem chosen = viewModel.getSelectedPet();
+            if (chosen != null) {
                 if (isEditFromReview) {
                     Intent result = new Intent();
                     result.putExtra(BookingReviewActivity.EXTRA_SELECTED_PET, chosen);

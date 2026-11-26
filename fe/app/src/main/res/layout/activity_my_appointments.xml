@@ -164,11 +164,12 @@
             android:paddingBottom="24dp">
 
             <!-- Danh sách thẻ lịch hẹn chính -->
-            <LinearLayout
-                android:id="@+id/layoutApptList"
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rvApptList"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical" />
+                android:nestedScrollingEnabled="false"
+                android:overScrollMode="never" />
 
             <!-- Khối "Lịch khám đã qua" hiển thị bên dưới danh sách Sắp tới -->
             <LinearLayout
@@ -209,11 +210,12 @@
                 </RelativeLayout>
 
                 <!-- 2 Thẻ đã qua thu gọn -->
-                <LinearLayout
-                    android:id="@+id/layoutPastPreviewList"
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/rvPastPreviewList"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="vertical" />
+                    android:nestedScrollingEnabled="false"
+                    android:overScrollMode="never" />
             </LinearLayout>
 
             <!-- Trạng thái rỗng (Empty State) -->

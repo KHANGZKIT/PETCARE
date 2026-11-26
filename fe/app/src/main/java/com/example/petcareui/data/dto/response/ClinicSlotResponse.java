@@ -53,7 +53,7 @@ public class ClinicSlotResponse implements Serializable {
         } else {
             stateStr = "open";
         }
-        return new StaffSlotItem(timeStr, stateStr);
+        return new StaffSlotItem(id, timeStr, stateStr);
     }
 }
 

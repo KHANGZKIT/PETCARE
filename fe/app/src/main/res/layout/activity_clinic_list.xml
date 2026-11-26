@@ -270,7 +270,7 @@
         android:layout_weight="1">
 
         <!-- ==================== TRẠNG THÁI 1: CÓ KẾT QUẢ (RESULTS) ==================== -->
-        <ScrollView
+        <androidx.core.widget.NestedScrollView
             android:id="@+id/layoutResultsState"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
@@ -319,36 +319,16 @@
                 </RelativeLayout>
 
                 <!-- Danh sách phòng khám phẳng nguyên khối có viền 1dp #E6DFD5 -->
-                <LinearLayout
-                    android:id="@+id/containerClinicsList"
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/rvClinicsList"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:background="@drawable/bg_home_card_static"
                     android:clipToOutline="true"
-                    android:orientation="vertical" />
-
-                <!-- Nút Xem thêm phòng khám -->
-                <FrameLayout
-                    android:id="@+id/btnLoadMore"
-                    android:layout_width="match_parent"
-                    android:layout_height="@dimen/button_height_md"
-                    android:layout_marginTop="12dp"
-                    android:background="@drawable/bg_btn_outline"
-                    android:clickable="true"
-                    android:elevation="0dp"
-                    android:focusable="true">
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center"
-                        android:text="Xem thêm phòng khám"
-                        android:textColor="@color/text_foreground"
-                        android:fontFamily="@font/open_sans_semibold"
-                        android:textSize="14sp" />
-                </FrameLayout>
+                    android:nestedScrollingEnabled="false"
+                    android:overScrollMode="never" />
             </LinearLayout>
-        </ScrollView>
+        </androidx.core.widget.NestedScrollView>
 
         <!-- ==================== TRẠNG THÁI 2: ĐANG TẢI (LOADING SKELETON) ==================== -->
         <ScrollView

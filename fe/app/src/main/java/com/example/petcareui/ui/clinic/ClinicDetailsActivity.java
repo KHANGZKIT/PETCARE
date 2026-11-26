@@ -13,12 +13,14 @@ import androidx.core.widget.NestedScrollView;
 
 import com.example.petcareui.R;
 import com.example.petcareui.data.api.ApiClient;
+import com.example.petcareui.data.api.ApiErrorParser;
 import com.example.petcareui.data.model.ClinicItem;
 import com.example.petcareui.data.model.PetItem;
 import com.example.petcareui.data.model.ServiceItem;
 import com.example.petcareui.data.dto.response.ServiceResponse;
 import com.example.petcareui.databinding.ActivityClinicDetailsBinding;
 import com.example.petcareui.databinding.ItemServiceSelectableBinding;
+import com.example.petcareui.utils.ServiceDisplayUtils;
 import com.example.petcareui.utils.UiMotionUtils;
 
 import java.util.ArrayList;
@@ -257,15 +259,18 @@ public class ClinicDetailsActivity extends AppCompatActivity {
         ApiClient.getClinicApi().getServicesByClinicId(clinicId).enqueue(new Callback<List<ServiceResponse>>() {
             @Override
             public void onResponse(Call<List<ServiceResponse>> call, Response<List<ServiceResponse>> response) {
-                if (response.isSuccessful() && response.body() != null && !response.body().isEmpty()) {
+                if (isFinishing() || isDestroyed()) return;
+                if (response.isSuccessful() && response.body() != null) {
                     services.clear();
                     List<ServiceResponse> body = response.body();
-                    String[] samplePrices = new String[]{"180.000 ₫", "250.000 ₫", "600.000 ₫", "320.000 ₫"};
-                    for (int i = 0; i < body.size(); i++) {
-                        ServiceResponse res = body.get(i);
-                        int icon = SERVICE_ICONS[i % SERVICE_ICONS.length];
+                    if (body.isEmpty()) {
+                        showServicesUnavailable("Phòng khám hiện chưa có dịch vụ đang mở.", false);
+                        return;
+                    }
+                    for (ServiceResponse res : body) {
+                        int icon = ServiceDisplayUtils.resolveIconByName(res.getName());
                         String durationText = res.getDuration() != null ? res.getDuration() + " phút" : "30 phút";
-                        String priceText = samplePrices[i % samplePrices.length];
+                        String priceText = ServiceDisplayUtils.resolvePriceByName(res.getName());
                         services.add(new ServiceItem(
                                 String.valueOf(res.getId()),
                                 res.getName(),
@@ -277,25 +282,49 @@ public class ClinicDetailsActivity extends AppCompatActivity {
                     }
                     renderServicesList();
                 } else {
-                    setupDefaultServices();
+                    String errMsg = ApiErrorParser.getMessage(response, "Không thể tải danh sách dịch vụ.");
+                    showServicesUnavailable(errMsg, true);
                 }
             }
 
             @Override
             public void onFailure(Call<List<ServiceResponse>> call, Throwable t) {
-                setupDefaultServices();
+                if (isFinishing() || isDestroyed()) return;
+                showServicesUnavailable("Không thể kết nối máy chủ để tải danh sách dịch vụ.", true);
             }
         });
     }
 
-    private void setupDefaultServices() {
-        if (services.isEmpty()) {
-            services.add(new ServiceItem("1", "Khám tổng quát", "Khám lâm sàng, cân nặng, nhiệt độ và các chỉ số sinh tồn.", "30 phút", "180.000 ₫", R.drawable.ic_stethoscope));
-            services.add(new ServiceItem("2", "Tiêm phòng", "Vaccine thiết yếu cho chó và mèo, khám sức khỏe trước khi tiêm.", "20 phút", "250.000 ₫", R.drawable.ic_syringe));
-            services.add(new ServiceItem("3", "Cạo vôi & chăm sóc răng", "Cạo vôi bằng siêu âm, đánh bóng và kiểm tra khoang miệng.", "45 phút", "600.000 ₫", R.drawable.ic_sparkles));
-            services.add(new ServiceItem("4", "Tắm & cắt tỉa", "Tắm, sấy khô, cắt móng và vệ sinh tai.", "60 phút", "320.000 ₫", R.drawable.ic_scissors));
+    private void showServicesUnavailable(String message, boolean allowRetry) {
+        services.clear();
+        serviceBindings.clear();
+        selectedServiceIndex = -1;
+        binding.containerServicesList.removeAllViews();
+
+        android.widget.LinearLayout wrapper = new android.widget.LinearLayout(this);
+        wrapper.setOrientation(android.widget.LinearLayout.VERTICAL);
+        int pad = Math.round(14 * getResources().getDisplayMetrics().density);
+        wrapper.setPadding(pad, pad, pad, pad);
+
+        android.widget.TextView tvMsg = new android.widget.TextView(this);
+        tvMsg.setText(message);
+        tvMsg.setTextColor(ContextCompat.getColor(this, R.color.ds_text_secondary));
+        tvMsg.setTextSize(13f);
+        wrapper.addView(tvMsg);
+
+        if (allowRetry) {
+            android.widget.TextView tvRetry = new android.widget.TextView(this);
+            tvRetry.setText("Thử tải lại");
+            tvRetry.setTextColor(ContextCompat.getColor(this, R.color.ds_primary));
+            tvRetry.setTextSize(13.5f);
+            tvRetry.setTypeface(tvRetry.getTypeface(), android.graphics.Typeface.BOLD);
+            int topPad = Math.round(8 * getResources().getDisplayMetrics().density);
+            tvRetry.setPadding(0, topPad, 0, 0);
+            tvRetry.setOnClickListener(v -> loadServicesFromApi());
+            wrapper.addView(tvRetry);
         }
-        renderServicesList();
+
+        binding.containerServicesList.addView(wrapper);
     }
 
     private void renderServicesList() {

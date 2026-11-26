@@ -7,17 +7,15 @@ import android.view.View;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.content.ContextCompat;
+import androidx.lifecycle.ViewModelProvider;
+import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.example.petcareui.MainActivity;
-import com.example.petcareui.R;
-import com.example.petcareui.data.api.ApiClient;
 import com.example.petcareui.data.dto.response.AppointmentResponse;
 import com.example.petcareui.data.model.AppointmentItem;
 import com.example.petcareui.data.model.NotificationItem;
 import com.example.petcareui.data.model.StaffAppointmentItem;
 import com.example.petcareui.databinding.ActivityNotificationsBinding;
-import com.example.petcareui.databinding.ItemNotificationCardBinding;
 import com.example.petcareui.ui.appointments.AppointmentDetailsActivity;
 import com.example.petcareui.ui.staff.StaffAppointmentDetailsActivity;
 import com.example.petcareui.ui.staff.StaffDashboardActivity;
@@ -34,15 +32,14 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Locale;
 
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
-
 public class NotificationsActivity extends AppCompatActivity {
 
     public static final String EXTRA_STATE = "extra_state";
 
     private ActivityNotificationsBinding binding;
+    private NotificationsViewModel viewModel;
+    private NotificationAdapter todayAdapter;
+    private NotificationAdapter earlierAdapter;
     private TokenManager tokenManager;
     private final List<NotificationItem> notifications = new ArrayList<>();
     private boolean isStaff = false;
@@ -53,18 +50,67 @@ public class NotificationsActivity extends AppCompatActivity {
         binding = ActivityNotificationsBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
+        viewModel = new ViewModelProvider(this).get(NotificationsViewModel.class);
+
         UiMotionUtils.applyWindowInsets(binding.getRoot(), binding.layoutAppBar, null);
         tokenManager = TokenManager.getInstance(this);
         isStaff = "STAFF".equalsIgnoreCase(tokenManager.getUserRole());
 
+        setupRecyclerViews();
         setupTopBar();
-        loadLiveNotifications();
+        observeViewModel();
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        loadLiveNotifications();
+        viewModel.loadNotifications(isStaff);
+    }
+
+    private void setupRecyclerViews() {
+        NotificationAdapter.OnNotificationClickListener clickListener = this::onNotificationClicked;
+        todayAdapter = new NotificationAdapter(clickListener);
+        earlierAdapter = new NotificationAdapter(clickListener);
+
+        binding.rvGroupToday.setLayoutManager(new LinearLayoutManager(this));
+        binding.rvGroupToday.setAdapter(todayAdapter);
+
+        binding.rvGroupEarlier.setLayoutManager(new LinearLayoutManager(this));
+        binding.rvGroupEarlier.setAdapter(earlierAdapter);
+    }
+
+    private void onNotificationClicked(NotificationItem item) {
+        if (item.isUnread()) {
+            item.setUnread(false);
+            tokenManager.markNotificationRead(item.getId());
+            renderNotificationList();
+        }
+
+        if (isStaff && item.getStaffAppt() != null) {
+            Intent intent = new Intent(this, StaffAppointmentDetailsActivity.class);
+            intent.putExtra(StaffAppointmentDetailsActivity.EXTRA_REF, item.getStaffAppt().getRef());
+            intent.putExtra(StaffAppointmentDetailsActivity.EXTRA_APPT, item.getStaffAppt());
+            startActivity(intent);
+        } else if (item.getCustomerAppt() != null) {
+            Intent intent = new Intent(this, AppointmentDetailsActivity.class);
+            intent.putExtra(AppointmentDetailsActivity.EXTRA_APPT, item.getCustomerAppt());
+            intent.putExtra(AppointmentDetailsActivity.EXTRA_REF, item.getCustomerAppt().getRef());
+            startActivity(intent);
+        }
+    }
+
+    private void observeViewModel() {
+        viewModel.getAppointmentSnapshots().observe(this, snapshots -> {
+            notifications.clear();
+            if (snapshots != null && !snapshots.isEmpty()) {
+                if (isStaff) {
+                    notifications.addAll(buildStaffNotifications(this, snapshots));
+                } else {
+                    notifications.addAll(buildCustomerNotifications(this, snapshots));
+                }
+            }
+            renderState();
+        });
     }
 
     private void setupTopBar() {
@@ -93,41 +139,14 @@ public class NotificationsActivity extends AppCompatActivity {
         });
     }
 
-    private void loadLiveNotifications() {
-        Call<List<AppointmentResponse>> call = isStaff
-                ? ApiClient.getAppointmentApi().getClinicAppointments(null)
-                : ApiClient.getAppointmentApi().getMyAppointments();
-
-        call.enqueue(new Callback<List<AppointmentResponse>>() {
-            @Override
-            public void onResponse(Call<List<AppointmentResponse>> c, Response<List<AppointmentResponse>> response) {
-                if (isFinishing() || isDestroyed()) return;
-                notifications.clear();
-                if (response.isSuccessful() && response.body() != null) {
-                    if (isStaff) {
-                        notifications.addAll(buildStaffNotifications(NotificationsActivity.this, response.body()));
-                    } else {
-                        notifications.addAll(buildCustomerNotifications(NotificationsActivity.this, response.body()));
-                    }
-                }
-                renderState();
-            }
-
-            @Override
-            public void onFailure(Call<List<AppointmentResponse>> c, Throwable t) {
-                if (isFinishing() || isDestroyed()) return;
-                notifications.clear();
-                renderState();
-            }
-        });
-    }
-
     private void renderState() {
         if (notifications.isEmpty()) {
             binding.tvSubtitle.setVisibility(View.GONE);
             binding.tvMarkAllRead.setVisibility(View.GONE);
             binding.layoutNotificationsContent.setVisibility(View.GONE);
             binding.layoutEmptyState.setVisibility(View.VISIBLE);
+            todayAdapter.submitList(null);
+            earlierAdapter.submitList(null);
         } else {
             binding.layoutEmptyState.setVisibility(View.GONE);
             binding.layoutNotificationsContent.setVisibility(View.VISIBLE);
@@ -136,33 +155,29 @@ public class NotificationsActivity extends AppCompatActivity {
     }
 
     private void renderNotificationList() {
-        binding.layoutGroupToday.removeAllViews();
-        binding.layoutGroupEarlier.removeAllViews();
-
+        List<NotificationItem> todayItems = new ArrayList<>();
+        List<NotificationItem> earlierItems = new ArrayList<>();
         int unreadCount = 0;
-        int todayCount = 0;
-        int earlierCount = 0;
 
         for (NotificationItem item : notifications) {
             if (item.isUnread()) {
                 unreadCount++;
             }
-
-            View cardView = createNotificationCardView(item);
             if (item.isTodayGroup()) {
-                binding.layoutGroupToday.addView(cardView);
-                todayCount++;
+                todayItems.add(item);
             } else {
-                binding.layoutGroupEarlier.addView(cardView);
-                earlierCount++;
+                earlierItems.add(item);
             }
         }
 
-        binding.tvLabelToday.setVisibility(todayCount > 0 ? View.VISIBLE : View.GONE);
-        binding.layoutGroupToday.setVisibility(todayCount > 0 ? View.VISIBLE : View.GONE);
+        todayAdapter.submitList(todayItems);
+        earlierAdapter.submitList(earlierItems);
 
-        binding.tvLabelEarlier.setVisibility(earlierCount > 0 ? View.VISIBLE : View.GONE);
-        binding.layoutGroupEarlier.setVisibility(earlierCount > 0 ? View.VISIBLE : View.GONE);
+        binding.tvLabelToday.setVisibility(!todayItems.isEmpty() ? View.VISIBLE : View.GONE);
+        binding.rvGroupToday.setVisibility(!todayItems.isEmpty() ? View.VISIBLE : View.GONE);
+
+        binding.tvLabelEarlier.setVisibility(!earlierItems.isEmpty() ? View.VISIBLE : View.GONE);
+        binding.rvGroupEarlier.setVisibility(!earlierItems.isEmpty() ? View.VISIBLE : View.GONE);
 
         if (unreadCount > 0) {
             binding.tvSubtitle.setVisibility(View.VISIBLE);
@@ -171,66 +186,6 @@ public class NotificationsActivity extends AppCompatActivity {
         } else {
             binding.tvSubtitle.setVisibility(View.GONE);
             binding.tvMarkAllRead.setVisibility(View.GONE);
-        }
-    }
-
-    private View createNotificationCardView(NotificationItem item) {
-        ItemNotificationCardBinding cardBinding = ItemNotificationCardBinding.inflate(getLayoutInflater());
-
-        cardBinding.tvNotifTitle.setText(item.getTitle());
-        cardBinding.tvNotifBody.setText(item.getBody());
-        cardBinding.tvNotifTime.setText(item.getTime());
-
-        if (item.isUnread()) {
-            cardBinding.layoutCardContainer.setBackgroundResource(R.drawable.bg_notification_card_unread);
-            cardBinding.viewUnreadDot.setVisibility(View.VISIBLE);
-        } else {
-            cardBinding.layoutCardContainer.setBackgroundResource(R.drawable.bg_card_clinic);
-            cardBinding.viewUnreadDot.setVisibility(View.GONE);
-        }
-
-        applyNotificationTypeStyle(cardBinding, item.getType());
-
-        cardBinding.getRoot().setOnClickListener(v -> {
-            if (item.isUnread()) {
-                item.setUnread(false);
-                tokenManager.markNotificationRead(item.getId());
-                renderNotificationList();
-            }
-
-            if (isStaff && item.getStaffAppt() != null) {
-                Intent intent = new Intent(this, StaffAppointmentDetailsActivity.class);
-                intent.putExtra(StaffAppointmentDetailsActivity.EXTRA_REF, item.getStaffAppt().getRef());
-                intent.putExtra(StaffAppointmentDetailsActivity.EXTRA_APPT, item.getStaffAppt());
-                startActivity(intent);
-            } else if (item.getCustomerAppt() != null) {
-                Intent intent = new Intent(this, AppointmentDetailsActivity.class);
-                intent.putExtra(AppointmentDetailsActivity.EXTRA_APPT, item.getCustomerAppt());
-                intent.putExtra(AppointmentDetailsActivity.EXTRA_REF, item.getCustomerAppt().getRef());
-                startActivity(intent);
-            }
-        });
-
-        return cardBinding.getRoot();
-    }
-
-    private void applyNotificationTypeStyle(ItemNotificationCardBinding cardBinding, String type) {
-        cardBinding.layoutIconBox.setBackgroundResource(R.drawable.bg_shortcut_icon_cream);
-        if ("confirmed".equalsIgnoreCase(type)) {
-            cardBinding.ivNotifIcon.setImageResource(R.drawable.ic_calendar_days);
-            cardBinding.ivNotifIcon.setColorFilter(ContextCompat.getColor(this, R.color.ds_success));
-        } else if ("pending".equalsIgnoreCase(type)) {
-            cardBinding.ivNotifIcon.setImageResource(R.drawable.ic_clock);
-            cardBinding.ivNotifIcon.setColorFilter(ContextCompat.getColor(this, R.color.ds_warning));
-        } else if ("reminder".equalsIgnoreCase(type)) {
-            cardBinding.ivNotifIcon.setImageResource(R.drawable.ic_bell);
-            cardBinding.ivNotifIcon.setColorFilter(ContextCompat.getColor(this, R.color.ds_primary));
-        } else if ("cancelled".equalsIgnoreCase(type)) {
-            cardBinding.ivNotifIcon.setImageResource(R.drawable.ic_calendar_x);
-            cardBinding.ivNotifIcon.setColorFilter(ContextCompat.getColor(this, R.color.ds_text_secondary));
-        } else if ("rejected".equalsIgnoreCase(type)) {
-            cardBinding.ivNotifIcon.setImageResource(R.drawable.ic_x_circle);
-            cardBinding.ivNotifIcon.setColorFilter(ContextCompat.getColor(this, R.color.ds_error));
         }
     }
 

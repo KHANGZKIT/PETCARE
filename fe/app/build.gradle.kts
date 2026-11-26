@@ -40,6 +40,7 @@ dependencies {
     implementation(libs.appcompat)
     implementation(libs.constraintlayout)
     implementation(libs.material)
+    implementation(libs.recyclerview)
 
     // Networking (REST API & JSON)
     implementation(libs.retrofit)
@@ -49,9 +50,6 @@ dependencies {
     // Architecture Components (MVVM: ViewModel & LiveData)
     implementation(libs.lifecycle.viewmodel)
     implementation(libs.lifecycle.livedata)
-
-    // Image Loading
-    implementation(libs.glide)
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.espresso.core)

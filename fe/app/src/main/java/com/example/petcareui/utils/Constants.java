@@ -44,4 +44,5 @@ public class Constants {
     public static final String KEY_CLINIC_NAME = "clinic_name";
     public static final String KEY_CLINIC_AREA = "clinic_area";
     public static final String KEY_ONBOARDING_COMPLETED = "is_onboarding_completed";
+    public static final String KEY_NOTIFICATIONS_ENABLED = "is_notifications_enabled";
 }

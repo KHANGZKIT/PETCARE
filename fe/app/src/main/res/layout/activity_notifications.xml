@@ -116,11 +116,12 @@
                     android:textSize="11sp"
                     app:fontFamily="@font/open_sans_semibold" />
 
-                <LinearLayout
-                    android:id="@+id/layoutGroupToday"
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/rvGroupToday"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="vertical" />
+                    android:nestedScrollingEnabled="false"
+                    android:overScrollMode="never" />
 
                 <TextView
                     android:id="@+id/tvLabelEarlier"
@@ -135,11 +136,12 @@
                     android:textSize="11sp"
                     app:fontFamily="@font/open_sans_semibold" />
 
-                <LinearLayout
-                    android:id="@+id/layoutGroupEarlier"
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/rvGroupEarlier"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="vertical" />
+                    android:nestedScrollingEnabled="false"
+                    android:overScrollMode="never" />
             </LinearLayout>
 
             <!-- Empty State -->
