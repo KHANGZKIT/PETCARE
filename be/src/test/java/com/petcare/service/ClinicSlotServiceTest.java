@@ -32,6 +32,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -234,5 +235,119 @@ class ClinicSlotServiceTest {
         List<ClinicSlotResponse> result = clinicSlotService.getStaffSlots("staff@petcare.com", null);
 
         assertThat(result).hasSize(2);
+    }
+
+    @Test
+    void getSlotsByClinicAndDate_emptyWithin3Months_autoSeedsIdempotently() {
+        LocalDate futureDate = LocalDate.now().plusDays(5);
+        ClinicSlotEntity seeded = new ClinicSlotEntity(clinic, futureDate, LocalTime.of(8, 30), LocalTime.of(9, 0), SlotStatus.AVAILABLE);
+
+        when(clinicRepository.findByIdAndActiveTrue(1L)).thenReturn(Optional.of(clinic));
+        when(clinicSlotRepository.findByClinicIdAndSlotDateOrderByStartTimeAsc(1L, futureDate))
+                .thenReturn(List.of())
+                .thenReturn(List.of(seeded));
+
+        List<ClinicSlotResponse> result = clinicSlotService.getSlotsByClinicAndDate(1L, futureDate);
+
+        assertThat(result).hasSize(1);
+        verify(clinicSlotRepository, times(21))
+                .insertSlotIfAbsent(eq(1L), eq(futureDate), any(LocalTime.class), any(LocalTime.class));
+    }
+
+    @Test
+    void updateSlotStatus_closeAvailableSlot_success() {
+        LocalDate tomorrow = LocalDate.now().plusDays(1);
+        ClinicSlotEntity slot = newEntity(ClinicSlotEntity.class, 10L);
+        slot.setClinic(clinic);
+        slot.setSlotDate(tomorrow);
+        slot.setStartTime(LocalTime.of(9, 0));
+        slot.setEndTime(LocalTime.of(9, 30));
+        slot.setStatus(SlotStatus.AVAILABLE);
+
+        when(userRepository.findByEmailIgnoreCase("staff@petcare.com")).thenReturn(Optional.of(staffUser));
+        when(clinicSlotRepository.findByIdAndClinicIdForUpdate(10L, 1L)).thenReturn(Optional.of(slot));
+        when(clinicSlotRepository.save(slot)).thenReturn(slot);
+
+        ClinicSlotResponse result = clinicSlotService.updateSlotStatus(10L, SlotStatus.CLOSED, "staff@petcare.com");
+
+        assertThat(result.getStatus()).isEqualTo(SlotStatus.CLOSED);
+        verify(clinicSlotRepository).save(slot);
+    }
+
+    @Test
+    void updateSlotStatus_reopenClosedFutureSlot_success() {
+        LocalDate tomorrow = LocalDate.now().plusDays(1);
+        ClinicSlotEntity slot = newEntity(ClinicSlotEntity.class, 10L);
+        slot.setClinic(clinic);
+        slot.setSlotDate(tomorrow);
+        slot.setStartTime(LocalTime.of(9, 0));
+        slot.setEndTime(LocalTime.of(9, 30));
+        slot.setStatus(SlotStatus.CLOSED);
+
+        when(userRepository.findByEmailIgnoreCase("staff@petcare.com")).thenReturn(Optional.of(staffUser));
+        when(clinicSlotRepository.findByIdAndClinicIdForUpdate(10L, 1L)).thenReturn(Optional.of(slot));
+        when(clinicSlotRepository.save(slot)).thenReturn(slot);
+
+        ClinicSlotResponse result = clinicSlotService.updateSlotStatus(10L, SlotStatus.AVAILABLE, "staff@petcare.com");
+
+        assertThat(result.getStatus()).isEqualTo(SlotStatus.AVAILABLE);
+    }
+
+    @Test
+    void updateSlotStatus_bookedSlot_throwsDuplicateResourceException() {
+        ClinicSlotEntity slot = newEntity(ClinicSlotEntity.class, 10L);
+        slot.setClinic(clinic);
+        slot.setSlotDate(LocalDate.now().plusDays(1));
+        slot.setStartTime(LocalTime.of(9, 0));
+        slot.setEndTime(LocalTime.of(9, 30));
+        slot.setStatus(SlotStatus.BOOKED);
+
+        when(userRepository.findByEmailIgnoreCase("staff@petcare.com")).thenReturn(Optional.of(staffUser));
+        when(clinicSlotRepository.findByIdAndClinicIdForUpdate(10L, 1L)).thenReturn(Optional.of(slot));
+
+        assertThatThrownBy(() -> clinicSlotService.updateSlotStatus(10L, SlotStatus.CLOSED, "staff@petcare.com"))
+                .isInstanceOf(DuplicateResourceException.class)
+                .hasMessageContaining("đã có khách đặt");
+
+        verify(clinicSlotRepository, never()).save(any());
+    }
+
+    @Test
+    void updateSlotStatus_targetBooked_throwsIllegalArgumentException() {
+        when(userRepository.findByEmailIgnoreCase("staff@petcare.com")).thenReturn(Optional.of(staffUser));
+
+        assertThatThrownBy(() -> clinicSlotService.updateSlotStatus(10L, SlotStatus.BOOKED, "staff@petcare.com"))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessageContaining("AVAILABLE hoặc CLOSED");
+
+        verify(clinicSlotRepository, never()).findByIdAndClinicIdForUpdate(any(), any());
+    }
+
+    @Test
+    void updateSlotStatus_reopenPastSlot_throwsIllegalArgumentException() {
+        ClinicSlotEntity slot = newEntity(ClinicSlotEntity.class, 10L);
+        slot.setClinic(clinic);
+        slot.setSlotDate(LocalDate.now().minusDays(1));
+        slot.setStartTime(LocalTime.of(9, 0));
+        slot.setEndTime(LocalTime.of(9, 30));
+        slot.setStatus(SlotStatus.CLOSED);
+
+        when(userRepository.findByEmailIgnoreCase("staff@petcare.com")).thenReturn(Optional.of(staffUser));
+        when(clinicSlotRepository.findByIdAndClinicIdForUpdate(10L, 1L)).thenReturn(Optional.of(slot));
+
+        assertThatThrownBy(() -> clinicSlotService.updateSlotStatus(10L, SlotStatus.AVAILABLE, "staff@petcare.com"))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessageContaining("đã qua");
+
+        verify(clinicSlotRepository, never()).save(any());
+    }
+
+    @Test
+    void updateSlotStatus_notFoundInClinic_throwsResourceNotFoundException() {
+        when(userRepository.findByEmailIgnoreCase("staff@petcare.com")).thenReturn(Optional.of(staffUser));
+        when(clinicSlotRepository.findByIdAndClinicIdForUpdate(99L, 1L)).thenReturn(Optional.empty());
+
+        assertThatThrownBy(() -> clinicSlotService.updateSlotStatus(99L, SlotStatus.CLOSED, "staff@petcare.com"))
+                .isInstanceOf(ResourceNotFoundException.class);
     }
 }

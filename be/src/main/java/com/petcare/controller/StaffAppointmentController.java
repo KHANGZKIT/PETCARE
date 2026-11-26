@@ -2,7 +2,7 @@ package com.petcare.controller;
 
 import com.petcare.dto.response.AppointmentResponse;
 import com.petcare.entity.AppointmentStatus;
-import com.petcare.entity.UserEntity;
+import com.petcare.security.SecurityUtils;
 import com.petcare.service.AppointmentService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -24,10 +24,7 @@ public class StaffAppointmentController {
     private final AppointmentService appointmentService;
 
     private String getEmail(Authentication authentication) {
-        if (authentication != null && authentication.getPrincipal() instanceof UserEntity user) {
-            return user.getEmail();
-        }
-        return authentication != null ? authentication.getName() : null;
+        return SecurityUtils.extractEmail(authentication);
     }
 
     @GetMapping

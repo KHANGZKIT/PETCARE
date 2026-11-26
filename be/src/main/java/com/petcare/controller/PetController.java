@@ -2,7 +2,7 @@ package com.petcare.controller;
 
 import com.petcare.dto.request.PetRequest;
 import com.petcare.dto.response.PetResponse;
-import com.petcare.entity.UserEntity;
+import com.petcare.security.SecurityUtils;
 import com.petcare.service.PetService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -30,10 +30,7 @@ public class PetController {
     private final PetService petService;
 
     private String getEmail(Authentication auth) {
-        if (auth != null && auth.getPrincipal() instanceof UserEntity user) {
-            return user.getEmail();
-        }
-        return auth != null ? auth.getName() : null;
+        return SecurityUtils.extractEmail(auth);
     }
 
     @GetMapping

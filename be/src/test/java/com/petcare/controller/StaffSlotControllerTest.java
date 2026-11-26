@@ -28,6 +28,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -150,5 +151,51 @@ class StaffSlotControllerTest {
                         .content(json))
                 .andExpect(status().isConflict())
                 .andExpect(jsonPath("$.message").value("Khung giờ bị trùng hoặc giao thoa"));
+    }
+
+    @Test
+    void updateSlotStatus_success_returns200() throws Exception {
+        LocalDate tomorrow = LocalDate.now().plusDays(1);
+        ClinicSlotResponse response = ClinicSlotResponse.builder()
+                .id(10L)
+                .slotDate(tomorrow)
+                .startTime(LocalTime.of(9, 0))
+                .endTime(LocalTime.of(9, 30))
+                .status(SlotStatus.CLOSED)
+                .build();
+
+        when(clinicSlotService.updateSlotStatus(eq(10L), eq(SlotStatus.CLOSED), eq("staff@petcare.com")))
+                .thenReturn(response);
+
+        mockMvc.perform(patch("/api/v1/staff/slots/10/status")
+                        .principal(staffAuth)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("{\"status\":\"CLOSED\"}"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.id").value(10L))
+                .andExpect(jsonPath("$.status").value("CLOSED"));
+    }
+
+    @Test
+    void updateSlotStatus_missingStatus_returns400() throws Exception {
+        mockMvc.perform(patch("/api/v1/staff/slots/10/status")
+                        .principal(staffAuth)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("{}"))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.errors.status").value("Trạng thái khung giờ không được để trống"));
+    }
+
+    @Test
+    void updateSlotStatus_bookedSlot_returns409() throws Exception {
+        when(clinicSlotService.updateSlotStatus(eq(10L), eq(SlotStatus.CLOSED), eq("staff@petcare.com")))
+                .thenThrow(new DuplicateResourceException("Không thể đóng hoặc mở lại khung giờ đã có khách đặt"));
+
+        mockMvc.perform(patch("/api/v1/staff/slots/10/status")
+                        .principal(staffAuth)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("{\"status\":\"CLOSED\"}"))
+                .andExpect(status().isConflict())
+                .andExpect(jsonPath("$.message").value("Không thể đóng hoặc mở lại khung giờ đã có khách đặt"));
     }
 }

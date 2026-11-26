@@ -117,7 +117,7 @@ class AppointmentServiceTest {
         when(userRepository.findByEmailIgnoreCase(EMAIL)).thenReturn(Optional.of(customer));
         when(petRepository.findByIdAndOwnerId(2L, 10L)).thenReturn(Optional.of(pet));
         when(clinicRepository.findByIdAndActiveTrue(1L)).thenReturn(Optional.of(clinic));
-        when(serviceRepository.findByIdAndClinicId(3L, 1L)).thenReturn(Optional.of(service));
+        when(serviceRepository.findByIdAndClinicIdAndActiveTrue(3L, 1L)).thenReturn(Optional.of(service));
         when(clinicSlotRepository.findByIdForUpdate(4L)).thenReturn(Optional.of(slot));
         when(appointmentRepository.existsBySlotIdAndStatusIn(eq(4L), anyCollection()))
                 .thenReturn(false);
@@ -193,7 +193,7 @@ class AppointmentServiceTest {
         when(userRepository.findByEmailIgnoreCase(EMAIL)).thenReturn(Optional.of(customer));
         when(petRepository.findByIdAndOwnerId(2L, 10L)).thenReturn(Optional.of(pet));
         when(clinicRepository.findByIdAndActiveTrue(1L)).thenReturn(Optional.of(clinic));
-        when(serviceRepository.findByIdAndClinicId(3L, 1L)).thenReturn(Optional.empty());
+        when(serviceRepository.findByIdAndClinicIdAndActiveTrue(3L, 1L)).thenReturn(Optional.empty());
 
         assertThatThrownBy(() -> appointmentService.bookAppointment(request, EMAIL))
                 .isInstanceOf(IllegalArgumentException.class)
@@ -205,7 +205,7 @@ class AppointmentServiceTest {
         when(userRepository.findByEmailIgnoreCase(EMAIL)).thenReturn(Optional.of(customer));
         when(petRepository.findByIdAndOwnerId(2L, 10L)).thenReturn(Optional.of(pet));
         when(clinicRepository.findByIdAndActiveTrue(1L)).thenReturn(Optional.of(clinic));
-        when(serviceRepository.findByIdAndClinicId(3L, 1L)).thenReturn(Optional.of(service));
+        when(serviceRepository.findByIdAndClinicIdAndActiveTrue(3L, 1L)).thenReturn(Optional.of(service));
         when(clinicSlotRepository.findByIdForUpdate(4L)).thenReturn(Optional.empty());
 
         assertThatThrownBy(() -> appointmentService.bookAppointment(request, EMAIL))
@@ -220,7 +220,7 @@ class AppointmentServiceTest {
         when(userRepository.findByEmailIgnoreCase(EMAIL)).thenReturn(Optional.of(customer));
         when(petRepository.findByIdAndOwnerId(2L, 10L)).thenReturn(Optional.of(pet));
         when(clinicRepository.findByIdAndActiveTrue(1L)).thenReturn(Optional.of(clinic));
-        when(serviceRepository.findByIdAndClinicId(3L, 1L)).thenReturn(Optional.of(service));
+        when(serviceRepository.findByIdAndClinicIdAndActiveTrue(3L, 1L)).thenReturn(Optional.of(service));
         when(clinicSlotRepository.findByIdForUpdate(4L)).thenReturn(Optional.of(slot));
 
         assertThatThrownBy(() -> appointmentService.bookAppointment(request, EMAIL))
@@ -236,7 +236,7 @@ class AppointmentServiceTest {
         when(userRepository.findByEmailIgnoreCase(EMAIL)).thenReturn(Optional.of(customer));
         when(petRepository.findByIdAndOwnerId(2L, 10L)).thenReturn(Optional.of(pet));
         when(clinicRepository.findByIdAndActiveTrue(1L)).thenReturn(Optional.of(clinic));
-        when(serviceRepository.findByIdAndClinicId(3L, 1L)).thenReturn(Optional.of(service));
+        when(serviceRepository.findByIdAndClinicIdAndActiveTrue(3L, 1L)).thenReturn(Optional.of(service));
         when(clinicSlotRepository.findByIdForUpdate(4L)).thenReturn(Optional.of(slot));
 
         assertThatThrownBy(() -> appointmentService.bookAppointment(request, EMAIL))
@@ -253,7 +253,7 @@ class AppointmentServiceTest {
         when(userRepository.findByEmailIgnoreCase(EMAIL)).thenReturn(Optional.of(customer));
         when(petRepository.findByIdAndOwnerId(2L, 10L)).thenReturn(Optional.of(pet));
         when(clinicRepository.findByIdAndActiveTrue(1L)).thenReturn(Optional.of(clinic));
-        when(serviceRepository.findByIdAndClinicId(3L, 1L)).thenReturn(Optional.of(service));
+        when(serviceRepository.findByIdAndClinicIdAndActiveTrue(3L, 1L)).thenReturn(Optional.of(service));
         when(clinicSlotRepository.findByIdForUpdate(4L)).thenReturn(Optional.of(slot));
 
         assertThatThrownBy(() -> appointmentService.bookAppointment(request, EMAIL))
@@ -266,7 +266,7 @@ class AppointmentServiceTest {
         when(userRepository.findByEmailIgnoreCase(EMAIL)).thenReturn(Optional.of(customer));
         when(petRepository.findByIdAndOwnerId(2L, 10L)).thenReturn(Optional.of(pet));
         when(clinicRepository.findByIdAndActiveTrue(1L)).thenReturn(Optional.of(clinic));
-        when(serviceRepository.findByIdAndClinicId(3L, 1L)).thenReturn(Optional.of(service));
+        when(serviceRepository.findByIdAndClinicIdAndActiveTrue(3L, 1L)).thenReturn(Optional.of(service));
         when(clinicSlotRepository.findByIdForUpdate(4L)).thenReturn(Optional.of(slot));
 
         assertThatThrownBy(() -> appointmentService.bookAppointment(request, EMAIL))
@@ -280,7 +280,7 @@ class AppointmentServiceTest {
         when(userRepository.findByEmailIgnoreCase(EMAIL)).thenReturn(Optional.of(customer));
         when(petRepository.findByIdAndOwnerId(2L, 10L)).thenReturn(Optional.of(pet));
         when(clinicRepository.findByIdAndActiveTrue(1L)).thenReturn(Optional.of(clinic));
-        when(serviceRepository.findByIdAndClinicId(3L, 1L)).thenReturn(Optional.of(service));
+        when(serviceRepository.findByIdAndClinicIdAndActiveTrue(3L, 1L)).thenReturn(Optional.of(service));
         when(clinicSlotRepository.findByIdForUpdate(4L)).thenReturn(Optional.of(slot));
         when(appointmentRepository.existsBySlotIdAndStatusIn(eq(4L), anyCollection())).thenReturn(false);
         when(appointmentRepository.saveAndFlush(any(AppointmentEntity.class))).thenAnswer(inv -> inv.getArgument(0));
@@ -294,7 +294,7 @@ class AppointmentServiceTest {
         when(userRepository.findByEmailIgnoreCase(EMAIL)).thenReturn(Optional.of(customer));
         when(petRepository.findByIdAndOwnerId(2L, 10L)).thenReturn(Optional.of(pet));
         when(clinicRepository.findByIdAndActiveTrue(1L)).thenReturn(Optional.of(clinic));
-        when(serviceRepository.findByIdAndClinicId(3L, 1L)).thenReturn(Optional.of(service));
+        when(serviceRepository.findByIdAndClinicIdAndActiveTrue(3L, 1L)).thenReturn(Optional.of(service));
         when(clinicSlotRepository.findByIdForUpdate(4L)).thenReturn(Optional.of(slot));
         when(appointmentRepository.existsBySlotIdAndStatusIn(eq(4L), anyCollection()))
                 .thenReturn(true);
@@ -350,7 +350,7 @@ class AppointmentServiceTest {
     @Test
     void cancelAppointment_notFound_throwsResourceNotFoundException() {
         when(userRepository.findByEmailIgnoreCase(EMAIL)).thenReturn(Optional.of(customer));
-        when(appointmentRepository.findByIdAndCustomerId(99L, 10L)).thenReturn(Optional.empty());
+        when(appointmentRepository.findByIdAndCustomerIdForUpdate(99L, 10L)).thenReturn(Optional.empty());
 
         assertThatThrownBy(() -> appointmentService.cancelAppointment(99L, EMAIL))
                 .isInstanceOf(ResourceNotFoundException.class)
@@ -368,11 +368,56 @@ class AppointmentServiceTest {
         apt.setStatus(AppointmentStatus.COMPLETED);
 
         when(userRepository.findByEmailIgnoreCase(EMAIL)).thenReturn(Optional.of(customer));
-        when(appointmentRepository.findByIdAndCustomerId(1L, 10L)).thenReturn(Optional.of(apt));
+        when(appointmentRepository.findByIdAndCustomerIdForUpdate(1L, 10L)).thenReturn(Optional.of(apt));
 
         assertThatThrownBy(() -> appointmentService.cancelAppointment(1L, EMAIL))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining("Không thể hủy lịch hẹn đang ở trạng thái: COMPLETED");
+    }
+
+    @Test
+    void cancelAppointment_pastSlot_throwsIllegalArgumentException() {
+        slot.setSlotDate(LocalDate.now().minusDays(1));
+        slot.setStatus(SlotStatus.BOOKED);
+        AppointmentEntity apt = newEntity(AppointmentEntity.class, 1L);
+        apt.setCustomer(customer);
+        apt.setPet(pet);
+        apt.setClinic(clinic);
+        apt.setService(service);
+        apt.setSlot(slot);
+        apt.setStatus(AppointmentStatus.CONFIRMED);
+
+        when(userRepository.findByEmailIgnoreCase(EMAIL)).thenReturn(Optional.of(customer));
+        when(appointmentRepository.findByIdAndCustomerIdForUpdate(1L, 10L)).thenReturn(Optional.of(apt));
+
+        assertThatThrownBy(() -> appointmentService.cancelAppointment(1L, EMAIL))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessageContaining("quá giờ khám");
+
+        assertThat(apt.getStatus()).isEqualTo(AppointmentStatus.CONFIRMED);
+        verify(clinicSlotRepository, never()).save(any());
+    }
+
+    @Test
+    void cancelAppointment_success_cancelsAndReopensFutureBookedSlot() {
+        slot.setStatus(SlotStatus.BOOKED);
+        AppointmentEntity apt = newEntity(AppointmentEntity.class, 1L);
+        apt.setCustomer(customer);
+        apt.setPet(pet);
+        apt.setClinic(clinic);
+        apt.setService(service);
+        apt.setSlot(slot);
+        apt.setStatus(AppointmentStatus.PENDING);
+
+        when(userRepository.findByEmailIgnoreCase(EMAIL)).thenReturn(Optional.of(customer));
+        when(appointmentRepository.findByIdAndCustomerIdForUpdate(1L, 10L)).thenReturn(Optional.of(apt));
+        when(clinicSlotRepository.findByIdForUpdate(4L)).thenReturn(Optional.of(slot));
+
+        AppointmentResponse response = appointmentService.cancelAppointment(1L, EMAIL);
+
+        assertThat(response.getStatus()).isEqualTo(AppointmentStatus.CANCELLED);
+        assertThat(slot.getStatus()).isEqualTo(SlotStatus.AVAILABLE);
+        verify(clinicSlotRepository).save(slot);
     }
 
     @Test
@@ -381,7 +426,7 @@ class AppointmentServiceTest {
         staff.setClinic(clinic);
 
         when(userRepository.findByEmailIgnoreCase("staff@petcare.com")).thenReturn(Optional.of(staff));
-        when(appointmentRepository.findByIdAndClinicId(99L, 1L)).thenReturn(Optional.empty());
+        when(appointmentRepository.findByIdAndClinicIdForUpdate(99L, 1L)).thenReturn(Optional.empty());
 
         assertThatThrownBy(() -> appointmentService.confirmAppointment(99L, "staff@petcare.com"))
                 .isInstanceOf(ResourceNotFoundException.class)
@@ -396,7 +441,7 @@ class AppointmentServiceTest {
         apt.setStatus(AppointmentStatus.CONFIRMED);
 
         when(userRepository.findByEmailIgnoreCase("staff@petcare.com")).thenReturn(Optional.of(staff));
-        when(appointmentRepository.findByIdAndClinicId(1L, 1L)).thenReturn(Optional.of(apt));
+        when(appointmentRepository.findByIdAndClinicIdForUpdate(1L, 1L)).thenReturn(Optional.of(apt));
 
         assertThatThrownBy(() -> appointmentService.confirmAppointment(1L, "staff@petcare.com"))
                 .isInstanceOf(IllegalArgumentException.class)
@@ -409,10 +454,34 @@ class AppointmentServiceTest {
         staff.setClinic(clinic);
 
         when(userRepository.findByEmailIgnoreCase("staff@petcare.com")).thenReturn(Optional.of(staff));
-        when(appointmentRepository.findByIdAndClinicId(99L, 1L)).thenReturn(Optional.empty());
+        when(appointmentRepository.findByIdAndClinicIdForUpdate(99L, 1L)).thenReturn(Optional.empty());
 
         assertThatThrownBy(() -> appointmentService.rejectAppointment(99L, "staff@petcare.com"))
                 .isInstanceOf(ResourceNotFoundException.class);
+    }
+
+    @Test
+    void rejectAppointment_success_rejectsAndReopensFutureBookedSlot() {
+        UserEntity staff = new UserEntity("Nhân Viên", "staff@petcare.com", "0900000002", "hash", UserRole.STAFF);
+        staff.setClinic(clinic);
+        slot.setStatus(SlotStatus.BOOKED);
+        AppointmentEntity apt = newEntity(AppointmentEntity.class, 1L);
+        apt.setCustomer(customer);
+        apt.setPet(pet);
+        apt.setClinic(clinic);
+        apt.setService(service);
+        apt.setSlot(slot);
+        apt.setStatus(AppointmentStatus.PENDING);
+
+        when(userRepository.findByEmailIgnoreCase("staff@petcare.com")).thenReturn(Optional.of(staff));
+        when(appointmentRepository.findByIdAndClinicIdForUpdate(1L, 1L)).thenReturn(Optional.of(apt));
+        when(clinicSlotRepository.findByIdForUpdate(4L)).thenReturn(Optional.of(slot));
+
+        AppointmentResponse response = appointmentService.rejectAppointment(1L, "staff@petcare.com");
+
+        assertThat(response.getStatus()).isEqualTo(AppointmentStatus.REJECTED);
+        assertThat(slot.getStatus()).isEqualTo(SlotStatus.AVAILABLE);
+        verify(clinicSlotRepository).save(slot);
     }
 
     @Test
@@ -421,7 +490,7 @@ class AppointmentServiceTest {
         staff.setClinic(clinic);
 
         when(userRepository.findByEmailIgnoreCase("staff@petcare.com")).thenReturn(Optional.of(staff));
-        when(appointmentRepository.findByIdAndClinicId(99L, 1L)).thenReturn(Optional.empty());
+        when(appointmentRepository.findByIdAndClinicIdForUpdate(99L, 1L)).thenReturn(Optional.empty());
 
         assertThatThrownBy(() -> appointmentService.completeAppointment(99L, "staff@petcare.com"))
                 .isInstanceOf(ResourceNotFoundException.class);
@@ -433,7 +502,7 @@ class AppointmentServiceTest {
         staff.setClinic(clinic);
 
         when(userRepository.findByEmailIgnoreCase("staff@petcare.com")).thenReturn(Optional.of(staff));
-        when(appointmentRepository.findByIdAndClinicId(99L, 1L)).thenReturn(Optional.empty());
+        when(appointmentRepository.findByIdAndClinicIdForUpdate(99L, 1L)).thenReturn(Optional.empty());
 
         assertThatThrownBy(() -> appointmentService.noShowAppointment(99L, "staff@petcare.com"))
                 .isInstanceOf(ResourceNotFoundException.class);

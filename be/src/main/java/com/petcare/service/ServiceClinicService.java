@@ -18,9 +18,8 @@ public class ServiceClinicService {
 
     @Transactional(readOnly = true)
     public List<ServiceResponse> getServicesByClinicId(Long clinicId) {
-        if (!clinicRepository.existsById(clinicId)) {
-            throw new ResourceNotFoundException("Phòng khám", "id", clinicId);
-        }
+        clinicRepository.findByIdAndActiveTrue(clinicId)
+                .orElseThrow(() -> new ResourceNotFoundException("Phòng khám", "id", clinicId));
         return serviceRepository.findByClinicIdAndActiveTrueOrderByNameAsc(clinicId)
                 .stream()
                 .map(ServiceResponse::fromEntity)

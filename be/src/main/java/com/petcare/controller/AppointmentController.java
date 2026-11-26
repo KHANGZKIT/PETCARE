@@ -4,7 +4,7 @@ import java.util.List;
 
 import com.petcare.dto.request.BookingRequest;
 import com.petcare.dto.response.AppointmentResponse;
-import com.petcare.entity.UserEntity;
+import com.petcare.security.SecurityUtils;
 import com.petcare.service.AppointmentService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -30,10 +30,7 @@ public class AppointmentController {
     private final AppointmentService appointmentService;
 
     private String getEmail(Authentication auth) {
-        if (auth != null && auth.getPrincipal() instanceof UserEntity user) {
-            return user.getEmail();
-        }
-        return auth != null ? auth.getName() : null;
+        return SecurityUtils.extractEmail(auth);
     }
 
     @PostMapping

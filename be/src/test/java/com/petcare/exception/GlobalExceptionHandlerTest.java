@@ -67,4 +67,28 @@ class GlobalExceptionHandlerTest {
         ResourceNotFoundException ex = new ResourceNotFoundException("Appointment", "id", 99L);
         assertThat(ex.getMessage()).isEqualTo("Appointment không tồn tại với id: '99'");
     }
+
+    @Test
+    void handleAccountDisabledException_returns403Forbidden() {
+        AccountDisabledException ex = new AccountDisabledException("Tài khoản đã bị tạm khóa");
+
+        ResponseEntity<ErrorResponse> response = exceptionHandler.handleAccountDisabledException(ex, request);
+
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.FORBIDDEN);
+        assertThat(response.getBody()).isNotNull();
+        assertThat(response.getBody().getStatus()).isEqualTo(403);
+        assertThat(response.getBody().getMessage()).isEqualTo("Tài khoản đã bị tạm khóa");
+    }
+
+    @Test
+    void handleGeneralException_illegalStateException_returns500() {
+        IllegalStateException ex = new IllegalStateException("Unexpected internal state");
+
+        ResponseEntity<ErrorResponse> response = exceptionHandler.handleGeneralException(ex, request);
+
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR);
+        assertThat(response.getBody()).isNotNull();
+        assertThat(response.getBody().getStatus()).isEqualTo(500);
+        assertThat(response.getBody().getMessage()).isEqualTo("Đã xảy ra lỗi hệ thống, vui lòng thử lại sau");
+    }
 }

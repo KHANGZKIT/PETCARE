@@ -5,6 +5,7 @@ import com.petcare.entity.SlotStatus;
 import jakarta.persistence.LockModeType;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Lock;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
@@ -39,4 +40,20 @@ public interface ClinicSlotRepository extends JpaRepository<ClinicSlotEntity, Lo
     @Lock(LockModeType.PESSIMISTIC_WRITE)
     @Query("select s from ClinicSlotEntity s where s.id = :id")
     Optional<ClinicSlotEntity> findByIdForUpdate(@Param("id") Long id);
+
+    /** Row lock scoped to clinic for staff slot status updates. */
+    @Lock(LockModeType.PESSIMISTIC_WRITE)
+    @Query("select s from ClinicSlotEntity s where s.id = :id and s.clinic.id = :clinicId")
+    Optional<ClinicSlotEntity> findByIdAndClinicIdForUpdate(@Param("id") Long id, @Param("clinicId") Long clinicId);
+
+    /** Idempotent atomic insert for standard daily slots without aborting PostgreSQL transactions on conflict. */
+    @Modifying
+    @Query(value = "INSERT INTO public.clinic_slots (clinic_id, slot_date, start_time, end_time, status) " +
+            "VALUES (:clinicId, :slotDate, :startTime, :endTime, 'AVAILABLE') " +
+            "ON CONFLICT (clinic_id, slot_date, start_time) DO NOTHING", nativeQuery = true)
+    int insertSlotIfAbsent(
+            @Param("clinicId") Long clinicId,
+            @Param("slotDate") LocalDate slotDate,
+            @Param("startTime") LocalTime startTime,
+            @Param("endTime") LocalTime endTime);
 }

@@ -4,7 +4,7 @@ import com.petcare.dto.request.LoginRequest;
 import com.petcare.dto.request.RegisterRequest;
 import com.petcare.dto.response.LoginResponse;
 import com.petcare.dto.response.UserProfileResponse;
-import com.petcare.entity.UserEntity;
+import com.petcare.security.SecurityUtils;
 import com.petcare.service.AuthService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -43,12 +43,7 @@ public class AuthController {
             throw new BadCredentialsException("Chưa đăng nhập");
         }
 
-        String email;
-        if (authentication.getPrincipal() instanceof UserEntity user) {
-            email = user.getEmail();
-        } else {
-            email = authentication.getName();
-        }
+        String email = SecurityUtils.extractEmail(authentication);
 
         UserProfileResponse response = authService.getProfile(email);
         return ResponseEntity.ok(response);

@@ -1,7 +1,6 @@
 package com.petcare.service;
 
 import org.springframework.security.access.AccessDeniedException;
-import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -69,9 +68,9 @@ public class AppointmentService {
                 .orElseThrow(() -> new IllegalArgumentException(
                         "Phòng khám không tồn tại hoặc đã ngừng hoạt động"));
 
-        ServiceEntity service = serviceRepository.findByIdAndClinicId(request.getServiceId(), clinic.getId())
+        ServiceEntity service = serviceRepository.findByIdAndClinicIdAndActiveTrue(request.getServiceId(), clinic.getId())
                 .orElseThrow(() -> new IllegalArgumentException(
-                        "Dịch vụ không tồn tại hoặc không thuộc phòng khám đã chọn"));
+                        "Dịch vụ không tồn tại, đã ngừng cung cấp hoặc không thuộc phòng khám đã chọn"));
 
         ClinicSlotEntity slot = clinicSlotRepository.findByIdForUpdate(request.getSlotId())
                 .orElseThrow(() -> new IllegalArgumentException("Khung giờ không tồn tại"));
@@ -133,22 +132,41 @@ public class AppointmentService {
     @Transactional
     public AppointmentResponse cancelAppointment(Long appointmentId, String cusEmail) {
         UserEntity customer = getUserByEmail(cusEmail);
-        AppointmentEntity appointment = appointmentRepository.findByIdAndCustomerId(appointmentId, customer.getId())
+        AppointmentEntity appointment = appointmentRepository.findByIdAndCustomerIdForUpdate(appointmentId, customer.getId())
                 .orElseThrow(() -> new ResourceNotFoundException("Không tìm thấy lịch hẹn hoặc bạn không có quyền hủy"));
         if (appointment.getStatus() != AppointmentStatus.PENDING
                 && appointment.getStatus() != AppointmentStatus.CONFIRMED) {
             throw new IllegalArgumentException("Không thể hủy lịch hẹn đang ở trạng thái: " + appointment.getStatus());
         }
 
-        appointment.setStatus(AppointmentStatus.CANCELLED);
-
         ClinicSlotEntity slot = appointment.getSlot();
-        if (slot != null) {
-            slot.setStatus(SlotStatus.AVAILABLE);
-            clinicSlotRepository.save(slot);
+        if (slot != null && isSlotInPast(slot)) {
+            throw new IllegalArgumentException("Không thể hủy lịch hẹn đã quá giờ khám");
         }
 
+        appointment.setStatus(AppointmentStatus.CANCELLED);
+        reopenSlotIfBookedAndFuture(slot);
+
         return AppointmentResponse.fromEntity(appointment);
+    }
+
+    private boolean isSlotInPast(ClinicSlotEntity slot) {
+        return slot.getSlotDate() != null
+                && slot.getStartTime() != null
+                && slot.getSlotDate().atTime(slot.getStartTime()).isBefore(LocalDateTime.now());
+    }
+
+    private void reopenSlotIfBookedAndFuture(ClinicSlotEntity slot) {
+        if (slot == null) {
+            return;
+        }
+        ClinicSlotEntity lockedSlot = (slot.getId() != null)
+                ? clinicSlotRepository.findByIdForUpdate(slot.getId()).orElse(slot)
+                : slot;
+        if (lockedSlot.getStatus() == SlotStatus.BOOKED && !isSlotInPast(lockedSlot)) {
+            lockedSlot.setStatus(SlotStatus.AVAILABLE);
+            clinicSlotRepository.save(lockedSlot);
+        }
     }
 
     private Long getStaffClinicId(String staffEmail) {
@@ -172,7 +190,7 @@ public class AppointmentService {
     @Transactional
     public AppointmentResponse confirmAppointment(Long appointmentId, String staffEmail) {
         Long clinicId = getStaffClinicId(staffEmail);
-        AppointmentEntity appointment = appointmentRepository.findByIdAndClinicId(appointmentId, clinicId)
+        AppointmentEntity appointment = appointmentRepository.findByIdAndClinicIdForUpdate(appointmentId, clinicId)
                 .orElseThrow(() -> new ResourceNotFoundException("Không tìm thấy lịch hẹn thuộc phòng khám của bạn"));
 
         if (appointment.getStatus() != AppointmentStatus.PENDING) {
@@ -186,7 +204,7 @@ public class AppointmentService {
     @Transactional
     public AppointmentResponse rejectAppointment(Long appointmentId, String staffEmail) {
         Long clinicId = getStaffClinicId(staffEmail);
-        AppointmentEntity appointment = appointmentRepository.findByIdAndClinicId(appointmentId, clinicId)
+        AppointmentEntity appointment = appointmentRepository.findByIdAndClinicIdForUpdate(appointmentId, clinicId)
                 .orElseThrow(() -> new ResourceNotFoundException("Không tìm thấy lịch hẹn thuộc phòng khám của bạn"));
 
         if (appointment.getStatus() != AppointmentStatus.PENDING) {
@@ -194,12 +212,7 @@ public class AppointmentService {
         }
 
         appointment.setStatus(AppointmentStatus.REJECTED);
-
-        ClinicSlotEntity slot = appointment.getSlot();
-        if (slot != null) {
-            slot.setStatus(SlotStatus.AVAILABLE);
-            clinicSlotRepository.save(slot);
-        }
+        reopenSlotIfBookedAndFuture(appointment.getSlot());
 
         return AppointmentResponse.fromEntity(appointment);
     }
@@ -207,7 +220,7 @@ public class AppointmentService {
     @Transactional
     public AppointmentResponse completeAppointment(Long appointmentId, String staffEmail) {
         Long clinicId = getStaffClinicId(staffEmail);
-        AppointmentEntity appointment = appointmentRepository.findByIdAndClinicId(appointmentId, clinicId)
+        AppointmentEntity appointment = appointmentRepository.findByIdAndClinicIdForUpdate(appointmentId, clinicId)
                 .orElseThrow(() -> new ResourceNotFoundException("Không tìm thấy lịch hẹn thuộc phòng khám của bạn"));
 
         if (appointment.getStatus() != AppointmentStatus.CONFIRMED) {
@@ -221,7 +234,7 @@ public class AppointmentService {
     @Transactional
     public AppointmentResponse noShowAppointment(Long appointmentId, String staffEmail) {
         Long clinicId = getStaffClinicId(staffEmail);
-        AppointmentEntity appointment = appointmentRepository.findByIdAndClinicId(appointmentId, clinicId)
+        AppointmentEntity appointment = appointmentRepository.findByIdAndClinicIdForUpdate(appointmentId, clinicId)
                 .orElseThrow(() -> new ResourceNotFoundException("Không tìm thấy lịch hẹn thuộc phòng khám của bạn"));
 
         if (appointment.getStatus() != AppointmentStatus.CONFIRMED) {

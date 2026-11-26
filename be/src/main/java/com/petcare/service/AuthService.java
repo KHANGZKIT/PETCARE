@@ -6,6 +6,7 @@ import com.petcare.dto.response.LoginResponse;
 import com.petcare.dto.response.UserProfileResponse;
 import com.petcare.entity.UserEntity;
 import com.petcare.entity.UserRole;
+import com.petcare.exception.AccountDisabledException;
 import com.petcare.exception.DuplicateResourceException;
 import com.petcare.exception.ResourceNotFoundException;
 import com.petcare.repository.UserRepository;
@@ -55,11 +56,12 @@ public class AuthService {
     public LoginResponse login(LoginRequest req) {
         UserEntity user = findUserByEmail(req.getEmail());
 
-        if (!isActive(user)) {
-            throw new IllegalStateException("Tài khoản đã bị tạm khóa, vui lòng liên hệ quản trị viên");
-        }
-
+        // Xác thực mật khẩu trước khi kiểm tra trạng thái khóa để tránh lộ thông tin tài khoản
         verifyPassword(req.getPassword(), user.getPasswordHash());
+
+        if (!isActive(user)) {
+            throw new AccountDisabledException("Tài khoản đã bị tạm khóa, vui lòng liên hệ quản trị viên");
+        }
 
         String token = jwtService.generateToken(user);
         return buildLoginResponse(user, token);
@@ -100,7 +102,7 @@ public class AuthService {
                 .orElseThrow(() -> new ResourceNotFoundException("Không thể tìm thấy thông tin tài khoản"));
 
         if (!isActive(user)) {
-            throw new IllegalStateException("Tài khoản đã bị tạm khóa, vui lòng liên hệ quản trị viên");
+            throw new AccountDisabledException("Tài khoản đã bị tạm khóa, vui lòng liên hệ quản trị viên");
         }
 
         Long clinicId = user.getClinic() != null ? user.getClinic().getId() : null;
