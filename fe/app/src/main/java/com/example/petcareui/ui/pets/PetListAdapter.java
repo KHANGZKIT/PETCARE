@@ -85,18 +85,7 @@ public class PetListAdapter extends RecyclerView.Adapter<PetListAdapter.PetViewH
         }
 
         void bind(PetItem pet, int position) {
-            Context ctx = binding.getRoot().getContext();
-
-            int avatarRes = pet.getImageResId();
-            binding.ivPetAvatar.setImageResource(avatarRes);
-            if (avatarRes == R.drawable.img_pet_bong) {
-                binding.ivPetAvatar.setPadding(0, 0, 0, 0);
-                binding.ivPetAvatar.setScaleType(ImageView.ScaleType.CENTER_CROP);
-            } else {
-                int pad = Math.round(4 * ctx.getResources().getDisplayMetrics().density);
-                binding.ivPetAvatar.setPadding(pad, pad, pad, pad);
-                binding.ivPetAvatar.setScaleType(ImageView.ScaleType.FIT_CENTER);
-            }
+            binding.ivPetAvatar.setImageResource(pet.getImageResId());
 
             binding.tvPetName.setText(pet.getName());
 

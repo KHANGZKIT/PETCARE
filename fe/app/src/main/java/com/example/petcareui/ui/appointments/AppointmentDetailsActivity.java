@@ -179,16 +179,9 @@ public class AppointmentDetailsActivity extends AppCompatActivity {
         binding.tvPetName.setText(appt.getPet());
 
         // Thú cưng
-        int avatarRes = resolveUnifiedPetAvatar(appt.getPet(), appt.getPetSpecies(), appt.getPetImgRes());
+        int avatarRes = com.example.petcareui.utils.PetAvatarUtils.resolvePetAvatar(
+                appt.getPetId(), appt.getPet(), appt.getPetSpecies(), appt.getPetBreed());
         binding.ivPetAvatar.setImageResource(avatarRes);
-        if (avatarRes == R.drawable.img_pet_bong) {
-            binding.ivPetAvatar.setPadding(0, 0, 0, 0);
-            binding.ivPetAvatar.setScaleType(ImageView.ScaleType.CENTER_CROP);
-        } else {
-            int pad = Math.round(4 * getResources().getDisplayMetrics().density);
-            binding.ivPetAvatar.setPadding(pad, pad, pad, pad);
-            binding.ivPetAvatar.setScaleType(ImageView.ScaleType.FIT_CENTER);
-        }
         binding.tvCardPetName.setText(appt.getPet());
         binding.tvPetDetails.setText(buildPetSubtitle(appt.getPetSpecies(), appt.getPetBreed(), appt.getPetAge(), appt.getPetGender()));
 
@@ -307,6 +300,7 @@ public class AppointmentDetailsActivity extends AppCompatActivity {
                         appt.setPetBreed(p.getBreed());
                         appt.setPetAge(p.getAge());
                         appt.setPetGender(p.getGender());
+                        binding.ivPetAvatar.setImageResource(resolvedPetItem.getImageResId());
                         binding.tvPetDetails.setText(buildPetSubtitle(
                                 p.getSpecies(),
                                 resolvedPetItem.getBreed(),
@@ -322,18 +316,6 @@ public class AppointmentDetailsActivity extends AppCompatActivity {
             public void onFailure(Call<List<PetResponse>> call, Throwable t) {
             }
         });
-    }
-
-    private int resolveUnifiedPetAvatar(String petName, String petSpecies, int currentRes) {
-        if (currentRes == R.drawable.img_pet_bong || currentRes == R.drawable.mascot_corgi_running || currentRes == R.drawable.mascot_corgi_wave) {
-            return currentRes;
-        }
-        String lowerName = petName != null ? petName.toLowerCase(Locale.ROOT) : "";
-        String lowerSpec = petSpecies != null ? petSpecies.toLowerCase(Locale.ROOT) : "";
-        if (lowerSpec.contains("mèo") || lowerName.contains("mèo") || lowerName.contains("bông") || lowerName.contains("mimi") || lowerName.contains("miu")) {
-            return R.drawable.img_pet_bong;
-        }
-        return R.drawable.mascot_corgi_running;
     }
 
     private String formatCreatedTimestamp(String isoCreatedAt, String fallbackDate) {
@@ -652,7 +634,8 @@ public class AppointmentDetailsActivity extends AppCompatActivity {
             return;
         }
         if (appt != null && appt.getPetId() != null) {
-            int avatarRes = resolveUnifiedPetAvatar(appt.getPet(), appt.getPetSpecies(), appt.getPetImgRes());
+            int avatarRes = com.example.petcareui.utils.PetAvatarUtils.resolvePetAvatar(
+                    appt.getPetId(), appt.getPet(), appt.getPetSpecies(), appt.getPetBreed());
             PetItem tempPet = new PetItem(
                     String.valueOf(appt.getPetId()),
                     appt.getPet() != null ? appt.getPet() : "Bé cưng",

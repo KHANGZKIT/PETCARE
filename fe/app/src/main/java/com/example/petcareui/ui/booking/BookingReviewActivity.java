@@ -160,7 +160,7 @@ public class BookingReviewActivity extends AppCompatActivity {
         // Dữ liệu mẫu chuẩn nếu mở độc lập
         if (clinicItem == null) {
             clinicItem = new ClinicItem(
-                    "1", "Phòng khám Thú y An Nhiên", "Số 12 Chùa Hà, Cầu Giấy, Hà Nội", 4.8, 214, "1,2 km", true, "Thứ 2 – CN · 08:00 – 20:00"
+                    "1", "Bệnh viện Thú y Tropicpet Cầu Giấy", "Số 8 Trần Quốc Hoàn, Cầu Giấy, Hà Nội", 4.8, 214, "1,2 km", true, "Thứ 2 – CN · 08:00 – 20:00"
             );
         }
         if (serviceItem == null) {

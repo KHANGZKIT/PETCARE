@@ -116,16 +116,7 @@ public class PetDetailsActivity extends AppCompatActivity {
         String rawSpecies = pet.getRawSpecies() != null && !pet.getRawSpecies().trim().isEmpty()
                 ? pet.getRawSpecies().trim() : "Thú cưng";
 
-        int avatarRes = pet.getImageResId();
-        binding.ivPetHeroAvatar.setImageResource(avatarRes);
-        if (avatarRes == R.drawable.img_pet_bong) {
-            binding.ivPetHeroAvatar.setPadding(0, 0, 0, 0);
-            binding.ivPetHeroAvatar.setScaleType(android.widget.ImageView.ScaleType.CENTER_CROP);
-        } else {
-            int pad = Math.round(8 * getResources().getDisplayMetrics().density);
-            binding.ivPetHeroAvatar.setPadding(pad, pad, pad, pad);
-            binding.ivPetHeroAvatar.setScaleType(android.widget.ImageView.ScaleType.FIT_CENTER);
-        }
+        binding.ivPetHeroAvatar.setImageResource(pet.getImageResId());
 
         binding.tvPetHeroName.setText(petName);
 

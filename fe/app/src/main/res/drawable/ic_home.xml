@@ -1,21 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Phosphor Icons (duotone/house-duotone.svg) - MIT License -->
 <vector xmlns:android="http://schemas.android.com/apk/res/android"
     android:width="24dp"
     android:height="24dp"
-    android:viewportWidth="24"
-    android:viewportHeight="24">
-    <!-- Home icon from Lucide -->
+    android:viewportWidth="256"
+    android:viewportHeight="256">
     <path
-        android:fillColor="#00000000"
-        android:strokeColor="#238C82"
-        android:strokeWidth="2.4"
-        android:strokeLineCap="round"
-        android:strokeLineJoin="round"
-        android:pathData="M3,9l9,-7 9,7v11a2,2 0 0,1 -2,2H5a2,2 0 0,1 -2,-2z" />
+        android:fillColor="#FF1F1A17"
+        android:fillAlpha="0.2"
+        android:pathData="M216,120v96H152V152H104v64H40V120a8,8,0,0,1,2.34-5.66l80-80a8,8,0,0,1,11.32,0l80,80A8,8,0,0,1,216,120Z" />
     <path
-        android:fillColor="#00000000"
-        android:strokeColor="#238C82"
-        android:strokeWidth="2.4"
-        android:strokeLineCap="round"
-        android:strokeLineJoin="round"
-        android:pathData="M9,22V12h6v10" />
+        android:fillColor="#FF1F1A17"
+        android:pathData="M219.31,108.68l-80-80a16,16,0,0,0-22.62,0l-80,80A15.87,15.87,0,0,0,32,120v96a8,8,0,0,0,8,8h64a8,8,0,0,0,8-8V160h32v56a8,8,0,0,0,8,8h64a8,8,0,0,0,8-8V120A15.87,15.87,0,0,0,219.31,108.68ZM208,208H160V152a8,8,0,0,0-8-8H104a8,8,0,0,0-8,8v56H48V120l80-80,80,80Z" />
 </vector>

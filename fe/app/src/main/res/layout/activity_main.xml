@@ -59,8 +59,8 @@
                         android:orientation="horizontal">
 
                         <ImageView
-                            android:layout_width="16dp"
-                            android:layout_height="16dp"
+                            android:layout_width="18dp"
+                            android:layout_height="18dp"
                             android:contentDescription="@null"
                             android:src="@drawable/ic_map_pin"
                             app:tint="@color/ds_primary" />
@@ -173,7 +173,7 @@
                         android:textColor="@color/ds_text_primary"
                         android:textSize="13sp"
                         app:fontFamily="@font/open_sans_medium"
-                        tools:text="Lê Thị Thu Hà" />
+                        tools:text="Nguyễn Khánh Linh" />
 
                     <TextView
                         android:id="@+id/tvHeaderQuestion"
@@ -302,13 +302,13 @@
                     android:paddingBottom="10dp">
 
                     <FrameLayout
-                        android:layout_width="34dp"
-                        android:layout_height="34dp"
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
                         android:background="@drawable/bg_shortcut_icon_cream">
 
                         <ImageView
-                            android:layout_width="18dp"
-                            android:layout_height="18dp"
+                            android:layout_width="22dp"
+                            android:layout_height="22dp"
                             android:layout_gravity="center"
                             android:contentDescription="@null"
                             android:src="@drawable/ic_stethoscope"
@@ -341,13 +341,13 @@
                     android:paddingBottom="10dp">
 
                     <FrameLayout
-                        android:layout_width="34dp"
-                        android:layout_height="34dp"
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
                         android:background="@drawable/bg_shortcut_icon_cream">
 
                         <ImageView
-                            android:layout_width="18dp"
-                            android:layout_height="18dp"
+                            android:layout_width="22dp"
+                            android:layout_height="22dp"
                             android:layout_gravity="center"
                             android:contentDescription="@null"
                             android:src="@drawable/ic_syringe"
@@ -380,13 +380,13 @@
                     android:paddingBottom="10dp">
 
                     <FrameLayout
-                        android:layout_width="34dp"
-                        android:layout_height="34dp"
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
                         android:background="@drawable/bg_shortcut_icon_cream">
 
                         <ImageView
-                            android:layout_width="18dp"
-                            android:layout_height="18dp"
+                            android:layout_width="22dp"
+                            android:layout_height="22dp"
                             android:layout_gravity="center"
                             android:contentDescription="@null"
                             android:src="@drawable/ic_heart_pulse"
@@ -418,13 +418,13 @@
                     android:paddingBottom="10dp">
 
                     <FrameLayout
-                        android:layout_width="34dp"
-                        android:layout_height="34dp"
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
                         android:background="@drawable/bg_shortcut_icon_cream">
 
                         <ImageView
-                            android:layout_width="18dp"
-                            android:layout_height="18dp"
+                            android:layout_width="22dp"
+                            android:layout_height="22dp"
                             android:layout_gravity="center"
                             android:contentDescription="@null"
                             android:src="@drawable/ic_scissors"
@@ -594,9 +594,8 @@
                             android:layout_height="48dp"
                             android:background="@color/ds_cream_tile"
                             android:contentDescription="@null"
-                            android:padding="4dp"
-                            android:scaleType="fitCenter"
-                            android:src="@drawable/mascot_corgi_running"
+                            android:scaleType="centerCrop"
+                            android:src="@drawable/img_pet_mochi"
                             app:shapeAppearanceOverlay="@style/RoundedCorner10"
                             app:strokeWidth="0dp" />
 
@@ -1174,8 +1173,8 @@
                     android:background="@drawable/bg_bottom_nav_active_pill">
 
                     <ImageView
-                        android:layout_width="20dp"
-                        android:layout_height="20dp"
+                        android:layout_width="22dp"
+                        android:layout_height="22dp"
                         android:layout_gravity="center_horizontal|bottom"
                         android:layout_marginBottom="2dp"
                         android:contentDescription="@null"
@@ -1209,8 +1208,8 @@
                     android:layout_height="30dp">
 
                     <ImageView
-                        android:layout_width="20dp"
-                        android:layout_height="20dp"
+                        android:layout_width="22dp"
+                        android:layout_height="22dp"
                         android:layout_gravity="center_horizontal|bottom"
                         android:layout_marginBottom="2dp"
                         android:contentDescription="@null"
@@ -1244,8 +1243,8 @@
                     android:layout_height="30dp">
 
                     <ImageView
-                        android:layout_width="20dp"
-                        android:layout_height="20dp"
+                        android:layout_width="22dp"
+                        android:layout_height="22dp"
                         android:layout_gravity="center_horizontal|bottom"
                         android:layout_marginBottom="2dp"
                         android:contentDescription="@null"
@@ -1279,8 +1278,8 @@
                     android:layout_height="30dp">
 
                     <ImageView
-                        android:layout_width="20dp"
-                        android:layout_height="20dp"
+                        android:layout_width="22dp"
+                        android:layout_height="22dp"
                         android:layout_gravity="center_horizontal|bottom"
                         android:layout_marginBottom="2dp"
                         android:contentDescription="@null"

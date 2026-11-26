@@ -1,20 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Phosphor Icons (duotone/cat-duotone.svg) - MIT License -->
 <vector xmlns:android="http://schemas.android.com/apk/res/android"
     android:width="24dp"
     android:height="24dp"
-    android:viewportWidth="24"
-    android:viewportHeight="24">
+    android:viewportWidth="256"
+    android:viewportHeight="256">
     <path
-        android:fillColor="#00000000"
-        android:pathData="M12,5c0.67,0 1.35,0.09 2,0.26 1.78,-2 5.03,-2.84 6.42,-2.26 1.4,0.58 -0.42,7 -0.42,7 0.57,1.07 1,2.24 1,3.44C21,17.9 16.97,21 12,21s-9,-3.1 -9,-7.56c0,-1.25 0.5,-2.4 1,-3.44 0,0 -1.89,-6.42 -0.5,-7 1.39,-0.58 4.72,0.23 6.5,2.23A9.04,9.04 0 0,1 12,5Z"
-        android:strokeColor="#6F6662"
-        android:strokeLineCap="round"
-        android:strokeLineJoin="round"
-        android:strokeWidth="2" />
+        android:fillColor="#FF1F1A17"
+        android:fillAlpha="0.2"
+        android:pathData="M224,48v88c0,48.6-43,88-96,88s-96-39.4-96-88V48a8,8,0,0,1,13.66-5.66L67.6,67.6h0a102.87,102.87,0,0,1,120.8,0h0l21.94-25.24A8,8,0,0,1,224,48Z" />
     <path
-        android:fillColor="#00000000"
-        android:pathData="M8,14v0.5M16,14v0.5M11.25,16.25h1.5L12,17l-0.75,-0.75Z"
-        android:strokeColor="#6F6662"
-        android:strokeLineCap="round"
-        android:strokeLineJoin="round"
-        android:strokeWidth="2" />
+        android:fillColor="#FF1F1A17"
+        android:pathData="M96,140a12,12,0,1,1-12-12A12,12,0,0,1,96,140Zm76-12a12,12,0,1,0,12,12A12,12,0,0,0,172,128Zm60-80v88c0,52.93-46.65,96-104,96S24,188.93,24,136V48A16,16,0,0,1,51.31,36.69c.14.14.26.27.38.41L69,57a111.22,111.22,0,0,1,118.1,0L204.31,37.1c.12-.14.24-.27.38-.41A16,16,0,0,1,232,48Zm-16,0-21.56,24.8A8,8,0,0,1,183.63,74,88.86,88.86,0,0,0,168,64.75V88a8,8,0,1,1-16,0V59.05a97.43,97.43,0,0,0-16-2.72V88a8,8,0,1,1-16,0V56.33a97.43,97.43,0,0,0-16,2.72V88a8,8,0,1,1-16,0V64.75A88.86,88.86,0,0,0,72.37,74a8,8,0,0,1-10.81-1.17L40,48v88c0,41.66,35.21,76,80,79.67V195.31l-13.66-13.66a8,8,0,0,1,11.32-11.31L128,180.68l10.34-10.34a8,8,0,0,1,11.32,11.31L136,195.31v20.36c44.79-3.69,80-38,80-79.67Z" />
 </vector>

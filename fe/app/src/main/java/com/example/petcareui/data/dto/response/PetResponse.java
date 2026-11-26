@@ -1,7 +1,7 @@
 package com.example.petcareui.data.dto.response;
 
-import com.example.petcareui.R;
 import com.example.petcareui.data.model.PetItem;
+import com.example.petcareui.utils.PetAvatarUtils;
 
 import java.io.Serializable;
 import java.util.Locale;
@@ -32,12 +32,10 @@ public class PetResponse implements Serializable {
 
         String cleanSpecies;
         String resolvedBreed;
-        int avatar;
 
         if (lower.contains("mèo") || lower.contains("meo") || lower.contains("cat")
                 || lowerName.contains("bông") || lowerName.contains("mimi") || lowerName.contains("miu")) {
             cleanSpecies = "Mèo";
-            avatar = R.drawable.img_pet_bong;
             if (breed != null && !breed.trim().isEmpty()) {
                 resolvedBreed = breed.trim();
             } else {
@@ -46,7 +44,6 @@ public class PetResponse implements Serializable {
         } else if (lower.startsWith("chó") || lower.startsWith("cho") || lower.contains("corgi")
                 || lower.contains("shiba") || lower.contains("golden") || lower.contains("beagle")) {
             cleanSpecies = "Chó";
-            avatar = R.drawable.mascot_corgi_running;
             if (breed != null && !breed.trim().isEmpty()) {
                 resolvedBreed = breed.trim();
             } else if (!raw.equalsIgnoreCase("Chó") && !raw.equalsIgnoreCase("Cho")) {
@@ -56,9 +53,9 @@ public class PetResponse implements Serializable {
             }
         } else {
             cleanSpecies = raw.isEmpty() ? "Khác" : raw;
-            avatar = R.drawable.mascot_corgi_running;
             resolvedBreed = (breed != null && !breed.trim().isEmpty()) ? breed.trim() : "";
         }
+        int avatar = PetAvatarUtils.resolvePetAvatar(id, name, cleanSpecies, resolvedBreed);
 
         // Ưu tiên dữ liệu thật từ API; fallback nhẹ nếu record cũ chưa điền
         String resolvedAge = (age != null && !age.trim().isEmpty()) ? age.trim() : "";

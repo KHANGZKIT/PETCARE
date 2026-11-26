@@ -627,9 +627,8 @@
                         android:layout_height="48dp"
                         android:background="@color/ds_cream_tile"
                         android:contentDescription="@null"
-                        android:padding="4dp"
-                        android:scaleType="fitCenter"
-                        android:src="@drawable/mascot_corgi_running"
+                        android:scaleType="centerCrop"
+                        android:src="@drawable/img_pet_mochi"
                         app:shapeAppearanceOverlay="@style/RoundedCorner10" />
 
                     <LinearLayout

@@ -1,24 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Phosphor Icons (duotone/calendar-dots-duotone.svg) - MIT License -->
 <vector xmlns:android="http://schemas.android.com/apk/res/android"
     android:width="24dp"
     android:height="24dp"
-    android:viewportWidth="24"
-    android:viewportHeight="24">
-    <!-- CalendarDays from Lucide -->
+    android:viewportWidth="256"
+    android:viewportHeight="256">
     <path
-        android:fillColor="#00000000"
-        android:strokeColor="#68757B"
-        android:strokeWidth="2.2"
-        android:strokeLineCap="round"
-        android:strokeLineJoin="round"
-        android:pathData="M19,4H5a2,2 0 0,0 -2,2v14a2,2 0 0,0 2,2h14a2,2 0 0,0 2,-2V6a2,2 0 0,0 -2,-2z" />
+        android:fillColor="#FF1F1A17"
+        android:fillAlpha="0.2"
+        android:pathData="M216,48V88H40V48a8,8,0,0,1,8-8H208A8,8,0,0,1,216,48Z" />
     <path
-        android:fillColor="#00000000"
-        android:strokeColor="#68757B"
-        android:strokeWidth="2.2"
-        android:strokeLineCap="round"
-        android:strokeLineJoin="round"
-        android:pathData="M16,2v4M8,2v4M3,10h18" />
-    <path
-        android:fillColor="#68757B"
-        android:pathData="M8,14h2v2H8zM14,14h2v2h-2zM8,18h2v2H8zM14,18h2v2h-2z" />
+        android:fillColor="#FF1F1A17"
+        android:pathData="M208,32H184V24a8,8,0,0,0-16,0v8H88V24a8,8,0,0,0-16,0v8H48A16,16,0,0,0,32,48V208a16,16,0,0,0,16,16H208a16,16,0,0,0,16-16V48A16,16,0,0,0,208,32ZM72,48v8a8,8,0,0,0,16,0V48h80v8a8,8,0,0,0,16,0V48h24V80H48V48ZM208,208H48V96H208V208Zm-68-76a12,12,0,1,1-12-12A12,12,0,0,1,140,132Zm44,0a12,12,0,1,1-12-12A12,12,0,0,1,184,132ZM96,172a12,12,0,1,1-12-12A12,12,0,0,1,96,172Zm44,0a12,12,0,1,1-12-12A12,12,0,0,1,140,172Zm44,0a12,12,0,1,1-12-12A12,12,0,0,1,184,172Z" />
 </vector>

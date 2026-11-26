@@ -73,16 +73,7 @@ public class AppointmentAdapter extends RecyclerView.Adapter<AppointmentAdapter.
             Context ctx = binding.getRoot().getContext();
             applyBadgeStatus(ctx, binding.tvApptStatus, item.getStatus());
 
-            int avatarRes = item.getPetImgRes();
-            binding.ivPetImage.setImageResource(avatarRes);
-            if (avatarRes == R.drawable.img_pet_bong) {
-                binding.ivPetImage.setPadding(0, 0, 0, 0);
-                binding.ivPetImage.setScaleType(ImageView.ScaleType.CENTER_CROP);
-            } else {
-                int pad = Math.round(4 * ctx.getResources().getDisplayMetrics().density);
-                binding.ivPetImage.setPadding(pad, pad, pad, pad);
-                binding.ivPetImage.setScaleType(ImageView.ScaleType.FIT_CENTER);
-            }
+            binding.ivPetImage.setImageResource(item.getPetImgRes());
 
             binding.tvServiceTitle.setText(item.getService());
             binding.tvPetAndClinic.setText(item.getPet() + " · " + formatShortClinicName(item.getClinic()));

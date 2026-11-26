@@ -1,28 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Phosphor Icons (regular/calendar-check.svg) - MIT License -->
 <vector xmlns:android="http://schemas.android.com/apk/res/android"
     android:width="24dp"
     android:height="24dp"
-    android:viewportWidth="24"
-    android:viewportHeight="24">
-    <!-- Lucide CalendarClock -->
+    android:viewportWidth="256"
+    android:viewportHeight="256">
     <path
-        android:fillColor="#00000000"
-        android:strokeColor="#16544C"
-        android:strokeWidth="2.2"
-        android:strokeLineCap="round"
-        android:strokeLineJoin="round"
-        android:pathData="M21,7.5V6a2,2 0 0,0 -2,-2H5A2,2 0 0,0 3,6v14a2,2 0 0,0 2,2h3.5 M16,2v4 M8,2v4 M3,10h5" />
-    <path
-        android:fillColor="#00000000"
-        android:strokeColor="#16544C"
-        android:strokeWidth="2.2"
-        android:strokeLineCap="round"
-        android:strokeLineJoin="round"
-        android:pathData="M17.5,17.5m-6,0a6,6 0 1,0 12,0a6,6 0 1,0 -12,0" />
-    <path
-        android:fillColor="#00000000"
-        android:strokeColor="#16544C"
-        android:strokeWidth="2.2"
-        android:strokeLineCap="round"
-        android:strokeLineJoin="round"
-        android:pathData="M17.5,14.5v3l2,1" />
+        android:fillColor="#FF1F1A17"
+        android:pathData="M208,32H184V24a8,8,0,0,0-16,0v8H88V24a8,8,0,0,0-16,0v8H48A16,16,0,0,0,32,48V208a16,16,0,0,0,16,16H208a16,16,0,0,0,16-16V48A16,16,0,0,0,208,32ZM72,48v8a8,8,0,0,0,16,0V48h80v8a8,8,0,0,0,16,0V48h24V80H48V48ZM208,208H48V96H208V208Zm-38.34-85.66a8,8,0,0,1,0,11.32l-48,48a8,8,0,0,1-11.32,0l-24-24a8,8,0,0,1,11.32-11.32L116,164.69l42.34-42.35A8,8,0,0,1,169.66,122.34Z" />
 </vector>

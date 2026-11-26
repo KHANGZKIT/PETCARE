@@ -65,9 +65,9 @@ public final class UserLocationManager {
 
     public static final PresetLocation[] PRESETS = new PresetLocation[]{
             new PresetLocation("ĐH Công nghiệp Hà Nội", "Số 298 Cầu Diễn · Bắc Từ Liêm", 21.0537, 105.7351),
-            new PresetLocation("Cầu Giấy, Hà Nội", "Khu vực Chùa Hà · Xuân Thủy", 21.0360, 105.7950),
-            new PresetLocation("Đống Đa, Hà Nội", "Khu vực Thái Hà · Láng Hạ", 21.0125, 105.8190),
-            new PresetLocation("Bắc Từ Liêm, Hà Nội", "Khu vực Minh Khai · Cổ Nhuế", 21.0642, 105.7535)
+            new PresetLocation("Cầu Giấy, Hà Nội", "Khu vực Trần Quốc Hoàn · Xuân Thủy", 21.0400, 105.7880),
+            new PresetLocation("Đống Đa, Hà Nội", "Khu vực Đường Láng · Thái Hà", 21.0125, 105.8190),
+            new PresetLocation("Bắc Từ Liêm, Hà Nội", "Khu vực Hồ Tùng Mậu · Phú Diễn", 21.0510, 105.7640)
     };
 
     public static final class LocationState {

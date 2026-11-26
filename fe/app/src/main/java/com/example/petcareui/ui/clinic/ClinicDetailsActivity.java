@@ -111,12 +111,12 @@ public class ClinicDetailsActivity extends AppCompatActivity {
         }
         preferredCategory = getIntent().getStringExtra(EXTRA_PREFERRED_CATEGORY);
 
-        // Dữ liệu mẫu mặc định (An Nhiên - Hà Nội)
+        // Dữ liệu mẫu mặc định (Tropicpet Cầu Giấy - Hà Nội)
         if (clinicItem == null) {
             clinicItem = new ClinicItem(
                     "1",
-                    "Phòng khám Thú y An Nhiên",
-                    "Số 12 Chùa Hà, Phường Quan Hoa, Cầu Giấy, Hà Nội",
+                    "Bệnh viện Thú y Tropicpet Cầu Giấy",
+                    "Số 8 Trần Quốc Hoàn, Phường Dịch Vọng Hậu, Cầu Giấy, Hà Nội",
                     4.8,
                     214,
                     "1,2 km",
@@ -131,6 +131,7 @@ public class ClinicDetailsActivity extends AppCompatActivity {
     }
 
     private void setupClinicInfo() {
+        binding.ivClinicCover.setImageResource(clinicItem.getImageResId());
         binding.tvClinicName.setText(clinicItem.getName());
         binding.tvClinicAddress.setText(clinicItem.getAddress());
         binding.tvClinicRating.setText(String.valueOf(clinicItem.getRating()));

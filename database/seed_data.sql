@@ -11,18 +11,18 @@ BEGIN;
 -- 0. Dọn sạch dữ liệu cũ và reset sequence identity
 TRUNCATE TABLE public.appointments, public.clinic_slots, public.pets, public.services, public.users, public.clinics RESTART IDENTITY CASCADE;
 
--- 1. Danh sách 10 Phòng khám Thú y Hà Nội
+-- 1. Danh sách 10 Phòng khám / Bệnh viện Thú y Hà Nội
 INSERT INTO public.clinics (id, name, address, area, phone, working_hours_note, is_active, latitude, longitude) VALUES
-    (1, 'Phòng khám Thú y An Nhiên', 'Số 12 Chùa Hà, Phường Quan Hoa', 'Cầu Giấy', '02438335566', '08:00 - 20:00 (Thứ 2 - Chủ Nhật)', true, 21.036, 105.795),
-    (2, 'Phòng khám Thú y PetCare Cầu Diễn', 'Số 298 Đường Cầu Diễn, Phường Minh Khai', 'Bắc Từ Liêm', '02437655121', '24/7 Cấp cứu & Khám chữa', true, 21.0537, 105.7351),
-    (3, 'Phòng khám Thú y PetCare Thái Hà', 'Số 88 Thái Hà, Phường Trung Liệt', 'Đống Đa', '02438561122', '08:00 - 19:30 (Thứ 2 - Thứ 7)', true, 21.0125, 105.819),
-    (4, 'Phòng khám Thú y PetCare Xuân Diệu', 'Số 68 Xuân Diệu, Phường Quảng An', 'Tây Hồ', '02439368899', '24/7 Cấp cứu thú cưng', true, 21.062, 105.826),
-    (5, 'Phòng khám Thú y PetCare Nguyễn Trãi', 'Số 150 Nguyễn Trãi, Phường Thượng Đình', 'Thanh Xuân', '02435581133', '08:30 - 20:30 (Thứ 2 - Chủ Nhật)', true, 20.998, 105.815),
-    (6, 'Phòng khám Thú y PetCare Kim Mã', 'Số 45 Kim Mã, Phường Giảng Võ', 'Ba Đình', '02438462244', '24/7 Trực cấp cứu', true, 21.0315, 105.8245),
-    (7, 'Phòng khám Thú y PetCare Trần Phú', 'Số 102 Trần Phú, Phường Mộ Lao', 'Hà Đông', '02433547788', '08:00 - 20:00 (Thứ 2 - Chủ Nhật)', true, 20.9785, 105.787),
-    (8, 'Phòng khám Thú y PetCare Phố Huế', 'Số 215 Phố Huế, Phường Phố Huế', 'Hai Bà Trưng', '02439763355', '08:30 - 19:00 (Thứ 2 - Thứ 7)', true, 21.015, 105.852),
-    (9, 'Phòng khám Thú y PetCare Mỹ Đình', 'Số 18 Lê Đức Thọ, Phường Mỹ Đình 2', 'Nam Từ Liêm', '02437856677', '24/7 Cấp cứu & Thở oxy', true, 21.0285, 105.771),
-    (10, 'Phòng khám Thú y PetCare Long Biên', 'Số 56 Nguyễn Văn Cừ, Phường Bồ Đề', 'Long Biên', '02438729900', '08:00 - 20:30 (Thứ 2 - Chủ Nhật)', true, 21.041, 105.871);
+    (1, 'Bệnh viện Thú y Tropicpet Cầu Giấy', 'Số 8 Trần Quốc Hoàn, Phường Dịch Vọng Hậu', 'Cầu Giấy', '02438335566', '08:00 - 20:00 (Thứ 2 - Chủ Nhật)', true, 21.0405, 105.7885),
+    (2, 'Bệnh viện Thú y Solpet Hồ Tùng Mậu', 'Số 378 Hồ Tùng Mậu, Phường Phú Diễn', 'Bắc Từ Liêm', '02437655121', '24/7 Cấp cứu & Khám chữa', true, 21.0454, 105.7623),
+    (3, 'Bệnh viện Thú y 2Vet Đống Đa', 'Số 101 Đường Láng, Phường Thịnh Quang', 'Đống Đa', '02438561122', '08:00 - 19:30 (Thứ 2 - Thứ 7)', true, 21.0076, 105.8148),
+    (4, 'Bệnh viện Thú y PetHealth Âu Cơ', 'Số 240 Âu Cơ, Phường Quảng An', 'Tây Hồ', '02439368899', '24/7 Cấp cứu thú cưng', true, 21.0645, 105.8256),
+    (5, 'Bệnh viện Thú y Samyang Animal Clinic', 'Số 29 N7A Nguyễn Thị Thập, Phường Nhân Chính', 'Thanh Xuân', '02435581133', '08:30 - 20:30 (Thứ 2 - Chủ Nhật)', true, 21.0038, 105.8022),
+    (6, 'Phòng khám Thú y Tropicpet Kim Mã', 'Số 30 Kim Mã, Phường Kim Mã', 'Ba Đình', '02438462244', '24/7 Trực cấp cứu', true, 21.0318, 105.8242),
+    (7, 'Bệnh viện Thú y Hà Nội', 'Số 591 Nguyễn Trãi, Phường Văn Quán', 'Hà Đông', '02433547788', '08:00 - 20:00 (Thứ 2 - Chủ Nhật)', true, 20.9818, 105.7924),
+    (8, 'Bệnh viện Thú y PetHealth Hai Bà Trưng', 'Số 255A Trần Khát Chân, Phường Thanh Nhàn', 'Hai Bà Trưng', '02439763355', '08:30 - 19:00 (Thứ 2 - Thứ 7)', true, 21.0078, 105.8555),
+    (9, 'Bệnh viện Thú y Mỹ Đình', 'Số 3 Ngõ 25 Nguyễn Cơ Thạch, Phường Mỹ Đình 2', 'Nam Từ Liêm', '02437856677', '24/7 Cấp cứu & Thở oxy', true, 21.0346, 105.7646),
+    (10, 'Bệnh viện Thú y PetHealth Long Biên', 'Số 443 Nguyễn Văn Cừ, Phường Ngọc Lâm', 'Long Biên', '02438729900', '08:00 - 20:30 (Thứ 2 - Chủ Nhật)', true, 21.0446, 105.8752);
 
 -- 2. Danh sách 10 Nhân viên (Staff phụ trách 10 cơ sở)
 INSERT INTO public.users (id, full_name, email, phone, password_hash, role, clinic_id, is_active) VALUES
@@ -39,7 +39,7 @@ INSERT INTO public.users (id, full_name, email, phone, password_hash, role, clin
 
 -- 3. Danh sách 50 Khách hàng (Customers)
 INSERT INTO public.users (id, full_name, email, phone, password_hash, role, clinic_id, is_active) VALUES
-    (11, 'Lê Thị Thu Hà', 'customer@petcare.com', '0988001000', '$2a$10$FG9Pg0AkFJ62G/8hUhxMsOzqQOI30KZbqZrJI301v4DdKkjtgcGxK', 'CUSTOMER', NULL, true),
+    (11, 'Nguyễn Khánh Linh', 'customer@petcare.com', '0988001000', '$2a$10$FG9Pg0AkFJ62G/8hUhxMsOzqQOI30KZbqZrJI301v4DdKkjtgcGxK', 'CUSTOMER', NULL, true),
     (12, 'Nguyễn Hoàng Nam', 'customer2@petcare.com', '0988001001', '$2a$10$FG9Pg0AkFJ62G/8hUhxMsOzqQOI30KZbqZrJI301v4DdKkjtgcGxK', 'CUSTOMER', NULL, true),
     (13, 'Trần Minh Đức', 'customer3@petcare.com', '0988001002', '$2a$10$FG9Pg0AkFJ62G/8hUhxMsOzqQOI30KZbqZrJI301v4DdKkjtgcGxK', 'CUSTOMER', NULL, true),
     (14, 'Vũ Phương Linh', 'customer4@petcare.com', '0988001003', '$2a$10$FG9Pg0AkFJ62G/8hUhxMsOzqQOI30KZbqZrJI301v4DdKkjtgcGxK', 'CUSTOMER', NULL, true),

@@ -161,23 +161,20 @@ public class ClinicItem implements Serializable {
         this.serviceNames = serviceNames != null ? new ArrayList<>(serviceNames) : new ArrayList<>();
     }
 
+    private static final int[] CLINIC_IMAGES = new int[]{
+            com.example.petcareui.R.drawable.img_clinic_annhien,
+            com.example.petcareui.R.drawable.img_clinic_haui,
+            com.example.petcareui.R.drawable.img_clinic_dongda,
+            com.example.petcareui.R.drawable.img_clinic_cover,
+            com.example.petcareui.R.drawable.img_clinic_spa,
+            com.example.petcareui.R.drawable.img_clinic_dental
+    };
+
     public int getImageResId() {
-        if (name == null) return com.example.petcareui.R.drawable.img_clinic_annhien;
-        String lower = name.toLowerCase();
-        if (lower.contains("an nhiên") || lower.contains("cầu giấy")) {
-            return com.example.petcareui.R.drawable.img_clinic_annhien;
-        } else if (lower.contains("haui") || lower.contains("cầu diễn") || lower.contains("bắc từ liêm")) {
-            return com.example.petcareui.R.drawable.img_clinic_haui;
-        } else if (lower.contains("đống đa") || lower.contains("thái hà")) {
-            return com.example.petcareui.R.drawable.img_clinic_dongda;
-        }
         Long numId = getNumericId();
-        if (numId != null) {
-            long mod = numId % 3;
-            if (mod == 1) return com.example.petcareui.R.drawable.img_clinic_annhien;
-            if (mod == 2) return com.example.petcareui.R.drawable.img_clinic_haui;
-            return com.example.petcareui.R.drawable.img_clinic_dongda;
+        if (numId != null && numId > 0) {
+            return CLINIC_IMAGES[(int) ((numId - 1) % CLINIC_IMAGES.length)];
         }
-        return com.example.petcareui.R.drawable.img_clinic_annhien;
+        return CLINIC_IMAGES[0];
     }
 }

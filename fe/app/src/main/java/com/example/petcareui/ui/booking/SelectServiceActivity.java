@@ -99,8 +99,8 @@ public class SelectServiceActivity extends AppCompatActivity {
         if (clinicItem == null) {
             clinicItem = new ClinicItem(
                     "1",
-                    "Phòng khám Thú y An Nhiên",
-                    "Số 12 Chùa Hà, Cầu Giấy, Hà Nội",
+                    "Bệnh viện Thú y Tropicpet Cầu Giấy",
+                    "Số 8 Trần Quốc Hoàn, Cầu Giấy, Hà Nội",
                     4.8,
                     214,
                     "1,2 km",
@@ -113,6 +113,7 @@ public class SelectServiceActivity extends AppCompatActivity {
     private void setupClinicContextCard() {
         binding.btnBack.setOnClickListener(v -> finish());
 
+        binding.ivClinicThumb.setImageResource(clinicItem.getImageResId());
         binding.tvClinicName.setText(clinicItem.getName());
         binding.tvClinicArea.setText(clinicItem.getArea());
 

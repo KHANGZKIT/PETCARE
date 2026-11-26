@@ -101,7 +101,7 @@ public class BookingSuccessActivity extends AppCompatActivity {
         // Dữ liệu fallback chuẩn theo data.js (STAFF_CLINIC, SERVICES[1], PETS[0], SELECTED) nếu mở độc lập
         if (clinicItem == null) {
             clinicItem = new ClinicItem(
-                    "1", "Phòng khám Thú y An Nhiên", "Số 12 Chùa Hà, Cầu Giấy, Hà Nội", 4.8, 214, "1,2 km", true, "Thứ 2 – CN · 08:00 – 20:00"
+                    "1", "Bệnh viện Thú y Tropicpet Cầu Giấy", "Số 8 Trần Quốc Hoàn, Cầu Giấy, Hà Nội", 4.8, 214, "1,2 km", true, "Thứ 2 – CN · 08:00 – 20:00"
             );
         }
         if (serviceItem == null) {
@@ -133,15 +133,9 @@ public class BookingSuccessActivity extends AppCompatActivity {
     }
 
     private void populateData() {
-        // Tên ngắn phòng khám cho phụ đề
-        String clinicShort = "An Nhiên";
-        if (clinicItem != null && clinicItem.getName() != null) {
-            if (clinicItem.getName().contains("An Nhiên")) {
-                clinicShort = "An Nhiên";
-            } else {
-                clinicShort = clinicItem.getName();
-            }
-        }
+        String clinicShort = (clinicItem != null && clinicItem.getName() != null && !clinicItem.getName().trim().isEmpty())
+                ? clinicItem.getName().trim()
+                : "Phòng khám";
         binding.tvSuccessSubtitle.setText(clinicShort + " đã nhận yêu cầu của bạn. Lịch hẹn đang chờ phòng khám xác nhận.");
 
         // Thẻ tóm tắt: Dịch vụ

@@ -117,7 +117,7 @@
                     android:layout_marginTop="12dp"
                     android:fontFamily="@font/open_sans_bold"
                     android:includeFontPadding="false"
-                    android:text="Lê Thị Thu Hà"
+                    android:text="Nguyễn Khánh Linh"
                     android:textColor="@color/ds_text_primary"
                     android:textSize="19sp"
                     app:fontFamily="@font/open_sans_bold" />
@@ -203,7 +203,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:fontFamily="@font/open_sans_semibold"
-                        android:text="Lê Thị Thu Hà"
+                        android:text="Nguyễn Khánh Linh"
                         android:textColor="@color/ds_text_primary"
                         android:textSize="13.5sp"
                         app:fontFamily="@font/open_sans_semibold" />

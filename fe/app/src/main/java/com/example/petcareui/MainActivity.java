@@ -465,16 +465,7 @@ public class MainActivity extends AppCompatActivity {
     private void bindUpcomingCard(AppointmentResponse res) {
         AppointmentItem item = res.toAppointmentItem();
 
-        int avatarRes = item.getPetImgRes();
-        binding.ivUpcomingPetAvatar.setImageResource(avatarRes);
-        if (avatarRes == R.drawable.img_pet_bong) {
-            binding.ivUpcomingPetAvatar.setPadding(0, 0, 0, 0);
-            binding.ivUpcomingPetAvatar.setScaleType(ImageView.ScaleType.CENTER_CROP);
-        } else {
-            int pad = Math.round(4 * getResources().getDisplayMetrics().density);
-            binding.ivUpcomingPetAvatar.setPadding(pad, pad, pad, pad);
-            binding.ivUpcomingPetAvatar.setScaleType(ImageView.ScaleType.FIT_CENTER);
-        }
+        binding.ivUpcomingPetAvatar.setImageResource(item.getPetImgRes());
 
         binding.tvUpcomingService.setText(res.getServiceName() != null ? res.getServiceName() : item.getService());
 
@@ -578,16 +569,7 @@ public class MainActivity extends AppCompatActivity {
             PetItem mapped = res.toPetItem();
             ItemHomePetCardBinding card = ItemHomePetCardBinding.inflate(inflater, binding.containerHomePets, false);
 
-            int avatarRes = mapped.getImageResId();
-            card.ivHomePetAvatar.setImageResource(avatarRes);
-            if (avatarRes == R.drawable.img_pet_bong) {
-                card.ivHomePetAvatar.setPadding(0, 0, 0, 0);
-                card.ivHomePetAvatar.setScaleType(ImageView.ScaleType.CENTER_CROP);
-            } else {
-                int pad = Math.round(4 * getResources().getDisplayMetrics().density);
-                card.ivHomePetAvatar.setPadding(pad, pad, pad, pad);
-                card.ivHomePetAvatar.setScaleType(ImageView.ScaleType.FIT_CENTER);
-            }
+            card.ivHomePetAvatar.setImageResource(mapped.getImageResId());
 
             card.tvHomePetName.setText(res.getName() != null && !res.getName().trim().isEmpty() ? res.getName().trim() : "Bé cưng");
 

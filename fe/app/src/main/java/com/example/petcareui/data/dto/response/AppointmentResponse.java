@@ -1,8 +1,8 @@
 package com.example.petcareui.data.dto.response;
 
-import com.example.petcareui.R;
 import com.example.petcareui.data.model.AppointmentItem;
 import com.example.petcareui.data.model.StaffAppointmentItem;
+import com.example.petcareui.utils.PetAvatarUtils;
 import com.example.petcareui.utils.ServiceDisplayUtils;
 
 import java.io.Serializable;
@@ -74,12 +74,7 @@ public class AppointmentResponse implements Serializable {
     public String getEndTime() { return endTime; }
 
     private int resolvePetAvatar() {
-        String lowerSpec = petSpecies != null ? petSpecies.toLowerCase(Locale.ROOT) : "";
-        String lowerName = petName != null ? petName.toLowerCase(Locale.ROOT) : "";
-        if (lowerSpec.contains("mèo") || lowerSpec.contains("cat") || lowerName.contains("bông") || lowerName.contains("mimi") || lowerName.contains("miu")) {
-            return R.drawable.img_pet_bong;
-        }
-        return R.drawable.mascot_corgi_running;
+        return PetAvatarUtils.resolvePetAvatar(petId, petName, petSpecies, petBreed);
     }
 
     public static String formatRelativeTime(String isoTimestamp) {
