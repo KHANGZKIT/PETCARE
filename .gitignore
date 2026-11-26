@@ -86,6 +86,7 @@ Desktop.ini
 *.swp
 *.swo
 *.tmp
+*.bak
 
 # Do not blanket-ignore application.properties/yml, pom.xml,
 # build.gradle, gradle.properties, .mvn/ or gradle/wrapper/.

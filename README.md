@@ -1,62 +1,62 @@
 # PET CARE
 
-Ứng dụng Android tìm kiếm phòng khám thú y và đặt lịch khám cho thú cưng. Repository được chuẩn bị cho nhóm 5 thành viên phát triển trong 5 tuần.
+Ứng dụng Android tìm kiếm phòng khám thú y và đặt lịch khám cho thú cưng, kèm phân hệ quản lý lịch hẹn và khung giờ dành cho nhân viên phòng khám.
 
-## Trạng thái hiện tại
+## Công nghệ sử dụng
 
-Repository mới có cấu trúc thư mục, kế hoạch và SQL thiết kế. Chưa khởi tạo project backend hoặc Android. Kế hoạch và phân công chi tiết nằm trong [plan.md](plan.md).
-
-## Công nghệ dự kiến
-
-- Backend: Java 25, Spring Boot, Maven, REST API.
-- Frontend: Android Java, XML Views, kiến trúc MVVM.
-- Cơ sở dữ liệu: PostgreSQL.
-- Quản lý mã nguồn và phối hợp: Git, GitHub và Pull Request.
+- **Backend (`be/`):** Java 25, Spring Boot 4.1.1, Spring Data JPA, Spring Security + JWT (`jjwt`), Bean Validation, Maven Wrapper, JUnit 5 + Mockito + Testcontainers (PostgreSQL 17).
+- **Frontend (`fe/`):** Android (Java 11, XML Views, ViewBinding, kiến trúc MVVM với `Repository` / `ViewModel` / `LiveData`, `RecyclerView`, Retrofit 2 + OkHttp).
+- **Cơ sở dữ liệu (`database/`):** PostgreSQL 17 với schema 6 bảng (`clinics`, `users`, `pets`, `services`, `clinic_slots`, `appointments`), ràng buộc composite FK, partial unique index chống đặt trùng slot và bộ seed data ngày động.
 
 ## Cấu trúc repository
 
 ```text
 PETCARE/
-├── plan.md
-├── README.md
-├── .gitignore
-├── be/
-│   └── .gitkeep
-├── fe/
-│   └── .gitkeep
-└── database/
-    └── PETCARE_PostgreSQL_5weeks.sql
+├── be/                         # Backend Spring Boot REST API + Unit/Integration tests
+├── fe/                         # Ứng dụng Android (Customer & Staff)
+├── database/
+│   ├── PETCARE_PostgreSQL_5weeks.sql   # Schema PostgreSQL chuẩn
+│   └── seed_data.sql                   # Dữ liệu mẫu (10 phòng khám, 10 staff, 50 khách hàng)
+├── docker-compose.yml          # PostgreSQL 17 & pgAdmin 4 cho môi trường local
+├── HOW_TO_RUN.md               # Hướng dẫn khởi chạy hệ thống chi tiết
+├── DESIGN_SYSTEM_SPEC.md       # Quy chuẩn giao diện Android
+├── plan.md                     # Kế hoạch & phân công nhóm 5 tuần
+└── .env.example                # Mẫu biến môi trường local
 ```
 
-`PETCARE/` biểu thị thư mục gốc repository, hiện là `D:\CODE\PetCare`; không cần tạo thêm thư mục PETCARE lồng bên trong.
+## Chức năng chính
 
-- `plan.md`: kế hoạch và phân công công việc của 5 thành viên.
-- `be/`: dành cho backend Spring Boot trong giai đoạn triển khai.
-- `fe/`: dành cho ứng dụng Android Java và XML Views.
-- `database/`: lưu SQL PostgreSQL đã chốt; không tự sửa schema khi chưa thống nhất nhóm.
+- **Khách hàng (`CUSTOMER`):**
+  - Đăng ký, đăng nhập, quản lý hồ sơ tài khoản và cài đặt thông báo.
+  - Tìm kiếm, lọc, sắp xếp phòng khám thú y (có tính khoảng cách GPS) và xem chi tiết dịch vụ.
+  - Quản lý danh sách thú cưng (thêm, sửa, xóa an toàn, xem lịch sử khám).
+  - Đặt lịch khám 4 bước (chọn dịch vụ, chọn ngày/giờ trống theo thời gian thực, chọn thú cưng, xác nhận & chỉnh sửa trực tiếp từng mục, kèm ghi chú).
+  - Theo dõi trạng thái lịch hẹn (`PENDING`, `CONFIRMED`, `COMPLETED`, `NO_SHOW`, `CANCELLED`, `REJECTED`), hủy lịch và xem thông báo.
+- **Nhân viên phòng khám (`STAFF`):**
+  - Bảng tổng quan ca trực trong ngày và danh sách yêu cầu chờ duyệt.
+  - Tìm kiếm, lọc và xử lý vòng đời lịch hẹn thuộc cơ sở mình (`confirm`, `reject`, `complete`, `no-show`).
+  - Quản lý khung giờ khám theo ngày: tạo khung giờ mới, đóng/mở khung giờ trống trực tiếp qua API.
 
-## Tham gia phát triển
+## Khởi chạy & Kiểm thử nhanh
 
-1. Đọc `plan.md` và thống nhất hợp đồng API, schema, phân quyền trước khi lập trình module.
-2. Sau khi nhóm thiết lập remote GitHub, clone repository và chuyển vào thư mục dự án.
-3. Cập nhật nhánh `main` trước khi tạo nhánh công việc:
+Xem hướng dẫn chi tiết và tài khoản mẫu tại [HOW_TO_RUN.md](HOW_TO_RUN.md).
 
-   ```sh
-   git switch main
-   git pull --ff-only origin main
-   git switch -c feature/ten-chuc-nang
-   ```
+```powershell
+# 1. Khởi chạy PostgreSQL + pgAdmin (sau khi tạo .env từ .env.example)
+docker compose up -d
 
-4. Làm việc trên nhánh riêng, kiểm tra `git status` và `git diff` trước khi stage/commit. Chỉ stage các file đã rà soát.
-5. Push nhánh riêng và tạo Pull Request để thành viên khác review trước khi merge.
-6. Thống nhất thay đổi ảnh hưởng module khác qua Pull Request; giữ tài liệu và dữ liệu thiết kế đồng bộ với quyết định của nhóm.
+# 2. Chạy kiểm thử & khởi động Backend (yêu cầu JDK 25)
+cd be
+.\mvnw.cmd test
+.\mvnw.cmd spring-boot:run
 
-Chưa có lệnh chạy backend hoặc Android vì chưa có project tương ứng. Không chạy SQL vào database dùng chung nếu chưa thống nhất môi trường và người phụ trách.
+# 3. Biên dịch & chạy unit test Android
+cd ..\fe
+.\gradlew.bat testDebugUnitTest assembleDebug
+```
 
-## Cấu hình và thông tin nhạy cảm
+## Quy tắc bảo mật & cộng tác
 
-- Không commit mật khẩu, JWT secret, token, private key, file `.env` thật hoặc cấu hình máy cá nhân.
-- Khi triển khai, dùng biến môi trường hoặc cấu hình local đã được ignore cho thông tin nhạy cảm.
-- Có thể chia sẻ `.env.example` chỉ chứa tên biến và giá trị minh họa không nhạy cảm.
-- Giữ các cấu hình nhóm cần chia sẻ, như cấu hình ứng dụng không chứa secret, Maven/Gradle Wrapper và cấu hình VS Code được thống nhất.
-- `.gitignore` không thay thế việc rà soát nội dung trước mỗi commit.
+- Không commit mật khẩu, JWT secret, token, private key, file `.env` thật hoặc file backup (`.bak`).
+- Sử dụng `.env.example` để chia sẻ tên biến môi trường mẫu và cấu hình biến thật tại máy local/CI.
+- Mọi thay đổi schema database phải được thống nhất nhóm và cập nhật đồng bộ giữa `database/PETCARE_PostgreSQL_5weeks.sql`, Entity và test.
